@@ -1,12 +1,13 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="form">
     @for (field of formDefinition.fields; track $index) {
         <mat-form-field>
             <mat-label>{{field.name}}</mat-label>
             <input matInput [formControlName]="field.name" >
         </mat-form-field>
+        <!-- <ppt-form-field [field]="field" [form]="form"></ppt-form-field> -->
     }
 </form>
 
 <pre>
-{{formGroup.value | json}}
+{{form.value | json}}
 </pre>

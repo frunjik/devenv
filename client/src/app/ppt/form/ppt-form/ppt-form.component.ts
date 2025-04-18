@@ -5,6 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PPTField, PPTModel } from '../../../../../../ppt/core';
 import { JsonPipe } from '@angular/common';
+import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
 
 @Component({
     selector: 'ppt-form',
@@ -12,7 +13,11 @@ import { JsonPipe } from '@angular/common';
     styleUrl: './ppt-form.component.scss',
     imports: [
         JsonPipe,
-        ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+        ReactiveFormsModule,
+        MatFormFieldModule, 
+        MatInputModule, MatSelectModule,
+        // PPTFormFieldComponent
+    ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PPTFormComponent {
@@ -41,7 +46,7 @@ export class PPTFormComponent {
         fields: this.formFields
     };    
 
-    formGroup = this.createFormGroup(this.formDefinition);
+    form = this.createFormGroup(this.formDefinition);
 
     createFormField(field: PPTField) {
         return new FormControl(field.name)

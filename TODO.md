@@ -4,6 +4,8 @@
 - field
 - test !!!
 
+- theming - https://material.angular.io/components/form-field/overview#theming
+
 - understand how styling works
 
 - bind Ctrl-S in editor

@@ -1,18 +1,6 @@
-export interface PPTModel {
-    id: string;
-    name: string;
-    title?: string;
-    fields: PPTField[];
-};
-
-export interface PPTField {
-    id: string;
-    type: PPTModel | string;
-    name: string;
-    title?: string;
-};
-
-// TODO: Generate - everyting after this with the description above
+import {type PPTField, type PPTModel} from './core';
+// TODO: Generate
+// everyting after this from its own descriptions below
 
 const idField: PPTField = {
     id: 'PPTField.id',

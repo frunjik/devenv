@@ -4,7 +4,7 @@ import { FileSystem } from './filesystem/filesystem.js';
 import { getFiles, postFiles } from './handlers/files.js';
 import { getFolders } from './handlers/folders.js';
 
-const root = 'C:/Users/Jeroen/Projects/web/devenv';
+const root = '../';
 const port = 3000;
 
 const app = express();

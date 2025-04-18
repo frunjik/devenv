@@ -11,6 +11,7 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 - v0.0.2 - root .gitnore file
 
 ### Changed
+- v0.0.2 - Update Server initial root path
 - v0.0.2 - Update Server Npm Packages
 - v0.0.2 - Update Client Npm Packages
 - v0.0.2 - Moved CHANGELOG from client to root

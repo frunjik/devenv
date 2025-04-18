@@ -11,9 +11,13 @@ import { SuccessResponseBody, FolderEntry } from '@shared';
 })
 export class BackendService {
 
-    private server = 'http://localhost:3000/';
+    private defaultHost = 'http://localhost:3000/';
 
     constructor(private httpservice: HttpClient) { }
+
+    get host(): string {
+        return (((window as unknown) as any).host) ?? this.defaultHost
+    }
 
     loadFile(pathname: string): Observable<string> {
         return this.get<string>(`files?path=${pathname}`)
@@ -51,14 +55,14 @@ export class BackendService {
 
 
     private get<T>(resource: string): Observable<T> {
-        return this.httpservice.get<SuccessResponseBody<T>>(this.server + resource)
+        return this.httpservice.get<SuccessResponseBody<T>>(this.host + resource)
             .pipe(
                 map(data => data.data),
             );
     }
 
     private post<T>(resource: string, data: any): Observable<T> {
-        return this.httpservice.post<SuccessResponseBody<T>>(this.server + resource, data)
+        return this.httpservice.post<SuccessResponseBody<T>>(this.host + resource, data)
             .pipe(
                 map(data => data.data),
             );

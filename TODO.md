@@ -11,3 +11,4 @@
 - show feedback when saving
 - fix content edit bugs
 - sizer / splitter
+

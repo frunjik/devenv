@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { FileBrowserComponent } from './file-browser/file-browser/file-browser.component';
 import { RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,9 +13,14 @@ import { MatToolbar } from '@angular/material/toolbar';
         MatButtonModule,
         RouterOutlet,
         // FileEditorComponent,
-        FileBrowserComponent,
+        // FileBrowserComponent,
     ]
 })
 export class AppComponent {
     title = 'Devenv';
+
+    count: WritableSignal<number> = signal(0);
+
+    create() {
+    }
 }

@@ -9,7 +9,8 @@ import { PPTField } from '../../../../../../ppt/core';
     selector: 'ppt-form-field',
     imports: [
         // ReactiveFormsModule, 
-        MatFormFieldModule, MatInputModule, MatSelectModule
+        // MatFormFieldModule, 
+        // MatInputModule, MatSelectModule
     ],
     providers: [
         MatLabel

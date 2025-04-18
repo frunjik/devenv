@@ -15,7 +15,6 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatToolbar,
         MatButtonModule,
         RouterOutlet,
-        ReactiveFormsModule, 
     ]
 })
 export class AppComponent {

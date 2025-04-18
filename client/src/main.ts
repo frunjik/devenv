@@ -19,9 +19,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 bootstrapApplication(AppComponent, {
     providers: [
         importProvidersFrom(
+            // FormsModule,
+            // ReactiveFormsModule,
+            // MatFormFieldModule, 
+
             BrowserModule,
-            FormsModule,
-            ReactiveFormsModule,
             MatFormFieldModule,
             MatDialogModule,
             AppRoutingModule,

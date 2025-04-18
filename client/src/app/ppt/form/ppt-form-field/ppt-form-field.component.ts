@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/module.d-DBDMCw5I';
 import { MatFormFieldModule, MatLabel } from '@angular/material/module.d-vndDeG-q';
@@ -10,7 +10,7 @@ import { PPTField } from '../../../../../../ppt/core';
     imports: [
         // ReactiveFormsModule, 
         // MatFormFieldModule, 
-        // MatInputModule, MatSelectModule
+        MatInputModule, MatSelectModule
     ],
     providers: [
         MatLabel

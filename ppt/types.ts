@@ -1,15 +1,4 @@
-export interface PPTModel {
-    id: string;
-    name: string;
-    title?: string;
-    fields: PPTField[];
-};
+export const version = '0.0.1'; // to make it a module ...
 
-export interface PPTField {
-    id: string;
-    type: PPTModel | string;
-    name: string;
-    title?: string;
-};
-
-// TODO: Generate - everyting after this with the description above
+export type PPTString = string;
+export type PPTNumber = number;

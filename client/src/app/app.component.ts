@@ -5,7 +5,6 @@ import { MatToolbar } from '@angular/material/toolbar';
 
 import { ppt } from '../../../ppt';
 import { PPTField } from '../../../ppt/core';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-root',

@@ -13,12 +13,9 @@ import { PPTField } from '../../../ppt/models';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     imports: [
-        JsonPipe,
         MatToolbar,
         MatButtonModule,
         RouterOutlet,
-        // FileEditorComponent,
-        // FileBrowserComponent,
     ]
 })
 export class AppComponent {

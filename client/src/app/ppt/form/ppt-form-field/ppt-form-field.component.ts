@@ -1,21 +1,26 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/module.d-DBDMCw5I';
-import { MatFormFieldModule, MatLabel } from '@angular/material/module.d-vndDeG-q';
+import { MatInputModule, MatLabel } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+// import { MatLabel } from '@angular/material/';
 import { PPTField } from '../../../../../../ppt/core';
+import { PPTFormModule } from 'src/app/ppt-form.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
     selector: 'ppt-form-field',
-    // imports: [
+    imports: [
         // ReactiveFormsModule, 
-        // MatFormFieldModule, 
-        // MatInputModule, MatSelectModule
-    // ],
+        MatInputModule, MatSelectModule,
+        PPTFormModule,
+        MatFormFieldModule, 
+        // MatLabel,
+        // MatFormFieldModule
+    ],
     // providers: [
-        // MatLabel
+    //     MatLabel
     // ],
-    standalone: false,
+    standalone: true,
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './ppt-form-field.component.html',
     styleUrl: './ppt-form-field.component.scss'

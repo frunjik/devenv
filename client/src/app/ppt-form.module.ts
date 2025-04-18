@@ -11,6 +11,8 @@ import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/fo
     declarations: [
         // PPTFormComponent,
         // PPTFormFieldComponent
+        // MatLabel,
+        // MatFormField,
     ],
     imports: [
         CommonModule,

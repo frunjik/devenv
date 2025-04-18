@@ -5,11 +5,22 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 
 # Unreleased
 
-# 0.0.1 2023-03-05
-## Initial Version
+### Added
+- v0.0.2 - Update Client Npm Packages
+
+# 0.0.2 2023-03-05 Cleanup
 
 ### Added
-- v0.0.1 - Initial Version
+- v0.0.2 - root .gitnore file
+
+### Changed
+- v0.0.2 - Moved CHANGELOG from client to root
+
+### Removed
+
+# 0.0.1 2023-03-05 Initial Version
+
+### Added
 
 #### Changelog - Guiding Principles
 - Changelogs are for humans, not machines

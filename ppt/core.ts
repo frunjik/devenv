@@ -7,8 +7,8 @@ export interface PPTModel {
 
 export interface PPTField {
     id: string;
-    // type: PPTModel | string;
-    type: string;
+    type: PPTModel | string;
+    // type: string;
     name: string;
     title?: string;
 };

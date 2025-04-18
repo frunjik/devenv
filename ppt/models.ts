@@ -35,7 +35,7 @@ const fieldsField: PPTField = {
 // freeze
 export const modelModel: PPTModel = {
     id: 'PPTModel',
-    name: 'Basic Model',
+    name: 'Basic Model XXX',
     // tite: '',
     fields: [
         idField,

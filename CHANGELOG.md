@@ -5,16 +5,15 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 
 # Unreleased
 
-### Added
-
 # 0.0.2 2023-03-05 Cleanup
 
 ### Added
 - v0.0.2 - root .gitnore file
 
 ### Changed
-- v0.0.2 - Moved CHANGELOG from client to root
+- v0.0.2 - Update Server Npm Packages
 - v0.0.2 - Update Client Npm Packages
+- v0.0.2 - Moved CHANGELOG from client to root
 
 ### Removed
 

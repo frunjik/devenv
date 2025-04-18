@@ -19,7 +19,7 @@ import { PPTField } from '../../../ppt/core';
 export class AppComponent {
     title = 'Devenv';
 
-    model = ppt.models.modeField;
+    model = ppt.models.modelField;
 
     field: PPTField = {
         id: 'test',

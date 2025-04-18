@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-    @for (field of formDefinition.fields; track $index) {
+    @for (field of model.fields; track $index) {
         <ppt-form-field [field]="field" [form]="form"></ppt-form-field>
     }
 </form>

@@ -1,10 +1,10 @@
-import {type PPTField, type PPTModel} from './core';
+import {PPTField, PPTModel} from './core';
 // TODO: Generate
 // everyting after this from its own descriptions below
 
 const idField: PPTField = {
     id: 'PPTField.id',
-    type: 'ID',
+    type: 'string',
     name: 'Unique ID',
 };
 
@@ -40,11 +40,11 @@ export const modelModel: PPTModel = {
         idField,
         nameField,
         tileField,
-        fieldsField
+        // fieldsField
     ]
 }
 
-export const modeField: PPTModel = {
+export const modelField: PPTModel = {
     id: 'PPTField',
     name: 'Basic Field',
     fields: [

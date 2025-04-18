@@ -5,6 +5,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { PPTField, PPTModel } from '../../../../../../ppt/core';
 import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
 import { PPTFormModule } from 'src/app/ppt-form.module';
+import { modelField, modelModel } from '../../../../../../ppt/models';
 
 @Component({
     selector: 'ppt-form',
@@ -34,16 +35,34 @@ export class PPTFormComponent {
             id: 'c',
             type: 'string',
             name: 'c'
-        }
+        },
+        {
+            id: 'v',
+            type: 'string',
+            name: 'test',
+        },
+        // {
+        //     id: 'a',
+        //     type: 'string',
+        //     name: 'Name',
+        // }        
+        // ,
+        ...(modelModel.fields as PPTField[])
     ];
 
     formDefinition: PPTModel = {
         id: '',
         name: 'test',
-        fields: this.formFields
+        // fields: this.formFields
+        fields: modelModel.fields
     };    
 
-    form = this.createFormGroup(this.formDefinition);
+    // formDefinition2: PPTModel = modelModel;    
+
+
+    model = this.formDefinition;
+
+    form = this.createFormGroup(this.model);
 
     createFormField(field: PPTField) {
         return new FormControl(field.name)

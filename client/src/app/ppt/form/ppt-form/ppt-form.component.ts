@@ -20,47 +20,7 @@ import { modelField, modelModel } from '../../../../../../ppt/models';
 })
 export class PPTFormComponent {
 
-    formFields: PPTField[] = [
-        {
-            id: 'a',
-            type: 'string',
-            name: 'a'
-        },
-        {
-            id: 'b',
-            type: 'string',
-            name: 'b'
-        },
-        {
-            id: 'c',
-            type: 'string',
-            name: 'c'
-        },
-        {
-            id: 'v',
-            type: 'string',
-            name: 'test',
-        },
-        // {
-        //     id: 'a',
-        //     type: 'string',
-        //     name: 'Name',
-        // }        
-        // ,
-        ...(modelModel.fields as PPTField[])
-    ];
-
-    formDefinition: PPTModel = {
-        id: '',
-        name: 'test',
-        // fields: this.formFields
-        fields: modelModel.fields
-    };    
-
-    // formDefinition2: PPTModel = modelModel;    
-
-
-    model = this.formDefinition;
+    model = modelModel;
 
     form = this.createFormGroup(this.model);
 

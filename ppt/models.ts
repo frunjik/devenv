@@ -36,6 +36,7 @@ const fieldsField: PPTField = {
 export const modelModel: PPTModel = {
     id: 'PPTModel',
     name: 'Basic Model',
+    // tite: '',
     fields: [
         idField,
         nameField,

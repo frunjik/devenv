@@ -7,14 +7,15 @@ import { PPTField } from '../../../../../../ppt/core';
 
 @Component({
     selector: 'ppt-form-field',
-    imports: [
+    // imports: [
         // ReactiveFormsModule, 
         // MatFormFieldModule, 
-        MatInputModule, MatSelectModule
-    ],
-    providers: [
-        MatLabel
-    ],
+        // MatInputModule, MatSelectModule
+    // ],
+    // providers: [
+        // MatLabel
+    // ],
+    standalone: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './ppt-form-field.component.html',
     styleUrl: './ppt-form-field.component.scss'

@@ -6,18 +6,21 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { PPTField, PPTModel } from '../../../../../../ppt/core';
 import { JsonPipe } from '@angular/common';
 import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
+import { PPTFormModule } from 'src/app/ppt-form.module';
 
 @Component({
     selector: 'ppt-form',
     templateUrl: './ppt-form.component.html',
     styleUrl: './ppt-form.component.scss',
     imports: [
-        JsonPipe,
-        ReactiveFormsModule,
+        // JsonPipe,
+        // ReactiveFormsModule,
         // MatFormFieldModule, 
         // PPTFormFieldComponent,
+        PPTFormModule,
         MatInputModule, MatSelectModule,
     ],
+    // standalone: false,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PPTFormComponent {

@@ -6,7 +6,6 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 # Unreleased
 
 ### Added
-- v0.0.2 - Update Client Npm Packages
 
 # 0.0.2 2023-03-05 Cleanup
 
@@ -15,6 +14,7 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 
 ### Changed
 - v0.0.2 - Moved CHANGELOG from client to root
+- v0.0.2 - Update Client Npm Packages
 
 ### Removed
 

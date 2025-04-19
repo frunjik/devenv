@@ -22,4 +22,6 @@ allModels.forEach((model) => {
 
 
 export * from './core';
+export * from './services/file-system/file-system.service';
+
 export const ppt = { version, models };

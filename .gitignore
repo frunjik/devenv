@@ -3,6 +3,8 @@
 # Compiled output
 dist
 tmp
+coverage
+
 
 # Node
 node_modules

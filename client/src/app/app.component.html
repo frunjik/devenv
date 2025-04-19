@@ -1,17 +1,1 @@
-<mat-toolbar>
-    <button mat-button (click)="insertList()">NEW LIST</button>
-    <!-- <button disabled mat-button (click)="insertItem()">ITEM</button> -->
-    |
-    <button mat-button (click)="edit()">EDIT</button>
-</mat-toolbar>
-
-@if (editing()) {
-    <ppt-list-editor (cancel)="cancel()" (commit)="commit()" [list]="list"></ppt-list-editor>
-} @else {
-    <ppt-list [list]="list"></ppt-list>
-}
-
-<ppt-style [ngStyle]="boxStyle">
-    <ppt-box></ppt-box>
-</ppt-style>
-<!-- <ppt-box [ngStyle]="boxStyle"></ppt-box> -->
+<mat-toolbar>PPT</mat-toolbar>

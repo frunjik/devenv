@@ -32,7 +32,14 @@ const fieldsField: PPTField = {
     name: 'Fields',
 };
 
+const extendsField: PPTField = {
+    id: 'PPTField.extends',
+    type: 'PPTTExtend',
+    name: 'Extends',
+};
+
 // freeze
+
 export const modelModel: PPTModel = {
     id: 'PPTModel',
     name: 'Basic Model XXX',
@@ -41,7 +48,7 @@ export const modelModel: PPTModel = {
         idField,
         nameField,
         tileField,
-        // fieldsField
+        fieldsField
     ]
 }
 
@@ -55,3 +62,45 @@ export const modelField: PPTModel = {
         tileField,
     ]
 }
+
+export const modelList: PPTModel = {
+    id: 'PPTList',
+    name: 'Basic List',
+    fields: [
+        idField,
+        // typeField,
+        nameField,
+        tileField,
+        // content
+    ]
+}
+
+export const modelItem: PPTModel = {
+    id: 'PPTItem',
+    name: 'Basic Item',
+    fields: [
+        idField,
+        // typeField,
+        nameField,
+        tileField,
+        // content
+    ]
+}
+
+export const modelItemInspector: PPTModel = {
+    id: 'PPTItemInspector',
+    name: 'Basic Item Inspector',
+    fields: [
+        idField,
+        // typeField,
+        nameField,
+        tileField,
+    ]
+}
+
+export const models = [
+    modelField,
+    modelModel,
+    modelList,
+    modelItem
+];

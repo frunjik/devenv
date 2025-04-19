@@ -7,22 +7,38 @@ import { ppt, PPTItem, PPTList } from '@ppt';
 import { PPTItemComponent } from './ppt/list/item/item.component';
 import { PPTListComponent } from './ppt/list/list/list.component';
 import { PPTListEditorComponent } from "./ppt/list/list-editor/list-editor.component";
+import { PPTBoxComponent } from "./ppt/box/box.component";
+import { CommonModule, NgStyle } from '@angular/common';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     imports: [
-    MatToolbar,
-    MatButtonModule,
-    // RouterOutlet,
-    PPTListComponent,
-    PPTListEditorComponent
-]
+
+        CommonModule,
+        MatToolbar,
+        MatButtonModule,
+        // RouterOutlet,
+
+        PPTBoxComponent,
+        PPTListComponent,
+        PPTListEditorComponent,
+        PPTBoxComponent
+    ],
+    providers: [
+        // NgStyle
+    ]
 })
 export class AppComponent {
     id = 1;
-    
+
+    boxStyle = {
+        width: '100px',
+        height: '100px',
+        "background-color": 'darkgray'
+    };
+
     title = 'Devenv';
 
     model = ppt.models['PPTField'];

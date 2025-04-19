@@ -4,10 +4,9 @@
     |
     <button mat-button (click)="edit()">EDIT</button>
 </mat-toolbar>
-<!-- <router-outlet></router-outlet> -->
 
-
-@for (item of items; track $index) {
-    <ppt-item [item]="item"></ppt-item>
+@if (editing()) {
+    <ppt-list-editor (cancel)="cancel()" (commit)="commit()" [list]="list"></ppt-list-editor>
+} @else {
+    <ppt-list [list]="list"></ppt-list>
 }
-

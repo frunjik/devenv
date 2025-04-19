@@ -6,12 +6,14 @@ import { PPTField, PPTModel } from '../../../../../../ppt/core';
 import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
 import { PPTFormModule } from 'src/app/ppt-form.module';
 import { modelField, modelModel } from '../../../../../../ppt/models';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'ppt-form',
     templateUrl: './ppt-form.component.html',
     styleUrl: './ppt-form.component.scss',
     imports: [
+        MatButtonModule,
         MatInputModule, 
         MatSelectModule,
         PPTFormModule,

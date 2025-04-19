@@ -3,4 +3,11 @@
     @for (field of model.fields; track $index) {
         <ppt-form-field [field]="field" [form]="form"></ppt-form-field>
     }
+
+    <div>
+        <button mat-button>OK</button>
+        <button mat-button>Cancel</button>
+    </div>
+
+    <pre>{{form.value | json}}</pre>
 </form>

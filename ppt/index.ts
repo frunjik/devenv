@@ -1,5 +1,5 @@
 import { version } from './ppt';
-import { PPTBase } from './core';
+import { PPTValue } from './core';
 import { modelField, modelModel, modelList, modelItem, modelItemInspector } from './models';
 
 // --- generate after this ?
@@ -13,7 +13,7 @@ const allModels = [
 ];
 
 // KeyedItems
-export const models: Record<string, PPTBase> = {};
+export const models: Record<string, PPTValue> = {};
 
 // OrderedItems
 allModels.forEach((model) => {

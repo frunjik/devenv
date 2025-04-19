@@ -2,11 +2,39 @@ import { Component } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PPTField, PPTModel } from '@ppt';
+import { ppt, PPTValue, PPTField, PPTModel } from '@ppt';
 import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
-import { PPTFormModule } from 'src/app/ppt-form.module';
-import { modelField, modelModel } from '../../../../../../ppt/models';
+import { PPTFormModule } from '../../../ppt-form.module';
 import { MatButtonModule } from '@angular/material/button';
+
+type PPTKeyedItems = Record<string, PPTValue>;
+type PPTOrderedItems = Array<PPTValue>;
+
+const pptIdentity = (o:any) => o;
+
+function pptConvertOrderedToKeyed(values: PPTOrderedItems, f: Function = pptIdentity): PPTKeyedItems {
+    const keyed: Record<string, PPTValue> = {};
+    values.forEach((item) => {
+        keyed[item.id] = f(item);
+    });
+    return keyed;
+}
+
+// function pptConvertKeyedToOrdered(values: PPTKeyedItems, f: Function = pptIdentity): PPTValue[] {
+//     return pptKeys(values).map((key) => f(values[key]));
+// }
+
+// function pptMap(items: PPTValue[], f: Function) {
+//     return items.map(f as any);
+// }
+
+// function pptKeys(items: PPTKeyedItems): string[] {
+//     return Object.keys(items);
+// }
+
+function createAngularFormControl(field: PPTField) {
+    return new FormControl();
+}
 
 @Component({
     selector: 'ppt-form',
@@ -22,19 +50,32 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class PPTFormComponent {
 
-    model = modelModel;
+    // make input
+    model: PPTModel = ppt.models['PPTModel'] as PPTModel;
 
-    form = this.createFormGroup(this.model);
+    // fields: PPTField[];
+
+
+    form = this.createFormGroup(this.model, this.model.fields);
 
     createFormField(field: PPTField) {
         return new FormControl(field.name)
     }
 
-    createFormGroup(model: PPTModel) {
-        const fields: any = {};
-        model.fields.forEach((field) => {
-            fields[field.id] = this.createFormField(field);
-        });
-        return new FormGroup(fields);
+    createFormGroup(model: PPTModel, fields: PPTField[]): FormGroup {
+        const f: any = pptConvertOrderedToKeyed(fields, createAngularFormControl);
+        return new FormGroup(f);
     }
+
+    // createFormControls(xfields: PPTField[]) {
+    //     const fields: any = {};
+    //     xfields.forEach((field) => {
+    //         fields[field.id] = this.createFormField(field);
+    //     });
+    //     return new FormGroup(fields);
+    // }
+
+    // createFormControl(_field: PPTField) {
+    //     return new FormControl();
+    // }
 }

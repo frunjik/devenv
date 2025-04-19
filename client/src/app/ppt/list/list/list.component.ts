@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { PPTList } from '@ppt';
 
 @Component({
-  selector: 'app-list',
-  imports: [],
-  templateUrl: './list.component.html',
-  styleUrl: './list.component.scss'
+    selector: 'ppt-list',
+    imports: [],
+    templateUrl: './list.component.html',
+    styleUrl: './list.component.scss'
 })
-export class ListComponent {
-
+export class PPTListComponent {
+    list = input.required<PPTList>();
 }

@@ -1,4 +1,13 @@
 <mat-toolbar>
-    <button mat-button (click)="create()">NEW</button>
+    <button mat-button (click)="insertList()">LIST</button>
+    <button disabled mat-button (click)="insertItem()">ITEM</button>
+    |
+    <button mat-button (click)="edit()">EDIT</button>
 </mat-toolbar>
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet> -->
+
+
+@for (item of items; track $index) {
+    <ppt-item [item]="item"></ppt-item>
+}
+

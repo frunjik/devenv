@@ -26,6 +26,9 @@
     "paths": {
       "@shared": [
         "../server/src/shared"
+      ],
+      "@ppt": [
+        "../ppt"
       ]
     }
   },

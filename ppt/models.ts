@@ -42,7 +42,7 @@ const extendsField: PPTField = {
 
 export const modelModel: PPTModel = {
     id: 'PPTModel',
-    name: 'Basic Model XXX',
+    name: 'Basic Model',
     // tite: '',
     fields: [
         idField,
@@ -98,9 +98,17 @@ export const modelItemInspector: PPTModel = {
     ]
 }
 
-export const models = [
+const allModels = [
     modelField,
     modelModel,
     modelList,
-    modelItem
+    modelItem,
+    modelItemInspector
 ];
+
+export const models: Record<string, any> = {};
+
+allModels.forEach((model) => {
+    models[model.id] = model;
+});
+

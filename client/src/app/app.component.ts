@@ -3,8 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbar } from '@angular/material/toolbar';
 
-import { ppt } from '../../../ppt';
-import { PPTField } from '../../../ppt/core';
+import { ppt } from '@ppt';
 
 @Component({
     selector: 'app-root',
@@ -19,15 +18,15 @@ import { PPTField } from '../../../ppt/core';
 export class AppComponent {
     title = 'Devenv';
 
-    model = ppt.models.modelField;
+    model = ppt.models['PPTField'];
 
-    field: PPTField = {
-        id: 'test',
-        type: 'test',
-        name: 'test'
-    }
+    // field: PPTField = {
+    //     id: 'test',
+    //     type: 'test',
+    //     name: 'test'
+    // }
 
-    count: WritableSignal<number> = signal(0);
+    // count: WritableSignal<number> = signal(0);
 
     create() {
     }

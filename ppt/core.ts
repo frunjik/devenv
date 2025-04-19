@@ -8,7 +8,23 @@ export interface PPTModel {
 export interface PPTField {
     id: string;
     type: PPTModel | string;
-    // type: string;
     name: string;
     title?: string;
+};
+
+// --- generate after this ?
+
+export interface PPTItem {
+    id: string;
+    type: PPTModel | string;
+    name: string;
+    title?: string;
+};
+
+export interface PPTList {
+    id: string;
+    type: PPTModel | string;
+    name: string;
+    title?: string;
+    items: PPTItem[];
 };

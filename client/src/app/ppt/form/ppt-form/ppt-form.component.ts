@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup } from '@angular/forms';
-import { PPTField, PPTModel } from '../../../../../../ppt/core';
+import { PPTField, PPTModel } from '@ppt';
 import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
 import { PPTFormModule } from 'src/app/ppt-form.module';
 import { modelField, modelModel } from '../../../../../../ppt/models';

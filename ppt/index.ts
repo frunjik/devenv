@@ -1,37 +1,25 @@
-// import { PPTField, PPTModel } from './core';
-import { models } from './models';
 import { version } from './ppt';
-
-// moved from ./core (for now - until i figure out how the import works)
-export interface PPTModel {
-    id: string;
-    name: string;
-    title?: string;
-    fields: PPTField[];
-};
-
-export interface PPTField {
-    id: string;
-    type: PPTModel | string;
-    name: string;
-    title?: string;
-};
+import { PPTBase } from './core';
+import { modelField, modelModel, modelList, modelItem, modelItemInspector } from './models';
 
 // --- generate after this ?
 
-export interface PPTItem {
-    id: string;
-    type: PPTModel | string;
-    name: string;
-    title?: string;
-};
+const allModels = [
+    modelField,
+    modelModel,
+    modelList,
+    modelItem,
+    modelItemInspector
+];
 
-export interface PPTList {
-    id: string;
-    type: PPTModel | string;
-    name: string;
-    title?: string;
-    items: PPTItem[];
-};
+// KeyedItems
+export const models: Record<string, PPTBase> = {};
 
+// OrderedItems
+allModels.forEach((model) => {
+    models[model.id] = model;
+});
+
+
+export * from './core';
 export const ppt = { version, models };

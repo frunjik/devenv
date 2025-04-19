@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { PPTItem } from '../../../../../../ppt/core';
+import { PPTItem } from '@ppt';
 
 @Component({
     selector: 'ppt-item',

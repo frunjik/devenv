@@ -1,4 +1,4 @@
-import {PPTField, PPTModel} from './core';
+import { PPTField, PPTModel } from './core';
 // TODO: Generate
 // everyting after this from its own descriptions below
 
@@ -43,10 +43,12 @@ const extendsField: PPTField = {
 export const modelModel: PPTModel = {
     id: 'PPTModel',
     name: 'Basic Model',
+    type: 'Model',
     // tite: '',
     fields: [
         idField,
         nameField,
+        typeField,
         tileField,
         fieldsField
     ]
@@ -55,6 +57,7 @@ export const modelModel: PPTModel = {
 export const modelField: PPTModel = {
     id: 'PPTField',
     name: 'Basic Field',
+    type: 'Field',
     fields: [
         idField,
         typeField,
@@ -66,9 +69,10 @@ export const modelField: PPTModel = {
 export const modelList: PPTModel = {
     id: 'PPTList',
     name: 'Basic List',
+    type: 'List',
     fields: [
         idField,
-        // typeField,
+        typeField,
         nameField,
         tileField,
         // content
@@ -78,9 +82,10 @@ export const modelList: PPTModel = {
 export const modelItem: PPTModel = {
     id: 'PPTItem',
     name: 'Basic Item',
+    type: 'Item',
     fields: [
         idField,
-        // typeField,
+        typeField,
         nameField,
         tileField,
         // content
@@ -90,14 +95,16 @@ export const modelItem: PPTModel = {
 export const modelItemInspector: PPTModel = {
     id: 'PPTItemInspector',
     name: 'Basic Item Inspector',
+    type: 'Inspector',
     fields: [
         idField,
-        // typeField,
+        typeField,
         nameField,
         tileField,
     ]
 }
 
+// move to index ???
 const allModels = [
     modelField,
     modelModel,

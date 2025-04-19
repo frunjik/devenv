@@ -1,29 +1,31 @@
-export interface PPTModel {
+export type PPTType = string;
+
+export interface PPTBase {
     id: string;
+    type: PPTModel | PPTType;
+}
+
+// description
+export interface PPTField extends PPTBase {
+    name: string;
+    title?: string;
+};
+
+export interface PPTModel extends PPTBase {
     name: string;
     title?: string;
     fields: PPTField[];
 };
 
-export interface PPTField {
-    id: string;
-    type: PPTModel | string;
+// // --- generate after this ?
+
+// instance
+export interface PPTItem extends PPTBase {
     name: string;
     title?: string;
 };
 
-// --- generate after this ?
-
-export interface PPTItem {
-    id: string;
-    type: PPTModel | string;
-    name: string;
-    title?: string;
-};
-
-export interface PPTList {
-    id: string;
-    type: PPTModel | string;
+export interface PPTList extends PPTBase {
     name: string;
     title?: string;
     items: PPTItem[];

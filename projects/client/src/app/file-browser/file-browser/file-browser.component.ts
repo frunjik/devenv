@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { BackendService } from '../../backend.service';
 // import { FolderEntry } from '@ppt/services';
 import { FormsModule } from '@angular/forms';
@@ -34,11 +34,12 @@ type FolderEntry = any;
         // SearchInputComponent,
         FolderEntriesComponent,
         FileEditorComponent
-    ]
+    ],
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileBrowserComponent {
-    filename: string = '';
-    pathname: string = '';
+    filename = signal<string>('');
+    pathname = signal<string>('');
 
     filterText: string = '';
     fileContent: string = '';
@@ -47,7 +48,7 @@ export class FileBrowserComponent {
     folderEntries: FolderEntry[] = [];
 
     get folderNames(): string[] {
-        return this.pathname.split('/');
+        return this.pathname().split('/');
     }
 
     get filteredEntries(): FolderEntry[] {
@@ -60,11 +61,11 @@ export class FileBrowserComponent {
     }
 
     constructor(private backend: BackendService) {
-        this.showFolder(this.pathname);
+        this.showFolder(this.pathname());
     }
 
     clickFileOrFolder(entry: FolderEntry) {
-        const name = this.pathname + '/' + entry.filename;
+        const name = this.pathname() + '/' + entry.filename;
         if (entry.isFolder) {
             this.showFolder(name);
         } else {
@@ -82,14 +83,14 @@ export class FileBrowserComponent {
     }
 
     private showFile(filename: string) {
-        this.filename = filename;
+        this.filename.set(filename);
         this.backend
             .loadFile(filename)
             .subscribe((fileContent) => (this.fileContent = fileContent));
     }
 
     private showFolder(pathname: string) {
-        this.pathname = pathname;
+        this.pathname.set(pathname);
         this.backend
             .loadFolder(pathname)
             .subscribe((folderEntries) => (this.folderEntries = folderEntries));

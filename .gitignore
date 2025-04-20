@@ -5,6 +5,8 @@ dist
 tmp
 coverage
 
+# Private Scratch files
+./scratch
 
 # Node
 node_modules

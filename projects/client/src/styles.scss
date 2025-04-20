@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 98%;
+    // background-color: #80668c;
+    // background-color: #240c2f;
+
+    background-color: #a1a15e;
+    color: black;
+
+    margin: 0px;
+    border-style: border;
+}
+
+body {
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// var(--mat-text-button-touch-target-display, block)

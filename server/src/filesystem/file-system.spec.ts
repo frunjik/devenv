@@ -1,8 +1,8 @@
-import { PPTFileSystemService } from '../ppt/services/file-system/file-system.service';
+import { PPTFileSystem } from '../ppt/services/file-system/file-system';
 
 describe('', () => {
     it('', () => {
-        const fs = new PPTFileSystemService();
+        const fs = new PPTFileSystem();
         expect(fs).toBeDefined();
     });
 });

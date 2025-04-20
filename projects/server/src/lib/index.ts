@@ -23,7 +23,7 @@ function run(root: string, port: number) {
 
 try {
 
-    const root = '../';
+    const root = './';
     const port = 3000;
     
     run(root, port);

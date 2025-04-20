@@ -1,3 +1,2 @@
-@REM ng build server
-@ECHO Dont forget to build first !!!
+call ./build-server.bat
 node dist\server\fesm2022\server.mjs

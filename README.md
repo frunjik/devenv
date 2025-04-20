@@ -7,27 +7,32 @@
 
 ### Server
 ```
-cd server
-npm start
+start-server.bat
 ```
 
 ### Client
 ```
-cd client
-npm start
+start-client.bat
 ```
 
-## Install
+## Build
+
+### All -  shared, server, client
+```
+build-all.bat
+```
+
+### Shared
+```
+build-shared.bat
+```
 
 ### Server
 ```
-cd server
-npm ci
+build-server.bat
 ```
 
 ### Client
 ```
-cd client
-npm ci
+build-client.bat
 ```
-

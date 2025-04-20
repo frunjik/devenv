@@ -1,0 +1,21 @@
+@use 'sass:meta';
+/* You can add global styles to this file, and also import other style files */
+//@use './assets/mixins';
+// @use '@angular/material/prebuilt-themes/indigo-pink.css';
+// @use '@angular/material/prebuilt-themes/azure-blue.css';
+// @use '@angular/material/prebuilt-themes/cyan-orange.css';
+// @use '@angular/material/prebuilt-themes/deeppurple-amber.css';
+// @use '@angular/material/prebuilt-themes/magenta-violet.css';
+// @use '@angular/material/prebuilt-themes/purple-green.css';
+// @use '@angular/material/prebuilt-themes/rose-red.css';
+@use '@angular/material/prebuilt-themes/pink-bluegrey.css';
+
+html,
+body {
+    height: 100%;
+    margin: 0px;
+    border-style: border;
+}
+body {
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+}

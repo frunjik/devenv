@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { AfterViewInit, Component, signal } from '@angular/core';
 import { BackendService } from '../../backend.service';
 import { PPTFolderEntry } from '@ppt';
 import { FormsModule } from '@angular/forms';
@@ -35,7 +35,7 @@ import { MatIconModule } from '@angular/material/icon';
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileBrowserComponent {
+export class FileBrowserComponent implements AfterViewInit {
     filename = signal<string>('');
     pathname = signal<string>('');
 
@@ -59,6 +59,9 @@ export class FileBrowserComponent {
     }
 
     constructor(private backend: BackendService) {
+    }
+    
+    ngAfterViewInit(): void {
         this.showFolder(this.pathname());
     }
 

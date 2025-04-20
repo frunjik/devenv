@@ -13,10 +13,10 @@ import { BackendService } from './backend.service';
     styleUrl: './app.component.scss'
 })
 export class AppComponent {
-    title = 'client';
+    title = 'DevEnv';
     
-    bs = inject(BackendService)
-
+    constructor(public bs: BackendService) {
+    }
 
     get host(): string {
         return this.bs.host;

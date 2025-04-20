@@ -13,6 +13,11 @@ describe('PPTListEditorComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(PPTListEditorComponent);
+
+    fixture.componentRef.setInput('list', {
+        items: []
+    });
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

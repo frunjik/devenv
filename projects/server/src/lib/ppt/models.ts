@@ -3,7 +3,7 @@ import { PPTField, PPTModel } from './core';
 // everyting after this from its own descriptions below
 
 const idField: PPTField = {
-    id: 'PPTField.id',
+    id: '___PPTField.id',
     type: 'string',
     name: 'Unique ID',
 };

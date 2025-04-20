@@ -3,37 +3,37 @@ import { PPTField, PPTModel } from './core';
 // everyting after this from its own descriptions below
 
 const idField: PPTField = {
-    id: 'PPTField.id',
+    id: 'PPTField_id',
     type: 'string',
     name: 'Unique ID',
 };
 
 const nameField: PPTField = {
-    id: 'PPTField.name',
+    id: 'PPTField_name',
     type: 'string',
     name: 'Name',
 };
 
 const typeField: PPTField = {
-    id: 'PPTField.type',
+    id: 'PPTField_type',
     type: 'string',
     name: 'Type',
 };
 
 const tileField: PPTField = {
-    id: 'PPTField.title',
+    id: 'PPTField_title',
     type: 'string',
     name: 'Title',
 };
 
 const fieldsField: PPTField = {
-    id: 'PPTField.fields',
+    id: 'PPTField_fields',
     type: 'PPTField[]',
     name: 'Fields',
 };
 
 // const extendsField: PPTField = {
-//     id: 'PPTField.extends',
+//     id: 'PPTField_extends',
 //     type: 'PPTTExtend',
 //     name: 'Extends',
 // };

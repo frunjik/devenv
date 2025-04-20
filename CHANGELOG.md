@@ -8,7 +8,7 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 # 0.0.2 2023-03-05 Cleanup
 
 ### Added
-- v0.0.2 - setup mono repo
+- v0.0.2 - setup angular workspace (WIP)
 - v0.0.2 - root .gitnore file
 
 ### Changed

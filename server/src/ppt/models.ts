@@ -32,13 +32,11 @@ const fieldsField: PPTField = {
     name: 'Fields',
 };
 
-const extendsField: PPTField = {
-    id: 'PPTField.extends',
-    type: 'PPTTExtend',
-    name: 'Extends',
-};
-
-// freeze
+// const extendsField: PPTField = {
+//     id: 'PPTField.extends',
+//     type: 'PPTTExtend',
+//     name: 'Extends',
+// };
 
 export const modelModel: PPTModel = {
     id: 'PPTModel',
@@ -103,19 +101,3 @@ export const modelItemInspector: PPTModel = {
         tileField,
     ]
 }
-
-// move to index ???
-const allModels = [
-    modelField,
-    modelModel,
-    modelList,
-    modelItem,
-    modelItemInspector
-];
-
-export const models: Record<string, any> = {};
-
-allModels.forEach((model) => {
-    models[model.id] = model;
-});
-

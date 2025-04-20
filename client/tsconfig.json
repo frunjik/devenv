@@ -28,7 +28,7 @@
         "../server/src/shared"
       ],
       "@ppt": [
-        "../ppt"
+        "../server/src/ppt"
       ]
     }
   },

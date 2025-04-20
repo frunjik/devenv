@@ -48,4 +48,9 @@ export class FileEditorComponent {
                 next: (data) => { ; }
             });
     }
+
+    onEditorInit(editorComponent: any) {
+        // bind Ctrl-S ?
+    }
+
 }

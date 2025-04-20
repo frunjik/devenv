@@ -1,14 +1,10 @@
 # Todo 
 
-
 - FIX BUG set name on click !!!
-
 
 - model
 - field
 - test !!!
-- 
-
 
 - understand how styling works
 - theming - https://material.angular.io/components/form-field/overview#theming
@@ -25,6 +21,11 @@
 
 - keep changed state of editor
 
+
+- model
+- field
+
+- test !!!
 
 - add header and toolbar
 - show name of server in header

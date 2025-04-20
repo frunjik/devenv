@@ -3,6 +3,10 @@
 # Compiled output
 dist
 tmp
+coverage
+
+# Private Scratch files
+./scratch
 
 # Private Scratch Files
 ./scratch

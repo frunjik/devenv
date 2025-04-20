@@ -1,0 +1,17 @@
+{
+    "preset": "ts-jest",
+    "collectCoverage": true,
+    "collectCoverageFrom": ["src/**/*.{ts,tsx}"],
+    "modulePathIgnorePatterns": ["<rootDir>/dist/", "src/index.ts"],
+    "testEnvironment": "node",
+    "moduleDirectories": ["node_modules", "src"],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "extensionsToTreatAsEsm": [".ts"],
+    "verbose": true,
+    "transform": {
+        "^.+\\.ts?$": ["babel-jest"]
+    },
+    "moduleNameMapper": {
+        "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
+}

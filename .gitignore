@@ -6,6 +6,7 @@ tmp
 coverage
 /out-tsc
 /bazel-out
+.angular
 
 # Private Scratch files
 ./scratch

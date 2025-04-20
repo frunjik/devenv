@@ -4,11 +4,13 @@ import { FileBrowserComponent } from './file-browser/file-browser/file-browser.c
 
 export const routes: Routes = [
     {
-        path: '',
+        path: 'main',
         component: MainComponent
     },
     {
+
         path: 'ppt/browse',
         component: FileBrowserComponent
-    }
+    },
+    { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

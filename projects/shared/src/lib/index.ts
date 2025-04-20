@@ -2,6 +2,10 @@ import { version } from './ppt';
 import { PPTValue } from './core';
 import { modelField, modelModel, modelList, modelItem, modelItemInspector } from './models';
 
+export * from './core';
+export * from './response';
+export * from './services/file-system/types';
+
 // --- generate after this ?
 
 const allModels = [
@@ -19,9 +23,6 @@ export const models: Record<string, PPTValue> = {};
 allModels.forEach((model) => {
     models[model.id] = model;
 });
-
-
-export * from './core';
 
 // only export what can be shared between client and server
 // export * from './services/file-system/file-system.service';

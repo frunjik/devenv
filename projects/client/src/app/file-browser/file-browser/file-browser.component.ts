@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { BackendService } from '../../backend.service';
-// import { FolderEntry } from '@ppt/services';
+import { PPTFolderEntry } from '@ppt';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -13,8 +13,6 @@ import { FileEditorComponent } from '../../file-editor/file-editor.component';
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input'; 
 import { MatIconModule } from '@angular/material/icon';
-
-type FolderEntry = any;
 
 @Component({
     selector: 'app-file-browser',
@@ -45,13 +43,13 @@ export class FileBrowserComponent {
     fileContent: string = '';
     editorOptions = { theme: 'vs-dark', language: 'typescript' };
 
-    folderEntries: FolderEntry[] = [];
+    folderEntries: PPTFolderEntry[] = [];
 
     get folderNames(): string[] {
         return this.pathname().split('/');
     }
 
-    get filteredEntries(): FolderEntry[] {
+    get filteredEntries(): PPTFolderEntry[] {
         const filterText = this.filterText.trim();
         return !filterText
             ? this.folderEntries
@@ -64,7 +62,7 @@ export class FileBrowserComponent {
         this.showFolder(this.pathname());
     }
 
-    clickFileOrFolder(entry: FolderEntry) {
+    clickFileOrFolder(entry: PPTFolderEntry) {
         const name = this.pathname() + '/' + entry.filename;
         if (entry.isFolder) {
             this.showFolder(name);

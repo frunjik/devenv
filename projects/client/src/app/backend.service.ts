@@ -4,11 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-// import { SuccessResponseBody, FolderEntry } from '@shared';
-
-type SuccessResponseBody<T> = any;
-type FolderEntry = any;
-
+import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
 
 @Injectable({
     providedIn: 'root',
@@ -44,8 +40,8 @@ export class BackendService {
             );
     }
 
-    loadFolder(pathname: string): Observable<FolderEntry[]> {
-        return this.get<FolderEntry[]>(`folders?path=${pathname}`)
+    loadFolder(pathname: string): Observable<PPTFolderEntry[]> {
+        return this.get<PPTFolderEntry[]>(`folders?path=${pathname}`)
             .pipe(
                 catchError(err => {
                     this.logError(`loadFolder("${pathname}")`, err);
@@ -72,6 +68,4 @@ export class BackendService {
                 map(data => data.data),
             );
     }
-
-
 }

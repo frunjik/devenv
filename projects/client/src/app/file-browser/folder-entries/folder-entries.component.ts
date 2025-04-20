@@ -1,9 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
 import {NgFor} from '@angular/common';
-// import {FolderEntry} from '@shared';
-
-type FolderEntry = any;
+import {PPTFolderEntry} from '@ppt';
 
 @Component({
     selector: 'app-folder-entries',
@@ -14,16 +12,16 @@ type FolderEntry = any;
 })
 export class FolderEntriesComponent {
     @Input()
-    entries: FolderEntry[] = [];
+    entries: PPTFolderEntry[] = [];
 
     @Output()
     clickFileOrFolder = new EventEmitter();
 
-    get files(): FolderEntry[] {
+    get files(): PPTFolderEntry[] {
         return this.entries?.filter((e) => !e.isFolder) ?? [];
     }
 
-    get folders(): FolderEntry[] {
+    get folders(): PPTFolderEntry[] {
         return this.entries?.filter((e) => e.isFolder) ?? [];
     }
 }

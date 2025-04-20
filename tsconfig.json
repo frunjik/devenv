@@ -19,7 +19,13 @@
         "./dist/server"
       ],
       "shared": [
-        "./dist/shared"
+        "./dist/shared/"
+      ],
+      "@shared": [
+        "./dist/shared/"
+      ],
+      "@ppt": [
+        "./dist/shared/"
       ]
     },
     "importHelpers": true,

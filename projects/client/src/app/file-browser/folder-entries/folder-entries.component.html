@@ -1,0 +1,16 @@
+<div
+    class="row"
+    *ngFor="let entry of folders"
+    (click)="clickFileOrFolder.emit(entry)"
+>
+    <mat-icon>folder</mat-icon>
+    <span>{{ entry.filename }}</span>
+</div>
+<div
+    class="row"
+    *ngFor="let entry of files"
+    (click)="clickFileOrFolder.emit(entry)"
+>
+    <mat-icon>note</mat-icon>
+    <span>{{ entry.filename }}</span>
+</div>

@@ -15,3 +15,7 @@
 - fix content edit bugs
 - sizer / splitter
 
+
+```
+ppt-form.component.ts:67 FormGroup keys cannot include `.`, please replace the keys for: PPTField.id,PPTField.name,PPTField.type,PPTField.title,PPTField.fields.
+```

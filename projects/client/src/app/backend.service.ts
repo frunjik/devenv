@@ -1,20 +1,24 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-import { SuccessResponseBody } from '@shared';
-import { FolderEntry } from '@ppt';
+// import { SuccessResponseBody, FolderEntry } from '@shared';
+
+type SuccessResponseBody<T> = any;
+type FolderEntry = any;
+
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class BackendService {
 
     private defaultHost = 'http://localhost:3000/';
+    private httpservice = inject(HttpClient);
 
-    constructor(private httpservice: HttpClient) { }
+    constructor() { }
 
     get host(): string {
         return (((window as unknown) as any).host) ?? this.defaultHost

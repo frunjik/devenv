@@ -1,0 +1,36 @@
+<div class="container">
+    <div class="col">
+
+        <div>
+            <span *ngFor="let foldername of folderNames; let i = index">
+                <span *ngIf="i > 0">/</span>
+                <button style="color: black" mat-button (click)="clickPath(i)">{{ foldername || "." }}</button>
+            </span>
+        </div>
+        <!-- <app-search-input
+    (textChange)="searchTextChange($event)"
+    [initialValue]="filterText"
+    label="Filter..."
+    placeHolder=""
+    ></app-search-input> -->
+
+        <div class="folders">
+            <app-folder-entries [entries]="filteredEntries"
+                (clickFileOrFolder)="clickFileOrFolder($event)"></app-folder-entries>
+        </div>
+    </div>
+    <div>
+        <!-- <mat-form-field>
+                <input matInput type="search">
+                <button matSuffix mat-icon-button aria-label="Search">
+                    <mat-icon>search</mat-icon>
+                </button>
+            </mat-form-field> -->
+    </div>
+
+    <div class="files" *ngIf="!!fileContent">
+        <div style="height: 93vh">
+            <app-file-editor [filename]="filename" [fileContent]="fileContent"></app-file-editor>
+        </div>
+    </div>
+</div>

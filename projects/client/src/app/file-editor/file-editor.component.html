@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+    <button (click)="loadFile()" mat-button>load</button>
+    <span class="example-spacer"></span>
+    <span contenteditable (input)="setFilename($event)">{{filename}}</span>
+    <span class="example-spacer"></span>
+    <button (click)="saveFile()" mat-button>save</button>
+</mat-toolbar>
+
+<div style="height: 95%; width: 100%;">
+    <ngx-monaco-editor style="height: 100%" [options]="editorOptions" [(ngModel)]="fileContent"></ngx-monaco-editor>
+</div>

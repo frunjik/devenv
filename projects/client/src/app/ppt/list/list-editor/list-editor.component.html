@@ -1,0 +1,8 @@
+<mat-toolbar>LIST EDITOR</mat-toolbar>
+
+<ppt-list [list]="list()"></ppt-list>
+
+<div>
+    <button (click)="commit.emit()" mat-button>OK</button>
+    <button (click)="cancel.emit()" mat-button>Cancel</button>
+</div>

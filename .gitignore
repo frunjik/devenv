@@ -8,11 +8,8 @@ coverage
 /bazel-out
 .angular
 
-# Private Scratch files
-./scratch
-
 # Private Scratch Files
-./scratch
+scratch
 
 # Node
 node_modules

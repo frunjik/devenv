@@ -30,7 +30,7 @@
 
     <div class="files" *ngIf="!!fileContent">
         <div style="height: 93vh">
-            <app-file-editor [filename]="filename" [fileContent]="fileContent"></app-file-editor>
+            <app-file-editor [filename]="filename()" [fileContent]="fileContent"></app-file-editor>
         </div>
     </div>
 </div>

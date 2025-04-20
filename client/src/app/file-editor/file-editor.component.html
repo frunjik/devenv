@@ -7,5 +7,5 @@
 </mat-toolbar>
 
 <div style="height: 95%; width: 100%;">
-    <ngx-monaco-editor style="height: 100%" [options]="editorOptions" [(ngModel)]="fileContent"></ngx-monaco-editor>
+    <ngx-monaco-editor #monacoEditor style="height: 100%" [options]="editorOptions" [(ngModel)]="fileContent" (onInit)="onEditorInit($event)"></ngx-monaco-editor>
 </div>

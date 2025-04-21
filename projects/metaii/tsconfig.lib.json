@@ -7,12 +7,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
-    "types": [],
-    "paths": {
-        "@ppt": [
-            "../../dist/ppt/"
-        ]
-    },
+    "types": []
   },
   "exclude": [
     "**/*.spec.ts"

@@ -60,21 +60,21 @@ export class PPTMetaiiComponent {
     });
 
     compile() {
-        const form = this.form;
-        const i = form.value.input ?? '';
-        const p = form.value.program ?? '';
+        const i = this.inputControl.value ?? '';
+        const p = this.programControl.value ?? '';
 
-        try {
-            this.outputControl.setValue(this.metaii.compile(i, p));
-        } catch(e) {
-            alert(e);
+        if (p.length && i.length) {
+            try {
+                this.outputControl.setValue(this.metaii.compile(i, p));
+            } catch(e) {
+                alert(e);
+            }
         }
     }
 
     compare() {
-        const form = this.form;
-        const p = (form.value.program ?? '');
-        const o = (form.value.output ?? '');
+        const p = this.programControl.value;
+        const o = this.outputControl.value;
         alert(
             (p === o) ?
             'OK' : 'NO'
@@ -82,7 +82,7 @@ export class PPTMetaiiComponent {
     }
 
     copy() {
-        this.programControl.setValue((this.form.value.output ?? ''));
+        this.programControl.setValue(this.outputControl.value);
     }
 
     clear() {

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
+import { PPTFolderEntry, PPTResult } from '@ppt';
 
 @Injectable({
     providedIn: 'root',
@@ -66,16 +66,16 @@ export class BackendService {
     }
 
     private get<T>(resource: string): Observable<T> {
-        return this.httpservice.get<SuccessResponseBody<T>>(this.host + resource)
+        return this.httpservice.get<PPTResult<T>>(this.host + resource)
             .pipe(
-                map(data => data.data),
+                map(data => data.success!),
             );
     }
 
     private post<T>(resource: string, data: any): Observable<T> {
-        return this.httpservice.post<SuccessResponseBody<T>>(this.host + resource, data)
+        return this.httpservice.post<PPTResult<T>>(this.host + resource, data)
             .pipe(
-                map(data => data.data),
+                map(data => data.success!),
             );
     }
 }

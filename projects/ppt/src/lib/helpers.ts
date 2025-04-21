@@ -1,3 +1,5 @@
+import { PPTFailureResult } from "./types";
+
 // safely handles circular references
 export const safeStringify = (obj: any, indent = 2) => {
     const cache: string[] = [];
@@ -61,3 +63,18 @@ export function nth(a: any, n: number): any {
 export function last(a: any): any {
     return (isArray(a) || isString(a)) ? a[a.length - 1] : undefined
 }
+
+
+
+export function createFailureResult(code: string, message: string): PPTFailureResult {
+    return {
+        failure: [
+            {
+                code,
+                message
+            }
+        ]
+    };
+}
+
+

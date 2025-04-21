@@ -1,9 +1,11 @@
-export interface SuccessResponseBody<T> {
-    data: T;
-}
+// use PPTResult
 
-export interface FailureResponseBody {
-    error: {
-        message: string;
-    };
-}
+// export interface SuccessResponseBody<T> {
+//     data: T;
+// }
+
+// export interface FailureResponseBody {
+//     error: {
+//         message: string;
+//     };
+// }

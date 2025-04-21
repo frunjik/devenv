@@ -1,14 +1,11 @@
 <mat-toolbar color="primary">
     PPT - {{host}}
-    |
     <nav>
-        <a href="/">Main</a>
-        |
-        <a href="/ppt/browse">Browse</a>
-        |
-        <a href="/ppt/js">Workspace JS</a>
-        |
-        <a href="/ppt/metaii">Workspace MetaII</a>
+
+        @for(link of navLinks; track $index) {
+            |
+            <a href="{{link.url}}">{{link.name}}</a>
+        }
     </nav>
 
 

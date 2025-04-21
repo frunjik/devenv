@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, input, Signal } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -16,6 +16,14 @@ function pptConvertOrderedToKeyed(values: PPTOrderedItems, f: Function = pptIden
     const keyed: Record<string, PPTValue> = {};
     values.forEach((item) => {
         keyed[item.id] = f(item);
+    });
+    return keyed;
+}
+
+function pptConvertOrderedToNamed(values: PPTOrderedItems, f: Function = pptIdentity): PPTKeyedItems {
+    const keyed: Record<string, PPTValue> = {};
+    values.forEach((item) => {
+        keyed[item.name] = f(item);
     });
     return keyed;
 }
@@ -51,19 +59,14 @@ function createAngularFormControl(field: PPTField) {
 export class PPTFormComponent {
 
     // make input
-    model: PPTModel = ppt.models['PPTModel'] as PPTModel;
-
-    // fields: PPTField[];
-
-
-    form = this.createFormGroup(this.model, this.model.fields);
-
-    createFormField(field: PPTField) {
-        return new FormControl(field.name)
-    }
+    model = input<PPTModel>(ppt.models['PPTModel'] as PPTModel);
+    form: Signal<FormGroup> = computed(() => this.createFormGroup(this.model(), this.model().fields));
 
     createFormGroup(model: PPTModel, fields: PPTField[]): FormGroup {
         const f: any = pptConvertOrderedToKeyed(fields, createAngularFormControl);
+
+        console.log(f);
+
         return new FormGroup(f);
     }
 

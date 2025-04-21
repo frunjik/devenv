@@ -36,6 +36,7 @@ import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/fo
     exports: [
         CommonModule,
         ReactiveFormsModule,
+        MatFormFieldModule, 
         // MatFormFieldModule, 
         // MatLabel,
         // MatFormField,

@@ -1,7 +1,6 @@
-<form [formGroup]="form">
-    <h2>New {{model.name}}</h2>
-    @for (field of model.fields; track $index) {
-        <ppt-form-field [field]="field" [form]="form"></ppt-form-field>
+<form [formGroup]="form()">
+    @for (field of model().fields; track $index) {
+        <ppt-form-field [field]="field" [form]="form()"></ppt-form-field>
     }
 </form>
 <div>

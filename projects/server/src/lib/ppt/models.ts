@@ -3,33 +3,33 @@ import { PPTField, PPTModel } from './core';
 // everyting after this from its own descriptions below
 
 const idField: PPTField = {
-    id: '___PPTField.id',
+    id: 'PPTIDField',
     type: 'string',
-    name: 'Unique ID',
+    name: 'id',
 };
 
 const nameField: PPTField = {
-    id: 'PPTField.name',
+    id: 'PPTNameField',
     type: 'string',
-    name: 'Name',
+    name: 'name',
 };
 
 const typeField: PPTField = {
-    id: 'PPTField.type',
+    id: 'PPTTypeField',
     type: 'string',
-    name: 'Type',
+    name: 'type',
 };
 
 const tileField: PPTField = {
-    id: 'PPTField.title',
+    id: 'PPTTitleField',
     type: 'string',
-    name: 'Title',
+    name: 'title',
 };
 
 const fieldsField: PPTField = {
-    id: 'PPTField.fields',
+    id: 'PPTFieldsField',
     type: 'PPTField[]',
-    name: 'Fields',
+    name: 'fields',
 };
 
 // const extendsField: PPTField = {
@@ -40,9 +40,9 @@ const fieldsField: PPTField = {
 
 export const modelModel: PPTModel = {
     id: 'PPTModel',
-    name: 'Basic Model',
+    name: 'model',
     type: 'Model',
-    // tite: '',
+    title: 'Basic Model',
     fields: [
         idField,
         nameField,
@@ -54,8 +54,8 @@ export const modelModel: PPTModel = {
 
 export const modelField: PPTModel = {
     id: 'PPTField',
-    name: 'Basic Field',
-    type: 'Field',
+    name: 'field',
+    type: 'Bacic Field',
     fields: [
         idField,
         typeField,
@@ -66,8 +66,9 @@ export const modelField: PPTModel = {
 
 export const modelList: PPTModel = {
     id: 'PPTList',
-    name: 'Basic List',
+    name: 'list',
     type: 'List',
+    title: 'Basic List',
     fields: [
         idField,
         typeField,
@@ -79,8 +80,9 @@ export const modelList: PPTModel = {
 
 export const modelItem: PPTModel = {
     id: 'PPTItem',
-    name: 'Basic Item',
+    name: 'item',
     type: 'Item',
+    title: 'Basic Item',
     fields: [
         idField,
         typeField,
@@ -92,7 +94,7 @@ export const modelItem: PPTModel = {
 
 export const modelItemInspector: PPTModel = {
     id: 'PPTItemInspector',
-    name: 'Basic Item Inspector',
+    name: 'inspector',
     type: 'Inspector',
     fields: [
         idField,

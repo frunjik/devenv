@@ -9,10 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 @Component({
     selector: 'ppt-form-field',
     imports: [
-        MatInputModule, 
-        // MatSelectModule,
         PPTFormModule,
-        MatFormFieldModule, 
+        MatInputModule, 
     ],
     templateUrl: './ppt-form-field.component.html',
     styleUrl: './ppt-form-field.component.scss'

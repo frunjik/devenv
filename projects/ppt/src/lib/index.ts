@@ -1,6 +1,6 @@
 import { version } from './ppt';
 import { PPTValue } from './core';
-import { modelField, modelModel, modelList, modelItem, modelItemInspector } from './models';
+import { modelField, modelModel, modelList, modelItem, modelItemInspector, modelText } from './ppt-models';
 
 export * from './core';
 // export * from './types';
@@ -14,6 +14,7 @@ const allModels = [
     modelModel,
     modelList,
     modelItem,
+    modelText,
     modelItemInspector
 ];
 

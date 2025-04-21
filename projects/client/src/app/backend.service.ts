@@ -20,6 +20,16 @@ export class BackendService {
         return (((window as unknown) as any).host) ?? this.defaultHost
     }
 
+    runTest(testname: string): Observable<string> {
+        return this.get<string>(`tests/${testname}`)
+            .pipe(
+                catchError(err => {
+                    this.logError(`runTest("${testname}")`, err);
+                    return of('');
+                })
+            );
+    }
+
     loadFile(pathname: string): Observable<string> {
         return this.get<string>(`files?path=${pathname}`)
             .pipe(
@@ -52,8 +62,8 @@ export class BackendService {
 
     logError(message: string, e: Error) {
         console.error(`ERROR BackendService.${message}`, e);
+        alert(message);
     }
-
 
     private get<T>(resource: string): Observable<T> {
         return this.httpservice.get<SuccessResponseBody<T>>(this.host + resource)

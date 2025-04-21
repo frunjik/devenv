@@ -2,16 +2,20 @@
 
 <form class="row">
 
-    <mat-form-field class="example-full" [formGroup]="form">
-        <mat-label>input</mat-label>
-        <textarea matInput rows="30" formControlName="input"></textarea>
+    <div class="text-full">
 
+        <mat-form-field class="example-full" [formGroup]="form">
+            <mat-label>input</mat-label>
+            <textarea matInput rows="30" formControlName="input"></textarea>
+    
+        </mat-form-field>
+        
         <div>
-            <button mat-button (click)="compile()">X</button>
-            <button mat-button (click)="clear()">Y</button>
+            <button mat-button (click)="runTest()">TEST</button>
         </div>
 
-    </mat-form-field>
+    </div>
+
     
     <mat-form-field class="example-full" [formGroup]="form">
         <mat-label>output</mat-label>
@@ -21,6 +25,5 @@
 </form>
 
 <div>
-    <button mat-button (click)="compile()">Do</button>
     <button mat-button (click)="clear()">Clear</button>
 </div>

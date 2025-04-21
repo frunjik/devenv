@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { BackendService } from '../../../backend.service';
 
 function separator(): string {
     return `\n----------------------------------------------------------------------------------------${new Date().toISOString()}\n`;
@@ -25,6 +26,9 @@ function separator(): string {
 })
 export class PPTServerComponent {
 
+    constructor(private _bs: BackendService) {
+    }
+
     inputControl = new FormControl();
     outputControl = new FormControl();
 
@@ -33,29 +37,18 @@ export class PPTServerComponent {
         output: this.outputControl,
     });
 
-    compile() {
-        const form = this.form;
-        const i = form.value.input ?? '';
-
-        let result;
-
-        try {
-
-            result = 'ServerResponse: \n' + i;
-
-        } catch (e) {
-            result = e;
-        }
-
-        this.outputControl.setValue(
-            
-            result + 
-            separator() +             
-            this.outputControl.value
-        );
+    runTest() {
+        this._bs
+            .runTest('test')
+            .subscribe(this.setOutput);
     }
 
     clear() {
         this.outputControl.setValue('');
+    }
+
+    // worth it ???
+    setOutput = (value: string) => {
+        this.outputControl.setValue(value)
     }
 }

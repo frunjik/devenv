@@ -1,0 +1,87 @@
+.SYNTAX PROGRAM
+[ Example Metacompiler Definition ]
+[ interpreter code version ]
+[ James M. Neighbors ]
+
+[ body of compiler definition ]
+PROGRAM = '.SYNTAX' ID .OUT(.LB .TB 'ADR ' * .NL)
+          $(PR / COMMENT)  
+          '.TOKENS'
+          $(TR / COMMENT)
+          '.END' .OUT(.TB 'END' .NL) ;
+
+[ parsing rule definition ]
+PR = ID .OUT(.LB * .NL) '=' EX1 ';' .OUT(.TB 'R' .NL) ; 
+
+[ token rule definition ]
+TR = ID .OUT(.LB * .NL) ':' TX1 ';' .OUT(.TB 'R' .NL) ;
+
+[ comment definition ]
+COMMENT = '[' CMLINE ']' .OUT(.LB ';' * .NL) ;
+
+[ parsing expressions ]
+EX1 = EX2 $('/' .OUT(.TB 'BT L'# .NL) EX2 )
+      .OUT(.LB 'L'# .NL) ;
+
+EX2 = (EX3 .OUT(.TB 'BF L'# .NL) / OUTPUT)
+      $(EX3 .OUT(.TB 'BE' .NL) / OUTPUT)
+      .OUT(.LB 'L'# .NL) ;
+
+EX3 = ID        .OUT(.TB 'CLL '* .NL)        /
+      STRING    .OUT(.TB 'TST ' 39 * 39 .NL) /
+      '(' EX1 ')'                            /
+      '.EMPTY'  .OUT(.TB 'SET' .NL)          /
+      '.LITCHR' .OUT(.TB 'LCH' .NL)          /
+      '$' .OUT(.LB 'L'# .NL) EX3 .OUT(.TB 'BT L'# .NL) .OUT(.TB 'SET' .NL) ;
+
+[ output expressions ]
+OUTPUT = '.OUT' '('$OUT1 ')' ;
+
+OUT1 = '*'     .OUT(.TB 'CI' .NL)          /
+       STRING  .OUT(.TB 'CL ' 39 * 39 .NL) /
+       NUMBER  .OUT(.TB 'CC '* .NL)        /
+       '#'     .OUT(.TB 'GN' .NL)          /
+       '.NL'   .OUT(.TB 'NL' .NL)          /
+       '.LB'   .OUT(.TB 'LB' .NL)          /
+       '.TB'   .OUT(.TB 'TB' .NL)          /
+       '.LM+'  .OUT(.TB 'LMI' .NL)         /
+       '.LM-'  .OUT(.TB 'LMD' .NL)         ;
+
+[ token expressions ]
+TX1 = TX2 $('/' .OUT(.TB 'BT T'# .NL) TX2) 
+      .OUT(.LB 'T'# .NL) ;
+
+TX2 = TX3 .OUT(.TB 'BF T'# .NL)
+      $(TX3 .OUT(.TB 'RF' .NL) )
+      .OUT(.LB 'T'# .NL) ;
+
+TX3 = ( '.TOKEN'         .OUT(.TB 'TFT' .NL) /
+        '.DELTOK'        .OUT(.TB 'TFF' .NL) /
+        '$' .OUT(.LB 'T'# .NL) TX3 .OUT(.TB 'BT T'# .NL) ) 
+                         .OUT(.TB 'SET' .NL)               /
+      '.ANYBUT(' CX1 ')' .OUT(.TB 'NOT' .NL .TB 'SCN' .NL) /
+      '.ANY(' CX1 ')'    .OUT(.TB 'SCN' .NL)               /
+      ID                 .OUT(.TB 'CLL ' * .NL)            /
+      '(' TX1 ')'                                          ;
+
+[ character expressions ]            
+CX1 = CX2 $('!' .OUT(.TB 'BT C'# .NL) CX2) .OUT(.LB 'C'# .NL) ;
+CX2 = CX3 (':' .OUT(.TB 'CGE ' * .NL) .OUT(.TB 'BF D'# .NL) 
+               CX3
+               .OUT(.TB 'CLE ' * .NL) .OUT(.LB 'D' # .NL) /
+           .EMPTY .OUT(.TB 'CE ' * .NL)                   ) ;
+CX3 = NUMBER / SQUOTE .LITCHR ;
+
+[ token definitions ]
+.TOKENS
+
+PREFIX : $.ANY(32!9!13!10) ;
+ID     : PREFIX .TOKEN ALPHA $(ALPHA/DIGIT) .DELTOK ;
+NUMBER : PREFIX .TOKEN DIGIT $DIGIT .DELTOK ;
+STRING : PREFIX .ANY(39) .TOKEN $.ANYBUT(13!10!39) .DELTOK .ANY(39) ;
+ALPHA  : .ANY('A:'Z!'a:'z) ;
+DIGIT  : .ANY('0:'9) ;
+SQUOTE : PREFIX .ANY('') ;
+CMLINE : .TOKEN $.ANYBUT(10!13!']) .DELTOK ;
+
+.END

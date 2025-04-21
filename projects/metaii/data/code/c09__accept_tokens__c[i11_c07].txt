@@ -1,0 +1,474 @@
+	ADR PROGRAM
+PROGRAM
+	TST '.SYNTAX'
+	BF L1
+	ID
+	BE
+	LB
+	TB
+	CL 'ADR '
+	CI
+	NL
+L2
+	CLL PR
+	BT L2
+	SET
+	BE
+	TST '.TOKENS'
+	BE
+L3
+	CLL TR
+	BT L3
+	SET
+	BE
+	TST '.END'
+	BE
+	TB
+	CL 'END'
+	NL
+L1
+L4
+	R
+PR
+	ID
+	BF L5
+	LB
+	CI
+	NL
+	TST '='
+	BE
+	CLL EX1
+	BE
+	TST ';'
+	BE
+	TB
+	CL 'R'
+	NL
+L5
+L6
+	R
+TR
+	ID
+	BF L7
+	LB
+	CI
+	NL
+	TST ':'
+	BE
+	CLL TX1
+	BE
+	TST ';'
+	BE
+	TB
+	CL 'R'
+	NL
+L7
+L8
+	R
+EX1
+	CLL EX2
+	BF L9
+L10
+	TST '/'
+	BF L11
+	TB
+	CL 'BT L'
+	GN
+	NL
+	CLL EX2
+	BE
+L11
+L12
+	BT L10
+	SET
+	BE
+	LB
+	CL 'L'
+	GN
+	NL
+L9
+L13
+	R
+EX2
+	CLL EX3
+	BF L14
+	TB
+	CL 'BF L'
+	GN
+	NL
+L14
+	BT L15
+	CLL OUTPUT
+	BF L16
+L16
+L15
+	BF L17
+L18
+	CLL EX3
+	BF L19
+	TB
+	CL 'BE'
+	NL
+L19
+	BT L20
+	CLL OUTPUT
+	BF L21
+L21
+L20
+	BT L18
+	SET
+	BE
+	LB
+	CL 'L'
+	GN
+	NL
+L17
+L22
+	R
+EX3
+	ID
+	BF L23
+	TB
+	CL 'CLL '
+	CI
+	NL
+L23
+	BT L24
+	SR
+	BF L25
+	TB
+	CL 'TST '
+	CI
+	NL
+L25
+	BT L24
+	TST '.ID'
+	BF L26
+	TB
+	CL 'ID'
+	NL
+L26
+	BT L24
+	TST '.NUMBER'
+	BF L27
+	TB
+	CL 'NUM'
+	NL
+L27
+	BT L24
+	TST '.STRING'
+	BF L28
+	TB
+	CL 'SR'
+	NL
+L28
+	BT L24
+	TST '('
+	BF L29
+	CLL EX1
+	BE
+	TST ')'
+	BE
+L29
+	BT L24
+	TST '.EMPTY'
+	BF L30
+	TB
+	CL 'SET'
+	NL
+L30
+	BT L24
+	TST '$'
+	BF L31
+	LB
+	CL 'L'
+	GN
+	NL
+	CLL EX3
+	BE
+	TB
+	CL 'BT L'
+	GN
+	NL
+	TB
+	CL 'SET'
+	NL
+L31
+L24
+	R
+OUTPUT
+	TST '.OUT'
+	BF L32
+	TST '('
+	BE
+L33
+	CLL OUT1
+	BT L33
+	SET
+	BE
+	TST ')'
+	BE
+L32
+L34
+	R
+OUT1
+	TST '*'
+	BF L35
+	TB
+	CL 'CI'
+	NL
+L35
+	BT L36
+	SR
+	BF L37
+	TB
+	CL 'CL '
+	CI
+	NL
+L37
+	BT L36
+	NUM
+	BF L38
+	TB
+	CL 'CC '
+	CI
+	NL
+L38
+	BT L36
+	TST '#'
+	BF L39
+	TB
+	CL 'GN'
+	NL
+L39
+	BT L36
+	TST '.NL'
+	BF L40
+	TB
+	CL 'NL'
+	NL
+L40
+	BT L36
+	TST '.LB'
+	BF L41
+	TB
+	CL 'LB'
+	NL
+L41
+	BT L36
+	TST '.TB'
+	BF L42
+	TB
+	CL 'TB'
+	NL
+L42
+	BT L36
+	TST '.LM+'
+	BF L43
+	TB
+	CL 'LMI'
+	NL
+L43
+	BT L36
+	TST '.LM-'
+	BF L44
+	TB
+	CL 'LMD'
+	NL
+L44
+L36
+	R
+TX1
+	CLL TX2
+	BF L45
+L46
+	TST '/'
+	BF L47
+	TB
+	CL 'BT T'
+	GN
+	NL
+	CLL TX2
+	BE
+L47
+L48
+	BT L46
+	SET
+	BE
+	LB
+	CL 'T'
+	GN
+	NL
+L45
+L49
+	R
+TX2
+	CLL TX3
+	BF L50
+	TB
+	CL 'BF T'
+	GN
+	NL
+L51
+	CLL TX3
+	BF L52
+	TB
+	CL 'RF'
+	NL
+L52
+L53
+	BT L51
+	SET
+	BE
+	LB
+	CL 'T'
+	GN
+	NL
+L50
+L54
+	R
+TX3
+	TST '.TOKEN'
+	BF L55
+	TB
+	CL 'TFT'
+	NL
+L55
+	BT L56
+	TST '.DELTOK'
+	BF L57
+	TB
+	CL 'TFF'
+	NL
+L57
+	BT L56
+	TST '$'
+	BF L58
+	LB
+	CL 'T'
+	GN
+	NL
+	CLL TX3
+	BE
+	TB
+	CL 'BT T'
+	GN
+	NL
+L58
+L56
+	BF L59
+	TB
+	CL 'SET'
+	NL
+L59
+	BT L60
+	TST '.ANYBUT('
+	BF L61
+	CLL CX1
+	BE
+	TST ')'
+	BE
+	TB
+	CL 'NOT'
+	NL
+	TB
+	CL 'SCN'
+	NL
+L61
+	BT L60
+	TST '.ANY('
+	BF L62
+	CLL CX1
+	BE
+	TST ')'
+	BE
+	TB
+	CL 'SCN'
+	NL
+L62
+	BT L60
+	ID
+	BF L63
+	TB
+	CL 'CLL '
+	CI
+	NL
+L63
+	BT L60
+	TST '('
+	BF L64
+	CLL TX1
+	BE
+	TST ')'
+	BE
+L64
+L60
+	R
+CX1
+	CLL CX2
+	BF L65
+L66
+	TST '!'
+	BF L67
+	TB
+	CL 'BT C'
+	GN
+	NL
+	CLL CX2
+	BE
+L67
+L68
+	BT L66
+	SET
+	BE
+	LB
+	CL 'C'
+	GN
+	NL
+L65
+L69
+	R
+CX2
+	CLL CX3
+	BF L70
+	TST ':'
+	BF L71
+	TB
+	CL 'CGE '
+	CI
+	NL
+	TB
+	CL 'BF D'
+	GN
+	NL
+	CLL CX3
+	BE
+	TB
+	CL 'CLE '
+	CI
+	NL
+	LB
+	CL 'D'
+	GN
+	NL
+L71
+	BT L72
+	SET
+	BF L73
+	TB
+	CL 'CE '
+	CI
+	NL
+L73
+L72
+	BE
+L70
+L74
+	R
+CX3
+	NUM
+	BF L75
+L75
+L76
+	R
+	END

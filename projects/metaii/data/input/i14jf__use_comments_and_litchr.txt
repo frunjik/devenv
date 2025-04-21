@@ -1,0 +1,113 @@
+.SYNTAX PROGRAM
+[ Example Metacompiler Definition ]
+[ javascript function version ]
+[ James M. Neighbors ]
+
+[ body of compiler definition ]
+PROGRAM = '.SYNTAX' ID
+            .OUT(.LB '// '*' compiler' .NL)
+            .OUT('function compiler (input) {' .LM+ .NL)
+            .OUT('inbuf = input ;' .NL)
+            .OUT('inp = 0 ;' .NL)
+            .OUT('outbuf = "" ;' .NL)
+            .OUT('margin = 0 ;' .NL)
+            .OUT('gnlabel = 1 ;' .NL)
+            .OUT('runextTFF();' .NL)
+            .OUT('rule'*'() ;' .NL)
+            .OUT('return outbuf ;' .NL)
+            .OUT(.LM- '} ;' .NL .NL)
+          $(PR / COMMENT)
+          '.TOKENS'
+          $(TR / COMMENT)
+          '.END' ;
+
+[ parsing rule definition ]
+PR = ID .OUT(.LB 'function rule'*' () {' .LM+ .NL)
+     .OUT('var rname = "'*'" ;' .NL)
+     .OUT('var rlabel = 0 ;' .NL)
+     '=' EX1 ';'
+     .OUT(.LM- '} ;' .NL .NL) ;
+
+[ token rule definition ]
+TR = ID .OUT(.LB 'function rule'*' () {' .LM+ .NL)
+     .OUT('var rname = "'*'" ;' .NL)
+     .OUT('var rlabel = 0 ;' .NL)
+     ':' TX1 ';'
+     .OUT(.LM- '} ;' .NL .NL) ;
+
+[ comment definition ]
+COMMENT = '[' CMLINE ']' .OUT('//' * .NL) ;
+
+[ parsing expressions ]
+EX1 = EX2 $('/' .OUT('if (!flag) {' .LM+ .NL) EX2 .OUT(.LM- '} ;' .NL) ) ;
+
+EX2 = (EX3 .OUT('if (flag) {' .LM+ .NL) / OUTPUT .OUT('if (true) {' .LM+ .NL) )
+      $(EX3 .OUT('if (!flag) runBEjsfn(rname);' .NL) / OUTPUT)
+      .OUT(.LM- '} ;' .NL) ;
+
+EX3 = ID        .OUT('rule'*'();' .NL)   /
+      STRING    .OUT('runTST(' 39 * 39 ');' .NL) /
+      '(' EX1 ')'                        /
+      '.EMPTY'  .OUT('runSET();' .NL)    /
+      '.LITCHR' .OUT('runextLCH();' .NL) /
+      '$' .OUT('runSET();' .NL)
+          .OUT('while (flag) {' .LM+ .NL)
+           EX3 
+          .OUT('};' .LM- .NL) 
+          .OUT('runSET();' .NL) ;
+
+[ output expressions ]
+OUTPUT = '.OUT' '('$OUT1 ')' ;
+
+OUT1 = '*'    .OUT('runCI();' .NL)    /
+       STRING .OUT('runCL(' 39 * 39 ');' .NL) /
+       NUMBER .OUT('runextCC('*');' .NL) /
+       '#'    .OUT('if (rlabel == 0) { rlabel = gnlabel; gnlabel++ ; } ;' .NL)
+              .OUT('runCL(rlabel.toString());' .NL) /
+       '.NL'  .OUT('runextNL();' .NL)    /
+       '.LB'  .OUT('runLB();' .NL)       /
+       '.TB'  .OUT('runextTB();' .NL)    /
+       '.LM+' .OUT('runextLMI();' .NL)   /
+       '.LM-' .OUT('runextLMD();' .NL)   ;
+
+[ token expressions ]
+TX1 = TX2 $('/' .OUT('if (!flag) {' .LM+ .NL) TX2 .OUT(.LM- '} ;' .NL) ) ;
+
+TX2 = TX3 .OUT('if (flag) {' .LM+ .NL) 
+      $(TX3 .OUT('if (!flag) return;' .NL) ) 
+      .OUT(.LM- '} ;' .NL) ;
+
+TX3 = ( '.TOKEN'         .OUT('runextTFT();' .NL) /
+        '.DELTOK'        .OUT('runextTFF();' .NL) /
+        '$' .OUT('runSET();' .NL)
+            .OUT('while (flag) {' .LM+ .NL)
+             TX3 
+            .OUT('};' .LM- .NL)                   )
+        .OUT('runSET();' .NL)                       /
+      '.ANYBUT(' CX1 ')' .OUT('runextNOT();' .NL)
+                         .OUT('runextSCN();' .NL)   /
+      '.ANY(' CX1 ')'    .OUT('runextSCN();' .NL)   /
+      ID                 .OUT('rule'*'();' .NL)     /
+      '(' TX1 ')'                                   ;
+            
+[ character expressions ]            
+CX1 = CX2 $('!' .OUT('if (!flag) {' .LM+ .NL) CX2 .OUT(.LM- '} ;' .NL) ) ;
+CX2 = CX3 (':' .OUT('runextCGE('*');' .NL) .OUT('if (flag) {' .LM+ .NL) 
+               CX3
+               .OUT('runextCLE('*');' .NL) .OUT(.LM- '} ;' .NL) /
+           .EMPTY .OUT('runextCE('*');' .NL)                    ) ;
+CX3 = NUMBER / SQUOTE .LITCHR ;
+
+[ token definitions ]
+.TOKENS
+
+PREFIX : $.ANY(32!9!13!10) ;
+ID     : PREFIX .TOKEN ALPHA $(ALPHA/DIGIT) .DELTOK ;
+NUMBER : PREFIX .TOKEN DIGIT $DIGIT .DELTOK ;
+STRING : PREFIX .ANY(39) .TOKEN $.ANYBUT(13!10!39) .DELTOK .ANY(39) ;
+ALPHA  : .ANY('A:'Z!'a:'z) ;
+DIGIT  : .ANY('0:'9) ;
+SQUOTE : PREFIX .ANY('') ;
+CMLINE : .TOKEN $.ANYBUT(10!13!']) .DELTOK ;
+
+.END

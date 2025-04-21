@@ -1,0 +1,234 @@
+.SYNTAX PROGRAM
+[ Example Metacompiler Definition ]
+[ fully contained javascript object version ]
+[ James M. Neighbors ]
+
+[ body of compiler definition ]
+PROGRAM = '.SYNTAX' ID 
+          .OUT(.LB '// ' * ' compiler' .NL)
+          .OUT('compiler = {' .LM+ .NL .NL)
+          PREAMBLE
+          $(PR / COMMENT)  
+          '.TOKENS'
+          $(TR / COMMENT)
+          '.END' 
+          POSTAMBLE 
+          .OUT(.LM- '}' .NL) ;     
+                                            
+[ object definition preamble ]
+PREAMBLE = .OUT('compile: function (input) {' .LM+ .NL)
+           .OUT('// initialize compiler variables' .NL)
+           .OUT('this.inbuf = input ;' .NL)
+           .OUT('this.initialize() ;' .NL)
+           .OUT('// call the first rule' .NL)
+           .OUT('this.ctxpush(' 39 * 39 ') ;' .NL)
+           .OUT('this.rule' * '() ;' .NL)
+           .OUT('this.ctxpop() ;' .NL)
+           .OUT('// special case handling of first rule failure' .NL)
+           .OUT('if ((!this.eflag) && (!this.pflag)) {' .LM+ .NL)
+           .OUT('this.eflag = true ;' .NL)
+           .OUT('this.erule = ' 39 * 39 ' ;' .NL)
+           .OUT('this.einput = this.inp ; } ;' .LM- .NL)
+           .OUT('return this.eflag ;' .NL)
+           .OUT(.LM- '},' .NL .NL) ;
+
+
+[ runtime and object definition postamble ] 
+POSTAMBLE = 
+           .OUT('// runtime variables' .NL)
+           .OUT('pflag: false ,' .NL)
+           .OUT('tflag: false ,' .NL)
+           .OUT('eflag: false ,' .NL)
+           .OUT('inp: 0 ,' .NL)
+           .OUT('inbuf:  ' 39 39 ' ,' .NL)
+           .OUT('outbuf:  ' 39 39 ' ,' .NL)
+           .OUT('erule:  ' 39 39 ' ,' .NL)
+           .OUT('einput: 0 ,' .NL)
+           .OUT('token: ' 39 39 ' ,' .NL)
+           .OUT('labelcount: 0 ,' .NL)
+           .OUT('stackframesize: 3 ,' .NL)
+           .OUT('stackframe: 0 ,' .NL)
+           .OUT('stos: -1 ,' .NL)
+           .OUT('stack: [] ,' .NL .NL)
+
+           .OUT('initialize: function () {'.LM+ .NL)
+           .OUT('// initialize for another compile' .NL)
+           .OUT('this.pflag = false ;' .NL)
+           .OUT('this.tflag = false ;' .NL)
+           .OUT('this.eflag = false ;' .NL)
+           .OUT('this.inp = 0 ;' .NL)
+           .OUT('this.outbuf = ' 39 39 ' ;' .NL)
+           .OUT('this.erule = ' 39 39 ' ;' .NL)
+           .OUT('this.einput = 0 ;' .NL)
+           .OUT('this.token = ' 39 39 ' ;' .NL)
+           .OUT('this.labelcount = 1 ;' .NL)
+           .OUT('this.stackframe = -1 ;' .NL)
+           .OUT('this.stos = -1 ;' .NL)
+           .OUT('this.stack = [] ;' .NL)
+           .OUT(.LM- '},' .NL .NL)
+
+           .OUT('ctxpush: function (rulename){' .LM+ .NL)
+           .OUT('// push and initialize a new stackframe' .NL)
+           .OUT('var LM ;' .NL)  
+           .OUT('// new context inherits current context left margin' .NL)
+           .OUT('LM = 0; if (this.stackframe >= 0) LM = this.stack[this.stackframe + 2] ;' .NL)
+           .OUT('this.stos++ ;' .NL)
+           .OUT('this.stackframe = this.stos * this.stackframesize ;' .NL)
+           .OUT('// stackframe definition' .NL)
+           .OUT('this.stack[this.stackframe + 0] = 0 ;        // generated label' .NL)
+           .OUT('this.stack[this.stackframe + 1] = rulename ; // called rule name' .NL)
+           .OUT('this.stack[this.stackframe + 2] = LM ;       // left margin' .NL)
+           .OUT(.LM- '},' .NL .NL) 
+
+           .OUT('ctxpop: function (){' .LM+ .NL)
+           .OUT('// pop and possibly deallocate old stackframe' .NL)
+           .OUT('this.stos-- ; // pop stackframe' .NL)
+           .OUT('this.stackframe = this.stos * this.stackframesize ;' .NL)
+           .OUT(.LM- '},' .NL .NL)          
+
+           .OUT('out: function (s){' .LM+ .NL)
+           .OUT('// output string' .NL)
+           .OUT('var i ;' .NL)
+           .OUT('// if newline last output, add left margin before string' .NL)
+           .OUT('if (this.outbuf.charAt(this.outbuf.length - 1) == ' 39 92 'n' 39 ') {' .NL)
+           .OUT('  i = this.stack[this.stackframe + 2] ;' .NL)
+           .OUT('  while (i>0) { this.outbuf += ' 39 ' ' 39 ' ; i-- } ; } ;' .NL)
+           .OUT('this.outbuf += s ;' .NL)
+           .OUT(.LM- '},' .NL .NL)
+
+           .OUT('eol: function (){' .LM+ .NL)
+           .OUT('// output end of line' .NL)
+           .OUT('this.outbuf += ' 39 92 'n' 39 ' ;' .NL)
+           .OUT(.LM- '},' .NL .NL)
+
+           .OUT('test: function (s) {' .LM+ .NL)
+           .OUT('// test for a string in the input' .NL)
+           .OUT('var i ;' .NL)
+           .OUT('// delete whitespace' .NL) 
+           .OUT('while ((this.inbuf.charAt(this.inp) == ' 39 ' ' 39 ')  ||' .NL)
+           .OUT('       (this.inbuf.charAt(this.inp) == ' 39 92 'n' 39 ') ||' .NL) 
+           .OUT('       (this.inbuf.charAt(this.inp) == ' 39 92 'r' 39 ') ||' .NL)
+           .OUT('       (this.inbuf.charAt(this.inp) == ' 39 92 't' 39 ') ) this.inp++ ;' .NL)
+           .OUT('// test string case insensitive' .NL) 
+           .OUT('this.pflag = true ; i = 0 ;' .NL)
+           .OUT('while (this.pflag && (i < s.length) && ((this.inp+i) < this.inbuf.length) )' .NL)
+           .OUT('{ this.pflag = (s.charAt(i).toUpperCase() ==' .NL)
+           .OUT('                this.inbuf.charAt(this.inp+i).toUpperCase()) ;' .NL)
+           .OUT('  i++ ; } ;' .NL)
+           .OUT('this.pflag = this.pflag && (i == s.length) ;' .NL)
+           .OUT('// advance input if found' .NL) 
+           .OUT('if (this.pflag) this.inp = this.inp + s.length ;' .NL)
+           .OUT(.LM- '},' .NL .NL)
+
+           .OUT('err: function () {' .LM+ .NL)
+           .OUT('// compilation error, provide error indication and context' .NL)
+           .OUT('this.eflag = true ;' .NL)
+           .OUT('this.erule = this.stack[this.stackframe + 1] ;' .NL)
+           .OUT('this.einput = this.inp ;' .NL)
+           .OUT(.LM- '}' .NL .NL) ;
+
+[ parsing rule definition ]
+PR = ID .OUT('rule'* ': function () {' .LM+ .NL)
+     '=' EX1 ';'
+     .OUT(.LM- '} ,' .NL .NL) ;
+
+[ token rule definition ]
+TR = ID .OUT('rule'* ': function () {' .LM+ .NL)
+     ':' TX1 ';'
+     .OUT(.LM- '} ,' .NL .NL) ;
+
+[ comment definition ]
+COMMENT = '[' CMLINE ']' .OUT('//' * .NL) ;
+
+[ parsing expressions ]
+EX1 = EX2 $('/' .OUT('if (!this.pflag) {' .LM+ .NL) EX2 .OUT(.LM- '} ;' .NL) ) ;
+
+EX2 = (EX3 .OUT('if (this.pflag) {' .LM+ .NL) / OUTPUT .OUT('if (true) {' .LM+ .NL) )
+      $(EX3 .OUT('if (!this.pflag) this.err();' .NL) / OUTPUT)
+      .OUT(.LM- '} ;' .NL) ;
+
+
+EX3 = ID        .OUT('this.ctxpush(' 39 * 39 ') ;' .NL)
+                .OUT('this.rule' * '() ;' .NL)
+                .OUT('this.ctxpop() ;' .NL)
+                .OUT('if (this.eflag) return ;' .NL)  /
+      STRING    .OUT('this.test(' 39 * 39 ');' .NL) /
+      '(' EX1 ')'                            /
+      '.EMPTY'  .OUT('this.pflag = true ;' .NL)    /
+      '.LITCHR' .OUT('this.token = this.inbuf.charCodeAt(this.inp) ;' .NL)
+                .OUT('this.inp++ ;' .NL)  /
+      '$' .OUT('this.pflag = true ;' .NL)
+          .OUT('while (this.pflag) {' .LM+ .NL)
+           EX3 
+          .OUT(.LM- '} ;' .NL)
+          .OUT('this.pflag = true ;' .NL) ;
+
+[ output expressions ]
+OUTPUT = '.OUT' '('$OUT1 ')' ;
+
+OUT1 = '*'     .OUT('this.out(this.token) ;' .NL)          /
+       STRING  .OUT('this.out(' 39 * 39 ') ;' .NL) /
+       NUMBER  .OUT('this.out(String.fromCharCode(' * ')) ;' .NL)        /
+       '#'     .OUT('if (this.stack[this.stackframe + 0] == 0) {' .LM+ .NL) 
+               .OUT('this.stack[this.stackframe + 0] = this.labelcount ;' .NL)
+               .OUT('this.labelcount++ ; } ;' .LM- .NL) 
+               .OUT('this.out(this.stack[this.stackframe + 0]) ;' .NL) /
+       '.NL'   .OUT('this.eol() ;' .NL)          /
+       '.LB'             /
+       '.TB'   .OUT('this.out(' 39 92 't' 39 ') ;' .NL)          /
+       '.LM+'  .OUT('this.stack[this.stackframe + 2] += 2 ;' .NL) /
+       '.LM-'  .OUT('this.stack[this.stackframe + 2] -= 2 ;' .NL) ;
+
+[ token expressions ]
+TX1 = TX2 $('/' .OUT('if (!this.pflag) {' .LM+ .NL) TX2 .OUT(.LM- '} ;' .NL) ) ;
+
+TX2 = TX3 .OUT('if (this.pflag) {' .LM+ .NL) 
+      $(TX3 .OUT('if (!this.pflag) return;' .NL) ) 
+      .OUT(.LM- '} ;' .NL) ;
+
+TX3 = ( '.TOKEN'  .OUT('this.tflag = true ; ' .NL)
+                  .OUT('this.token = ' 39 39 ' ;' .NL) /
+        '.DELTOK' .OUT('this.tflag = false ;' .NL) /
+        '$' .OUT('this.pflag = true ;' .NL)
+            .OUT('while (this.pflag) {' .LM+ .NL)
+             TX3 
+            .OUT(.LM- '};' .NL) )
+        .OUT('this.pflag = true ;' .NL) /
+      '.ANYBUT(' CX1 ')' .OUT('this.pflag = !this.pflag ;' .NL) 
+        .OUT('if (this.pflag) {' .LM+ .NL)
+        .OUT('if (this.tflag) this.token += this.inbuf.charAt(this.inp) ;' .NL)
+        .OUT('this.inp++ } ;' .LM- .NL) /
+      '.ANY(' CX1 ')' 
+        .OUT('if (this.pflag) {' .LM+ .NL)
+        .OUT('if (this.tflag) this.token += this.inbuf.charAt(this.inp) ;' .NL)
+        .OUT('this.inp++ } ;' .LM- .NL) /
+      ID                 
+        .OUT('this.ctxpush(' 39 * 39 ') ;' .NL)
+        .OUT('this.rule' * '() ;' .NL)
+        .OUT('this.ctxpop() ;' .NL)
+        .OUT('if (this.eflag) return ;' .NL)  /
+      '(' TX1 ')'  ;
+
+[ character expressions ]            
+CX1 = .OUT('this.pflag = ' .LM+ .NL)
+      CX2 $('!' .OUT(' ||' .NL) CX2)
+      .OUT(.LM- ' ;' .NL) ;
+CX2 = CX3 (':' .OUT('((this.inbuf.charCodeAt(this.inp) >= ' * ') &&' .NL)
+               CX3
+               .OUT(' (this.inbuf.charCodeAt(this.inp) <= ' * ')  )' ) /
+           .EMPTY .OUT('(this.inbuf.charCodeAt(this.inp) == ' * ') ' )  ) ;
+CX3 = NUMBER / SQUOTE .LITCHR ;
+
+[ token definitions ]
+.TOKENS
+
+PREFIX : $.ANY(32!9!13!10) ;
+ID     : PREFIX .TOKEN ALPHA $(ALPHA/DIGIT) .DELTOK ;
+NUMBER : PREFIX .TOKEN DIGIT $DIGIT .DELTOK ;
+STRING : PREFIX .ANY(39) .TOKEN $.ANYBUT(13!10!39) .DELTOK .ANY(39) ;
+ALPHA  : .ANY('A:'Z!'a:'z) ;
+DIGIT  : .ANY('0:'9) ;
+SQUOTE : PREFIX .ANY('') ;
+CMLINE : .TOKEN $.ANYBUT(10!13!']) .DELTOK ;
+
+.END

@@ -1,0 +1,90 @@
+.SYNTAX PROGRAM
+
+PROGRAM = '.SYNTAX' .ID
+            .OUT(.LB '// '*' compiler' .NL)
+            .OUT('function compiler (input) {' .LM+ .NL)
+            .OUT('inbuf = input ;' .NL)
+            .OUT('inp = 0 ;' .NL)
+            .OUT('outbuf = "" ;' .NL)
+            .OUT('margin = 0 ;' .NL)
+            .OUT('gnlabel = 1 ;' .NL)
+            .OUT('runextTFF();' .NL)
+            .OUT('rule'*'() ;' .NL)
+            .OUT('return outbuf ;' .NL)
+            .OUT(.LM- '} ;' .NL .NL)
+          $ PR
+          '.TOKENS'
+          $ TR
+          '.END' ;
+
+PR = .ID .OUT(.LB 'function rule'*' () {' .LM+ .NL)
+     .OUT('var rname = "'*'" ;' .NL)
+     .OUT('var rlabel = 0 ;' .NL)
+     '=' EX1 ';'
+     .OUT(.LM- '} ;' .NL .NL) ;
+
+TR = .ID .OUT(.LB 'function rule'*' () {' .LM+ .NL)
+     .OUT('var rname = "'*'" ;' .NL)
+     .OUT('var rlabel = 0 ;' .NL)
+     ':' TX1 ';'
+     .OUT(.LM- '} ;' .NL .NL) ;
+
+EX1 = EX2 $('/' .OUT('if (!flag) {' .LM+ .NL) EX2 .OUT(.LM- '} ;' .NL) ) ;
+
+EX2 = (EX3 .OUT('if (flag) {' .LM+ .NL) / OUTPUT .OUT('if (true) {' .LM+ .NL) )
+      $(EX3 .OUT('if (!flag) runBEjsfn(rname);' .NL) / OUTPUT)
+      .OUT(.LM- '} ;' .NL) ;
+
+EX3 = .ID       .OUT('rule'*'();' .NL) /
+      .STRING   .OUT('runTST('*');' .NL) /
+      '.ID'     .OUT('runID();' .NL)     /
+      '.NUMBER' .OUT('runNUM();' .NL)    /
+      '.STRING' .OUT('runSR();' .NL)     /
+      '(' EX1 ')'                        /
+      '.EMPTY'  .OUT('runSET();' .NL)    /
+      '$' .OUT('runSET();' .NL)
+          .OUT('while (flag) {' .LM+ .NL)
+           EX3 
+          .OUT('};' .LM- .NL) 
+          .OUT('runSET();' .NL) ;
+
+OUTPUT = '.OUT' '('$OUT1 ')' ;
+
+OUT1 = '*'     .OUT('runCI();' .NL)    /
+       .STRING .OUT('runCL('*');' .NL) /
+       .NUMBER .OUT('runextCC('*');' .NL) /
+       '#'     .OUT('if (rlabel == 0) { rlabel = gnlabel; gnlabel++ ; } ;' .NL)
+               .OUT('runCL(rlabel.toString());' .NL) /
+       '.NL'   .OUT('runextNL();' .NL)    /
+       '.LB'   .OUT('runLB();' .NL)    /
+       '.TB'   .OUT('runextTB();' .NL)    /
+       '.LM+'  .OUT('runextLMI();' .NL)   /
+       '.LM-'  .OUT('runextLMD();' .NL)   ;
+
+TX1 = TX2 $('/' .OUT('if (!flag) {' .LM+ .NL) TX2 .OUT(.LM- '} ;' .NL) ) ;
+
+TX2 = TX3 .OUT('if (flag) {' .LM+ .NL) 
+      $(TX3 .OUT('if (!flag) return;' .NL) ) 
+      .OUT(.LM- '} ;' .NL) ;
+
+TX3 = ( '.TOKEN'         .OUT('runextTFT();' .NL) /
+        '.DELTOK'        .OUT('runextTFF();' .NL) /
+        '$' .OUT('runSET();' .NL)
+            .OUT('while (flag) {' .LM+ .NL)
+             TX3 
+            .OUT('};' .LM- .NL)                   )
+        .OUT('runSET();' .NL)                       /
+      '.ANYBUT(' CX1 ')' .OUT('runextNOT();' .NL)
+                         .OUT('runextSCN();' .NL)   /
+      '.ANY(' CX1 ')'    .OUT('runextSCN();' .NL)   /
+      .ID                .OUT('rule'*'();' .NL)     /
+      '(' TX1 ')'                                   ;
+            
+CX1 = CX2 $('!' .OUT('if (!flag) {' .LM+ .NL) CX2 .OUT(.LM- '} ;' .NL) ) ;
+CX2 = CX3 (':' .OUT('runextCGE('*');' .NL) .OUT('if (flag) {' .LM+ .NL) 
+               CX3
+               .OUT('runextCLE('*');' .NL) .OUT(.LM- '} ;' .NL) /
+           .EMPTY .OUT('runextCE('*');' .NL)                    ) ;
+CX3 = .NUMBER ;
+
+.END

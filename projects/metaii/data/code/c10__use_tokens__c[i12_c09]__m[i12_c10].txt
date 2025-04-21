@@ -1,0 +1,585 @@
+	ADR PROGRAM
+PROGRAM
+	TST '.SYNTAX'
+	BF L1
+	CLL ID
+	BE
+	LB
+	TB
+	CL 'ADR '
+	CI
+	NL
+L2
+	CLL PR
+	BT L2
+	SET
+	BE
+	TST '.TOKENS'
+	BE
+L3
+	CLL TR
+	BT L3
+	SET
+	BE
+	TST '.END'
+	BE
+	TB
+	CL 'END'
+	NL
+L1
+L4
+	R
+PR
+	CLL ID
+	BF L5
+	LB
+	CI
+	NL
+	TST '='
+	BE
+	CLL EX1
+	BE
+	TST ';'
+	BE
+	TB
+	CL 'R'
+	NL
+L5
+L6
+	R
+TR
+	CLL ID
+	BF L7
+	LB
+	CI
+	NL
+	TST ':'
+	BE
+	CLL TX1
+	BE
+	TST ';'
+	BE
+	TB
+	CL 'R'
+	NL
+L7
+L8
+	R
+EX1
+	CLL EX2
+	BF L9
+L10
+	TST '/'
+	BF L11
+	TB
+	CL 'BT L'
+	GN
+	NL
+	CLL EX2
+	BE
+L11
+L12
+	BT L10
+	SET
+	BE
+	LB
+	CL 'L'
+	GN
+	NL
+L9
+L13
+	R
+EX2
+	CLL EX3
+	BF L14
+	TB
+	CL 'BF L'
+	GN
+	NL
+L14
+	BT L15
+	CLL OUTPUT
+	BF L16
+L16
+L15
+	BF L17
+L18
+	CLL EX3
+	BF L19
+	TB
+	CL 'BE'
+	NL
+L19
+	BT L20
+	CLL OUTPUT
+	BF L21
+L21
+L20
+	BT L18
+	SET
+	BE
+	LB
+	CL 'L'
+	GN
+	NL
+L17
+L22
+	R
+EX3
+	CLL ID
+	BF L23
+	TB
+	CL 'CLL '
+	CI
+	NL
+L23
+	BT L24
+	CLL STRING
+	BF L25
+	TB
+	CL 'TST '
+	CC 39
+	CI
+	CC 39
+	NL
+L25
+	BT L24
+	TST '('
+	BF L26
+	CLL EX1
+	BE
+	TST ')'
+	BE
+L26
+	BT L24
+	TST '.EMPTY'
+	BF L27
+	TB
+	CL 'SET'
+	NL
+L27
+	BT L24
+	TST '.LITCHR'
+	BF L28
+	TB
+	CL 'LCH'
+	NL
+L28
+	BT L24
+	TST '$'
+	BF L29
+	LB
+	CL 'L'
+	GN
+	NL
+	CLL EX3
+	BE
+	TB
+	CL 'BT L'
+	GN
+	NL
+	TB
+	CL 'SET'
+	NL
+L29
+L24
+	R
+OUTPUT
+	TST '.OUT'
+	BF L30
+	TST '('
+	BE
+L31
+	CLL OUT1
+	BT L31
+	SET
+	BE
+	TST ')'
+	BE
+L30
+L32
+	R
+OUT1
+	TST '*'
+	BF L33
+	TB
+	CL 'CI'
+	NL
+L33
+	BT L34
+	CLL STRING
+	BF L35
+	TB
+	CL 'CL '
+	CC 39
+	CI
+	CC 39
+	NL
+L35
+	BT L34
+	CLL NUMBER
+	BF L36
+	TB
+	CL 'CC '
+	CI
+	NL
+L36
+	BT L34
+	TST '#'
+	BF L37
+	TB
+	CL 'GN'
+	NL
+L37
+	BT L34
+	TST '.NL'
+	BF L38
+	TB
+	CL 'NL'
+	NL
+L38
+	BT L34
+	TST '.LB'
+	BF L39
+	TB
+	CL 'LB'
+	NL
+L39
+	BT L34
+	TST '.TB'
+	BF L40
+	TB
+	CL 'TB'
+	NL
+L40
+	BT L34
+	TST '.LM+'
+	BF L41
+	TB
+	CL 'LMI'
+	NL
+L41
+	BT L34
+	TST '.LM-'
+	BF L42
+	TB
+	CL 'LMD'
+	NL
+L42
+L34
+	R
+TX1
+	CLL TX2
+	BF L43
+L44
+	TST '/'
+	BF L45
+	TB
+	CL 'BT T'
+	GN
+	NL
+	CLL TX2
+	BE
+L45
+L46
+	BT L44
+	SET
+	BE
+	LB
+	CL 'T'
+	GN
+	NL
+L43
+L47
+	R
+TX2
+	CLL TX3
+	BF L48
+	TB
+	CL 'BF T'
+	GN
+	NL
+L49
+	CLL TX3
+	BF L50
+	TB
+	CL 'RF'
+	NL
+L50
+L51
+	BT L49
+	SET
+	BE
+	LB
+	CL 'T'
+	GN
+	NL
+L48
+L52
+	R
+TX3
+	TST '.TOKEN'
+	BF L53
+	TB
+	CL 'TFT'
+	NL
+L53
+	BT L54
+	TST '.DELTOK'
+	BF L55
+	TB
+	CL 'TFF'
+	NL
+L55
+	BT L54
+	TST '$'
+	BF L56
+	LB
+	CL 'T'
+	GN
+	NL
+	CLL TX3
+	BE
+	TB
+	CL 'BT T'
+	GN
+	NL
+L56
+L54
+	BF L57
+	TB
+	CL 'SET'
+	NL
+L57
+	BT L58
+	TST '.ANYBUT('
+	BF L59
+	CLL CX1
+	BE
+	TST ')'
+	BE
+	TB
+	CL 'NOT'
+	NL
+	TB
+	CL 'SCN'
+	NL
+L59
+	BT L58
+	TST '.ANY('
+	BF L60
+	CLL CX1
+	BE
+	TST ')'
+	BE
+	TB
+	CL 'SCN'
+	NL
+L60
+	BT L58
+	CLL ID
+	BF L61
+	TB
+	CL 'CLL '
+	CI
+	NL
+L61
+	BT L58
+	TST '('
+	BF L62
+	CLL TX1
+	BE
+	TST ')'
+	BE
+L62
+L58
+	R
+CX1
+	CLL CX2
+	BF L63
+L64
+	TST '!'
+	BF L65
+	TB
+	CL 'BT C'
+	GN
+	NL
+	CLL CX2
+	BE
+L65
+L66
+	BT L64
+	SET
+	BE
+	LB
+	CL 'C'
+	GN
+	NL
+L63
+L67
+	R
+CX2
+	CLL CX3
+	BF L68
+	TST ':'
+	BF L69
+	TB
+	CL 'CGE '
+	CI
+	NL
+	TB
+	CL 'BF D'
+	GN
+	NL
+	CLL CX3
+	BE
+	TB
+	CL 'CLE '
+	CI
+	NL
+	LB
+	CL 'D'
+	GN
+	NL
+L69
+	BT L70
+	SET
+	BF L71
+	TB
+	CL 'CE '
+	CI
+	NL
+L71
+L70
+	BE
+L68
+L72
+	R
+CX3
+	CLL NUMBER
+	BF L73
+L73
+L74
+	R
+PREFIX
+T75
+	CE 32
+	BT C76
+	CE 9
+	BT C76
+	CE 13
+	BT C76
+	CE 10
+C76
+	SCN
+	BT T75
+	SET
+	BF T77
+T77
+T78
+	R
+ID
+	CLL PREFIX
+	BF T79
+	TFT
+	SET
+	RF
+	CLL ALPHA
+	RF
+T80
+	CLL ALPHA
+	BF T81
+T81
+	BT T82
+	CLL DIGIT
+	BF T83
+T83
+T82
+	BT T80
+	SET
+	RF
+	TFF
+	SET
+	RF
+T79
+T84
+	R
+NUMBER
+	CLL PREFIX
+	BF T85
+	TFT
+	SET
+	RF
+	CLL DIGIT
+	RF
+T86
+	CLL DIGIT
+	BT T86
+	SET
+	RF
+	TFF
+	SET
+	RF
+T85
+T87
+	R
+STRING
+	CLL PREFIX
+	BF T88
+	CE 39
+C89
+	SCN
+	RF
+	TFT
+	SET
+	RF
+T90
+	CE 13
+	BT C91
+	CE 10
+	BT C91
+	CE 39
+C91
+	NOT
+	SCN
+	BT T90
+	SET
+	RF
+	TFF
+	SET
+	RF
+	CE 39
+C92
+	SCN
+	RF
+T88
+T93
+	R
+ALPHA
+	CGE 65
+	BF D94
+	CLE 90
+D94
+	BT C95
+	CGE 97
+	BF D96
+	CLE 122
+D96
+C95
+	SCN
+	BF T97
+T97
+T98
+	R
+DIGIT
+	CGE 48
+	BF D99
+	CLE 57
+D99
+C100
+	SCN
+	BF T101
+T101
+T102
+	R
+	END

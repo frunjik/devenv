@@ -1,0 +1,99 @@
+.SYNTAX SYNTAX
+[ strip compiler definition to syntax equations in standard form ]
+[ accepts Meta II and modified syntax ]
+[ James M. Neighbors ]
+
+[ body of compiler definition ]
+SYNTAX = '.SYNTAX' ID .OUT(.LB '.SYNTAX ' * .NL .NL)
+         $(PR / COMMENT)  
+         ( '.TOKENS' .OUT(.LB '.TOKENS' .NL .NL)
+                     $(TR / COMMENT) 
+                     .OUT(.NL) /
+           .EMPTY )
+         '.END' .OUT(.LB '.END' .NL) ;
+
+[ parsing rule definition ]
+PR = ID '=' .OUT(.LB * ' = ' .LM+ ) 
+     EX1 
+     (';' / '.,') 
+     .OUT(.LM- ';' .NL .NL); 
+
+[ token rule definition ]
+TR = ID ':' .OUT(.LB * ' : ' .LM+ ) TX1 ';' .OUT(.LM- ';' .NL ) ; 
+
+[ comment definition ]
+COMMENT = '[' CMLINE ']' ;
+
+[ parsing expressions ]
+EX1 = EX2 $('/' .OUT('/ ') EX2 ) ;
+
+EX2 = (EX3 .OUT(' ') / OUTPUT) $(EX3 .OUT(' ') / OUTPUT) ;
+
+EX3 = ID        .OUT(*)         /
+      STRING    .OUT(39 * 39)   /
+      '(' .OUT(.LM+ '( ') 
+          EX1 
+      ')' .OUT(.LM- ')')        /
+      '.EMPTY'  .OUT('.EMPTY')  /
+      '.LITCHR' .OUT('.LITCHR') /
+      '$' .OUT('$') EX3         /
+      '.ID'     .OUT('.ID')     /
+      '.NUMBER' .OUT('.NUMBER') /
+      '.STRING' .OUT('.STRING') /
+      '[' .OUT('[ ')
+          EX1 $('|' .OUT('| ') EX1)
+      ']' .OUT(']') ;
+
+[ output expressions ]
+OUTPUT = '.OUT' '('$OUT1 ')' / '.LABEL' OUT1 ;
+
+OUT1 = '*1'    /
+       '*2'    /
+       '*'     /
+       STRING  /
+       NUMBER  /
+       '#'     /
+       '.NL'   /
+       '.LB'   /
+       '.TB'   /
+       '.LM+'  /
+       '.LM-'  ;
+
+[ token expressions ]
+TX1 = TX2 $('/' .OUT('/ ') TX2) ; 
+
+TX2 = TX3 .OUT(' ') $(TX3 .OUT(' ')) ;
+
+TX3 = '.TOKEN'         .OUT('.TOKEN') /
+      '.DELTOK'        .OUT('.DELTOK') /
+      '$' .OUT('$') TX3  /
+      '.ANYBUT(' .OUT('.ANYBUT(')
+          CX1 
+          ')' .OUT(')')     /
+      '.ANY(' .OUT('.ANY(')
+          CX1 
+          ')' .OUT(')')     /
+      ID      .OUT(*)       /
+      '(' .OUT('(') 
+          TX1 
+      ')' .OUT(')')         ;
+
+[ character expressions ]            
+CX1 = CX2 $('!' .OUT('!') CX2) ;
+CX2 = CX3 (':' .OUT(':') CX3 /
+           .EMPTY            ) ;
+CX3 = NUMBER .OUT(*) / SQUOTE .LITCHR .OUT(*) ;
+
+[ token definitions ]
+.TOKENS
+
+PREFIX : $.ANY(32!9!13!10) ;
+ID     : PREFIX .TOKEN ALPHA $(ALPHA/DIGIT) .DELTOK ;
+NUMBER : PREFIX .TOKEN DIGIT $DIGIT .DELTOK ;
+STRING : PREFIX .ANY(39) .TOKEN $.ANYBUT(13!10!39) .DELTOK .ANY(39) ;
+ALPHA  : .ANY('A:'Z!'a:'z) ;
+DIGIT  : .ANY('0:'9) ;
+SQUOTE : PREFIX .ANY('') ;
+CMLINE : .TOKEN $.ANYBUT(10!13!']) .DELTOK ;
+
+.END

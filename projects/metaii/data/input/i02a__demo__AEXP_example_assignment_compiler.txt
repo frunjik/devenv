@@ -1,0 +1,31 @@
+.SYNTAX AEXP
+
+AEXP = AS $AS ;
+AS = ID .OUT(.TB 'address ' * .NL) ':=' RX1 .OUT(.TB 'store' .NL) ';' ;
+RX1 = RX2 ('='  RX2 .OUT(.TB 'eq' .NL) /
+           '<'  RX2 .OUT(.TB 'lt' .NL) /
+           '>'  RX2 .OUT(.TB 'gt' .NL) /
+           '<=' RX2 .OUT(.TB 'le' .NL) /
+           '>=' RX2 .OUT(.TB 'ge' .NL) /
+           .EMPTY) ;
+RX2 = '~' EX0 .OUT(.TB 'not' .NL) / EX0 ;
+EX0 = EX1 ('<-' EX1 .OUT(.TB 'shl' .NL) /
+           '->' EX2 .OUT(.TB 'shr' .NL) /
+           .EMPTY) ;
+EX1 = EX2 $('+' EX2 .OUT(.TB 'add' .NL) /
+            '-' EX2 .OUT(.TB 'sub' .NL) ) ;
+EX2 = EX3 $('*' EX3 .OUT(.TB 'mpy' .NL) /
+            '/' EX3 .OUT(.TB 'div' .NL) ) ;
+EX3 = EX4 $('^' EX3 .OUT(.TB 'exp' .NL)) ;
+EX4 = '+' EX5 / '-' EX5 .OUT(.TB 'minus' .NL) / EX5 ;
+EX5 = ID  .OUT(.TB 'load ' * .NL) /
+      NUMBER .OUT(.TB 'literal ' * .NL) /
+      '(' EX1 ')' ;
+
+.TOKENS
+
+PREFIX : $.ANY(32!9!13!10) ;
+ID     : PREFIX .TOKEN .ANY('A:'Z!'a:'z) $(.ANY('A:'Z!'a:'z) / .ANY('0:'9)) .DELTOK ;
+NUMBER : PREFIX .TOKEN .ANY('0:'9) $.ANY('0:'9) .DELTOK ;
+
+.END

@@ -1,0 +1,663 @@
+	ADR PROGRAM
+; Example Metacompiler Definition 
+; interpreter code version 
+; James M. Neighbors 
+; body of compiler definition 
+PROGRAM
+	TST '.SYNTAX'
+	BF L1
+	CLL ID
+	BE
+	LB
+	TB
+	CL 'ADR '
+	CI
+	NL
+L2
+	CLL PR
+	BF L3
+L3
+	BT L4
+	CLL COMMENT
+	BF L5
+L5
+L4
+	BT L2
+	SET
+	BE
+	TST '.TOKENS'
+	BE
+L6
+	CLL TR
+	BF L7
+L7
+	BT L8
+	CLL COMMENT
+	BF L9
+L9
+L8
+	BT L6
+	SET
+	BE
+	TST '.END'
+	BE
+	TB
+	CL 'END'
+	NL
+L1
+L10
+	R
+; parsing rule definition 
+PR
+	CLL ID
+	BF L11
+	LB
+	CI
+	NL
+	TST '='
+	BE
+	CLL EX1
+	BE
+	TST ';'
+	BE
+	TB
+	CL 'R'
+	NL
+L11
+L12
+	R
+; token rule definition 
+TR
+	CLL ID
+	BF L13
+	LB
+	CI
+	NL
+	TST ':'
+	BE
+	CLL TX1
+	BE
+	TST ';'
+	BE
+	TB
+	CL 'R'
+	NL
+L13
+L14
+	R
+; comment definition 
+COMMENT
+	TST '['
+	BF L15
+	CLL CMLINE
+	BE
+	TST ']'
+	BE
+	LB
+	CL ';'
+	CI
+	NL
+L15
+L16
+	R
+; parsing expressions 
+EX1
+	CLL EX2
+	BF L17
+L18
+	TST '/'
+	BF L19
+	TB
+	CL 'BT L'
+	GN
+	NL
+	CLL EX2
+	BE
+L19
+L20
+	BT L18
+	SET
+	BE
+	LB
+	CL 'L'
+	GN
+	NL
+L17
+L21
+	R
+EX2
+	CLL EX3
+	BF L22
+	TB
+	CL 'BF L'
+	GN
+	NL
+L22
+	BT L23
+	CLL OUTPUT
+	BF L24
+L24
+L23
+	BF L25
+L26
+	CLL EX3
+	BF L27
+	TB
+	CL 'BE'
+	NL
+L27
+	BT L28
+	CLL OUTPUT
+	BF L29
+L29
+L28
+	BT L26
+	SET
+	BE
+	LB
+	CL 'L'
+	GN
+	NL
+L25
+L30
+	R
+EX3
+	CLL ID
+	BF L31
+	TB
+	CL 'CLL '
+	CI
+	NL
+L31
+	BT L32
+	CLL STRING
+	BF L33
+	TB
+	CL 'TST '
+	CC 39
+	CI
+	CC 39
+	NL
+L33
+	BT L32
+	TST '('
+	BF L34
+	CLL EX1
+	BE
+	TST ')'
+	BE
+L34
+	BT L32
+	TST '.EMPTY'
+	BF L35
+	TB
+	CL 'SET'
+	NL
+L35
+	BT L32
+	TST '.LITCHR'
+	BF L36
+	TB
+	CL 'LCH'
+	NL
+L36
+	BT L32
+	TST '$'
+	BF L37
+	LB
+	CL 'L'
+	GN
+	NL
+	CLL EX3
+	BE
+	TB
+	CL 'BT L'
+	GN
+	NL
+	TB
+	CL 'SET'
+	NL
+L37
+L32
+	R
+; output expressions 
+OUTPUT
+	TST '.OUT'
+	BF L38
+	TST '('
+	BE
+L39
+	CLL OUT1
+	BT L39
+	SET
+	BE
+	TST ')'
+	BE
+L38
+L40
+	R
+OUT1
+	TST '*'
+	BF L41
+	TB
+	CL 'CI'
+	NL
+L41
+	BT L42
+	CLL STRING
+	BF L43
+	TB
+	CL 'CL '
+	CC 39
+	CI
+	CC 39
+	NL
+L43
+	BT L42
+	CLL NUMBER
+	BF L44
+	TB
+	CL 'CC '
+	CI
+	NL
+L44
+	BT L42
+	TST '#'
+	BF L45
+	TB
+	CL 'GN'
+	NL
+L45
+	BT L42
+	TST '.NL'
+	BF L46
+	TB
+	CL 'NL'
+	NL
+L46
+	BT L42
+	TST '.LB'
+	BF L47
+	TB
+	CL 'LB'
+	NL
+L47
+	BT L42
+	TST '.TB'
+	BF L48
+	TB
+	CL 'TB'
+	NL
+L48
+	BT L42
+	TST '.LM+'
+	BF L49
+	TB
+	CL 'LMI'
+	NL
+L49
+	BT L42
+	TST '.LM-'
+	BF L50
+	TB
+	CL 'LMD'
+	NL
+L50
+L42
+	R
+; token expressions 
+TX1
+	CLL TX2
+	BF L51
+L52
+	TST '/'
+	BF L53
+	TB
+	CL 'BT T'
+	GN
+	NL
+	CLL TX2
+	BE
+L53
+L54
+	BT L52
+	SET
+	BE
+	LB
+	CL 'T'
+	GN
+	NL
+L51
+L55
+	R
+TX2
+	CLL TX3
+	BF L56
+	TB
+	CL 'BF T'
+	GN
+	NL
+L57
+	CLL TX3
+	BF L58
+	TB
+	CL 'RF'
+	NL
+L58
+L59
+	BT L57
+	SET
+	BE
+	LB
+	CL 'T'
+	GN
+	NL
+L56
+L60
+	R
+TX3
+	TST '.TOKEN'
+	BF L61
+	TB
+	CL 'TFT'
+	NL
+L61
+	BT L62
+	TST '.DELTOK'
+	BF L63
+	TB
+	CL 'TFF'
+	NL
+L63
+	BT L62
+	TST '$'
+	BF L64
+	LB
+	CL 'T'
+	GN
+	NL
+	CLL TX3
+	BE
+	TB
+	CL 'BT T'
+	GN
+	NL
+L64
+L62
+	BF L65
+	TB
+	CL 'SET'
+	NL
+L65
+	BT L66
+	TST '.ANYBUT('
+	BF L67
+	CLL CX1
+	BE
+	TST ')'
+	BE
+	TB
+	CL 'NOT'
+	NL
+	TB
+	CL 'SCN'
+	NL
+L67
+	BT L66
+	TST '.ANY('
+	BF L68
+	CLL CX1
+	BE
+	TST ')'
+	BE
+	TB
+	CL 'SCN'
+	NL
+L68
+	BT L66
+	CLL ID
+	BF L69
+	TB
+	CL 'CLL '
+	CI
+	NL
+L69
+	BT L66
+	TST '('
+	BF L70
+	CLL TX1
+	BE
+	TST ')'
+	BE
+L70
+L66
+	R
+; character expressions 
+CX1
+	CLL CX2
+	BF L71
+L72
+	TST '!'
+	BF L73
+	TB
+	CL 'BT C'
+	GN
+	NL
+	CLL CX2
+	BE
+L73
+L74
+	BT L72
+	SET
+	BE
+	LB
+	CL 'C'
+	GN
+	NL
+L71
+L75
+	R
+CX2
+	CLL CX3
+	BF L76
+	TST ':'
+	BF L77
+	TB
+	CL 'CGE '
+	CI
+	NL
+	TB
+	CL 'BF D'
+	GN
+	NL
+	CLL CX3
+	BE
+	TB
+	CL 'CLE '
+	CI
+	NL
+	LB
+	CL 'D'
+	GN
+	NL
+L77
+	BT L78
+	SET
+	BF L79
+	TB
+	CL 'CE '
+	CI
+	NL
+L79
+L78
+	BE
+L76
+L80
+	R
+CX3
+	CLL NUMBER
+	BF L81
+L81
+	BT L82
+	CLL SQUOTE
+	BF L83
+	LCH
+	BE
+L83
+L82
+	R
+; token definitions 
+PREFIX
+T84
+	CE 32
+	BT C85
+	CE 9
+	BT C85
+	CE 13
+	BT C85
+	CE 10
+C85
+	SCN
+	BT T84
+	SET
+	BF T86
+T86
+T87
+	R
+ID
+	CLL PREFIX
+	BF T88
+	TFT
+	SET
+	RF
+	CLL ALPHA
+	RF
+T89
+	CLL ALPHA
+	BF T90
+T90
+	BT T91
+	CLL DIGIT
+	BF T92
+T92
+T91
+	BT T89
+	SET
+	RF
+	TFF
+	SET
+	RF
+T88
+T93
+	R
+NUMBER
+	CLL PREFIX
+	BF T94
+	TFT
+	SET
+	RF
+	CLL DIGIT
+	RF
+T95
+	CLL DIGIT
+	BT T95
+	SET
+	RF
+	TFF
+	SET
+	RF
+T94
+T96
+	R
+STRING
+	CLL PREFIX
+	BF T97
+	CE 39
+C98
+	SCN
+	RF
+	TFT
+	SET
+	RF
+T99
+	CE 13
+	BT C100
+	CE 10
+	BT C100
+	CE 39
+C100
+	NOT
+	SCN
+	BT T99
+	SET
+	RF
+	TFF
+	SET
+	RF
+	CE 39
+C101
+	SCN
+	RF
+T97
+T102
+	R
+ALPHA
+	CGE 65
+	BF D103
+	CLE 90
+D103
+	BT C104
+	CGE 97
+	BF D105
+	CLE 122
+D105
+C104
+	SCN
+	BF T106
+T106
+T107
+	R
+DIGIT
+	CGE 48
+	BF D108
+	CLE 57
+D108
+C109
+	SCN
+	BF T110
+T110
+T111
+	R
+SQUOTE
+	CLL PREFIX
+	BF T112
+	CE 39
+C113
+	SCN
+	RF
+T112
+T114
+	R
+CMLINE
+	TFT
+	SET
+	BF T115
+T116
+	CE 10
+	BT C117
+	CE 13
+	BT C117
+	CE 93
+C117
+	NOT
+	SCN
+	BT T116
+	SET
+	RF
+	TFF
+	SET
+	RF
+T115
+T118
+	R
+	END

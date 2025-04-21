@@ -1,0 +1,550 @@
+// PROGRAM compiler
+function compiler (input) {
+  inbuf = input ;
+  inp = 0 ;
+  outbuf = "" ;
+  margin = 0 ;
+  gnlabel = 1 ;
+  rulePROGRAM() ;
+  return outbuf ;
+} ;
+
+function rulePROGRAM () {
+  var rname = "PROGRAM" ;
+  var rlabel = 0 ;
+  runTST('.SYNTAX');
+  if (flag) {
+    runID();
+    if (!flag) runBEjsfn(rname);
+    runLB();
+    runCL('// ');
+    runCI();
+    runCL(' compiler');
+    runextNL();
+    runCL('function compiler (input) {');
+    runextLMI();
+    runextNL();
+    runCL('inbuf = input ;');
+    runextNL();
+    runCL('inp = 0 ;');
+    runextNL();
+    runCL('outbuf = "" ;');
+    runextNL();
+    runCL('margin = 0 ;');
+    runextNL();
+    runCL('gnlabel = 1 ;');
+    runextNL();
+    runCL('runextTFF();');
+    runextNL();
+    runCL('rule');
+    runCI();
+    runCL('() ;');
+    runextNL();
+    runCL('return outbuf ;');
+    runextNL();
+    runextLMD();
+    runCL('} ;');
+    runextNL();
+    runextNL();
+    runSET();
+    while (flag) {
+      rulePR();
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+    runTST('.TOKENS');
+    if (!flag) runBEjsfn(rname);
+    runSET();
+    while (flag) {
+      ruleTR();
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+    runTST('.END');
+    if (!flag) runBEjsfn(rname);
+  } ;
+} ;
+
+function rulePR () {
+  var rname = "PR" ;
+  var rlabel = 0 ;
+  runID();
+  if (flag) {
+    runLB();
+    runCL('function rule');
+    runCI();
+    runCL(' () {');
+    runextLMI();
+    runextNL();
+    runCL('var rname = "');
+    runCI();
+    runCL('" ;');
+    runextNL();
+    runCL('var rlabel = 0 ;');
+    runextNL();
+    runTST('=');
+    if (!flag) runBEjsfn(rname);
+    ruleEX1();
+    if (!flag) runBEjsfn(rname);
+    runTST(';');
+    if (!flag) runBEjsfn(rname);
+    runextLMD();
+    runCL('} ;');
+    runextNL();
+    runextNL();
+  } ;
+} ;
+
+function ruleTR () {
+  var rname = "TR" ;
+  var rlabel = 0 ;
+  runID();
+  if (flag) {
+    runLB();
+    runCL('function rule');
+    runCI();
+    runCL(' () {');
+    runextLMI();
+    runextNL();
+    runCL('var rname = "');
+    runCI();
+    runCL('" ;');
+    runextNL();
+    runCL('var rlabel = 0 ;');
+    runextNL();
+    runTST(':');
+    if (!flag) runBEjsfn(rname);
+    ruleTX1();
+    if (!flag) runBEjsfn(rname);
+    runTST(';');
+    if (!flag) runBEjsfn(rname);
+    runextLMD();
+    runCL('} ;');
+    runextNL();
+    runextNL();
+  } ;
+} ;
+
+function ruleEX1 () {
+  var rname = "EX1" ;
+  var rlabel = 0 ;
+  ruleEX2();
+  if (flag) {
+    runSET();
+    while (flag) {
+      runTST('/');
+      if (flag) {
+        runCL('if (!flag) {');
+        runextLMI();
+        runextNL();
+        ruleEX2();
+        if (!flag) runBEjsfn(rname);
+        runextLMD();
+        runCL('} ;');
+        runextNL();
+      } ;
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+  } ;
+} ;
+
+function ruleEX2 () {
+  var rname = "EX2" ;
+  var rlabel = 0 ;
+  ruleEX3();
+  if (flag) {
+    runCL('if (flag) {');
+    runextLMI();
+    runextNL();
+  } ;
+  if (!flag) {
+    ruleOUTPUT();
+    if (flag) {
+      runCL('if (true) {');
+      runextLMI();
+      runextNL();
+    } ;
+  } ;
+  if (flag) {
+    runSET();
+    while (flag) {
+      ruleEX3();
+      if (flag) {
+        runCL('if (!flag) runBEjsfn(rname);');
+        runextNL();
+      } ;
+      if (!flag) {
+        ruleOUTPUT();
+        if (flag) {
+        } ;
+      } ;
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+    runextLMD();
+    runCL('} ;');
+    runextNL();
+  } ;
+} ;
+
+function ruleEX3 () {
+  var rname = "EX3" ;
+  var rlabel = 0 ;
+  runID();
+  if (flag) {
+    runCL('rule');
+    runCI();
+    runCL('();');
+    runextNL();
+  } ;
+  if (!flag) {
+    runSR();
+    if (flag) {
+      runCL('runTST(');
+      runCI();
+      runCL(');');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.ID');
+    if (flag) {
+      runCL('runID();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.NUMBER');
+    if (flag) {
+      runCL('runNUM();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.STRING');
+    if (flag) {
+      runCL('runSR();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('(');
+    if (flag) {
+      ruleEX1();
+      if (!flag) runBEjsfn(rname);
+      runTST(')');
+      if (!flag) runBEjsfn(rname);
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.EMPTY');
+    if (flag) {
+      runCL('runSET();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('$');
+    if (flag) {
+      runCL('runSET();');
+      runextNL();
+      runCL('while (flag) {');
+      runextLMI();
+      runextNL();
+      ruleEX3();
+      if (!flag) runBEjsfn(rname);
+      runCL('};');
+      runextLMD();
+      runextNL();
+      runCL('runSET();');
+      runextNL();
+    } ;
+  } ;
+} ;
+
+function ruleOUTPUT () {
+  var rname = "OUTPUT" ;
+  var rlabel = 0 ;
+  runTST('.OUT');
+  if (flag) {
+    runTST('(');
+    if (!flag) runBEjsfn(rname);
+    runSET();
+    while (flag) {
+      ruleOUT1();
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+    runTST(')');
+    if (!flag) runBEjsfn(rname);
+  } ;
+} ;
+
+function ruleOUT1 () {
+  var rname = "OUT1" ;
+  var rlabel = 0 ;
+  runTST('*');
+  if (flag) {
+    runCL('runCI();');
+    runextNL();
+  } ;
+  if (!flag) {
+    runSR();
+    if (flag) {
+      runCL('runCL(');
+      runCI();
+      runCL(');');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runNUM();
+    if (flag) {
+      runCL('runextCC(');
+      runCI();
+      runCL(');');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('#');
+    if (flag) {
+      runCL('if (rlabel == 0) { rlabel = gnlabel; gnlabel++ ; } ;');
+      runextNL();
+      runCL('runCL(rlabel.toString());');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.NL');
+    if (flag) {
+      runCL('runextNL();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.LB');
+    if (flag) {
+      runCL('runLB();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.TB');
+    if (flag) {
+      runCL('runextTB();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.LM+');
+    if (flag) {
+      runCL('runextLMI();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.LM-');
+    if (flag) {
+      runCL('runextLMD();');
+      runextNL();
+    } ;
+  } ;
+} ;
+
+function ruleTX1 () {
+  var rname = "TX1" ;
+  var rlabel = 0 ;
+  ruleTX2();
+  if (flag) {
+    runSET();
+    while (flag) {
+      runTST('/');
+      if (flag) {
+        runCL('if (!flag) {');
+        runextLMI();
+        runextNL();
+        ruleTX2();
+        if (!flag) runBEjsfn(rname);
+        runextLMD();
+        runCL('} ;');
+        runextNL();
+      } ;
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+  } ;
+} ;
+
+function ruleTX2 () {
+  var rname = "TX2" ;
+  var rlabel = 0 ;
+  ruleTX3();
+  if (flag) {
+    runCL('if (flag) {');
+    runextLMI();
+    runextNL();
+    runSET();
+    while (flag) {
+      ruleTX3();
+      if (flag) {
+        runCL('if (!flag) return;');
+        runextNL();
+      } ;
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+    runextLMD();
+    runCL('} ;');
+    runextNL();
+  } ;
+} ;
+
+function ruleTX3 () {
+  var rname = "TX3" ;
+  var rlabel = 0 ;
+  runTST('.TOKEN');
+  if (flag) {
+    runCL('runextTFT();');
+    runextNL();
+  } ;
+  if (!flag) {
+    runTST('.DELTOK');
+    if (flag) {
+      runCL('runextTFF();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('$');
+    if (flag) {
+      runCL('runSET();');
+      runextNL();
+      runCL('while (flag) {');
+      runextLMI();
+      runextNL();
+      ruleTX3();
+      if (!flag) runBEjsfn(rname);
+      runCL('};');
+      runextLMD();
+      runextNL();
+    } ;
+  } ;
+  if (flag) {
+    runCL('runSET();');
+    runextNL();
+  } ;
+  if (!flag) {
+    runTST('.ANYBUT(');
+    if (flag) {
+      ruleCX1();
+      if (!flag) runBEjsfn(rname);
+      runTST(')');
+      if (!flag) runBEjsfn(rname);
+      runCL('runextNOT();');
+      runextNL();
+      runCL('runextSCN();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('.ANY(');
+    if (flag) {
+      ruleCX1();
+      if (!flag) runBEjsfn(rname);
+      runTST(')');
+      if (!flag) runBEjsfn(rname);
+      runCL('runextSCN();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runID();
+    if (flag) {
+      runCL('rule');
+      runCI();
+      runCL('();');
+      runextNL();
+    } ;
+  } ;
+  if (!flag) {
+    runTST('(');
+    if (flag) {
+      ruleTX1();
+      if (!flag) runBEjsfn(rname);
+      runTST(')');
+      if (!flag) runBEjsfn(rname);
+    } ;
+  } ;
+} ;
+
+function ruleCX1 () {
+  var rname = "CX1" ;
+  var rlabel = 0 ;
+  ruleCX2();
+  if (flag) {
+    runSET();
+    while (flag) {
+      runTST('!');
+      if (flag) {
+        runCL('if (!flag) {');
+        runextLMI();
+        runextNL();
+        ruleCX2();
+        if (!flag) runBEjsfn(rname);
+        runextLMD();
+        runCL('} ;');
+        runextNL();
+      } ;
+      };
+    runSET();
+    if (!flag) runBEjsfn(rname);
+  } ;
+} ;
+
+function ruleCX2 () {
+  var rname = "CX2" ;
+  var rlabel = 0 ;
+  ruleCX3();
+  if (flag) {
+    runTST(':');
+    if (flag) {
+      runCL('runextCGE(');
+      runCI();
+      runCL(');');
+      runextNL();
+      runCL('if (flag) {');
+      runextLMI();
+      runextNL();
+      ruleCX3();
+      if (!flag) runBEjsfn(rname);
+      runCL('runextCLE(');
+      runCI();
+      runCL(');');
+      runextNL();
+      runextLMD();
+      runCL('} ;');
+      runextNL();
+    } ;
+    if (!flag) {
+      runSET();
+      if (flag) {
+        runCL('runextCE(');
+        runCI();
+        runCL(');');
+        runextNL();
+      } ;
+    } ;
+    if (!flag) runBEjsfn(rname);
+  } ;
+} ;
+
+function ruleCX3 () {
+  var rname = "CX3" ;
+  var rlabel = 0 ;
+  runNUM();
+  if (flag) {
+  } ;
+} ;
+

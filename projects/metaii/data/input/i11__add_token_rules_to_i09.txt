@@ -1,0 +1,64 @@
+.SYNTAX PROGRAM
+
+PROGRAM = '.SYNTAX' .ID .OUT(.LB .TB 'ADR ' * .NL)
+          $ PR  
+          '.TOKENS'
+          $ TR
+          '.END' .OUT(.TB 'END' .NL) ;
+
+PR = .ID .OUT(.LB * .NL) '=' EX1 ';' .OUT(.TB 'R' .NL) ; 
+
+TR = .ID .OUT(.LB * .NL) ':' TX1 ';' .OUT(.TB 'R' .NL) ;
+
+EX1 = EX2 $('/' .OUT(.TB 'BT L'# .NL) EX2 )
+      .OUT(.LB 'L'# .NL) ;
+
+EX2 = (EX3 .OUT(.TB 'BF L'# .NL) / OUTPUT)
+      $(EX3 .OUT(.TB 'BE' .NL) / OUTPUT)
+      .OUT(.LB 'L'# .NL) ;
+
+EX3 = .ID       .OUT(.TB 'CLL '* .NL) /
+      .STRING   .OUT(.TB 'TST '* .NL) /
+      '.ID'     .OUT(.TB 'ID' .NL)    /
+      '.NUMBER' .OUT(.TB 'NUM' .NL)   /
+      '.STRING' .OUT(.TB 'SR' .NL)    /
+      '(' EX1 ')'                     /
+      '.EMPTY'  .OUT(.TB 'SET' .NL)   /
+      '$' .OUT(.LB 'L'# .NL) EX3 .OUT(.TB 'BT L'# .NL) .OUT(.TB 'SET' .NL) ;
+
+OUTPUT = '.OUT' '('$OUT1 ')' ;
+
+OUT1 = '*'     .OUT(.TB 'CI' .NL)   /
+       .STRING .OUT(.TB 'CL '* .NL) /
+       .NUMBER .OUT(.TB 'CC '* .NL) /
+       '#'     .OUT(.TB 'GN' .NL)   /
+       '.NL'   .OUT(.TB 'NL' .NL)   /
+       '.LB'   .OUT(.TB 'LB' .NL)   /
+       '.TB'   .OUT(.TB 'TB' .NL)   /
+       '.LM+'  .OUT(.TB 'LMI' .NL)  /
+       '.LM-'  .OUT(.TB 'LMD' .NL)  ;
+
+TX1 = TX2 $('/' .OUT(.TB 'BT T'# .NL) TX2) 
+      .OUT(.LB 'T'# .NL) ;
+
+TX2 = TX3 .OUT(.TB 'BF T'# .NL)
+      $(TX3 .OUT(.TB 'RF' .NL) )
+      .OUT(.LB 'T'# .NL) ;
+
+TX3 = ( '.TOKEN'         .OUT(.TB 'TFT' .NL) /
+        '.DELTOK'        .OUT(.TB 'TFF' .NL) /
+        '$' .OUT(.LB 'T'# .NL) TX3 .OUT(.TB 'BT T'# .NL) ) 
+                         .OUT(.TB 'SET' .NL)               /
+      '.ANYBUT(' CX1 ')' .OUT(.TB 'NOT' .NL .TB 'SCN' .NL) /
+      '.ANY(' CX1 ')'    .OUT(.TB 'SCN' .NL)               /
+      .ID                .OUT(.TB 'CLL ' * .NL)            /
+      '(' TX1 ')'                                          ;
+            
+CX1 = CX2 $('!' .OUT(.TB 'BT C'# .NL) CX2) .OUT(.LB 'C'# .NL) ;
+CX2 = CX3 (':' .OUT(.TB 'CGE ' * .NL) .OUT(.TB 'BF D'# .NL) 
+               CX3
+               .OUT(.TB 'CLE ' * .NL) .OUT(.LB 'D' # .NL) /
+           .EMPTY .OUT(.TB 'CE ' * .NL)                   ) ;
+CX3 = .NUMBER ;
+
+.END

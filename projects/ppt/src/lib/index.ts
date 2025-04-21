@@ -3,7 +3,7 @@ import { PPTValue } from './core';
 import { modelField, modelModel, modelList, modelItem, modelItemInspector, modelText } from './ppt-models';
 
 export * from './core';
-// export * from './types';
+export * from './types';
 export * from './helpers';
 export * from './response';
 export * from './services';

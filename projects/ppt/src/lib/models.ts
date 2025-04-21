@@ -1,7 +1,7 @@
 // export type PPTString = string;
 // export type PPTNumber = number;
 
-import { Signal } from "@angular/core";
+// import { Signal } from "@angular/core";
 
 export interface PPTTextModel {
     id: string;
@@ -13,6 +13,8 @@ export interface PPTTextComponentModel {
     id: string;
     type: 'PPTTextComponent',
     text: PPTTextModel;
-    input: Signal<string>;
-    output: Signal<string>;
+
+    // dont put implemententation from angular here
+    // input: Signal<string>;
+    // output: Signal<string>;
 }

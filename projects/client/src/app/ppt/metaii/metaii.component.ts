@@ -6,7 +6,7 @@ import { PPTFormModule } from '../../ppt-form.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { MetaII, c03, i03 } from '@metaii';
+import { MetaII, c02, c03, i03 } from '@metaii';
 
 @Component({
     selector: 'ppt-metaii',
@@ -48,7 +48,7 @@ export class MetaiiComponent {
 
 
     inputControl = new FormControl(i03);
-    programControl = new FormControl(c03);
+    programControl = new FormControl(c02);
     outputControl = new FormControl();
 
     form = new FormGroup({

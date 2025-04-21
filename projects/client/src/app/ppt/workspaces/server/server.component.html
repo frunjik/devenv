@@ -1,0 +1,26 @@
+<mat-toolbar>Server - Workspace</mat-toolbar>
+
+<form class="row">
+
+    <mat-form-field class="example-full" [formGroup]="form">
+        <mat-label>input</mat-label>
+        <textarea matInput rows="30" formControlName="input"></textarea>
+
+        <div>
+            <button mat-button (click)="compile()">X</button>
+            <button mat-button (click)="clear()">Y</button>
+        </div>
+
+    </mat-form-field>
+    
+    <mat-form-field class="example-full" [formGroup]="form">
+        <mat-label>output</mat-label>
+        <textarea matInput rows="30" formControlName="output"></textarea>
+    </mat-form-field>
+    
+</form>
+
+<div>
+    <button mat-button (click)="compile()">Do</button>
+    <button mat-button (click)="clear()">Clear</button>
+</div>

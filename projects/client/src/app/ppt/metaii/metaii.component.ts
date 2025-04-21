@@ -62,18 +62,28 @@ export class MetaiiComponent {
         const i = form.value.input ?? '';
         const p = form.value.program ?? '';
 
-        this.outputControl.setValue(
-            this.metaii.compile(i, p)
-        );
+        try {
+            this.outputControl.setValue(this.metaii.compile(i, p));
+        } catch(e) {
+            alert(e);
+        }
     }
 
     compare() {
         const form = this.form;
-        const p = (form.value.program ?? '').trim();
-        const o = (form.value.output ?? '').trim();
+        const p = (form.value.program ?? '');
+        const o = (form.value.output ?? '');
         alert(
             (p === o) ?
             'OK' : 'NO'
         );
+    }
+
+    copy() {
+        this.programControl.setValue((this.form.value.output ?? ''));
+    }
+
+    clear() {
+        this.outputControl.setValue('');
     }
 }

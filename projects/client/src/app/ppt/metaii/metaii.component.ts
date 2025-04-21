@@ -1,19 +1,26 @@
 import { Component } from '@angular/core';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormBuilder, FormControl, FormGroup, FormsModule} from '@angular/forms';
-import {PPTTextComponent} from '../text/text.component';
-import { PPTModel } from '@ppt';
-import { PPTFormComponent } from '../form/ppt-form/ppt-form.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { PPTFormModule } from '../../ppt-form.module';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MetaII, c03, i03 } from '@metaii';
 
 @Component({
-  selector: 'ppt-metaii',
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, PPTFormModule],
-  templateUrl: './metaii.component.html',
-  styleUrl: './metaii.component.scss'
+    selector: 'ppt-metaii',
+    imports: [
+        MatIconModule,
+        MatDividerModule,
+        MatButtonModule,
+        FormsModule, MatFormFieldModule, MatInputModule, PPTFormModule],
+    templateUrl: './metaii.component.html',
+    styleUrl: './metaii.component.scss'
 })
 export class MetaiiComponent {
+
+    metaii = new MetaII();
 
     // model: PPTModel = {
     //     id: 'PPTMetaIIModel',
@@ -39,10 +46,34 @@ export class MetaiiComponent {
     //     ]
     // };
 
+
+    inputControl = new FormControl(i03);
+    programControl = new FormControl(c03);
+    outputControl = new FormControl();
+
     form = new FormGroup({
-        input:      new FormControl(''),
-        program:    new FormControl(''),
-        output:     new FormControl(''),
-    })
-    
+        input: this.inputControl,
+        program: this.programControl,
+        output: this.outputControl,
+    });
+
+    compile() {
+        const form = this.form;
+        const i = form.value.input ?? '';
+        const p = form.value.program ?? '';
+
+        this.outputControl.setValue(
+            this.metaii.compile(i, p)
+        );
+    }
+
+    compare() {
+        const form = this.form;
+        const p = (form.value.program ?? '').trim();
+        const o = (form.value.output ?? '').trim();
+        alert(
+            (p === o) ?
+            'OK' : 'NO'
+        );
+    }
 }

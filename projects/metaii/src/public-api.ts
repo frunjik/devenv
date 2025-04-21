@@ -3,3 +3,4 @@
  */
 
 export * from './lib';
+export * from './data';

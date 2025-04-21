@@ -2,17 +2,22 @@
 
     <mat-form-field class="example-full" [formGroup]="form">
         <mat-label>input</mat-label>
-        <input matInput formControlName="input">
+        <textarea matInput rows="30" formControlName="input"></textarea>
     </mat-form-field>
     
     <mat-form-field class="example-full" [formGroup]="form">
         <mat-label>program</mat-label>
-        <input matInput formControlName="program">
+        <textarea matInput rows="30" formControlName="program"></textarea>
     </mat-form-field>
     
     <mat-form-field class="example-full" [formGroup]="form">
         <mat-label>output</mat-label>
-        <input matInput formControlName="output">
+        <textarea matInput rows="30" formControlName="output"></textarea>
     </mat-form-field>
     
 </form>
+
+<div class="example-button-row">
+    <button mat-button (click)="compile()">Compile</button>
+    <button mat-button (click)="compare()">Compare</button>
+</div>

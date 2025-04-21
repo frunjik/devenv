@@ -25,3 +25,14 @@ ppt-text {
     height: 60vh;
 }
 
+.mat-mdc-button:not(:disabled) {
+    color: #503fad;
+}
+
+.mat-mdc-button:disabled {
+    color: #cab1b1;
+}
+
+textarea {
+    overflow-y: scroll;
+}

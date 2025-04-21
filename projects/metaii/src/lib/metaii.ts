@@ -49,7 +49,7 @@ export class MetaII {
         return this.program.nextChar();
     }
 
-    indexOfLabel(s) {
+    indexOfLabel(s: string) {
         let r = this.program.indexOf("\n" + s + "\n");
     
         if (r === -1)
@@ -293,7 +293,7 @@ export class MetaII {
     }
     
     // out - if necessary move to margin before output of s
-    out(s) {
+    out(s: string) {
         this.outputLeftMarginIfNeeded();
         // output given string
         this.outbuf.append(s);
@@ -389,8 +389,8 @@ export class MetaII {
     // CC - copy char code to output
     runextCC() {
         // VERIFY !!!!
-        const argSymbol = Number(this.readArgSymbol());
-        this.outbuf.append(String.fromCharCode(argSymbol));
+        const argSymbol = this.readArgSymbol();
+        this.outbuf.append(String.fromCharCode(argSymbol as any as number));
     }
 
     readArgString() {

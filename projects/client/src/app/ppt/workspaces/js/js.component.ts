@@ -45,12 +45,15 @@ pipe([1, 2, 3, 4, 5, 6, 7, 8, 9], [
         const form = this.form;
         const i = form.value.input ?? '';
 
+        let result;
+
         try {
-            const result = evalInScope(i, {rubico, pipe: rubico.pipe, map: rubico.map, filter: rubico.filter});
-            this.outputControl.setValue(result);
+            result = evalInScope(i, {pipe: rubico.pipe, map: rubico.map, filter: rubico.filter});
         } catch(e) {
-            alert(e);
+            result = e;
         }
+
+        this.outputControl.setValue(result);
     }
 
     clear() {

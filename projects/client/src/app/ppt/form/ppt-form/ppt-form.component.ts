@@ -64,9 +64,6 @@ export class PPTFormComponent {
 
     createFormGroup(model: PPTModel, fields: PPTField[]): FormGroup {
         const f: any = pptConvertOrderedToKeyed(fields, createAngularFormControl);
-
-        console.log(f);
-
         return new FormGroup(f);
     }
 

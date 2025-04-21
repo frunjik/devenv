@@ -1,4 +1,5 @@
 export type PPTType = string;
+export type PPTValueType = string | number | null;
 
 export interface PPTValue {
     id: string;
@@ -9,6 +10,7 @@ export interface PPTValue {
 export interface PPTField extends PPTValue {
     name: string;
     title?: string;
+    default?: PPTValueType;
 };
 
 export interface PPTModel extends PPTValue {

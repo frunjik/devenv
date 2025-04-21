@@ -8,11 +8,20 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import rubico from 'rubico';
+import { safeStringify } from '@ppt';
 
 function evalInScope(js: string, contextAsScope: Object) {
     return new Function(`with (this) { return (${js}); }`).call(contextAsScope);
 }
-  
+
+
+const rubicoText = `pipe([1, 2, 3, 4, 5, 6, 7, 8, 9], [
+    filter(n => n % 2 == 1),
+    map(n => n * n),
+    ])`;
+
+
+const safeStringifyExample = `safeStringify(window, 4)`;
 
 @Component({
     selector: 'ppt-js',
@@ -28,12 +37,7 @@ function evalInScope(js: string, contextAsScope: Object) {
 export class PPTJSComponent {
 
 
-    inputControl = new FormControl(`
-pipe([1, 2, 3, 4, 5, 6, 7, 8, 9], [
-    filter(n => n % 2 == 1),
-    map(n => n * n),
-    ])
-`);
+    inputControl = new FormControl(safeStringifyExample);
     outputControl = new FormControl();
 
     form = new FormGroup({
@@ -48,7 +52,7 @@ pipe([1, 2, 3, 4, 5, 6, 7, 8, 9], [
         let result;
 
         try {
-            result = evalInScope(i, {pipe: rubico.pipe, map: rubico.map, filter: rubico.filter});
+            result = evalInScope(i, {pipe: rubico.pipe, map: rubico.map, filter: rubico.filter, safeStringify});
         } catch(e) {
             result = e;
         }

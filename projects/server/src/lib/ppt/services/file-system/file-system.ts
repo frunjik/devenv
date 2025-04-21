@@ -10,11 +10,19 @@ export function readFile(filename: string): Promise<string> {
     return fs.promises.readFile(filename, 'utf-8');
 };
 
+export function readFiles(filenames: string[]): Promise<string[]> {
+    return Promise
+        .all(
+            filenames
+                .map(readFile)
+        );
+}
+
 export function writeFile(filename: string, contents: string): Promise<void> {
     return fs.promises.writeFile(filename, contents);
 };
 
-export function readFoldernames(foldername: string): Promise<string[]> {
+export function readFolderNames(foldername: string): Promise<string[]> {
     return fs.promises.readdir(foldername);
 };
 
@@ -25,14 +33,14 @@ export function readFileStats(filename: string): Promise<PPTFileStats> {
 export interface PPTFS {
     readFile(filename: string): Promise<string>;
     writeFile(filename: string, contents: string): Promise<void>;
-    readFoldernames(foldername: string): Promise<string[]>;
     readFileStats(filename: string): Promise<PPTFileStats>;
+    readFolderNames(foldername: string): Promise<string[]>;
 }
 
 const nodeFS: PPTFS = {
     readFile,
     writeFile,
-    readFoldernames,
+    readFolderNames,
     readFileStats
 };
 
@@ -56,7 +64,7 @@ export class PPTFileSystem {
     }
 
     readFolder(foldername: string): Promise<PPTFolderEntry[]> {
-        return this._FS.readFoldernames(path.join(this.rootpath, foldername))
+        return this._FS.readFolderNames(path.join(this.rootpath, foldername))
             .then((filenames) => this.createEntriesFromFilenames(filenames));
     }
 

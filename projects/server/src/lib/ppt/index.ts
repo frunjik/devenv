@@ -22,6 +22,7 @@ allModels.forEach((model) => {
 
 
 export * from './core';
+export * from '../../../../ppt/src/lib/helpers';
 
 // only export what can be shared between client and server
 // export * from './services/file-system/file-system.service';

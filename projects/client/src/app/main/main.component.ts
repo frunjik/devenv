@@ -5,7 +5,7 @@ import { PPTFormModule } from '../ppt-form.module';
 @Component({
     selector: 'app-main',
     imports: [
-        PPTFormComponent
+        // PPTFormComponent
         // PPTFormModule
     ],
     templateUrl: './main.component.html',

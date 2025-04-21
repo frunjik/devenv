@@ -20,13 +20,13 @@ function pptConvertOrderedToKeyed(values: PPTOrderedItems, f: Function = pptIden
     return keyed;
 }
 
-function pptConvertOrderedToNamed(values: PPTOrderedItems, f: Function = pptIdentity): PPTKeyedItems {
-    const keyed: Record<string, PPTValue> = {};
-    values.forEach((item) => {
-        keyed[item.name] = f(item);
-    });
-    return keyed;
-}
+// function pptConvertOrderedToNamed(values: PPTOrderedItems, f: Function = pptIdentity): PPTKeyedItems {
+//     const keyed: Record<string, PPTValue> = {};
+//     values.forEach((item) => {
+//         keyed[item.name] = f(item);
+//     });
+//     return keyed;
+// }
 
 // function pptConvertKeyedToOrdered(values: PPTKeyedItems, f: Function = pptIdentity): PPTValue[] {
 //     return pptKeys(values).map((key) => f(values[key]));

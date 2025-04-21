@@ -1,2 +1,18 @@
-<mat-toolbar>PPT - {{host}}</mat-toolbar>
+<mat-toolbar color="primary">
+    PPT - {{host}}
+    |
+    <nav>
+        <a href="/">Main</a>
+        |
+        <a href="/ppt/browse">Browse</a>
+        |
+        <a href="/ppt/js">Workspace JS</a>
+        |
+        <a href="/ppt/metaii">Workspace MetaII</a>
+    </nav>
+
+
+</mat-toolbar>
+
+
 <router-outlet />

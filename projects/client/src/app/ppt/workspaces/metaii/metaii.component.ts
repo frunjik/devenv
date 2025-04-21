@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
-import { PPTFormModule } from '../../ppt-form.module';
+import { PPTFormModule } from '../../../ppt-form.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MetaII, c02, c03, i03 } from '@metaii';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @Component({
     selector: 'ppt-metaii',
@@ -14,11 +15,12 @@ import { MetaII, c02, c03, i03 } from '@metaii';
         MatIconModule,
         MatDividerModule,
         MatButtonModule,
+        MatToolbar,
         FormsModule, MatFormFieldModule, MatInputModule, PPTFormModule],
     templateUrl: './metaii.component.html',
     styleUrl: './metaii.component.scss'
 })
-export class MetaiiComponent {
+export class PPTMetaiiComponent {
 
     metaii = new MetaII();
 

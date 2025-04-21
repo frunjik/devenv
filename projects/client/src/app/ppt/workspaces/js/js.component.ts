@@ -7,6 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import rubico from 'rubico';
+
+function evalInScope(js: string, contextAsScope: Object) {
+    return new Function(`with (this) { return (${js}); }`).call(contextAsScope);
+}
+  
 
 @Component({
     selector: 'ppt-js',
@@ -21,7 +27,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 })
 export class PPTJSComponent {
 
-    inputControl = new FormControl('[1, 2, 3].map(n => n * n)');
+
+    inputControl = new FormControl(`
+pipe([1, 2, 3, 4, 5, 6, 7, 8, 9], [
+    filter(n => n % 2 == 1),
+    map(n => n * n),
+    ])
+`);
     outputControl = new FormControl();
 
     form = new FormGroup({
@@ -33,11 +45,15 @@ export class PPTJSComponent {
         const form = this.form;
         const i = form.value.input ?? '';
 
+        let result;
+
         try {
-            this.outputControl.setValue(eval(i));
+            result = evalInScope(i, {pipe: rubico.pipe, map: rubico.map, filter: rubico.filter});
         } catch(e) {
-            alert(e);
+            result = e;
         }
+
+        this.outputControl.setValue(result);
     }
 
     clear() {

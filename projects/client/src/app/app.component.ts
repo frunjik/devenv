@@ -2,34 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
-
-interface NavLink {
-    name: string;
-    url: string;
-}
-
-const navLinks: NavLink[] = [
-    {
-        name: 'Home',
-        url: '/',
-    },
-    {
-        name: 'Browse',
-        url: '/ppt/browse',
-    },
-    {
-        name: 'JS',
-        url: '/ppt/js',
-    },
-    {
-        name: 'Server',
-        url: '/ppt/server',
-    },
-    {
-        name: 'MetaII',
-        url: '/ppt/metaii',
-    }
-];
+import { navLinks } from './app-nav-links';
 
 @Component({
     selector: 'app-root',

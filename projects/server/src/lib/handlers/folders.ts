@@ -1,18 +1,20 @@
 import * as express from 'express';
-import { FailureResponseBody, SuccessResponseBody } from './types.js';
 import { FileSystem } from '../filesystem/filesystem.js';
-import { FolderEntry } from '../filesystem/types.js';
+import { PPTFolderEntry, PPTResult } from '@ppt';
 
 export async function getFolders(req: express.Request, res: express.Response, next: express.NextFunction) {
    
-    const foldername = req.query['path'] as string ?? '';
+    const pathname = req.query['path'] as string ?? '';
 
-    if (foldername.includes('..')) {
+    if (pathname.includes('..')) {
 
-        const response: FailureResponseBody = {
-            error: {
-                message: `ERROR: invalid path '${foldername}'`
-            }
+        const response = {
+            failure: [
+                {
+                    code: 'Incorrect',
+                    message: `ERROR: invalid path '${pathname}'`
+                }
+            ]
         };
 
         res
@@ -24,10 +26,10 @@ export async function getFolders(req: express.Request, res: express.Response, ne
         try {
     
             const filesystem: FileSystem = req.app.locals['fileSystem'];
-            const data: FolderEntry[] = await filesystem.readFolder(foldername);
+            const data: PPTFolderEntry[] = await filesystem.readFolder(pathname);
     
-            const response: SuccessResponseBody<FolderEntry[]> = {
-                data
+            const response: PPTResult<PPTFolderEntry[]> = {
+                success: data
             };
     
             res.json(response);
@@ -36,15 +38,18 @@ export async function getFolders(req: express.Request, res: express.Response, ne
     
             if ('ENOENT' === err.code) {
     
-                const result: FailureResponseBody = {
-                    error: {
-                        message: `ERROR: invalid path '${foldername}'`
-                    }
+                const response = {
+                    failure: [
+                        {
+                            code: 'Incorrect',
+                            message: `ERROR: invalid path '${pathname}'`
+                        }
+                    ]
                 };
-    
+        
                 res
                     .status(400)
-                    .send(result);
+                    .send(response);
     
             } else {
     

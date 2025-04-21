@@ -1,6 +1,6 @@
 import * as express from 'express';
-import { FailureResponseBody, SuccessResponseBody } from './types.js';
 import { FileSystem } from '../filesystem/filesystem.js';
+import { PPTResult } from '@ppt';
 
 export async function getFiles(req: express.Request, res: express.Response, next: express.NextFunction) {
    
@@ -8,10 +8,13 @@ export async function getFiles(req: express.Request, res: express.Response, next
 
     if (!filename) {
 
-        const response: FailureResponseBody = {
-            error: {
-                message: `ERROR: invalid path ''`
-            }
+        const response = {
+            failure: [
+                {
+                    code: 'Incorrect',
+                    message: `ERROR: invalid path '${filename}'`
+                }
+            ]
         };
 
         res
@@ -25,8 +28,8 @@ export async function getFiles(req: express.Request, res: express.Response, next
             const filesystem: FileSystem = req.app.locals['fileSystem'];
             const data: string = await filesystem.readFile(filename);
 
-            const response: SuccessResponseBody<string> = {
-                data
+            const response: PPTResult<string> = {
+                success: data
             };
 
             res.json(response);
@@ -35,12 +38,15 @@ export async function getFiles(req: express.Request, res: express.Response, next
 
             if ('ENOENT' === err.code) {
 
-                const response: FailureResponseBody = {
-                    error: {
-                        message: `ERROR: invalid path '${filename}'`
-                    }
+                const response = {
+                    failure: [
+                        {
+                            code: 'Incorrect',
+                            message: `ERROR: invalid path '${filename}'`
+                        }
+                    ]
                 };
-
+        
                 res
                     .status(400)
                     .send(response);
@@ -61,10 +67,13 @@ export async function postFiles(req: express.Request, res: express.Response, nex
 
     if (!filename) {
 
-        const response: FailureResponseBody = {
-            error: {
-                message: `ERROR: invalid path ''`
-            }
+        const response = {
+            failure: [
+                {
+                    code: 'Incorrect',
+                    message: `ERROR: invalid path '${filename}'`
+                }
+            ]
         };
 
         res
@@ -78,8 +87,8 @@ export async function postFiles(req: express.Request, res: express.Response, nex
             const filesystem: FileSystem = req.app.locals['fileSystem'];
             filesystem.writeFile(filename, contents);
 
-            const response: SuccessResponseBody<string> = {
-                data: 'OK'
+            const response: PPTResult<string> = {
+                success: 'OK'
             };
 
             res.json(response);
@@ -88,12 +97,15 @@ export async function postFiles(req: express.Request, res: express.Response, nex
 
             if ('ENOENT' === err.code) {
 
-                const response: FailureResponseBody = {
-                    error: {
-                        message: `ERROR: invalid path '${filename}'`
-                    }
+                const response = {
+                    failure: [
+                        {
+                            code: 'Incorrect',
+                            message: `ERROR: invalid path '${filename}'`
+                        }
+                    ]
                 };
-
+        
                 res
                     .status(400)
                     .send(response);

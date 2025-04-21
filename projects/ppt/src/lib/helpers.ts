@@ -1,4 +1,4 @@
-import { PPTFailureResult } from "./types";
+import { PPTFailureResult, PPTErrorCodes } from "./types";
 
 // safely handles circular references
 export const safeStringify = (obj: any, indent = 2) => {
@@ -15,8 +15,6 @@ export const safeStringify = (obj: any, indent = 2) => {
     );
     return retVal;
 };
-
-
 
 // There are 7 primitive data types:
 // string
@@ -64,8 +62,6 @@ export function last(a: any): any {
     return (isArray(a) || isString(a)) ? a[a.length - 1] : undefined
 }
 
-
-
 export function createFailureResult(code: string, message: string): PPTFailureResult {
     return {
         failure: [
@@ -77,4 +73,6 @@ export function createFailureResult(code: string, message: string): PPTFailureRe
     };
 }
 
-
+export function createFailureIncorrect(message: string): PPTFailureResult {
+    return createFailureResult(PPTErrorCodes.Incorrect, message);
+}

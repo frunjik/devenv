@@ -2,4 +2,4 @@
  * Public API Surface of server
  */
 
-export * from './lib/start';
+export * from './start';

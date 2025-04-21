@@ -1,9 +1,9 @@
 import express, { Express, Request, RequestHandler, Response } from 'express';
 import cors from 'cors';
-import { FileSystem } from './filesystem/filesystem';
-import { getFiles, postFiles } from './handlers/files';
-import { getFolders } from './handlers/folders';
-import { runTest } from './handlers/tests';
+import { FileSystem } from './lib/filesystem/filesystem';
+import { getFiles, postFiles } from './lib/handlers/files';
+import { getFolders } from './lib/handlers/folders';
+import { runTest } from './lib/handlers/tests';
 
 // '(GET|POST) /path/:param'
 type PPTRequestMessage = string;

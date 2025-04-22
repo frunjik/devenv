@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^19.1.7",
     "@angular/platform-browser-dynamic": "^19.2.7",
     "@angular/router": "^19.2.7",
+    "@ngrx/router-store": "^19.1.0",
     "@ngrx/store": "^19.1.0",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^19.0.2",

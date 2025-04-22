@@ -10,7 +10,7 @@ import { MetaII, c02, c03, i03 } from '@metaii';
 import { MatToolbar } from '@angular/material/toolbar';
 import { metaii_codes } from './meta-code';
 import { metaii_inputs } from './meta-input';
-import { MatOption, MatSelect } from '@angular/material/select';
+import { MatOption, MatSelect, MatSelectChange } from '@angular/material/select';
 import { metaii_pairs } from './meta-pairs';
 
 
@@ -47,7 +47,9 @@ export class PPTMetaiiComponent {
     metaii_programs: NameAndContents[]  = metaii_codes;
     metaii_pairs: InputAndCodePair[]    = metaii_pairs;
 
+    // TODO: set selectPairIndex when a match is (manually) selected ....
     // selectedPairIndex = -1;
+
     selectedInputIndex = signal(-1);
     selectedProgramIndex = signal(-1);
 
@@ -65,8 +67,16 @@ export class PPTMetaiiComponent {
         return this.metaii_inputs[this.selectedInputIndex()];
     }
 
+    get selectedInputId(): string {
+        return this.selectedInput?.filename ?? '';
+    }
+
     get selectedProgram(): NameAndContents {
         return this.metaii_programs[this.selectedProgramIndex()];
+    }
+
+    get selectedProgramId(): string {
+        return this.selectedProgram?.filename ?? '';
     }
 
     compile() {
@@ -88,7 +98,7 @@ export class PPTMetaiiComponent {
         alert(
             // TODO: not foolproof - need to make newlines uniform ...
             (p === o) ?
-            'OK' : 'NO'
+            'GOOD' : 'BAD!'
         );
     }
 
@@ -100,8 +110,8 @@ export class PPTMetaiiComponent {
         this.outputControl.setValue('');
     }
 
-    inputChanged(t: any) {
-        const filename = t.value;
+    inputChanged(change: MatSelectChange) {
+        const filename = change.value;
         const index = this.metaii_inputs.findIndex((i) => i.filename === filename);
         this.selectedInputIndex.set(index);
         const text = this.selectedInput.contents;
@@ -110,8 +120,8 @@ export class PPTMetaiiComponent {
         }
     }
 
-    programChanged(t: any) {
-        const filename = t.value;
+    programChanged(change: MatSelectChange) {
+        const filename = change.value;
         const index = this.metaii_programs.findIndex((i) => i.filename === filename);
         this.selectedProgramIndex.set(index);
         const text = this.selectedProgram.contents;
@@ -120,20 +130,15 @@ export class PPTMetaiiComponent {
         }
     }
     
-    pairChanged(t: any) {
-
-        const inputAndProgramIndex: string = t.value;
+    pairChanged(change: MatSelectChange) {
+        const inputAndProgramIndex: string = change.value;
         const [input, program] = (inputAndProgramIndex ?? ',').split(',').map(Number);
-
         if (input === -1 || program === -1) {
             throw new Error(`pairPicked: not a valid pair '${inputAndProgramIndex}' => (${input}, ${program})`);
         }
 
-        // TODO: how do we set the selected item of the other combos (and not just the text ???)
         this.selectedInputIndex.set(input);
         this.selectedProgramIndex.set(program);
-
-        console.log(this.selectedInput, this.selectedProgram)
 
         this.form.setValue({
             input: this.selectedInput.contents,

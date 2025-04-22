@@ -8,7 +8,11 @@ export const metaii_pairs = [
         name: '[1] Metaii (5,5)'
     },
     {
+        id: '22,19',
+        name: '[2] Metaii - Comments and LitChar (20,22)'
+    },
+    {
         id: '20,22',
-        name: '[2] Metaii - Commants and LitChar (20,22)'
+        name: '[3] Metaii - Commants and LitChar (JS)'
     },
 ];

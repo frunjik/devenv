@@ -15,15 +15,9 @@ export class FileAccessService {
             .loadFolderEntries(fullpathname);
     }
 
-    loadFile(fullpathfilename: string): Observable<PPTFilenameAndContents> {
+    loadFile(fullpathfilename: string): Observable<string> {
         return this._bs
-            .loadFile(fullpathfilename)
-            .pipe(
-                map(
-                    (contents) => ({filename: fullpathfilename, contents}
-                )
-            )
-        );
+            .loadFile(fullpathfilename);
     }
 
     saveFile(fullpathfilename: string, contents: string): Observable<void> {

@@ -13,6 +13,7 @@ import { FileEditorComponent } from '../../file-editor/file-editor.component';
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input'; 
 import { MatIconModule } from '@angular/material/icon';
+import { FileAccessService } from '../../file-access/file-access.service';
 
 @Component({
     selector: 'app-file-browser',
@@ -39,13 +40,14 @@ export class FileBrowserComponent implements AfterViewInit {
     filename = signal<string>('');
     pathname = signal<string>('');
 
-    filterText: string = '';
+    // signals ?
     fileContent: string = '';
-    editorOptions = { theme: 'vs-dark', language: 'typescript' };
-
     folderEntries: PPTFolderEntry[] = [];
 
-    get folderNames(): string[] {
+    filterText: string = ''; // not set atm (use search input)
+    editorOptions = { theme: 'vs-dark', language: 'typescript' };
+
+    get pathNames(): string[] {
         return this.pathname().split('/');
     }
 
@@ -58,7 +60,9 @@ export class FileBrowserComponent implements AfterViewInit {
             );
     }
 
-    constructor(private backend: BackendService) {
+    constructor(private _fs: FileAccessService) {
+        // setup the route parameter change here,
+        // to receive the commands dispatched from the devenv-command service coming here via the routing
     }
     
     ngAfterViewInit(): void {
@@ -66,17 +70,21 @@ export class FileBrowserComponent implements AfterViewInit {
     }
 
     clickFileOrFolder(entry: PPTFolderEntry) {
-        const name = this.pathname() + '/' + entry.filename;
+        const fullpathfilename = this.pathname() + '/' + entry.filename;
         if (entry.isFolder) {
-            this.showFolder(name);
+            this.showFolder(fullpathfilename);
         } else {
-            this.showFile(name);
+            this.showFile(fullpathfilename);
         }
     }
 
     clickPath(i: number) {
         this.filterText = '';
-        this.showFolder(this.folderNames.slice(0, 1 + i).join('/'));
+        this.showFolder(
+            this.pathNames
+                .slice(0, 1 + i)
+                .join('/')
+        );
     }
 
     searchTextChange(text: string) {
@@ -85,14 +93,14 @@ export class FileBrowserComponent implements AfterViewInit {
 
     private showFile(filename: string) {
         this.filename.set(filename);
-        this.backend
+        this._fs
             .loadFile(filename)
             .subscribe((fileContent) => (this.fileContent = fileContent));
     }
 
     private showFolder(pathname: string) {
         this.pathname.set(pathname);
-        this.backend
+        this._fs
             .loadFolderEntries(pathname)
             .subscribe((folderEntries) => (this.folderEntries = folderEntries));
     }

@@ -2,7 +2,7 @@
     <div class="col">
 
         <div>
-            <span *ngFor="let foldername of folderNames; let i = index">
+            <span *ngFor="let foldername of pathNames; let i = index">
                 <span *ngIf="i > 0">/</span>
                 <button style="color: black" mat-button (click)="clickPath(i)">{{ foldername || "." }}</button>
             </span>

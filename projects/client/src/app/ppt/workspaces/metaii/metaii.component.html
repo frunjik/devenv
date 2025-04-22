@@ -5,9 +5,9 @@
     <div class="col">
         <mat-form-field>
             <mat-label>Input</mat-label>
-            <mat-select (selectionChange)="inputPicked($event)">
+            <mat-select (selectionChange)="inputChanged($event)" [selected]="selectedInput">
                 @for (item of metaii_inputs; track $index) {
-                    <mat-option [value]="item.filename">{{item.filename}}</mat-option>
+                    <mat-option [value]="item.filename">[{{$index}}] {{item.filename}}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
@@ -22,9 +22,9 @@
 
         <mat-form-field>
             <mat-label>Code</mat-label>
-            <mat-select (selectionChange)="codePicked($event)">
-                @for (item of metaii_codes; track $index) {
-                    <mat-option [value]="item.filename">{{item.filename}}</mat-option>
+            <mat-select (selectionChange)="programChanged($event)" [value]="selectedProgram">
+                @for (item of metaii_programs; track $index) {
+                    <mat-option [value]="item.filename">[{{$index}}] {{item.filename}}</mat-option>
                 }
             </mat-select>
         </mat-form-field>
@@ -39,7 +39,10 @@
 
         <mat-form-field>
             <mat-label></mat-label>
-            <mat-select disabled>
+            <mat-select (selectionChange)="pairChanged($event)">
+                @for (item of metaii_pairs; track $index) {
+                    <mat-option [value]="item.id">{{item.name}}</mat-option>
+                }
             </mat-select>
         </mat-form-field>
     

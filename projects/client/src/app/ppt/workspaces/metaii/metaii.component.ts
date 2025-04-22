@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
@@ -11,7 +11,18 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { metaii_codes } from './meta-code';
 import { metaii_inputs } from './meta-input';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { first } from '@ppt';
+import { metaii_pairs } from './meta-pairs';
+
+
+interface InputAndCodePair {
+    id: string;
+    name: string;
+}
+
+interface NameAndContents {
+    filename: string,
+    contents: string
+};
 
 @Component({
     selector: 'ppt-metaii',
@@ -32,8 +43,13 @@ export class PPTMetaiiComponent {
 
     rows = 50;
 
-    metaii_codes = metaii_codes;
-    metaii_inputs = metaii_inputs;
+    metaii_inputs: NameAndContents[]    = metaii_inputs;
+    metaii_programs: NameAndContents[]  = metaii_codes;
+    metaii_pairs: InputAndCodePair[]    = metaii_pairs;
+
+    // selectedPairIndex = -1;
+    selectedInputIndex = signal(-1);
+    selectedProgramIndex = signal(-1);
 
     inputControl = new FormControl(i03);
     programControl = new FormControl(c02);
@@ -44,6 +60,14 @@ export class PPTMetaiiComponent {
         program: this.programControl,
         output: this.outputControl,
     });
+
+    get selectedInput(): NameAndContents {
+        return this.metaii_inputs[this.selectedInputIndex()];
+    }
+
+    get selectedProgram(): NameAndContents {
+        return this.metaii_programs[this.selectedProgramIndex()];
+    }
 
     compile() {
         const i = this.inputControl.value ?? '';
@@ -59,9 +83,10 @@ export class PPTMetaiiComponent {
     }
 
     compare() {
-        const p = this.programControl.value;
-        const o = this.outputControl.value;
+        const p = this.programControl.value?.trim();
+        const o = this.outputControl.value?.trim();
         alert(
+            // TODO: not foolproof - need to make newlines uniform ...
             (p === o) ?
             'OK' : 'NO'
         );
@@ -75,19 +100,45 @@ export class PPTMetaiiComponent {
         this.outputControl.setValue('');
     }
 
-    inputPicked(t: any) {
+    inputChanged(t: any) {
         const filename = t.value;
-        const input = first(this.metaii_inputs.filter(c => c.filename === filename));
-        if (input) {
-            this.inputControl.setValue(input.contents);
+        const index = this.metaii_inputs.findIndex((i) => i.filename === filename);
+        this.selectedInputIndex.set(index);
+        const text = this.selectedInput.contents;
+        if (text) {
+            this.inputControl.setValue(text);
         }
     }
 
-    codePicked(t: any) {
+    programChanged(t: any) {
         const filename = t.value;
-        const code = first(this.metaii_codes.filter(c => c.filename === filename));
-        if (code) {
-            this.programControl.setValue(code.contents);
+        const index = this.metaii_programs.findIndex((i) => i.filename === filename);
+        this.selectedProgramIndex.set(index);
+        const text = this.selectedProgram.contents;
+        if (text) {
+            this.programControl.setValue(text);
         }
+    }
+    
+    pairChanged(t: any) {
+
+        const inputAndProgramIndex: string = t.value;
+        const [input, program] = (inputAndProgramIndex ?? ',').split(',').map(Number);
+
+        if (input === -1 || program === -1) {
+            throw new Error(`pairPicked: not a valid pair '${inputAndProgramIndex}' => (${input}, ${program})`);
+        }
+
+        // TODO: how do we set the selected item of the other combos (and not just the text ???)
+        this.selectedInputIndex.set(input);
+        this.selectedProgramIndex.set(program);
+
+        console.log(this.selectedInput, this.selectedProgram)
+
+        this.form.setValue({
+            input: this.selectedInput.contents,
+            program: this.selectedProgram.contents,
+            output: '',
+        });
     }
 }

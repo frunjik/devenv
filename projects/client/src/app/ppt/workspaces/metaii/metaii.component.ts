@@ -30,29 +30,7 @@ export class PPTMetaiiComponent {
 
     metaii = new MetaII();
 
-    // model: PPTModel = {
-    //     id: 'PPTMetaIIModel',
-    //     name: 'MetaII',
-    //     type: 'PPTMetaIIModel',
-    //     title: 'MetaII',
-    //     fields: [
-    //         {
-    //             id: 'input',
-    //             type: 'string',
-    //             name: 'input'
-    //         },
-    //         {
-    //             id: 'program',
-    //             type: 'string',
-    //             name: 'program'
-    //         },
-    //         {
-    //             id: 'output',
-    //             type: 'string',
-    //             name: 'output'
-    //         }
-    //     ]
-    // };
+    rows = 50;
 
     metaii_codes = metaii_codes;
     metaii_inputs = metaii_inputs;

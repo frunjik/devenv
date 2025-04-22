@@ -14,7 +14,7 @@
     
         <mat-form-field class="example-full" [formGroup]="form">
             <mat-label>input</mat-label>
-            <textarea matInput rows="30" formControlName="input"></textarea>
+            <textarea matInput rows="{{rows}}" formControlName="input"></textarea>
         </mat-form-field>
     </div>
 
@@ -31,7 +31,7 @@
     
         <mat-form-field class="example-full" [formGroup]="form">
             <mat-label>program</mat-label>
-            <textarea matInput rows="30" formControlName="program"></textarea>
+            <textarea matInput rows="{{rows}}" formControlName="program"></textarea>
         </mat-form-field>
     </div>
 
@@ -39,7 +39,7 @@
 
         <mat-form-field class="example-full" [formGroup]="form">
             <mat-label>output</mat-label>
-            <textarea matInput rows="30" formControlName="output"></textarea>
+            <textarea matInput rows="{{rows}}" formControlName="output"></textarea>
         </mat-form-field>
     </div>
     

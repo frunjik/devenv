@@ -13,7 +13,6 @@ import { metaii_inputs } from './meta-input';
 import { MatOption, MatSelect, MatSelectChange } from '@angular/material/select';
 import { metaii_pairs } from './meta-pairs';
 
-
 interface InputAndCodePair {
     id: string;
     name: string;

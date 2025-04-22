@@ -29,7 +29,12 @@ export class PPTServerComponent {
     constructor(private _bs: BackendService) {
     }
 
-    inputControl = new FormControl();
+    inputControl = new FormControl(`
+{
+    "name": "test",
+    "data": 69
+}
+    `);
     outputControl = new FormControl();
 
     form = new FormGroup({
@@ -38,8 +43,12 @@ export class PPTServerComponent {
     });
 
     runTest() {
+
+        const v = this.inputControl.value ?? '';
+        const values = JSON.parse(v);
+
         this._bs
-            .runTest('test')
+            .runTest(values.name, JSON.stringify(values.data))
             .subscribe(this.setOutput);
     }
 

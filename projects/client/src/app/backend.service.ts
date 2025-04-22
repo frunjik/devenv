@@ -20,8 +20,8 @@ export class BackendService {
         return (((window as unknown) as any).host) ?? this.defaultHost
     }
 
-    runTest(testname: string): Observable<string> {
-        return this.get<string>(`tests/${testname}`)
+    runTest(testname: string, data: any): Observable<string> {
+        return this.post<string>(`tests/${testname}`, data)
             .pipe(
                 catchError(err => {
                     this.logError(`runTest("${testname}")`, err);

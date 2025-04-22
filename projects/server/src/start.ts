@@ -15,7 +15,7 @@ export interface PPTRoute {
 
 const routes: PPTRoute[] = [
     {
-        message: 'GET /tests/:test', 
+        message: 'POST /tests/:test', 
         handler: runTest
     },
     {

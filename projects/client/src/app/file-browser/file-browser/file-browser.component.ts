@@ -93,7 +93,7 @@ export class FileBrowserComponent implements AfterViewInit {
     private showFolder(pathname: string) {
         this.pathname.set(pathname);
         this.backend
-            .loadFolder(pathname)
+            .loadFolderEntries(pathname)
             .subscribe((folderEntries) => (this.folderEntries = folderEntries));
     }
 }

@@ -18,7 +18,8 @@ interface InputAndCodePair {
     name: string;
 }
 
-interface NameAndContents {
+// move to ppt
+export interface FilenameAndContents {
     filename: string,
     contents: string
 };
@@ -42,8 +43,8 @@ export class PPTMetaiiComponent {
 
     rows = 50;
 
-    metaii_inputs: NameAndContents[]    = metaii_inputs;
-    metaii_programs: NameAndContents[]  = metaii_codes;
+    metaii_inputs: FilenameAndContents[]    = metaii_inputs;
+    metaii_programs: FilenameAndContents[]  = metaii_codes;
     metaii_pairs: InputAndCodePair[]    = metaii_pairs;
 
     // TODO: set selectPairIndex when a match is (manually) selected ....
@@ -62,7 +63,7 @@ export class PPTMetaiiComponent {
         output: this.outputControl,
     });
 
-    get selectedInput(): NameAndContents {
+    get selectedInput(): FilenameAndContents {
         return this.metaii_inputs[this.selectedInputIndex()];
     }
 
@@ -70,7 +71,7 @@ export class PPTMetaiiComponent {
         return this.selectedInput?.filename ?? '';
     }
 
-    get selectedProgram(): NameAndContents {
+    get selectedProgram(): FilenameAndContents {
         return this.metaii_programs[this.selectedProgramIndex()];
     }
 

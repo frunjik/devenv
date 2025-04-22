@@ -11,13 +11,13 @@ import { PPTFolderEntry, PPTResult } from '@ppt';
 })
 export class BackendService {
 
-    private defaultHost = 'http://localhost:3000/';
-    private httpservice = inject(HttpClient);
+    private _defaultHost = 'http://localhost:3000/';
+    private _httpservice = inject(HttpClient);
 
     constructor() { }
 
     get host(): string {
-        return (((window as unknown) as any).host) ?? this.defaultHost
+        return (((window as unknown) as any).host) ?? this._defaultHost;
     }
 
     runTest(testname: string, data: any): Observable<PPTResult<string>> {
@@ -31,34 +31,34 @@ export class BackendService {
             ;
     }
 
-    loadFile(pathname: string): Observable<string> {
-        return this.get<string>(`files?path=${pathname}`)
+    loadFile(fullpathfilename: string): Observable<string> {
+        return this.get<string>(`files?path=${fullpathfilename}`)
             .pipe(
                 map(data => data.success!),
                 catchError(err => {
-                    this.logError(`loadFile("${pathname}")`, err);
+                    this.logError(`loadFile("${fullpathfilename}")`, err);
                     return of('');
                 })
             );
     }
 
-    saveFile(pathname: string, contents: string): Observable<string> {
-        return this.post<any>(`files?path=${pathname}`, {data: contents})
+    saveFile(fullpathfilename: string, contents: string): Observable<void> {
+        return this.post<any>(`files?path=${fullpathfilename}`, {data: contents})
             .pipe(
                 map(data => data.success!),
                 catchError(err => {
-                    this.logError(`saveFile("${pathname}")`, err);
-                    return of('');
+                    this.logError(`saveFile("${fullpathfilename}")`, err);
+                    return of();
                 })
             );
     }
 
-    loadFolder(pathname: string): Observable<PPTFolderEntry[]> {
-        return this.get<PPTFolderEntry[]>(`folders?path=${pathname}`)
+    loadFolderEntries(fullpathfilename: string): Observable<PPTFolderEntry[]> {
+        return this.get<PPTFolderEntry[]>(`folders?path=${fullpathfilename}`)
             .pipe(
                 map(data => data.success!),
                 catchError(err => {
-                    this.logError(`loadFolder("${pathname}")`, err);
+                    this.logError(`loadFolderEntries("${fullpathfilename}")`, err);
                     return of([]);
                 })
             );
@@ -70,14 +70,14 @@ export class BackendService {
     }
 
     private get<T>(resource: string): Observable<PPTResult<T>> {
-        return this.httpservice.get<PPTResult<T>>(this.host + resource)
+        return this._httpservice.get<PPTResult<T>>(this.host + resource)
             // .pipe(
             //     map(data => data.success!),
             // );
     }
 
     private post<T>(resource: string, data: any): Observable<PPTResult<T>> {
-        return this.httpservice.post<PPTResult<T>>(this.host + resource, data)
+        return this._httpservice.post<PPTResult<T>>(this.host + resource, data)
             // .pipe(
             //     map(data => data.success!),
             // );

@@ -30,6 +30,8 @@ export class PPTServerComponent {
     constructor(private _bs: BackendService) {
     }
 
+    rows = 40;
+
     inputControl = new FormControl(`
 {
     "name": "test",

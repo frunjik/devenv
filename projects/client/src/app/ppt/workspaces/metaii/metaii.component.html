@@ -2,20 +2,46 @@
 
 <form class="row">
 
-    <mat-form-field class="example-full" [formGroup]="form">
-        <mat-label>input</mat-label>
-        <textarea matInput rows="30" formControlName="input"></textarea>
-    </mat-form-field>
+    <div class="col">
+        <mat-form-field>
+            <mat-label>Input</mat-label>
+            <mat-select (selectionChange)="inputPicked($event)">
+                @for (item of metaii_inputs; track $index) {
+                    <mat-option [value]="item.filename">{{item.filename}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
     
-    <mat-form-field class="example-full" [formGroup]="form">
-        <mat-label>program</mat-label>
-        <textarea matInput rows="30" formControlName="program"></textarea>
-    </mat-form-field>
+        <mat-form-field class="example-full" [formGroup]="form">
+            <mat-label>input</mat-label>
+            <textarea matInput rows="30" formControlName="input"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="col">
+
+        <mat-form-field>
+            <mat-label>Code</mat-label>
+            <mat-select (selectionChange)="codePicked($event)">
+                @for (item of metaii_codes; track $index) {
+                    <mat-option [value]="item.filename">{{item.filename}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
     
-    <mat-form-field class="example-full" [formGroup]="form">
-        <mat-label>output</mat-label>
-        <textarea matInput rows="30" formControlName="output"></textarea>
-    </mat-form-field>
+        <mat-form-field class="example-full" [formGroup]="form">
+            <mat-label>program</mat-label>
+            <textarea matInput rows="30" formControlName="program"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="col">
+
+        <mat-form-field class="example-full" [formGroup]="form">
+            <mat-label>output</mat-label>
+            <textarea matInput rows="30" formControlName="output"></textarea>
+        </mat-form-field>
+    </div>
     
 </form>
 

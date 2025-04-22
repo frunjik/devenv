@@ -8,10 +8,16 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MetaII, c02, c03, i03 } from '@metaii';
 import { MatToolbar } from '@angular/material/toolbar';
+import { metaii_codes } from './meta-code';
+import { metaii_inputs } from './meta-input';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { first } from '@ppt';
 
 @Component({
     selector: 'ppt-metaii',
     imports: [
+        MatSelect,
+        MatOption,
         MatIconModule,
         MatDividerModule,
         MatButtonModule,
@@ -48,6 +54,8 @@ export class PPTMetaiiComponent {
     //     ]
     // };
 
+    metaii_codes = metaii_codes;
+    metaii_inputs = metaii_inputs;
 
     inputControl = new FormControl(i03);
     programControl = new FormControl(c02);
@@ -87,5 +95,21 @@ export class PPTMetaiiComponent {
 
     clear() {
         this.outputControl.setValue('');
+    }
+
+    inputPicked(t: any) {
+        const filename = t.value;
+        const input = first(this.metaii_inputs.filter(c => c.filename === filename));
+        if (input) {
+            this.inputControl.setValue(input.contents);
+        }
+    }
+
+    codePicked(t: any) {
+        const filename = t.value;
+        const code = first(this.metaii_codes.filter(c => c.filename === filename));
+        if (code) {
+            this.programControl.setValue(code.contents);
+        }
     }
 }

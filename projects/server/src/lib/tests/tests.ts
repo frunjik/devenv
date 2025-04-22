@@ -1,9 +1,5 @@
 import { PPTResult } from '@ppt';
-import { readFolderNames } from '../ppt/services/file-system/file-system';
-
-export function assembleMetaIISelectDatasets(): Promise<any> {
-    return readFolderNames('./projects/metaii/src/data/input');
-}
+import { assembleMetaIISelectDatasets } from './metaii-data-conversion';
 
 function testNotFound(testname: string) {
     return {

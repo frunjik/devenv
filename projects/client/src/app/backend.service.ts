@@ -20,19 +20,21 @@ export class BackendService {
         return (((window as unknown) as any).host) ?? this.defaultHost
     }
 
-    runTest(testname: string, data: any): Observable<string> {
+    runTest(testname: string, data: any): Observable<PPTResult<string>> {
         return this.post<string>(`tests/${testname}`, data)
-            .pipe(
-                catchError(err => {
-                    this.logError(`runTest("${testname}")`, err);
-                    return of('');
-                })
-            );
+            // .pipe(
+            //     catchError(err => {
+            //         this.logError(`runTest("${testname}")`, err);
+            //         return of();
+            //     })
+            // )
+            ;
     }
 
     loadFile(pathname: string): Observable<string> {
         return this.get<string>(`files?path=${pathname}`)
             .pipe(
+                map(data => data.success!),
                 catchError(err => {
                     this.logError(`loadFile("${pathname}")`, err);
                     return of('');
@@ -43,6 +45,7 @@ export class BackendService {
     saveFile(pathname: string, contents: string): Observable<string> {
         return this.post<any>(`files?path=${pathname}`, {data: contents})
             .pipe(
+                map(data => data.success!),
                 catchError(err => {
                     this.logError(`saveFile("${pathname}")`, err);
                     return of('');
@@ -53,6 +56,7 @@ export class BackendService {
     loadFolder(pathname: string): Observable<PPTFolderEntry[]> {
         return this.get<PPTFolderEntry[]>(`folders?path=${pathname}`)
             .pipe(
+                map(data => data.success!),
                 catchError(err => {
                     this.logError(`loadFolder("${pathname}")`, err);
                     return of([]);
@@ -65,17 +69,17 @@ export class BackendService {
         alert(message);
     }
 
-    private get<T>(resource: string): Observable<T> {
+    private get<T>(resource: string): Observable<PPTResult<T>> {
         return this.httpservice.get<PPTResult<T>>(this.host + resource)
-            .pipe(
-                map(data => data.success!),
-            );
+            // .pipe(
+            //     map(data => data.success!),
+            // );
     }
 
-    private post<T>(resource: string, data: any): Observable<T> {
+    private post<T>(resource: string, data: any): Observable<PPTResult<T>> {
         return this.httpservice.post<PPTResult<T>>(this.host + resource, data)
-            .pipe(
-                map(data => data.success!),
-            );
+            // .pipe(
+            //     map(data => data.success!),
+            // );
     }
 }

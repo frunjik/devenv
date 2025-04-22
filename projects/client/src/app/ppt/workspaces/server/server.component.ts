@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BackendService } from '../../../backend.service';
+import { PPTResult } from '@ppt';
 
 function separator(): string {
     return `\n----------------------------------------------------------------------------------------${new Date().toISOString()}\n`;
@@ -57,7 +58,7 @@ export class PPTServerComponent {
     }
 
     // worth it ???
-    setOutput = (value: string) => {
-        this.outputControl.setValue(value)
+    setOutput = (value: PPTResult<string>) => {
+        this.outputControl.setValue(JSON.stringify(value, null, 4));
     }
 }

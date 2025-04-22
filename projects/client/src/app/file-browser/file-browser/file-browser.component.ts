@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, signal } from '@angular/core';
-import { BackendService } from '../../backend.service';
 import { PPTFolderEntry } from '@ppt';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -14,6 +13,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input'; 
 import { MatIconModule } from '@angular/material/icon';
 import { FileAccessService } from '../../file-access/file-access.service';
+import { Store } from '@ngrx/store';
+
+
+export interface FileBrowserState {
+    fullpathname: string;
+    folderEntries: PPTFolderEntry[];
+}
+
+export interface FileEditorState {
+    fullpathfilename: string;
+    fileContents: string;
+}
 
 @Component({
     selector: 'app-file-browser',
@@ -60,9 +71,14 @@ export class FileBrowserComponent implements AfterViewInit {
             );
     }
 
-    constructor(private _fs: FileAccessService) {
+    constructor(
+        private _st: Store,
+        private _fs: FileAccessService,
+    ) {
         // setup the route parameter change here,
         // to receive the commands dispatched from the devenv-command service coming here via the routing
+
+        // this._st.dispatch(() => loadBook({ id: this.bookId() })));
     }
     
     ngAfterViewInit(): void {

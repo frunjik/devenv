@@ -13,12 +13,12 @@ export const navLinks: NavLink[] = [
         url: '/ppt/browse',
     },
     {
-        name: 'JS',
-        url: '/ppt/js',
-    },
-    {
         name: 'Server',
         url: '/ppt/server',
+    },
+    {
+        name: 'JS',
+        url: '/ppt/js',
     },
     {
         name: 'MetaII',

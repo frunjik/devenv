@@ -11,20 +11,16 @@ export const routes: Routes = [
         component: MainComponent
     },
     {
+        path: 'ppt/server',
+        component: PPTServerComponent
+    },
+    {
         path: 'ppt/js',
         component: PPTJSComponent
     },
     {
         path: 'ppt/metaii',
         component: PPTMetaiiComponent
-    },
-    {
-        path: 'ppt/js',
-        component: PPTJSComponent
-    },
-    {
-        path: 'ppt/server',
-        component: PPTServerComponent
     },
     {
         path: 'ppt/browse',

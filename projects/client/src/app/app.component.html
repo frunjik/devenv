@@ -1,11 +1,17 @@
 <mat-toolbar color="primary">
     PPT - {{host}}
     <nav>
-
         @for(link of navLinks; track $index) {
             |
             <a href="{{link.url}}">{{link.name}}</a>
         }
+    </nav>
+
+    <div class="spacer"></div>
+
+    <nav>
+        <button mat-button (click)="browseFolder()">Browse</button>
+        <button mat-button (click)="editFile()">Edit</button>
     </nav>
 
 

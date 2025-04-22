@@ -4,9 +4,6 @@ import { RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { navLinks } from './app-nav-links';
 import { MatButton } from '@angular/material/button';
-import { DevenvCommandsService } from './devenv-commands.service';
-import { browseFolder } from './devenv/devenv-actions';
-import { Store } from '@ngrx/store';
 
 @Component({
     selector: 'app-root',
@@ -20,8 +17,6 @@ export class AppComponent {
 
     constructor(
         private _bs: BackendService,
-        // private _cs: DevenvCommandsService
-        // private _st: Store
     ) {
 
     }
@@ -31,11 +26,9 @@ export class AppComponent {
     }
 
     editFile() {
-        // this._cs.editFile();
     }
     
     browseFolder() {
-        // this._st.dispatch(browseFolder({fullpathname: ''}))
     }
 
 }

@@ -4,7 +4,11 @@ import { performTest } from '../tests/tests';
 
 export async function runTest(req: express.Request, res: express.Response, next: express.NextFunction) {
    
-    res.json(performTest(req.params['test']));
+    const result = await performTest(req.params['test']);
+
+    console.log(result);
+
+    res.json(result);
 
 }
 

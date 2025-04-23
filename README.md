@@ -3,6 +3,17 @@
 
 ## Higly Experimental - Not Fit For Production
 
+## Dependencies
+- [NodeJS / npm](https://nodejs.org/)
+```
+npm install -g @angular/cli
+```
+
+- [Angular CLI](https://angular.dev/tools/cli)
+```
+npm install -g @angular/cli
+```
+
 ## Run
 
 ### Server

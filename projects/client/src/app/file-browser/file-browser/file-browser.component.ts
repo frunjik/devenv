@@ -6,14 +6,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FolderEntriesComponent } from '../folder-entries/folder-entries.component';
 // import {SearchInputComponent} from '../../search-input/search-input.component';
 import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { FileEditorComponent } from '../../file-editor/file-editor.component';
 
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { MatInputModule } from '@angular/material/input'; 
 import { MatIconModule } from '@angular/material/icon';
 import { FileAccessService } from '../../file-access/file-access.service';
-import { Store } from '@ngrx/store';
 import { from, Observable, of, startWith } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 

@@ -12,16 +12,17 @@ import {PPTFolderEntry} from '@ppt';
 })
 export class FolderEntriesComponent {
     @Input()
-    entries: PPTFolderEntry[] = [];
+    entries: ReadonlyArray<PPTFolderEntry> = [];
+    // entries: PPTFolderEntry[] = [];
 
     @Output()
     clickFileOrFolder = new EventEmitter();
 
-    get files(): PPTFolderEntry[] {
+    get files(): ReadonlyArray<PPTFolderEntry> {
         return this.entries?.filter((e) => !e.isFolder) ?? [];
     }
 
-    get folders(): PPTFolderEntry[] {
+    get folders(): ReadonlyArray<PPTFolderEntry> {
         return this.entries?.filter((e) => e.isFolder) ?? [];
     }
 }

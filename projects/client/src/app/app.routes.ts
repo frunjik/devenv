@@ -26,5 +26,9 @@ export const routes: Routes = [
         path: 'ppt/browse',
         component: FileBrowserComponent
     },
+    {
+        path: 'ppt/edit',
+        component: FileBrowserComponent
+    },
     // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

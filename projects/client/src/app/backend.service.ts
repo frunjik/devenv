@@ -53,8 +53,8 @@ export class BackendService {
             );
     }
 
-    loadFolderEntries(fullpathfilename: string): Observable<PPTFolderEntry[]> {
-        return this.get<PPTFolderEntry[]>(`folders?path=${fullpathfilename}`)
+    loadFolderEntries(fullpathfilename: string): Observable<ReadonlyArray<PPTFolderEntry>> {
+        return this.get<ReadonlyArray<PPTFolderEntry>>(`folders?path=${fullpathfilename}`)
             .pipe(
                 map(data => data.success!),
                 catchError(err => {
@@ -66,7 +66,7 @@ export class BackendService {
 
     logError(message: string, e: Error) {
         console.error(`ERROR BackendService.${message}`, e);
-        alert(message);
+        // alert(message);
     }
 
     private get<T>(resource: string): Observable<PPTResult<T>> {

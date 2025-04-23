@@ -10,8 +10,13 @@
     <div class="spacer"></div>
 
     <nav>
-        <button mat-button (click)="browseFolder()">Browse</button>
-        <button mat-button (click)="editFile()">Edit</button>
+        <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './projects/client/src/app/app.component.ts'}">
+            Client
+        </a>
+        |
+        <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './projects/server/src/start.ts'}">
+            Server
+        </a>            
     </nav>
 
 

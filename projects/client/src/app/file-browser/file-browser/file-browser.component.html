@@ -13,11 +13,18 @@
     label="Filter..."
     placeHolder=""
     ></app-search-input> -->
-
+        
         <div class="folders">
             <app-folder-entries [entries]="filteredEntries"
-                (clickFileOrFolder)="clickFileOrFolder($event)"></app-folder-entries>
+                (clickFileOrFolder)="clickFileOrFolder($event)">
+            </app-folder-entries>
         </div>
+
+        <!-- <div class="folders">
+            <app-folder-entries [entries]="folderEntries$ | async"
+                (clickFileOrFolder)="clickFileOrFolder($event)">
+            </app-folder-entries>
+        </div>  -->
     </div>
     <div>
         <!-- <mat-form-field>

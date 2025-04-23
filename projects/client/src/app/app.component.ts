@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { navLinks } from './app-nav-links';
 import { MatButton } from '@angular/material/button';
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, MatToolbarModule, MatButton],
+    imports: [RouterOutlet, MatToolbarModule, MatButton, RouterLink],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
@@ -17,8 +17,8 @@ export class AppComponent {
 
     constructor(
         private _bs: BackendService,
+        private _rt: Router
     ) {
-
     }
 
     get host(): string {
@@ -29,6 +29,13 @@ export class AppComponent {
     }
     
     browseFolder() {
+
+        this._rt.navigate(['/ppt/edit', 'fullpathfilename', './scratch/TODO.md'])
+
+        // this._bs.loadFolderEntries('')
+        //     .subscribe(() => {
+
+        //     });
     }
 
 }

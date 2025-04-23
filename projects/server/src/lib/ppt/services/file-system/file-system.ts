@@ -63,7 +63,7 @@ export class PPTFileSystem {
         return this._FS.writeFile(path.join(this.rootpath, filename), contents);
     }
 
-    readFolder(foldername: string): Promise<PPTFolderEntry[]> {
+    readFolder(foldername: string): Promise<ReadonlyArray<PPTFolderEntry>> {
         return this._FS.readFolderNames(path.join(this.rootpath, foldername))
             .then((filenames) => this.createEntriesFromFilenames(filenames));
     }
@@ -73,7 +73,7 @@ export class PPTFileSystem {
             .then((stat) => createFolderEntry(filename, stat.isDirectory()));
     }
 
-    createEntriesFromFilenames(filenames: string[]): Promise<PPTFolderEntry[]> {
+    createEntriesFromFilenames(filenames: ReadonlyArray<string>): Promise<ReadonlyArray<PPTFolderEntry>> {
         return Promise.all(
             filenames
                 .map((filename) => this.createEntryFromFilename(filename))

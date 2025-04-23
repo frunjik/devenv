@@ -10,7 +10,7 @@ export class FileAccessService {
 
     constructor(private _bs: BackendService) { }
 
-    loadFolderEntries(fullpathname: string): Observable<PPTFolderEntry[]> {
+    loadFolderEntries(fullpathname: string): Observable<ReadonlyArray<PPTFolderEntry>> {
         return this._bs
             .loadFolderEntries(fullpathname);
     }

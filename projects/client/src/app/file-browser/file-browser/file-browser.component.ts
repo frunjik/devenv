@@ -9,12 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { NgFor, NgIf } from '@angular/common';
 import { FileEditorComponent } from '../../file-editor/file-editor.component';
 
-import { MatFormFieldModule } from '@angular/material/form-field'; 
-import { MatInputModule } from '@angular/material/input'; 
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FileAccessService } from '../../file-access/file-access.service';
 import { from, Observable, of, startWith } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 const answerTrue = () => true;
 
@@ -78,14 +78,15 @@ export class FileBrowserComponent implements AfterViewInit {
     constructor(
         // private _st: Store,
         private _fs: FileAccessService,
-        private _route: ActivatedRoute
+        private _route: ActivatedRoute,
+        private _router: Router
     ) {
         // setup the route parameter change here,
         // to receive the commands dispatched from the devenv-command service coming here via the routing
         this._route.queryParams
             .subscribe((params) => this.openFolderAndFile(params['fullpathfilename']));
     }
-    
+
     ngAfterViewInit(): void {
         this.showFolder(this.pathname());
     }
@@ -95,7 +96,11 @@ export class FileBrowserComponent implements AfterViewInit {
         if (entry.isFolder) {
             this.showFolder(fullpathfilename);
         } else {
-            this.showFile(fullpathfilename);
+            this._router.navigate(
+                ['/ppt/edit'],
+                { queryParams: { fullpathfilename: this.pathname() + '/' + entry.filename } }
+            );
+            // this.showFile(fullpathfilename);
         }
     }
 
@@ -113,11 +118,15 @@ export class FileBrowserComponent implements AfterViewInit {
             const parts = (fullpathfilename ?? '').split('/').slice(0, -1);
             const fullpathname = parts.join('/');
             if (fullpathname) {
-                this.loadFolderEntries(fullpathname)
-                    .subscribe((folderEntries) => {
-                        this.folderEntries = folderEntries;
-                        this.showFile(fullpathfilename);
-                    });
+                if (fullpathname !== this.pathname()) {
+                    this.loadFolderEntries(fullpathname)
+                        .subscribe((folderEntries) => {
+                            this.folderEntries = folderEntries;
+                            this.showFile(fullpathfilename);
+                        });
+                } else {
+                    this.showFile(fullpathfilename);
+                }
             }
         }
     }
@@ -132,8 +141,8 @@ export class FileBrowserComponent implements AfterViewInit {
             .subscribe((fileContent) => (this.fileContent = fileContent));
     }
 
-    private showFolder(fullpathname: string) {
-        this.loadFolderEntries(fullpathname)
+    private showFolder(fullpathfilename: string) {
+        this.loadFolderEntries(fullpathfilename)
             .subscribe((folderEntries) => (this.folderEntries = folderEntries));
     }
 

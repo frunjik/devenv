@@ -11,7 +11,8 @@ import { PPTFolderEntry, PPTResult } from '@ppt';
 })
 export class BackendService {
 
-    private _defaultHost = 'http://localhost:3000/';
+//    private _defaultHost = 'http://localhost:3000/';
+    private _defaultHost = 'http://192.168.2.1:3000/';
     private _httpservice = inject(HttpClient);
 
     constructor() { }

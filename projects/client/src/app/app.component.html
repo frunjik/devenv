@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-    PPT - {{host}}
+    HOME - {{host}}
     <nav>
         @for(link of navLinks; track $index) {
             |
@@ -11,11 +11,23 @@
 
     <nav>
         <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './projects/client/src/app/app.component.ts'}">
-            Client
+            C
         </a>
         |
         <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './projects/server/src/start.ts'}">
-            Server
+            S
+        </a>            
+        |
+        <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './scratch/TODO.md'}">
+            T
+        </a>            
+        |
+        <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './scratch/IDEA.md'}">
+            I
+        </a>            
+        |
+        <a [routerLink]="['/ppt/edit']" [queryParams]="{fullpathfilename: './scratch/THOUGHTS.md'}">
+            M
         </a>            
     </nav>
 

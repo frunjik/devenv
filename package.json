@@ -15,22 +15,22 @@
     "@angular/common": "^19.1.7",
     "@angular/compiler": "^19.1.7",
     "@angular/core": "^19.1.7",
-    "@angular/forms": "^19.1.7",
-    "@angular/material": "^19.1.5",
+    "@angular/forms": "^19.2.14",
+    "@angular/material": "^19.2.19",
     "@angular/platform-browser": "^19.1.7",
-    "@angular/platform-browser-dynamic": "^19.1.7",
-    "@angular/router": "^19.1.7",
+    "@angular/platform-browser-dynamic": "^19.2.14",
+    "@angular/router": "^19.2.14",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^19.0.2",
-    "rubico": "^2.6.5",
+    "rubico": "^2.7.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.8.1",
-    "zone.js": "^0.15.0"
+    "zone.js": "^0.15.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.2.8",
-    "@angular/cli": "^19.1.8",
-    "@angular/compiler-cli": "^19.1.7",
+    "@angular-devkit/build-angular": "^19.2.15",
+    "@angular/cli": "^19.2.15",
+    "@angular/compiler-cli": "^19.2.14",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
@@ -38,7 +38,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "ng-packagr": "^19.2.0",
+    "ng-packagr": "^19.2.2",
     "typescript": "~5.7.3"
   }
 }

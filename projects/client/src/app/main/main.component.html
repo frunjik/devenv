@@ -1,0 +1,57 @@
+<mat-toolbar [color]="editMode() ? '' : 'primary'">
+    <span>EMIL</span>
+    <span class="spacer"></span>
+
+    @if(editMode()) {
+        @for(button of buttons; track $index) {
+        <button mat-button>
+            <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="{{button}}"></mat-icon>
+        </button>
+        }
+    }
+
+    <span class="spacer"></span>
+    <button mat-button (click)="menuClicked()">
+        <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="menu"></mat-icon>
+    </button>
+
+</mat-toolbar>
+
+@if(editMode()) {
+    <app-editor></app-editor>
+} @else {
+    
+    <div style="height: 500px; overflow-y: scroll;">
+        @if(selectedSlice) {
+
+            @if (!updatingSlice()) {
+                <em-slice-view [slice]="selectedSlice"></em-slice-view>
+
+            } @else {
+
+                <em-slice-editor 
+                    (commit)="commitSlice()" 
+                    (cancel)="cancelSlice()" 
+                    [slice]="selectedSlice"
+                ></em-slice-editor>
+            }
+        } @else {
+
+            <!-- Show all -->
+            <ppt-row>
+                @for (slice of slicesList(); track $index) {
+                    <em-slice-view (click)="selectSlice(slice)" [slice]="slice"></em-slice-view>
+                }
+            </ppt-row>
+        }
+    </div>
+
+    <ppt-row>
+        <button mat-button (click)="insertSlice()" [disabled]="!canInsert">INSERT</button>
+        <button mat-button (click)="updateSlice()" [disabled]="!canUpdate">UPDATE</button>
+        <button mat-button (click)="deleteSlice()" [disabled]="!canDelete">DELETE</button>
+    </ppt-row>
+
+    <app-table-view (clickRow)="rowClicked($event)" [itemDataSource]="itemDataSource"></app-table-view>
+
+}

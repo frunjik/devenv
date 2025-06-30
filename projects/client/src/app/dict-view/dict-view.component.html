@@ -1,0 +1,10 @@
+<!-- <div style="width: 100%;">
+    <button mat-button>Abbb</button> /
+    <button mat-button>Bbbb</button> /
+    <button mat-button>Cbbb</button> /
+    <button mat-button>Dbbb</button> 
+</div>
+ -->
+@for (keyValue of entries; track $index) {
+    <app-keyvalue-view [keyValue]="keyValue"></app-keyvalue-view>
+}

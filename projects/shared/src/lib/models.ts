@@ -1,103 +1,13 @@
-import { PPTField, PPTModel } from './core';
-// TODO: Generate
-// everyting after this from its own descriptions below
+export type EMElementType = 'event' | 'command' | 'process' | 'screen' | 'readmodel';
 
-const idField: PPTField = {
-    id: 'PPTField_id',
-    type: 'string',
-    name: 'Unique ID',
-};
-
-const nameField: PPTField = {
-    id: 'PPTField_name',
-    type: 'string',
-    name: 'Name',
-};
-
-const typeField: PPTField = {
-    id: 'PPTField_type',
-    type: 'string',
-    name: 'Type',
-};
-
-const tileField: PPTField = {
-    id: 'PPTField_title',
-    type: 'string',
-    name: 'Title',
-};
-
-const fieldsField: PPTField = {
-    id: 'PPTField_fields',
-    type: 'PPTField[]',
-    name: 'Fields',
-};
-
-// const extendsField: PPTField = {
-//     id: 'PPTField_extends',
-//     type: 'PPTTExtend',
-//     name: 'Extends',
-// };
-
-export const modelModel: PPTModel = {
-    id: 'PPTModel',
-    name: 'Basic Model',
-    type: 'Model',
-    // tite: '',
-    fields: [
-        idField,
-        nameField,
-        typeField,
-        tileField,
-        fieldsField
-    ]
+export interface EMElement {
+    id: string;
+    name: string;
+    type: EMElementType;
 }
 
-export const modelField: PPTModel = {
-    id: 'PPTField',
-    name: 'Basic Field',
-    type: 'Field',
-    fields: [
-        idField,
-        typeField,
-        nameField,
-        tileField,
-    ]
-}
-
-export const modelList: PPTModel = {
-    id: 'PPTList',
-    name: 'Basic List',
-    type: 'List',
-    fields: [
-        idField,
-        typeField,
-        nameField,
-        tileField,
-        // content
-    ]
-}
-
-export const modelItem: PPTModel = {
-    id: 'PPTItem',
-    name: 'Basic Item',
-    type: 'Item',
-    fields: [
-        idField,
-        typeField,
-        nameField,
-        tileField,
-        // content
-    ]
-}
-
-export const modelItemInspector: PPTModel = {
-    id: 'PPTItemInspector',
-    name: 'Basic Item Inspector',
-    type: 'Inspector',
-    fields: [
-        idField,
-        typeField,
-        nameField,
-        tileField,
-    ]
+export interface EMSlice {
+    id: string;
+    name: string;
+    elements: EMElement[];
 }

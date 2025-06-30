@@ -1,10 +1,10 @@
-<form [formGroup]="form">
+<form [formGroup]="formGroup">
     <h2>New {{model.name}}</h2>
     @for (field of model.fields; track $index) {
-        <ppt-form-field [field]="field" [form]="form"></ppt-form-field>
+        <ppt-form-field [field]="field" [form]="formGroup"></ppt-form-field>
     }
 </form>
 <div>
-    <button mat-button>OK</button>
-    <button mat-button>Cancel</button>
+    <button (click)="onCommit.emit()" mat-button>OK</button>
+    <button (click)="onCancel.emit()" mat-button>Cancel</button>
 </div>

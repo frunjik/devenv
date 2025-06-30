@@ -1,0 +1,23 @@
+@switch(element().type) {
+
+    @case('event') {
+        <em-event-view>{{element().name}}</em-event-view>
+    }
+
+    @case('command') {
+        <em-command-view>{{element().name}}</em-command-view>
+    }
+
+    @case('screen') {
+        <em-screen-view>{{element().name}}</em-screen-view>
+    }
+
+    @case('process') {
+        <em-process-view>{{element().name}}</em-process-view>
+    }
+
+    @case('readmodel') {
+        <em-readmodel-view>{{element().name}}</em-readmodel-view>
+    }
+
+}

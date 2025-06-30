@@ -1,2 +1,2 @@
 call build-ppt.bat
-@REM call build-shared.bat
+call build-shared.bat

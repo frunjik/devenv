@@ -1,0 +1,9 @@
+<div style="height: 80%; width: 100%;">
+    <ngx-monaco-editor #monacoEditor style="height: 100%" [options]="options()" [(ngModel)]="text" (onInit)="onEditorInit($event)"></ngx-monaco-editor>
+</div>
+
+<mat-toolbar>
+    <button mat-button (click)="cancel.emit()">cancel</button>
+    <span class="example-spacer"></span>
+    <button mat-button (click)="commit.emit(text)">commit</button>
+</mat-toolbar>

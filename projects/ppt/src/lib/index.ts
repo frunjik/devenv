@@ -1,32 +1,30 @@
 import { version } from './ppt';
 import { PPTValue } from './core';
-import { modelField, modelModel, modelList, modelItem, modelItemInspector, modelText } from './ppt-models';
+import { modelField, modelModel, modelList, modelItem, modelItemInspector, modelText, modelPatch } from './ppt-models';
 
 export * from './core';
-// export * from './types';
+export * from './models';
+
 export * from './response';
 export * from './services';
+export * from './ppt-models';
 
-// --- generate after this ?
-
-const allModels = [
+export const modelsList = [
     modelField,
     modelModel,
+    modelPatch,
     modelList,
     modelItem,
     modelText,
     modelItemInspector
 ];
 
-// KeyedItems
-export const models: Record<string, PPTValue> = {};
+// keyed
+export const modelsDict: Record<string, PPTValue> = {};
 
-// OrderedItems
-allModels.forEach((model) => {
-    models[model.id] = model;
+// index
+modelsList.forEach((model) => {
+    modelsDict[model.id] = model;
 });
 
-// only export what can be shared between client and server
-// export * from './services/file-system/file-system.service';
-
-export const ppt = { version, models };
+export const ppt = { version, modelsDict, modelsList };

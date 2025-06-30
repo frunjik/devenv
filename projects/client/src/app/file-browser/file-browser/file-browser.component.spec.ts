@@ -1,19 +1,20 @@
+import { DevendService } from "../../devenv.service";
 import { FileBrowserComponent } from "./file-browser.component";
 
 describe("FileBrowserComponent", () => {
     let component: FileBrowserComponent;
 
-    let backendService: any;
+    let devendService: any;
 
     beforeEach(async () => {
-        backendService = {
+        devendService = {
             getFolder: jasmine.createSpy("getFolder").and.callFake(() => {
                 return {
                     subscribe: () => {},
                 };
             }),
         };
-        component = new FileBrowserComponent(backendService);
+        component = new FileBrowserComponent(devendService);
     });
 
     it("should create", () => {

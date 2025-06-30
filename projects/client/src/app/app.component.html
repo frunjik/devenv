@@ -1,16 +1,31 @@
-<mat-toolbar color="primary">
-    PPT - {{host}}
-    |
-    <nav>
-        <a href="/">Main</a>
-        |
-        <a href="/ppt/browse">Browse</a>
-        |
-        <a href="/ppt/js">Workspace JS</a>
-    </nav>
+<mat-sidenav-container class="example-container">
 
+    <mat-sidenav #sidenav mode="side" [opened]="editMode()" (opened)="sideBarOpened()"(closed)="sideBarClosed()">
 
-</mat-toolbar>
+        <!-- <h1>Slices</h1> -->
 
+    </mat-sidenav>
 
-<router-outlet />
+    <mat-sidenav-content>
+
+        <router-outlet />
+
+        <!-- <app-scratch></app-scratch> -->
+
+        <!-- <em-slice-view [slice]="slice"></em-slice-view> -->
+
+        <!-- <em-slices-view *ngIf="slicesDict$ | async as slicesDict" [slicesDict]="slicesDict"></em-slices-view> -->
+
+        <!-- <div *ngIf="slicesList$ | async as slicesList">
+            @for(slice of slicesList; track $index) {
+                <em-slice-view [slice]="slice"></em-slice-view>
+            }
+        </div> -->
+
+        <!-- <em-slice-editor [slice]="slice" (commit)="commitSlice($event)"></em-slice-editor> -->
+
+        <!-- <app-table-view></app-table-view> -->
+
+    </mat-sidenav-content>
+
+</mat-sidenav-container>

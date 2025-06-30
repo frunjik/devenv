@@ -65,7 +65,7 @@ export const modelField: PPTModel = {
 }
 
 export const modelList: PPTModel = {
-    id: 'PPTList',
+    id: 'PPTListOfItems',
     name: 'Basic List',
     type: 'List',
     fields: [

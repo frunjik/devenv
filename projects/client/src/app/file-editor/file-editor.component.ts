@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { BackendService } from '../backend.service';
+import { DevendService } from '../devenv.service';
 
 @Component({
     selector: 'app-file-editor',
@@ -27,14 +27,14 @@ export class FileEditorComponent {
 
     editorOptions   = { theme: 'vs-dark', language: 'ts' };
 
-    constructor(private backendService: BackendService) {}
+    constructor(private devendService: DevendService) {}
 
     setFilename(event: any) {
         this.filename = event.target.innerText.trim();
     }
 
     loadFile() {
-        this.backendService
+        this.devendService
             .loadFile(this.filename)
             .subscribe({
                 next: (data) => { this.fileContent = data }
@@ -42,7 +42,7 @@ export class FileEditorComponent {
     }
 
     saveFile() {
-        this.backendService
+        this.devendService
             .saveFile(this.filename, this.fileContent)
             .subscribe({
                 next: (data) => { ; }

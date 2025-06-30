@@ -2,37 +2,37 @@ import { PPTField, PPTModel } from './core';
 // TODO: Generate
 // everyting after this from its own descriptions below
 
-const idField: PPTField = {
+export const idField: PPTField = {
     id: 'PPTField',
     type: 'string',
-    name: 'Field',
+    name: 'ID',
 };
 
-const nameField: PPTField = {
+export const nameField: PPTField = {
     id: 'PPTName',
     type: 'string',
     name: 'Name',
 };
 
-const typeField: PPTField = {
+export const typeField: PPTField = {
     id: 'PPTType',
     type: 'string',
     name: 'Type',
 };
 
-const textField: PPTField = {
+export const textField: PPTField = {
     id: 'PPTText',
     type: 'string',
     name: 'Text',
 };
 
-const tileField: PPTField = {
+export const tileField: PPTField = {
     id: 'PPTTile',
     type: 'string',
     name: 'Title',
 };
 
-const fieldsField: PPTField = {
+export const fieldsField: PPTField = {
     id: 'PPTFields',
     type: 'PPTField[]',
     name: 'Fields',
@@ -67,6 +67,29 @@ export const modelField: PPTModel = {
         typeField,
         nameField,
         tileField,
+    ]
+}
+
+export const modelPatch: PPTModel = {
+    id: 'PPTPatch',
+    name: 'A change in the system',
+    type: 'Patch',
+    fields: [
+        {
+            id: 'PPTPatch.Type',
+            type: 'string',
+            name: 'Operation (add, replace, remove)',
+        },
+        {
+            id: 'PPTPatch.Path',
+            type: '(string|number)[]',
+            name: 'Path',
+        },
+        {
+            id: 'PPTPatch.Value',
+            type: 'string|number',
+            name: 'Value',
+        },
     ]
 }
 

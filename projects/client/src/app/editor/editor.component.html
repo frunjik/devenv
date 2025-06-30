@@ -1,0 +1,55 @@
+<ppt-row>
+    <!-- <ppt-box></ppt-box> -->
+
+    <ppt-col style="width: 450px;">
+        <mat-tab-group>
+            @for(topic of topics; track $index) {
+                <mat-tab label="{{topic.title}}">
+                    <mat-action-list>
+                        @for(item of itemsByTopic(topic); track $index) {
+                            @if (item !== '-') {
+                                <button mat-list-item (click)="itemClicked(topic, $index)">{{item}}</button>
+                            } @else {
+                                <mat-divider></mat-divider>                            
+                            }
+                        }
+                    </mat-action-list>
+                </mat-tab>
+            }
+        </mat-tab-group>
+
+    </ppt-col>
+
+    <div class="container">
+        <!-- <div class="edit">
+            <em-slices-view *ngIf="slices$ | async as slices" [slices]="slices"></em-slices-view>
+        </div> -->
+
+        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+            @for (element of elements; track $index) {
+                <div class="example-box" cdkDrag>
+                    <em-element-view [element]="element"></em-element-view>
+                </div>
+            }
+        </div> 
+
+        <!-- 
+        <app-object-editor [object]="state()"></app-object-editor> 
+        -->
+
+    </div>
+
+    <ppt-col style="width: 850px;">
+        <mat-tab-group>
+            <mat-tab label="Ins"> 
+                <mat-action-list>
+                    @for(prop of properties; track $index) {
+                        <button mat-list-item (click)="actionClicked($index)">{{prop}}</button>
+                    }
+                </mat-action-list>
+            </mat-tab>
+
+        </mat-tab-group>
+    </ppt-col>
+
+</ppt-row>

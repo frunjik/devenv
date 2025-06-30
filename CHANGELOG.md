@@ -5,6 +5,16 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 
 # Unreleased
 
+### Added
+
+### Changed
+
+# 0.0.3 2025-06-30 EMIL Experiments
+
+### Changed
+
+- v0.0.3 - emil initial version
+
 # 0.0.2 2023-03-05 Cleanup
 
 ### Added
@@ -42,6 +52,5 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 - Security - in case of vulnerabilities
 
 ### Changed
-
 
 ### Removed

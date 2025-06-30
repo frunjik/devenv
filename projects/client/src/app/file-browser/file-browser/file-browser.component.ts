@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, signal } from '@angular/core';
-import { BackendService } from '../../backend.service';
+import { DevendService } from '../../devenv.service';
 import { PPTFolderEntry } from '@ppt';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -58,7 +58,7 @@ export class FileBrowserComponent implements AfterViewInit {
             );
     }
 
-    constructor(private backend: BackendService) {
+    constructor(private backend: DevendService) {
     }
     
     ngAfterViewInit(): void {

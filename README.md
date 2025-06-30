@@ -1,18 +1,11 @@
-# Devenv 
-- Bootstrap In Typescript With Angular And Express
+# Emil Devenv 
+- Devenv for Emil
 
 ## Higly Experimental - Not Fit For Production
 
 ## Dependencies
-- [NodeJS / npm](https://nodejs.org/)
-```
-npm install -g @angular/cli
-```
-
-- [Angular CLI](https://angular.dev/tools/cli)
-```
-npm install -g @angular/cli
-```
+- [NodeJS](https://nodejs.org/)
+- [Angular](https://angular.dev)
 
 ## Run
 

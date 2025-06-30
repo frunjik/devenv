@@ -14,6 +14,14 @@ export function writeFile(filename: string, contents: string): Promise<void> {
     return fs.promises.writeFile(filename, contents);
 };
 
+export function appendFile(filename: string, contents: string): Promise<void> {
+    return fs.promises.appendFile(filename, contents);
+};
+
+export function deleteFile(filename: string): Promise<void> {
+    return fs.promises.rm(filename);
+};
+
 export function readFoldernames(foldername: string): Promise<string[]> {
     return fs.promises.readdir(foldername);
 };
@@ -25,6 +33,8 @@ export function readFileStats(filename: string): Promise<PPTFileStats> {
 export interface PPTFS {
     readFile(filename: string): Promise<string>;
     writeFile(filename: string, contents: string): Promise<void>;
+    appendFile(filename: string, contents: string): Promise<void>;
+    deleteFile(filename: string): Promise<void>;
     readFoldernames(foldername: string): Promise<string[]>;
     readFileStats(filename: string): Promise<PPTFileStats>;
 }
@@ -32,6 +42,8 @@ export interface PPTFS {
 const nodeFS: PPTFS = {
     readFile,
     writeFile,
+    appendFile,
+    deleteFile,
     readFoldernames,
     readFileStats
 };
@@ -53,6 +65,14 @@ export class PPTFileSystem {
 
     writeFile(filename: string, contents: string): Promise<void> {
         return this._FS.writeFile(path.join(this.rootpath, filename), contents);
+    }
+
+    appendFile(filename: string, contents: string): Promise<void> {
+        return this._FS.appendFile(path.join(this.rootpath, filename), contents);
+    }
+
+    deleteFile(filename: string): Promise<void> {
+        return this._FS.deleteFile(path.join(this.rootpath, filename));
     }
 
     readFolder(foldername: string): Promise<PPTFolderEntry[]> {

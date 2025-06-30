@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { BackendService } from './backend.service';
+import { DevendService } from './devenv.service';
 
 describe('AppComponent', () => {
     beforeEach(async () => {
@@ -13,7 +13,7 @@ describe('AppComponent', () => {
                 provideHttpClientTesting
             ],
             providers: [
-                BackendService
+                DevendService
             ]
         }).compileComponents();
     });

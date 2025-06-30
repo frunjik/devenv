@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FileEditorComponent } from './file-editor.component';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { BackendService } from '../backend.service';
+import { DevendService } from '../devenv.service';
 
 describe('FileEditorComponent', () => {
     let component: FileEditorComponent;
@@ -17,7 +17,7 @@ describe('FileEditorComponent', () => {
                 provideHttpClientTesting(),            
             ],
             providers: [
-                BackendService
+                DevendService
             ]
             // declarations: [FileEditorComponent]
         });

@@ -1,18 +1,22 @@
-// export type PPTString = string;
-// export type PPTNumber = number;
+import { type PPTValue } from "./core";
 
-import { Signal } from "@angular/core";
+// instance
+export interface PPTItem extends PPTValue {
+    name: string;
+    title?: string;
+};
 
-export interface PPTTextModel {
-    id: string;
-    type: 'PPTText',
-    value: string;
-}
+export interface PPTListOfItems extends PPTValue {
+    name: string;
+    title?: string;
+    items: PPTItem[];
+};
 
-export interface PPTTextComponentModel {
-    id: string;
-    type: 'PPTTextComponent',
-    text: PPTTextModel;
-    input: Signal<string>;
-    output: Signal<string>;
+// Readonly (ReadModel)
+export type PPTList<T> = ReadonlyArray<T>;
+export type PPTDict<T> = Record<string, T>;
+
+export interface PPTState<M,D> {
+    readonly meta: M,
+    readonly data: D,
 }

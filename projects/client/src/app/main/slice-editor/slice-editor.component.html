@@ -1,0 +1,22 @@
+<!-- <div class="flex">
+    @for(slice of slices(); track $index) {
+        <em-slice-view [slice]="slice"></em-slice-view>
+    }
+</div> -->
+
+<mat-toolbar>
+    <button mat-button (click)="cancel.emit()">cancel</button>
+    <span class="example-spacer"></span>
+    <h1 contenteditable (input)="setSliceName($event)">{{slice().name}}</h1>
+    <span class="example-spacer"></span>
+    <button mat-button (click)="commit.emit(slice())">commit</button>
+</mat-toolbar>
+
+<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+    @for (element of slice().elements; track $index) {
+        <div class="example-box" cdkDrag>
+            <em-element-view [element]="element"></em-element-view>
+        </div>
+    }
+</div>  
+

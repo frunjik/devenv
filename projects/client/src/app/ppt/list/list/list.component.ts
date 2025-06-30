@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { PPTList } from '@ppt';
+import { PPTListOfItems } from '@ppt';
 import { PPTItemComponent } from '../item/item.component';
 
 @Component({
@@ -9,5 +9,5 @@ import { PPTItemComponent } from '../item/item.component';
     styleUrl: './list.component.scss'
 })
 export class PPTListComponent {
-    list = input.required<PPTList>();
+    list = input.required<PPTListOfItems>();
 }

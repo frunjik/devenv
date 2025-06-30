@@ -20,49 +20,18 @@ export class BackendService {
         return (((window as unknown) as any).host) ?? this.defaultHost
     }
 
-    loadFile(pathname: string): Observable<string> {
-        return this.get<string>(`files?path=${pathname}`)
-            .pipe(
-                catchError(err => {
-                    this.logError(`loadFile("${pathname}")`, err);
-                    return of('');
-                })
-            );
+    protected logError(message: string, e: Error) {
+        console.error(`ERROR ${message}`, e);
     }
 
-    saveFile(pathname: string, contents: string): Observable<string> {
-        return this.post<any>(`files?path=${pathname}`, {data: contents})
-            .pipe(
-                catchError(err => {
-                    this.logError(`saveFile("${pathname}")`, err);
-                    return of('');
-                })
-            );
-    }
-
-    loadFolder(pathname: string): Observable<PPTFolderEntry[]> {
-        return this.get<PPTFolderEntry[]>(`folders?path=${pathname}`)
-            .pipe(
-                catchError(err => {
-                    this.logError(`loadFolder("${pathname}")`, err);
-                    return of([]);
-                })
-            );
-    }
-
-    logError(message: string, e: Error) {
-        console.error(`ERROR BackendService.${message}`, e);
-    }
-
-
-    private get<T>(resource: string): Observable<T> {
+    protected get<T>(resource: string): Observable<T> {
         return this.httpservice.get<SuccessResponseBody<T>>(this.host + resource)
             .pipe(
                 map(data => data.data),
             );
     }
 
-    private post<T>(resource: string, data: any): Observable<T> {
+    protected post<T>(resource: string, data: any): Observable<T> {
         return this.httpservice.post<SuccessResponseBody<T>>(this.host + resource, data)
             .pipe(
                 map(data => data.data),

@@ -1,0 +1,35 @@
+<div style="width: 700px; display: flex; align-items: center;">
+    <span style="background-color: white; width: 15%;">
+        {{key}}
+    </span>
+
+    <span style="background-color: white; width:  5%;">
+        :
+    </span>
+
+    <span
+        style="background-color: lightgray; width: 80%; padding-left: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <app-value-view [value]="value"></app-value-view>
+        <ppt-row>
+            <button mat-button>
+                <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="edit"></mat-icon>
+            </button>
+            <button mat-button>
+                <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="search"></mat-icon>
+            </button>
+<!-- 
+            <button mat-button>
+                <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="arrow_upward"></mat-icon>
+            </button>
+            <button mat-button>
+                <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="arrow_downward"></mat-icon>
+            </button>
+-->
+            <button mat-button>
+                <mat-icon mat-button aria-hidden="false" aria-label="Meta menu" fontIcon="delete"></mat-icon>
+            </button>
+        </ppt-row>
+    </span>
+</div>
+
+<mat-divider style="width: 100%; background-color: darkgray;"></mat-divider>

@@ -1,5 +1,5 @@
 import { version } from './ppt';
-import { PPTValue } from './core';
+import { PPTValue } from '@ppt';
 import { modelField, modelModel, modelList, modelItem, modelItemInspector } from './models';
 
 // --- generate after this ?

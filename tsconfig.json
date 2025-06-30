@@ -15,14 +15,11 @@
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "paths": {
-      "@metaii": [
-        "./dist/metaii"
-      ],
-      "@shared": [
-        "./dist/shared/"
-      ],
       "@ppt": [
         "./dist/ppt/"
+      ],
+      "@shared": [
+        "./dist/shared"
       ]
     },
     "importHelpers": true,

@@ -1,0 +1,27 @@
+<div class="slice">
+
+    <h1>{{slice().name}}</h1>
+
+    @for(element of slice().elements; track $index) {
+        <em-element-view [element]="element"></em-element-view>
+    }
+
+<!--     
+    <mat-tab-group>
+        <mat-tab label="view">
+            @for(element of slice().elements; track $index) {
+                <em-element-view [element]="element"></em-element-view>
+            }
+        </mat-tab>
+        <mat-tab label="edit">
+            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                @for (element of slice().elements; track $index) {
+                    <div class="example-box" cdkDrag>
+                        <em-element-view [element]="element"></em-element-view>
+                    </div>
+                }
+            </div> 
+        </mat-tab>
+    </mat-tab-group>
+ -->
+</div>

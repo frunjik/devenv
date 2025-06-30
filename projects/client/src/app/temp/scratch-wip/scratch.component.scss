@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 93%;        // scrollbar ...
+}
+
+pre {
+    font-size: 70%;
+    overflow-y: scroll;
+    height: 100%;
+}

@@ -20,6 +20,7 @@ import { MatInputModule } from '@angular/material/input';
                     rows="3"
                     maxlength="5000"
                     aria-label="Commit message"
+                    (keydown)="onMessageKeydown($event)"
                 ></textarea>
             </mat-form-field>
         </mat-dialog-content>
@@ -49,6 +50,13 @@ export class CommitMessageDialogComponent {
         const message = this.message.trim();
         if (message) {
             this.dialogRef.close(message);
+        }
+    }
+
+    onMessageKeydown(event: KeyboardEvent): void {
+        if (event.ctrlKey && event.key === 'Enter') {
+            event.preventDefault();
+            this.submit();
         }
     }
 }

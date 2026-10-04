@@ -36,4 +36,18 @@ describe('CommitMessageDialogComponent', () => {
 
         expect(close).toHaveBeenCalledWith('Update docs');
     });
+
+    it('submits the message when Ctrl+Enter is pressed', () => {
+        fixture.componentInstance.message = '  Update docs  ';
+        const event = new KeyboardEvent('keydown', {
+            key: 'Enter',
+            ctrlKey: true,
+            bubbles: true,
+            cancelable: true,
+        });
+        fixture.nativeElement.querySelector('textarea').dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(close).toHaveBeenCalledWith('Update docs');
+    });
 });

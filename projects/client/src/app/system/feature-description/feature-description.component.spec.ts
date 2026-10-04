@@ -94,6 +94,15 @@ describe('FeatureDescriptionComponent', () => {
         expect(refreshButton.disabled).toBe(false);
     });
 
+    it('cancels an outstanding feature refresh when the component is destroyed', async () => {
+        await fixture.whenStable();
+        fixture.componentInstance.refreshFeatures();
+        fixture.destroy();
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        expect(fixture.componentInstance.features).toEqual([]);
+    });
+
     it('shows saved features below the form', async () => {
         await fixture.whenStable();
         const content = '// [2026-10-04 22:45 +02:00] Add a saved feature\n// [2026-10-04 22:46 +02:00] Add another feature\n';
@@ -169,6 +178,27 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
         expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
             .toBe('Completed feature');
+    });
+
+    it('filters the completed list with the shared feature search', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), [
+            '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Finished feature',
+            '// [123e4567-e89b-42d3-a456-426614174003] [Medium] [Done] Other completion',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'Finished';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
+            .toBe('Finished feature');
     });
 
     it('displays priority and status as distinct badges within card-like rows', async () => {

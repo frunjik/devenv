@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
 import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
@@ -39,7 +40,7 @@ interface FeatureRow {
     templateUrl: './feature-description.component.html',
     styleUrl: './feature-description.component.scss',
 })
-export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
+export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, OnInit {
     description = '';
     priority: FeaturePriority = 'Medium';
     status: FeatureStatus = 'Backlog';
@@ -58,6 +59,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
     isLoadingFeatures = false;
+    private featureRefreshSubscription = Subscription.EMPTY;
     featuresError = '';
     @ViewChild(MatPaginator) paginator!: MatPaginator;
     @ViewChild(MatSort) set sort(sort: MatSort) {
@@ -90,10 +92,15 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         this.featureDataSource.paginator = this.paginator;
     }
 
+    ngOnDestroy(): void {
+        this.featureRefreshSubscription.unsubscribe();
+    }
+
     refreshFeatures(): void {
+        this.featureRefreshSubscription.unsubscribe();
         this.isLoadingFeatures = true;
         this.featuresError = '';
-        this.backend.getFeatures().subscribe({
+        this.featureRefreshSubscription = this.backend.getFeatures().subscribe({
             next: features => {
                 this.features = features;
                 this.refreshFeatureLists();

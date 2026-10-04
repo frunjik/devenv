@@ -95,7 +95,7 @@ describe('AppComponent', () => {
             .toBe('// [2026-10-04 22:23 +02:00] First current entry');
         const currentTooltip = fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip);
         expect(currentTooltip.tooltipClass).toBe('current-entry-tooltip');
-        expect(currentTooltip.position).toBe('below');
+        expect(currentTooltip.position).toBe('above');
 
         fixture.componentInstance.currentEntry.startPolling();
         fixture.componentInstance.currentEntry.refresh();
@@ -129,6 +129,19 @@ describe('AppComponent', () => {
 
         expect(fixture.nativeElement.querySelector('.current-entry').textContent.trim())
             .toBe('Refreshed entry');
+        fixture.destroy();
+    });
+
+    it('places current refresh and Git status controls in the bottom toolbar', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        const bottomToolbar = fixture.nativeElement.querySelector('.bottom-toolbar');
+        expect(bottomToolbar.getAttribute('aria-label')).toBe('Status toolbar');
+        expect(bottomToolbar.querySelector('.current-entry')).not.toBeNull();
+        expect(bottomToolbar.querySelector('.git-status-indicator')).not.toBeNull();
+        expect(fixture.nativeElement.querySelector('router-outlet').compareDocumentPosition(bottomToolbar)
+            & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
         fixture.destroy();
     });
 

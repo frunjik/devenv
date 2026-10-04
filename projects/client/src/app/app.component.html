@@ -24,24 +24,6 @@
         <button type="button" mat-button class="commit-button" (click)="commitChanges()" [disabled]="isCommitting">
             {{ isCommitting ? 'Committing…' : 'Commit changes' }}
         </button>
-        |
-        <a
-            mat-button
-            routerLink="/git/log"
-            class="git-status-indicator"
-            [ngClass]="{
-                'git-status-clean': gitStatus.status && gitStatus.status.files.length === 0,
-                'git-status-open': gitStatus.status && gitStatus.status.files.length > 0,
-                'git-status-error': gitStatus.hasError
-            }"
-            [attr.aria-label]="'Git status: ' + gitStatus.label"
-            [matTooltip]="gitStatus.tooltip"
-            matTooltipClass="git-status-tooltip"
-            matTooltipPosition="below"
-            [matTooltipShowDelay]="250"
-            aria-live="polite"
-        >{{ gitStatus.count }}</a>
-
         <!--
         
         <a routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app/', file: '/projects/client/src/app/app.component.html'}">EDIT-MAIN</a>
@@ -49,6 +31,27 @@
         -->
     </nav>
 
+</mat-toolbar>
+
+<router-outlet />
+
+<mat-toolbar color="primary" class="bottom-toolbar" aria-label="Status toolbar">
+    <a
+        mat-button
+        routerLink="/git/log"
+        class="git-status-indicator"
+        [ngClass]="{
+            'git-status-clean': gitStatus.status && gitStatus.status.files.length === 0,
+            'git-status-open': gitStatus.status && gitStatus.status.files.length > 0,
+            'git-status-error': gitStatus.hasError
+        }"
+        [attr.aria-label]="'Git status: ' + gitStatus.label"
+        [matTooltip]="gitStatus.tooltip"
+        matTooltipClass="git-status-tooltip"
+        matTooltipPosition="above"
+        [matTooltipShowDelay]="250"
+        aria-live="polite"
+    >{{ gitStatus.count }}</a>
     <span class="toolbar-spacer"></span>
     <button
         type="button"
@@ -56,13 +59,10 @@
         aria-label="Refresh current entry"
         [matTooltip]="currentEntry.entry || currentEntry.errorMessage"
         matTooltipClass="current-entry-tooltip"
-        matTooltipPosition="below"
+        matTooltipPosition="above"
         [matTooltipShowDelay]="250"
         (click)="currentEntry.refresh()"
     >
         {{ currentEntry.summary || currentEntry.errorMessage || 'Loading current…' }}
     </button>
-
 </mat-toolbar>
-
-<router-outlet />

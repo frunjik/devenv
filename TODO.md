@@ -10,9 +10,11 @@ Bootstrap
 
 Devenv
 - feature: bottom toolbar
+- feature: testcache status in bottom client toolbar
 - feature: increase version number
 - feature: use ./current as default commit message
 - feature: show (and update) the ./current last entry on the client in the toolbar on the right aligned
+- feature: add feature
 - split projects\server\src\public-api.ts
 - test coverage
 - feature: dynamic styles

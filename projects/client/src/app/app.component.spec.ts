@@ -272,6 +272,22 @@ describe('AppComponent', () => {
         expect(dialogOpen).toHaveBeenCalledWith(CommitMessageDialogComponent, {
             width: 'min(32rem, calc(100vw - 2rem))',
             ariaLabel: 'Commit changes',
+            data: { message: '' },
+        });
+        http.expectNone('http://localhost:3000/git/commit');
+    });
+
+    it('uses the current entry summary as the default commit message', async () => {
+        dialogOpen.mockImplementation(() => ({ afterClosed: () => of(undefined) }));
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.componentInstance.currentEntry.entry = '// [2026-10-04 22:23 +02:00] Implement toolbar feature';
+
+        await startCommit(fixture);
+
+        expect(dialogOpen).toHaveBeenCalledWith(CommitMessageDialogComponent, {
+            width: 'min(32rem, calc(100vw - 2rem))',
+            ariaLabel: 'Commit changes',
+            data: { message: 'Implement toolbar feature' },
         });
         http.expectNone('http://localhost:3000/git/commit');
     });

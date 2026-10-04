@@ -1,5 +1,8 @@
 TDOD:
 
+System
+- upate angular version
+
 Bootstrap
 - increase test coverage to 100
 - make server restart on changes

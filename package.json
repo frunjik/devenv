@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dev:server": "tsx watch projects/server/dev.ts",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test:client": "jest --config projects/client/jest.config.cjs --runInBand",
@@ -55,6 +56,7 @@
     "ng-packagr": "^19.2.2",
     "supertest": "^7.3.1",
     "ts-jest": "^29.4.14",
+    "tsx": "^4.23.15",
     "typescript": "~5.7.3"
   }
 }

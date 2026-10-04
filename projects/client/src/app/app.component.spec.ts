@@ -98,8 +98,12 @@ describe('AppComponent', () => {
             data: '// [2026-10-04 22:23 +02:00] First current entry',
         });
         fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('.current-entry').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.current-entry-label').textContent.trim())
+            .toBe('Current task');
+        expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim())
             .toBe('First current entry');
+        expect(fixture.nativeElement.querySelector('.current-entry').getAttribute('aria-label'))
+            .toBe('Refresh current task');
         expect(fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip).message)
             .toBe('// [2026-10-04 22:23 +02:00] First current entry');
         const currentTooltip = fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip);
@@ -114,7 +118,7 @@ describe('AppComponent', () => {
         fixture.detectChanges();
 
         const entry = fixture.nativeElement.querySelector('.current-entry');
-        expect(entry.textContent.trim()).toBe('Updated current entry');
+        expect(entry.querySelector('.current-entry-summary').textContent.trim()).toBe('Updated current entry');
         expect(entry.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
             & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
         fixture.destroy();
@@ -136,7 +140,7 @@ describe('AppComponent', () => {
         refreshRequest.flush({ data: '// [2026-10-04 22:35 +02:00] Refreshed entry' });
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.current-entry').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim())
             .toBe('Refreshed entry');
         fixture.destroy();
     });

@@ -8,5 +8,5 @@ After finishing a feature add an entry to the ./history.
 
 The features you are writing are, take them one by one:
 
-make feature list sortable on client
+show current task more prominently on client
 

@@ -1,7 +1,5 @@
 // [2026-10-04 23:01 +02:00] [4723e595-de44-488d-902b-4728f159dcff] [Medium] [In progress] after commiting a feature remove it from the feature list
-// [2026-10-04 23:02 +02:00] [2216e5f7-8627-408b-a97c-0197a1adf82e] [High] [Backlog] make feature list sortable on client
 // [2026-10-04 23:04 +02:00] [87366c34-ebbc-47b6-b779-c52651fd4865] [High] [Backlog] start working on a feature from client
-// [2026-10-04 23:04 +02:00] [11ea4c78-238c-40f2-baed-5440ef67efca] [High] [Backlog] make features priotizable from client
 // [2026-10-04 23:08 +02:00] [bdb0d3f3-db41-4031-a975-f06640977329] [Medium] [Backlog] edit feature
 // [2026-10-04 23:10 +02:00] [7db093d1-fd2c-48aa-a0ff-c76c9afaa197] [Medium] [Backlog] fix tests by adding jest test methods as first line of the file
 // [2026-10-04 23:11 +02:00] [efec2b22-6e71-442a-9f62-0533a4d6d8cc] [Medium] [Backlog] make ctrl-s submit a form
@@ -24,10 +22,12 @@
 // [2026-10-04 23:41 +02:00] [985a0326-bae1-4433-a283-f9be85e880c0] [Medium] [Backlog] give features a priority
 // [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] [Medium] [Backlog] extract subcomponents from client main form
 // [2026-10-04 23:48 +02:00] [5b9ba08f-6d26-46ac-885e-3f725b8d8dbd] [Medium] [Backlog] manually mark a feature as done from the client list
-// [2026-10-04 23:50 +02:00] [6d8fcf22-e5fd-48b5-928f-2662e95531ca] [High] [Backlog] make the feature list on client wider
 // [2026-10-04 23:51 +02:00] [1566328a-ff5c-442f-8576-4e1f7aedcb10] [Medium] [Backlog] make low the default for a feature
 // [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Medium] [Backlog] show the current ./thoughts on the client
 // [2026-10-05 00:02 +02:00] [a84349ff-be96-48cf-9c90-f3baa667dcb0] [Medium] [Backlog] add status to feature
 // [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [Backlog] add feature category
 // [2026-10-05 00:08 +02:00] [e05d7e93-fb68-462f-b234-bb2655d411f9] [Medium] [Backlog] show current test coverage on client
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog
+// [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [Backlog] make the current task client display longer (to cover more text)
+// [2026-10-05 00:19 +02:00] [145ded61-8269-4c9f-820c-2dfd0b5157c9] [Medium] [Backlog] refresh feature list from client
+// [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator

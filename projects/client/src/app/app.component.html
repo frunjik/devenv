@@ -98,13 +98,16 @@
     <button
         type="button"
         class="current-entry"
-        aria-label="Refresh current entry"
+        aria-label="Refresh current task"
         [matTooltip]="currentEntry.entry || currentEntry.errorMessage"
         matTooltipClass="current-entry-tooltip"
         matTooltipPosition="above"
         [matTooltipShowDelay]="250"
         (click)="currentEntry.refresh()"
     >
-        {{ currentEntry.summary || currentEntry.errorMessage || 'Loading current…' }}
+        <span class="current-entry-label">Current task</span>
+        <span class="current-entry-summary">
+            {{ currentEntry.summary || currentEntry.errorMessage || 'Loading current…' }}
+        </span>
     </button>
 </mat-toolbar>

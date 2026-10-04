@@ -93,7 +93,7 @@ describe('FeatureDescriptionComponent', () => {
                 }),
             ]));
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
-            .toHaveLength(2);
+            .toHaveLength(4);
     });
 
     it('marks a feature as started when its row action is clicked', async () => {
@@ -113,6 +113,63 @@ describe('FeatureDescriptionComponent', () => {
         });
         expect(fixture.nativeElement.querySelector('.feature-start-button').textContent.trim()).toBe('Started');
         expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('marks a feature done, removes it from the list, and clears matching active work', async () => {
+        await fixture.whenStable();
+        const completedId = '123e4567-e89b-42d3-a456-426614174000';
+        const remainingId = '123e4567-e89b-42d3-a456-426614174001';
+        await writeFile(join(root, '.features'), [
+            `// [2026-10-04 22:45 +02:00] [${completedId}] [High] Completed feature`,
+            `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] Remaining feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(completedId, 'Completed feature');
+
+        const doneButton: HTMLButtonElement = fixture.nativeElement.querySelector(
+            '[aria-label="Mark done: Completed feature"]',
+        );
+        doneButton.click();
+        doneButton.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(featureWork.activeFeature).toBeNull();
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('Remaining feature');
+        expect(await readFile(join(root, '.features'), 'utf8')).not.toContain('Completed feature');
+        expect(Array.from<HTMLTableRowElement>(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        ).map(row => row.querySelector('.mat-column-description')?.textContent.trim()))
+            .toEqual(['Remaining feature']);
+        expect(fixture.nativeElement.querySelector('#feature-completion-error')).toBeNull();
+    });
+
+    it('retains the feature and reports errors when marking it done fails', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Keep this feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        const doneButton: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-done-button');
+        doneButton.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+            .toBe('Keep this feature');
+        expect(fixture.nativeElement.querySelector('#feature-completion-error').textContent)
+            .toContain('500');
+        expect(fixture.componentInstance.completingFeatureIds.size).toBe(0);
     });
 
     it('holds the entered feature description in the form', async () => {

@@ -40,6 +40,8 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     isSubmitting = false;
     errorMessage = '';
     priorityError = '';
+    completionError = '';
+    readonly completingFeatureIds = new Set<string>();
     features: string[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
     readonly displayedColumns = ['id', 'priority', 'description', 'actions'];
@@ -94,6 +96,26 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
     startFeature(feature: FeatureRow): void {
         this.featureWork.start(feature.id, feature.description);
+    }
+
+    markFeatureDone(feature: FeatureRow): void {
+        if (!feature.id || this.completingFeatureIds.has(feature.id)) {
+            return;
+        }
+
+        this.completionError = '';
+        this.completingFeatureIds.add(feature.id);
+        this.backend.removeFeature(feature.id).subscribe({
+            next: () => {
+                this.featureWork.complete(feature.id);
+                this.completingFeatureIds.delete(feature.id);
+                this.refreshFeatures();
+            },
+            error: (error: Error) => {
+                this.completionError = error.message;
+                this.completingFeatureIds.delete(feature.id);
+            },
+        });
     }
 
     onPriorityChange(feature: FeatureRow, event: Event): void {

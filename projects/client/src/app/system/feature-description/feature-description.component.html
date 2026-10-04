@@ -29,6 +29,7 @@
         <p *ngIf="isLoadingFeatures" role="status">Loading features…</p>
         <p *ngIf="featuresError" id="feature-list-error" role="alert">{{ featuresError }}</p>
         <p *ngIf="priorityError" id="feature-priority-error" role="alert">{{ priorityError }}</p>
+        <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
         <mat-form-field appearance="outline" *ngIf="features.length > 0">
             <mat-label>Search features</mat-label>
             <input
@@ -75,6 +76,16 @@
                         (click)="startFeature(feature)"
                     >
                         {{ featureWork.activeFeature?.id === feature.id ? 'Started' : 'Start' }}
+                    </button>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-done-button"
+                        [disabled]="completingFeatureIds.has(feature.id)"
+                        [attr.aria-label]="'Mark done: ' + feature.description"
+                        (click)="markFeatureDone(feature)"
+                    >
+                        {{ completingFeatureIds.has(feature.id) ? 'Saving…' : 'Mark done' }}
                     </button>
                 </td>
             </ng-container>

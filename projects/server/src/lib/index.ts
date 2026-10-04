@@ -20,12 +20,26 @@ export function createApp(root: string): Express {
     return app;
 }
 
-export function startServer(root = './', port = Number(process.env['PORT'] ?? 3000)): Promise<Server> {
-    return new Promise((resolve, reject) => {
-        const server = createApp(root).listen(port, () => {
-            server.off('error', reject);
-            resolve(server);
+export interface ServerListener {
+    listen(app: Express, port: number): Promise<Server>;
+}
+
+const httpServerListener: ServerListener = {
+    listen(app, port) {
+        return new Promise((resolve, reject) => {
+            const server = app.listen(port, () => {
+                server.off('error', reject);
+                resolve(server);
+            });
+            server.once('error', reject);
         });
-        server.once('error', reject);
-    });
+    },
+};
+
+export function startServer(
+    root = './',
+    port = Number(process.env['PORT'] ?? 3000),
+    listener: ServerListener = httpServerListener,
+): Promise<Server> {
+    return listener.listen(createApp(root), port);
 }

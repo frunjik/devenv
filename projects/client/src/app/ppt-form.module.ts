@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { PPTFormComponent } from './ppt/form/ppt-form/ppt-form.component';
-import { PPTFormFieldComponent } from './ppt/form/ppt-form-field/ppt-form-field.component';
+import { PPTFormComponent } from './system/ppt/form/ppt-form/ppt-form.component';
+import { PPTFormFieldComponent } from './system/ppt/form/ppt-form-field/ppt-form-field.component';
 import { MatFormField, MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 
 // Not used - see /main.ts

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 // import { MatSelectModule } from '@angular/material/select';
 import { PPTField } from '@ppt';
-import { PPTFormModule } from '../../../ppt-form.module';
+import { PPTFormModule } from '../../../../ppt-form.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({

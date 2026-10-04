@@ -4,7 +4,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ppt, PPTValue, PPTField, PPTModel } from '@ppt';
 import { PPTFormFieldComponent } from '../ppt-form-field/ppt-form-field.component';
-import { PPTFormModule } from '../../../ppt-form.module';
+import { PPTFormModule } from '../../../../ppt-form.module';
 import { MatButtonModule } from '@angular/material/button';
 
 type PPTKeyedItems = Record<string, PPTValue>;

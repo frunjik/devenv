@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { MainComponent } from './main/main.component';
-import { FileBrowserComponent } from './file-browser/file-browser/file-browser.component';
-import { PPTJSComponent } from './ppt/workspaces/js/js.component';
+import { MainComponent } from './system/main/main.component';
+import { FileBrowserComponent } from './system/file-browser/file-browser/file-browser.component';
+import { PPTJSComponent } from './system/ppt/workspaces/js/js.component';
 
 export const routes: Routes = [
     {

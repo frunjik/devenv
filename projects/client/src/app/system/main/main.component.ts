@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PPTFormComponent } from '../ppt/form/ppt-form/ppt-form.component';
-import { PPTFormModule } from '../ppt-form.module';
+import { PPTFormModule } from '../../ppt-form.module';
 
 @Component({
     selector: 'app-main',

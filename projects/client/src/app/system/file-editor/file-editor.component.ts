@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { BackendService } from '../backend.service';
+import { BackendService } from '../../backend.service';
 
 @Component({
     selector: 'app-file-editor',
@@ -25,7 +25,7 @@ export class FileEditorComponent {
     @Input()
     filename        = 'web/angular-express/client/tsconfig.json';
 
-    editorOptions   = { theme: 'vs-dark', language: 'ts' };
+    editorOptions   = { theme: 'vs-dark', language: 'html' };
 
     constructor(private backendService: BackendService) {}
 

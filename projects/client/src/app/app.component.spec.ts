@@ -112,6 +112,26 @@ describe('AppComponent', () => {
         fixture.componentInstance.currentEntry.stopPolling();
     });
 
+    it('refreshes the current entry when its toolbar control is clicked', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        http.expectOne('http://localhost:3000/current').flush({
+            data: '// [2026-10-04 22:23 +02:00] Previous entry',
+        });
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.current-entry').click();
+
+        const refreshRequest = http.expectOne('http://localhost:3000/current');
+        expect(refreshRequest.request.method).toBe('GET');
+        refreshRequest.flush({ data: '// [2026-10-04 22:35 +02:00] Refreshed entry' });
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.current-entry').textContent.trim())
+            .toBe('Refreshed entry');
+        fixture.destroy();
+    });
+
     it('shows an error if the current entry cannot be loaded', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();

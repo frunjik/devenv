@@ -50,15 +50,18 @@
     </nav>
 
     <span class="toolbar-spacer"></span>
-    <span
+    <button
+        type="button"
         class="current-entry"
+        aria-label="Refresh current entry"
         [matTooltip]="currentEntry.entry || currentEntry.errorMessage"
         matTooltipClass="current-entry-tooltip"
         matTooltipPosition="below"
         [matTooltipShowDelay]="250"
+        (click)="currentEntry.refresh()"
     >
         {{ currentEntry.summary || currentEntry.errorMessage || 'Loading current…' }}
-    </span>
+    </button>
 
 </mat-toolbar>
 

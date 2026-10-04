@@ -22,3 +22,4 @@ History
 // [2026-10-04 22:27 +02:00] Made the client .current toolbar entry more compact and date-free while preserving the complete dated entry on hover; client tests pass with 100% coverage and the client build succeeds.
 // [2026-10-04 22:28 +02:00] Improved the client .current hover styling with a larger, readable tooltip and a subtle hover affordance; client tests pass with 100% coverage and the build succeeds.
 // [2026-10-04 22:30 +02:00] Initialized the client commit dialog with the date-free .current summary; tests verify the app-provided default and rendered input, with client coverage at 100% and the build passing.
+// [2026-10-04 22:36 +02:00] Made the client toolbar .current entry a keyboard-accessible refresh control that fetches and displays the latest entry on click; client tests pass with 100% coverage and the build succeeds.

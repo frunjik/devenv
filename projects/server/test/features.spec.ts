@@ -110,7 +110,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(201);
         expect(response.body.data).toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] Add a feature with multiline details$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Backlog\] Add a feature with multiline details$/,
         );
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
@@ -131,7 +131,7 @@ describe('features public API', () => {
             .send({ description: 'Feature already underway', status: 'In progress' });
 
         expect(response.status).toBe(201);
-        expect(response.body.data).toMatch(/\[Medium\] \[In progress\] Feature already underway$/);
+        expect(response.body.data).toMatch(/\[Low\] \[In progress\] Feature already underway$/);
     });
 
     it.each([
@@ -213,13 +213,14 @@ describe('features public API', () => {
     });
 
     it('updates a feature priority and preserves its description', async () => {
-        const created = await request(app).post('/features').send({ description: 'Prioritize this feature' });
+        const created = await request(app).post('/features')
+            .send({ description: 'Prioritize this feature', priority: 'High' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
 
         const response = await request(app).patch(`/features/${id}`).send({ priority: 'Low' });
 
         expect(response.status).toBe(200);
-        expect(response.body.data).toBe(created.body.data.replace('[Medium]', '[Low]'));
+        expect(response.body.data).toBe(created.body.data.replace('[High]', '[Low]'));
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 

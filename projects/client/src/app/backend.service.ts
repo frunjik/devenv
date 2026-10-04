@@ -99,7 +99,7 @@ export class BackendService {
 
     addFeature(
         description: string,
-        priority: FeaturePriority = 'Medium',
+        priority: FeaturePriority = 'Low',
         status: FeatureStatus = 'Backlog',
     ): Observable<string> {
         return this.post<string>('features', { description, priority, status });

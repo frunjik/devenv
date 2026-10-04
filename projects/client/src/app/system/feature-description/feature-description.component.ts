@@ -42,7 +42,7 @@ interface FeatureRow {
 })
 export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, OnInit {
     description = '';
-    priority: FeaturePriority = 'Medium';
+    priority: FeaturePriority = 'Low';
     status: FeatureStatus = 'Backlog';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
     readonly statuses: FeatureStatus[] = ['Backlog', 'In progress', 'Done'];
@@ -309,7 +309,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
             next: () => {
                 this.isSubmitting = false;
                 this.description = '';
-                this.priority = 'Medium';
+                this.priority = 'Low';
                 this.status = 'Backlog';
                 this.refreshFeatures();
             },

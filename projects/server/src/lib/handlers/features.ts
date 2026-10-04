@@ -220,7 +220,7 @@ export function createFeatureHandler(root: string): RequestHandler {
             return;
         }
 
-        const requestedPriority: unknown = request.body?.priority ?? 'Medium';
+        const requestedPriority: unknown = request.body?.priority ?? 'Low';
         if (typeof requestedPriority !== 'string'
             || !featurePriorities.includes(requestedPriority as FeaturePriority)) {
             response.status(400).json({ error: { message: 'Feature priority must be High, Medium, or Low.' } });

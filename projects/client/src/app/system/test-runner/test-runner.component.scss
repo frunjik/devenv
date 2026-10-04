@@ -6,6 +6,13 @@ button {
     padding: 0.5rem 1rem;
 }
 
+.running-progress {
+    display: block;
+    margin-top: 0.75rem;
+    max-width: 24rem;
+    opacity: 0.65;
+}
+
 pre {
     max-height: 60vh;
     overflow: auto;

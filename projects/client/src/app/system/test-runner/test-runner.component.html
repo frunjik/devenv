@@ -6,6 +6,7 @@
         {{ isRunning ? 'Running tests…' : 'Run tests' }}
     </button>
 
+    <mat-progress-bar *ngIf="isRunning" mode="indeterminate" class="running-progress" aria-label="Tests are running"></mat-progress-bar>
     <p role="status" aria-live="polite" *ngIf="isRunning">Tests are running. This may take a few minutes.</p>
     <p class="error" role="alert" *ngIf="errorMessage">Could not run tests: {{ errorMessage }}</p>
 

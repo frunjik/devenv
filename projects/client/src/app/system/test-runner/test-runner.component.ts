@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BackendService, type TestOutputStream } from '../../backend.service';
 
 interface TestRunResult {
@@ -12,7 +13,7 @@ interface TestRunResult {
 @Component({
     selector: 'app-test-runner',
     standalone: true,
-    imports: [NgIf],
+    imports: [NgIf, MatProgressBarModule],
     templateUrl: './test-runner.component.html',
     styleUrl: './test-runner.component.scss',
 })

@@ -26,6 +26,26 @@ describe('TestRunnerComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('Run tests');
     });
 
+    it('shows an indeterminate progress bar while the tests are running', () => {
+        runTests.mockImplementation(() => new Promise(() => undefined));
+
+        component.runTests();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('mat-progress-bar')).not.toBeNull();
+    });
+
+    it('hides the progress bar when the tests finish', async () => {
+        runTests.mockResolvedValue(0);
+
+        component.runTests();
+        await Promise.resolve();
+        await Promise.resolve();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('mat-progress-bar')).toBeNull();
+    });
+
     it('shows output as it streams and reports a successful exit', async () => {
         runTests.mockImplementation(async onOutput => {
             onOutput('stdout', 'Client and server tests passed');

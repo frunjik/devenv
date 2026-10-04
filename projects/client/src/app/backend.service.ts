@@ -118,7 +118,7 @@ export class BackendService {
             }
             pendingLine += decoder.decode(value, { stream: true });
             const lines = pendingLine.split('\n');
-            pendingLine = lines.pop() ?? '';
+            pendingLine = lines.pop()!;
             lines.forEach(processLine);
         }
 

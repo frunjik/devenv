@@ -148,6 +148,21 @@ describe('BackendService test runner', () => {
             .rejects.toThrow('The server sent an invalid test output event');
     });
 
+    it('rejects a stream event without a type', async () => {
+        const encoded = new TextEncoder().encode('null\n');
+        fetchMock.mockResolvedValue({
+            ok: true,
+            body: {
+                getReader: () => ({
+                    read: async () => ({ done: false, value: encoded }),
+                }),
+            },
+        } as Response);
+
+        await expect(service.runTests(() => undefined))
+            .rejects.toThrow('The server sent an invalid test output event');
+    });
+
     it('rejects a stream that ends without an exit code', async () => {
         const encoded = new TextEncoder().encode('{"type":"stdout","data":"partial"}\n');
         let sent = false;

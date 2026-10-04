@@ -11,6 +11,7 @@ Devenv
 - make an indicator on the client to show we have open changes
 - feature: dynamic styles
 - make server calls with some prefix /api/server/ ?
+- feature: history
 - feature: send git diffs
 - feature: show client feedback on saving files
 - feature: show client and server version (and status)

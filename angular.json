@@ -96,6 +96,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/client/public"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/client/public/monaco",
+                "output": "/assets/monaco"
               }
             ],
             "styles": [

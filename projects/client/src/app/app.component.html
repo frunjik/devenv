@@ -2,19 +2,19 @@
     PPT - {{host}}
     |
     <nav>
-        <a href="/">Main</a>
+        <a routerLink="/">Main</a>
         |
-        <a href="/ppt/browse">Browse</a>
+        <a routerLink="/ppt/browse">Browse</a>
         |
-        <a href="/ppt/js">Workspace JS</a>
+        <a routerLink="/ppt/js">Workspace JS</a>
         |
-        <a href="/main">TEST</a>
+        <a routerLink="/main">TEST</a>
         |
-        <a href="./ppt/browse?path=%2Fprojects%2Fclient%2Fsrc%2Fapp%2Fsystem%2Fmain&file=%2Fprojects%2Fclient%2Fsrc%2Fapp%2Fsystem%2Fmain%2Fmain.component.html">EDIT-MAIN</a>
+        <a routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app/system/main', file: '/projects/client/src/app/system/main/main.component.html'}">EDIT-MAIN</a>
         |
-        <a href="./ppt/browse?file=%2Fscratch.txt">EDIT-SCRATCH</a>
+        <a routerLink="/ppt/browse" [queryParams]="{file: '/scratch.txt'}">EDIT-SCRATCH</a>
         |
-        <a href="./ppt/browse?path=%2Fprojects%2Fclient%2Fsrc%2Fapp&file=%2Fprojects%2Fclient%2Fsrc%2Fapp%2Fapp.component.html">EDIT-MENU</a>
+        <a routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/app.component.html'}">EDIT-MENU</a>
     </nav>
 
 

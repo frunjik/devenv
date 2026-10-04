@@ -1,7 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+/// <reference types="jasmine" />
 
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PPTFormFieldComponent } from './ppt-form-field.component';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 
 describe('PPTFormFieldComponent', () => {
     let component: PPTFormFieldComponent;
@@ -15,8 +16,14 @@ describe('PPTFormFieldComponent', () => {
 
         fixture = TestBed.createComponent(PPTFormFieldComponent);
 
-        fixture.componentRef.setInput('form', new FormGroup({}));
-        fixture.componentRef.setInput('field', {});
+        fixture.componentRef.setInput('form', new FormGroup({
+            name: new FormControl('Example')
+        }));
+        fixture.componentRef.setInput('field', {
+            id: 'name',
+            name: 'Name',
+            type: 'string'
+        });
 
         component = fixture.componentInstance;
         fixture.detectChanges();

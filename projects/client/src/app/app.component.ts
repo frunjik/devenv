@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 // import pipe from 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, MatToolbarModule],
+    imports: [RouterLink, RouterOutlet, MatToolbarModule],
     // providers: [
 
     // ]

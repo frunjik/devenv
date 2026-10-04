@@ -1,2 +1,5 @@
 // [2026-10-04 22:57 +02:00] show the status of the last cached test run in the bottom client toolbar
 // [2026-10-04 22:57 +02:00] show the open features list on the client feature form page under the form
+// [2026-10-04 23:01 +02:00] after commiting a feature remove it from the feature list
+// [2026-10-04 23:01 +02:00] bind ctrl-enter to form submit
+// [2026-10-04 23:02 +02:00] make feature list sortable on client

@@ -3,6 +3,9 @@ dumpers
 
 xx
 
+./wishlist
+./backlog
+
 ./current
 ./history
 ./feature

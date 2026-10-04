@@ -13,6 +13,12 @@
                 (keydown)="onDescriptionKeydown($event)"
             ></textarea>
         </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Priority</mat-label>
+            <select matNativeControl name="priority" [(ngModel)]="priority" aria-label="Feature priority">
+                <option *ngFor="let value of priorities" [value]="value">{{ value }}</option>
+            </select>
+        </mat-form-field>
         <button type="submit" mat-raised-button color="primary" [disabled]="!description.trim() || isSubmitting">
             {{ isSubmitting ? 'Adding…' : 'Add feature' }}
         </button>
@@ -22,6 +28,7 @@
         <h2 id="open-features-heading">Open features</h2>
         <p *ngIf="isLoadingFeatures" role="status">Loading features…</p>
         <p *ngIf="featuresError" id="feature-list-error" role="alert">{{ featuresError }}</p>
+        <p *ngIf="priorityError" id="feature-priority-error" role="alert">{{ priorityError }}</p>
         <mat-form-field appearance="outline" *ngIf="features.length > 0">
             <mat-label>Search features</mat-label>
             <input
@@ -41,6 +48,18 @@
             <ng-container matColumnDef="description">
                 <th mat-header-cell *matHeaderCellDef>Description</th>
                 <td mat-cell *matCellDef="let feature">{{ feature.description }}</td>
+            </ng-container>
+            <ng-container matColumnDef="priority">
+                <th mat-header-cell *matHeaderCellDef>Priority</th>
+                <td mat-cell *matCellDef="let feature">
+                    <select
+                        [value]="feature.priority"
+                        [attr.aria-label]="'Priority for ' + feature.description"
+                        (change)="onPriorityChange(feature, $event)"
+                    >
+                        <option *ngFor="let value of priorities" [value]="value">{{ value }}</option>
+                    </select>
+                </td>
             </ng-container>
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>

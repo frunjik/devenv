@@ -8,6 +8,7 @@ import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
 import { LoggerService } from './logger.service';
 
 export type TestOutputStream = 'stdout' | 'stderr';
+export type FeaturePriority = 'High' | 'Medium' | 'Low';
 
 export interface GitCommitResult {
     stdout: string;
@@ -95,8 +96,15 @@ export class BackendService {
         return this.post<GitCommitResult>('git/commit', { message });
     }
 
-    addFeature(description: string): Observable<string> {
-        return this.post<string>('features', { description });
+    addFeature(description: string, priority: FeaturePriority = 'Medium'): Observable<string> {
+        return this.post<string>('features', { description, priority });
+    }
+
+    updateFeaturePriority(id: string, priority: FeaturePriority): Observable<string> {
+        return this.httpservice.patch<SuccessResponseBody<string>>(
+            `${this.host}features/${encodeURIComponent(id)}`,
+            { priority },
+        ).pipe(map(response => response.data));
     }
 
     getFeatures(): Observable<string[]> {

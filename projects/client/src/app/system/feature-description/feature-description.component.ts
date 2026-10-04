@@ -1,17 +1,18 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { NgIf, SlicePipe } from '@angular/common';
+import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BackendService } from '../../backend.service';
+import { BackendService, type FeaturePriority } from '../../backend.service';
 import { FeatureWorkService } from '../../feature-work.service';
 
 interface FeatureRow {
     id: string;
     description: string;
+    priority: FeaturePriority;
 }
 
 @Component({
@@ -24,6 +25,7 @@ interface FeatureRow {
         MatInputModule,
         MatPaginatorModule,
         MatTableModule,
+        NgFor,
         NgIf,
         SlicePipe,
     ],
@@ -32,12 +34,15 @@ interface FeatureRow {
 })
 export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     description = '';
+    priority: FeaturePriority = 'Medium';
+    readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
     featureSearch = '';
     isSubmitting = false;
     errorMessage = '';
+    priorityError = '';
     features: string[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
-    readonly displayedColumns = ['id', 'description', 'actions'];
+    readonly displayedColumns = ['id', 'priority', 'description', 'actions'];
     isLoadingFeatures = false;
     featuresError = '';
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -47,7 +52,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         readonly featureWork: FeatureWorkService,
     ) {
         this.featureDataSource.filterPredicate = (feature, filter) =>
-            `${feature.id} ${feature.description}`.toLocaleLowerCase().includes(filter);
+            `${feature.id} ${feature.priority} ${feature.description}`.toLocaleLowerCase().includes(filter);
     }
 
     ngOnInit(): void {
@@ -91,13 +96,37 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         this.featureWork.start(feature.id, feature.description);
     }
 
+    onPriorityChange(feature: FeatureRow, event: Event): void {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement) || !this.priorities.includes(target.value as FeaturePriority)) {
+            return;
+        }
+
+        const priority = target.value as FeaturePriority;
+        if (feature.priority === priority) {
+            return;
+        }
+
+        this.priorityError = '';
+        this.backend.updateFeaturePriority(feature.id, priority).subscribe({
+            next: () => {
+                feature.priority = priority;
+                this.featureDataSource.data = [...this.featureDataSource.data];
+            },
+            error: (error: Error) => {
+                this.priorityError = error.message;
+                target.value = feature.priority;
+            },
+        });
+    }
+
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ \[[^\]]+\] \[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] (.+)$/i,
+            /^\/\/ \[[^\]]+\] \[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] (.+)$/i,
         );
         return match
-            ? { id: match[1], description: match[2] }
-            : { id: '', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
+            ? { id: match[1], priority: match[2] as FeaturePriority, description: match[3] }
+            : { id: '', priority: 'Medium', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
     }
 
     submit(): void {
@@ -108,10 +137,11 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
         this.isSubmitting = true;
         this.errorMessage = '';
-        this.backend.addFeature(description).subscribe({
+        this.backend.addFeature(description, this.priority).subscribe({
             next: () => {
                 this.isSubmitting = false;
                 this.description = '';
+                this.priority = 'Medium';
                 this.refreshFeatures();
             },
             error: (error: Error) => {

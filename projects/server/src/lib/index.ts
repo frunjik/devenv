@@ -10,6 +10,7 @@ import { createGitStatusHandler } from './handlers/git-status';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import {
     createFeatureHandler,
+    createFeaturePriorityHandler,
     createFeaturesListHandler,
     createFeatureRemovalHandler,
 } from './handlers/features';
@@ -51,6 +52,7 @@ export function createApp(
     app.get('/current', createCurrentEntryHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
+    app.patch('/features/:id', createFeaturePriorityHandler(root));
     app.delete('/features/:id', createFeatureRemovalHandler(root));
 
     if (process.env['NODE_ENV'] !== 'production') {

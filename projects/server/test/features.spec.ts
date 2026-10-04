@@ -30,8 +30,8 @@ describe('features public API', () => {
         const response = await request(app).get('/features');
 
         expect(response.body.data).toHaveLength(2);
-        expect(response.body.data[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] first feature$/);
-        expect(response.body.data[1]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] second feature$/);
+        expect(response.body.data[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] first feature$/);
+        expect(response.body.data[1]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] second feature$/);
         const persistedEntries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(persistedEntries).toEqual(response.body.data);
         expect(new Set(persistedEntries.map(entry => entry.match(/\[([0-9a-f-]{36})\]/)?.[1])).size).toBe(2);
@@ -48,9 +48,11 @@ describe('features public API', () => {
         const response = await request(app).get('/features');
 
         expect(response.body.data[0]).toMatch(
-            /^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] legacy feature$/,
+            /^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] \[Medium\] legacy feature$/,
         );
-        expect(response.body.data[1]).toBe(`// [2026-10-04 22:46 +02:00] [${existingId}] identified feature`);
+        expect(response.body.data[1]).toBe(
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [Medium] identified feature`,
+        );
     });
 
     it('returns an empty list when the features file is empty', async () => {
@@ -82,8 +84,18 @@ describe('features public API', () => {
 
         expect(response.status).toBe(201);
         expect(response.body.data).toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] Add a feature with multiline details$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] Add a feature with multiline details$/,
         );
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+    });
+
+    it('accepts an explicit feature priority', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Urgent feature', priority: 'High' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(/\[High\] Urgent feature$/);
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 
@@ -105,7 +117,7 @@ describe('features public API', () => {
 
         const entries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(entries).toHaveLength(2);
-        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] existing entry$/);
+        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] existing entry$/);
         expect(entries[1]).toBe(response.body.data);
     });
 
@@ -116,7 +128,7 @@ describe('features public API', () => {
 
         const entries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(entries).toHaveLength(2);
-        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] existing entry$/);
+        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] existing entry$/);
         expect(entries[1]).toBe(response.body.data);
     });
 
@@ -132,10 +144,69 @@ describe('features public API', () => {
         expect(response.body).toEqual({ error: { message: 'Feature description is required.' } });
     });
 
+    it('rejects unsupported feature priorities', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature with invalid priority', priority: 'Urgent' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            error: { message: 'Feature priority must be High, Medium, or Low.' },
+        });
+    });
+
     it('forwards filesystem read errors to Express', async () => {
         await mkdir(join(root, '.features'));
 
         const response = await request(app).post('/features').send({ description: 'Next feature' });
+
+        expect(response.status).toBe(500);
+    });
+
+    it('updates a feature priority and preserves its description', async () => {
+        const created = await request(app).post('/features').send({ description: 'Prioritize this feature' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app).patch(`/features/${id}`).send({ priority: 'Low' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(created.body.data.replace('[Medium]', '[Low]'));
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+    });
+
+    it('rejects invalid feature priority update requests', async () => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000')
+            .send({ priority: 'Urgent' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            error: { message: 'Feature priority must be High, Medium, or Low.' },
+        });
+    });
+
+    it('rejects malformed feature IDs for priority updates', async () => {
+        const response = await request(app).patch('/features/not-a-uuid').send({ priority: 'High' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: { message: 'A valid feature ID is required.' } });
+    });
+
+    it('returns not found when updating a missing feature priority', async () => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000')
+            .send({ priority: 'High' });
+
+        expect(response.status).toBe(404);
+        expect(response.body.error.message).toContain('was not found');
+    });
+
+    it('forwards feature priority update filesystem errors to Express', async () => {
+        await mkdir(join(root, '.features'));
+
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000')
+            .send({ priority: 'High' });
 
         expect(response.status).toBe(500);
     });

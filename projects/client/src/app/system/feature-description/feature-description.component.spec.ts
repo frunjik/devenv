@@ -145,12 +145,55 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value).toBe('');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] Add a feature submission form\n$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] Add a feature submission form\n$/,
         );
         expect(Array.from<HTMLTableRowElement>(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
         ).map(row => row.querySelector('.mat-column-description')?.textContent.trim()))
             .toEqual(['Add a feature submission form']);
+    });
+
+    it('submits the selected priority and resets it to Medium after success', async () => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        const priority: HTMLSelectElement = fixture.nativeElement.querySelector(
+            'select[aria-label="Feature priority"]',
+        );
+        priority.value = 'High';
+        priority.dispatchEvent(new Event('change'));
+        textarea.value = 'Prioritize this feature';
+        textarea.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('button[type="submit"]').click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toMatch(/\[High\] Prioritize this feature/);
+        expect(fixture.componentInstance.priority).toBe('Medium');
+        expect((fixture.nativeElement.querySelector('select[aria-label="Feature priority"]') as HTMLSelectElement).value)
+            .toBe('Medium');
+        expect(fixture.nativeElement.querySelector('.mat-column-priority select').value).toBe('High');
+    });
+
+    it('updates an open feature priority through the public API', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
+        expect(selector.value).toBe('Medium');
+        selector.value = 'Low';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Low] Add a feature');
+        expect((fixture.nativeElement.querySelector('.mat-column-priority select') as HTMLSelectElement).value)
+            .toBe('Low');
+        expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
     });
 
     it('paginates the open features table', async () => {

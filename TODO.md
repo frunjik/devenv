@@ -2,6 +2,7 @@ TDOD:
 
 Bootstrap
 - make a button to commit changes from the client
+- fix style the breadcrumb menu - it gets too long and pushes the editor away
 
 Devenv
 - make server calls with some prefix /api/server/ ?
@@ -9,7 +10,6 @@ Devenv
 - feature: show client and server version (and status)
 - feature: increase version number
 - feature: add a menu link to the current page
-- fix style the breadcrumb menu - it gets too long and pushes the editor away
 
 System
 - update node

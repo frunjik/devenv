@@ -4,9 +4,14 @@ import type { Server } from 'node:http';
 import { FileSystem } from './filesystem/filesystem';
 import { getFiles, postFiles } from './handlers/files';
 import { getFolders } from './handlers/folders';
+import { createGitCommitHandler } from './handlers/git-commit';
 import { createTestRunHandler, type TestCommandExecutor } from './handlers/test-runner';
 
-export function createApp(root: string, testCommandExecutor?: TestCommandExecutor): Express {
+export function createApp(
+    root: string,
+    testCommandExecutor?: TestCommandExecutor,
+    gitCommitCwd = process.cwd(),
+): Express {
     const app = express();
 
     app.use(express.json());
@@ -20,6 +25,7 @@ export function createApp(root: string, testCommandExecutor?: TestCommandExecuto
 
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor));
+        app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
     }
 
     return app;

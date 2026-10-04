@@ -6,6 +6,7 @@ module.exports = {
     }),
     rootDir: '../..',
     roots: ['<rootDir>/projects/client'],
+    coveragePathIgnorePatterns: ['[/\\\\]projects[/\\\\]server[/\\\\]src[/\\\\]'],
     moduleNameMapper: {
         '^@ppt$': '<rootDir>/projects/ppt/src/public-api.ts',
     },

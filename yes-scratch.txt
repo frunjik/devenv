@@ -1,5 +1,5 @@
 rules:
-- never change production code
+- never EVER change production code 
 - only use the public api for testing
 - find the minimal tests that cover 100 overall
 - ask me every 7 minutes to continue or stop the loop
@@ -13,3 +13,4 @@ task-write-target-tests:
 - find the set of minimal tests that cover 100 overall for the current target
 - prefer separate 'it' clauses over bulk tests with more then 1 assert
 - add tests until the coverage is 100 or you cannot add more tests to increase the coverage
+- ask me every 7 minutes to continue or stop the loop

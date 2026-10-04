@@ -315,8 +315,17 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
                     return;
                 }
 
+                const previousContents = `${entries.join('\n')}\n`;
                 entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as FeatureStatus);
                 await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                if (requestedStatus !== 'In progress') {
+                    try {
+                        await removeStartedFeatureTask(root, id.toLowerCase());
+                    } catch (error) {
+                        await writeFile(filename, previousContents, 'utf8');
+                        throw error;
+                    }
+                }
                 response.json({ data: entries[featureIndex] });
             })
             .catch(next);

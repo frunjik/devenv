@@ -68,6 +68,8 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('.open-features').textContent).toContain('No open features.');
         expect(fixture.nativeElement.querySelector('.in-progress-features').textContent)
             .toContain('No features in progress.');
+        expect(fixture.nativeElement.querySelector('.done-features').textContent)
+            .toContain('No completed features.');
     });
 
     it('refreshes the feature list from the client and shows newly added features', async () => {
@@ -149,7 +151,24 @@ describe('FeatureDescriptionComponent', () => {
         expect(currentTasks[0].querySelector('.in-progress-feature-description').textContent.trim())
             .toBe('Feature being worked on');
         expect(fixture.nativeElement.querySelector('.feature-count').textContent.trim()).toBe('(1)');
-        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(3);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(2);
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
+            .toBe('Completed feature');
+    });
+
+    it('shows completed features separately when there are no open features', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.open-features').textContent).toContain('No open features.');
+        expect(fixture.nativeElement.querySelector('.open-features table')).toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
+            .toBe('Completed feature');
     });
 
     it('displays priority and status as distinct badges within card-like rows', async () => {
@@ -172,20 +191,22 @@ describe('FeatureDescriptionComponent', () => {
         const rows: HTMLTableRowElement[] = Array.from(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
         );
-        expect(rows).toHaveLength(3);
+        expect(rows).toHaveLength(2);
         expect(rows.every(row => row.classList.contains('feature-card-row'))).toBe(true);
         expect(rows.map(row => row.querySelector('.feature-priority-select')?.className))
             .toEqual([
                 'feature-priority-select priority-high',
                 'feature-priority-select priority-medium',
-                'feature-priority-select priority-low',
             ]);
         expect(rows.map(row => row.querySelector('.feature-status-select')?.className))
             .toEqual([
                 'feature-status-select status-backlog',
                 'feature-status-select status-in-progress',
-                'feature-status-select status-done',
             ]);
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-priority-select').className)
+            .toBe('feature-priority-select priority-low');
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-status-select').className)
+            .toBe('feature-status-select status-done');
     });
 
     it('edits a feature description in a dialog and updates its active task', async () => {
@@ -481,12 +502,16 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(featureWork.activeFeature).toBeNull();
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Done] Completed feature');
         expect(await readFile(join(root, '.features'), 'utf8')).toContain('Remaining feature');
-        expect(await readFile(join(root, '.features'), 'utf8')).not.toContain('Completed feature');
         expect(Array.from<HTMLTableRowElement>(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
         ).map(row => row.querySelector('.mat-column-description')?.textContent.trim()))
             .toEqual(['Remaining feature']);
+        expect(Array.from<HTMLLIElement>(
+            fixture.nativeElement.querySelectorAll('.done-feature'),
+        ).map(row => row.querySelector('.done-feature-description')?.textContent.trim()))
+            .toEqual(['Completed feature']);
         expect(fixture.nativeElement.querySelector('#feature-completion-error')).toBeNull();
     });
 
@@ -600,6 +625,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [High] Feature to track\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Feature to track <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -618,6 +644,9 @@ describe('FeatureDescriptionComponent', () => {
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Done');
         expect(fixture.nativeElement.querySelectorAll('.in-progress-feature')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
         expect(featureWork.activeFeature).toBeNull();
     });
@@ -894,7 +923,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('.open-features').textContent)
-            .toContain('No features match your search.');
+            .toContain('No open features match your search.');
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
     });
 

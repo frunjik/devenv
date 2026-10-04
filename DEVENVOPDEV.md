@@ -14,7 +14,6 @@ After a feature is done you can pick the next feature to work on from the below 
 The features you are writing are, take them one by one:
 - [In progress] show the errors of the last failing test suite on the test runner page <!-- feature-id:06b71df0-94ee-4ca7-899a-4b7d8250ddd5 -->
 - [Questions] use json for data persistence <!-- feature-id:3aa9e269-c494-42d0-9e8a-77527fb24ad5 -->
-- [In progress] edit feature <!-- feature-id:bdb0d3f3-db41-4031-a975-f06640977329 -->
 - [In progress] put done features on a separate list <!-- feature-id:55736a9b-0824-45f9-8ca7-b0072678ba90 -->
 - [In progress] make the current task client display longer (to cover more text) <!-- feature-id:3d279160-c6fd-4f56-947a-f9b55e263557 -->
 - [In progress] add feature category <!-- feature-id:ef3b9d44-3a01-4e24-b28c-befe465095ee -->

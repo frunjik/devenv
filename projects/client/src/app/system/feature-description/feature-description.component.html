@@ -72,8 +72,10 @@
                 {{ isLoadingFeatures ? 'Refreshing…' : 'Refresh' }}
             </button>
         </div>
-        <p *ngIf="!isLoadingFeatures && !featuresError && features.length === 0">No open features.</p>
-        <table mat-table matSort [dataSource]="featureDataSource" *ngIf="features.length > 0">
+        <p *ngIf="!isLoadingFeatures && !featuresError && featureDataSource.data.length === 0">
+            No open features.
+        </p>
+        <table mat-table matSort [dataSource]="featureDataSource" *ngIf="featureDataSource.data.length > 0">
             <ng-container matColumnDef="id">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
                 <td mat-cell *matCellDef="let feature" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</td>
@@ -158,15 +160,77 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row class="feature-card-row" *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
-        <p *ngIf="features.length > 0 && featureDataSource.filteredData.length === 0">
-            No features match your search.
+        <p *ngIf="featureDataSource.data.length > 0 && featureDataSource.filteredData.length === 0">
+            No open features match your search.
         </p>
         <mat-paginator
-            [hidden]="features.length === 0"
+            [hidden]="featureDataSource.data.length === 0"
             [pageSize]="5"
             [pageSizeOptions]="[5, 10, 25]"
             showFirstLastButtons
             aria-label="Open feature pages"
         ></mat-paginator>
+    </section>
+    <section class="done-features" aria-labelledby="done-features-heading">
+        <h2 id="done-features-heading">
+            Done <span class="feature-count">({{ doneFeatures.length }})</span>
+        </h2>
+        <p *ngIf="!isLoadingFeatures && doneFeatures.length === 0">No completed features.</p>
+        <p *ngIf="doneFeatures.length > 0 && matchingDoneFeatures.length === 0">
+            No completed features match your search.
+        </p>
+        <ul *ngIf="matchingDoneFeatures.length > 0">
+            <li *ngFor="let feature of matchingDoneFeatures" class="done-feature">
+                <span class="done-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="done-feature-description">{{ feature.description }}</span>
+                <div class="done-feature-actions">
+                    <select
+                        class="feature-priority-select"
+                        [class.priority-high]="feature.priority === 'High'"
+                        [class.priority-medium]="feature.priority === 'Medium'"
+                        [class.priority-low]="feature.priority === 'Low'"
+                        [attr.aria-label]="'Priority for ' + feature.description"
+                        (change)="onPriorityChange(feature, $event)"
+                    >
+                        <option
+                            *ngFor="let value of priorities"
+                            [value]="value"
+                            [selected]="value === feature.priority"
+                        >{{ value }}</option>
+                    </select>
+                    <select
+                        class="feature-status-select"
+                        [class.status-backlog]="feature.status === 'Backlog'"
+                        [class.status-in-progress]="feature.status === 'In progress'"
+                        [class.status-done]="feature.status === 'Done'"
+                        [attr.aria-label]="'Status for ' + feature.description"
+                        (change)="onStatusChange(feature, $event)"
+                    >
+                        <option
+                            *ngFor="let value of statuses"
+                            [value]="value"
+                            [selected]="value === feature.status"
+                        >{{ value }}</option>
+                    </select>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-edit-button"
+                        [attr.aria-label]="'Edit: ' + feature.description"
+                        (click)="editFeature(feature)"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-start-button"
+                        (click)="startFeature(feature)"
+                    >
+                        Start
+                    </button>
+                </div>
+            </li>
+        </ul>
     </section>
 </main>

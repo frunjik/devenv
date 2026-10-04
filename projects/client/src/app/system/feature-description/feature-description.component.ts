@@ -54,6 +54,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     editError = '';
     readonly completingFeatureIds = new Set<string>();
     features: string[] = [];
+    doneFeatures: FeatureRow[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
     isLoadingFeatures = false;
@@ -67,14 +68,18 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         return this.featureDataSource.data.filter(feature => feature.status === 'In progress');
     }
 
+    get matchingDoneFeatures(): FeatureRow[] {
+        const filter = this.featureSearch.trim().toLocaleLowerCase();
+        return filter ? this.doneFeatures.filter(feature => this.matchesFeature(feature, filter)) : this.doneFeatures;
+    }
+
     constructor(
         private backend: BackendService,
         readonly featureWork: FeatureWorkService,
         private currentTask: CurrentTaskService,
         private dialog: MatDialog,
     ) {
-        this.featureDataSource.filterPredicate = (feature, filter) =>
-            `${feature.id} ${feature.priority} ${feature.description}`.toLocaleLowerCase().includes(filter);
+        this.featureDataSource.filterPredicate = (feature, filter) => this.matchesFeature(feature, filter);
     }
 
     ngOnInit(): void {
@@ -91,7 +96,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         this.backend.getFeatures().subscribe({
             next: features => {
                 this.features = features;
-                this.featureDataSource.data = features.map(feature => this.parseFeature(feature));
+                this.refreshFeatureLists();
                 this.isLoadingFeatures = false;
             },
             error: (error: Error) => {
@@ -120,11 +125,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         }
         this.statusError = '';
         this.backend.startFeature(feature.id).subscribe({
-            next: () => {
-                feature.status = 'In progress';
+            next: entry => {
+                this.updateFeatureEntry(entry);
                 this.featureWork.start(feature.id, feature.description);
                 this.currentTask.refresh();
-                this.featureDataSource.data = [...this.featureDataSource.data];
             },
             error: (error: Error) => {
                 this.statusError = error.message;
@@ -139,11 +143,12 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
         this.completionError = '';
         this.completingFeatureIds.add(feature.id);
-        this.backend.removeFeature(feature.id).subscribe({
-            next: () => {
+        this.backend.updateFeatureStatus(feature.id, 'Done').subscribe({
+            next: entry => {
                 this.featureWork.complete(feature.id);
                 this.completingFeatureIds.delete(feature.id);
-                this.refreshFeatures();
+                this.currentTask.refresh();
+                this.updateFeatureEntry(entry);
             },
             error: (error: Error) => {
                 this.completionError = error.message;
@@ -169,14 +174,13 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
             this.backend.updateFeatureDescription(featureId, description).subscribe({
                 next: entry => {
                     const updatedFeature = this.parseFeature(entry);
-                    feature.description = updatedFeature.description;
                     if (this.featureWork.activeFeature?.id === featureId) {
-                        this.featureWork.start(featureId, feature.description);
+                        this.featureWork.start(featureId, updatedFeature.description);
                     }
                     if (feature.status === 'In progress') {
                         this.currentTask.refresh();
                     }
-                    this.featureDataSource.data = [...this.featureDataSource.data];
+                    this.updateFeatureEntry(entry);
                 },
                 error: (error: Error) => {
                     this.editError = error.message;
@@ -198,9 +202,8 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
         this.priorityError = '';
         this.backend.updateFeaturePriority(feature.id, priority).subscribe({
-            next: () => {
-                feature.priority = priority;
-                this.featureDataSource.data = [...this.featureDataSource.data];
+            next: entry => {
+                this.updateFeatureEntry(entry);
             },
             error: (error: Error) => {
                 this.priorityError = error.message;
@@ -235,15 +238,15 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
             ? this.backend.startFeature(feature.id)
             : this.backend.updateFeatureStatus(feature.id, status);
         update.subscribe({
-            next: () => {
-                feature.status = status;
+            next: entry => {
                 if (status === 'In progress') {
-                    this.featureWork.start(feature.id, feature.description);
+                    this.featureWork.start(feature.id, this.parseFeature(entry).description);
                     this.currentTask.refresh();
                 } else {
                     this.featureWork.complete(feature.id);
+                    this.currentTask.refresh();
                 }
-                this.featureDataSource.data = [...this.featureDataSource.data];
+                this.updateFeatureEntry(entry);
             },
             error: (error: Error) => {
                 this.statusError = error.message;
@@ -266,6 +269,25 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
                 description: match[4],
             }
             : { id: '', priority: 'Medium', status: 'Backlog', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
+    }
+
+    private updateFeatureEntry(entry: string): void {
+        const updatedFeature = this.parseFeature(entry);
+        this.features = this.features.map(feature =>
+            this.parseFeature(feature).id === updatedFeature.id ? entry : feature,
+        );
+        this.refreshFeatureLists();
+    }
+
+    private refreshFeatureLists(): void {
+        const features = this.features.map(feature => this.parseFeature(feature));
+        this.doneFeatures = features.filter(feature => feature.status === 'Done');
+        this.featureDataSource.data = features.filter(feature => feature.status !== 'Done');
+        this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();
+    }
+
+    private matchesFeature(feature: FeatureRow, filter: string): boolean {
+        return `${feature.id} ${feature.priority} ${feature.description}`.toLocaleLowerCase().includes(filter);
     }
 
     submit(): void {

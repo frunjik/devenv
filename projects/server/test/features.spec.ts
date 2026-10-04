@@ -490,15 +490,54 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
     });
 
-    it('accepts each supported feature status', async () => {
+    it.each(['Backlog', 'In progress', 'Done'] as const)('accepts a %s status update', async status => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
 
         const response = await request(app)
             .patch(`/features/${id}/status`)
+            .send({ status });
+
+        expect(response.body.data).toContain(`[${status}] Complete this feature`);
+    });
+
+    it('removes the task marker when marking a feature done but keeps the feature record', async () => {
+        const created = await request(app).post('/features').send({ description: 'Keep completed feature' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        const marker = `<!-- feature-id:${id} -->`;
+        const otherTask = '- [In progress] Keep this task <!-- feature-id:123e4567-e89b-42d3-a456-426614174000 -->';
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Keep completed feature ${marker}`,
+            otherTask,
+            '',
+        ].join('\n'));
+
+        const response = await request(app)
+            .patch(`/features/${id}/status`)
             .send({ status: 'Done' });
 
-        expect(response.body.data).toContain('[Done] Complete this feature');
+        expect(response.status).toBe(200);
+        expect(response.body.data).toContain('[Done] Keep completed feature');
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Done] Keep completed feature');
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile).not.toContain(marker);
+        expect(taskFile).toContain(otherTask);
+    });
+
+    it('rolls back feature status when its task marker cannot be removed', async () => {
+        const created = await request(app).post('/features').send({ description: 'Keep original status' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Keep original status <!-- feature-id:${id} -->`);
+        await rm(join(root, 'DEVENVOPDEV.md'));
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+
+        const response = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'Done' });
+
+        expect(response.status).toBe(500);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
     });
 
     it.each([

@@ -1,8 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { BackendService, type TestOutputStream } from '../../backend.service';
+import {
+    BackendService,
+    type TestOutputStream,
+    type TestRunCacheStatus,
+} from '../../backend.service';
 
 interface TestRunResult {
     exitCode: number | null;
@@ -13,7 +17,7 @@ interface TestRunResult {
 @Component({
     selector: 'app-test-runner',
     standalone: true,
-    imports: [NgIf, MatProgressBarModule],
+    imports: [DatePipe, NgIf, MatProgressBarModule],
     templateUrl: './test-runner.component.html',
     styleUrl: './test-runner.component.scss',
 })
@@ -21,11 +25,30 @@ export class TestRunnerComponent implements OnInit {
     isRunning = false;
     result: TestRunResult | null = null;
     errorMessage = '';
+    cacheStatus: TestRunCacheStatus | null = null;
+    isLoadingCacheStatus = false;
+    cacheStatusError = '';
 
     constructor(private backend: BackendService) {}
 
     ngOnInit(): void {
+        this.refreshCacheStatus();
         this.runTests();
+    }
+
+    refreshCacheStatus(): void {
+        this.isLoadingCacheStatus = true;
+        this.cacheStatusError = '';
+        this.backend.getTestRunCacheStatus().subscribe({
+            next: status => {
+                this.cacheStatus = status;
+                this.isLoadingCacheStatus = false;
+            },
+            error: (error: Error) => {
+                this.cacheStatusError = error.message;
+                this.isLoadingCacheStatus = false;
+            },
+        });
     }
 
     runTests(): void {
@@ -45,7 +68,10 @@ export class TestRunnerComponent implements OnInit {
                 }
             })
             .catch(error => this.errorMessage = this.getErrorMessage(error))
-            .finally(() => this.isRunning = false);
+            .finally(() => {
+                this.isRunning = false;
+                this.refreshCacheStatus();
+            });
     }
 
     private appendOutput(stream: TestOutputStream, chunk: string): void {

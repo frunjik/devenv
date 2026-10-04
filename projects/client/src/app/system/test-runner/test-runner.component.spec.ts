@@ -1,21 +1,31 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
 
-import { BackendService } from '../../backend.service';
+import { BackendService, type TestRunCacheStatus } from '../../backend.service';
 import { TestRunnerComponent } from './test-runner.component';
 
 describe('TestRunnerComponent', () => {
     let fixture: ComponentFixture<TestRunnerComponent>;
     let component: TestRunnerComponent;
     let runTests: jest.MockedFunction<BackendService['runTests']>;
+    let getCacheStatus: jest.MockedFunction<BackendService['getTestRunCacheStatus']>;
 
     beforeEach(async () => {
         runTests = jest.fn<BackendService['runTests']>();
         runTests.mockResolvedValue(0);
+        getCacheStatus = jest.fn<BackendService['getTestRunCacheStatus']>();
+        getCacheStatus.mockReturnValue(of({
+            available: false,
+            status: 'empty',
+            startedAt: null,
+            finishedAt: null,
+            exitCode: null,
+        }));
         await TestBed.configureTestingModule({
             imports: [TestRunnerComponent],
-            providers: [{ provide: BackendService, useValue: { runTests } }],
+            providers: [{ provide: BackendService, useValue: { runTests, getTestRunCacheStatus: getCacheStatus } }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(TestRunnerComponent);
@@ -26,7 +36,70 @@ describe('TestRunnerComponent', () => {
         fixture.detectChanges();
 
         expect(runTests).toHaveBeenCalledTimes(1);
+        expect(getCacheStatus).toHaveBeenCalledTimes(1);
         expect(fixture.nativeElement.querySelector('button')).not.toBeNull();
+    });
+
+    it('shows that there is no cached result', () => {
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('No cached test runs.');
+    });
+
+    it('shows the status and finished time of the cached result', () => {
+        const status: TestRunCacheStatus = {
+            available: true,
+            status: 'passed',
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 0,
+        };
+        getCacheStatus.mockReturnValue(of(status));
+
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('Status: passed');
+        expect(fixture.nativeElement.textContent).toContain('exit code 0');
+        expect(fixture.nativeElement.querySelector('time').getAttribute('datetime'))
+            .toBe(status.finishedAt);
+    });
+
+    it('refreshes the displayed cache status after a test run finishes', async () => {
+        const passedStatus: TestRunCacheStatus = {
+            available: true,
+            status: 'passed',
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 0,
+        };
+        getCacheStatus
+            .mockReturnValueOnce(of({
+                available: false,
+                status: 'empty',
+                startedAt: null,
+                finishedAt: null,
+                exitCode: null,
+            }))
+            .mockReturnValueOnce(of(passedStatus));
+        runTests.mockResolvedValue(0);
+
+        fixture.detectChanges();
+        await Promise.resolve();
+        await Promise.resolve();
+        fixture.detectChanges();
+
+        expect(getCacheStatus).toHaveBeenCalledTimes(2);
+        expect(fixture.nativeElement.textContent).toContain('Status: passed');
+    });
+
+    it('shows an error when the cached status cannot be loaded', () => {
+        getCacheStatus.mockReturnValue(throwError(() => new Error('Cache unavailable')));
+
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain(
+            'Could not load cached test status: Cache unavailable',
+        );
     });
 
     it('shows an indeterminate progress bar while the tests are running', () => {

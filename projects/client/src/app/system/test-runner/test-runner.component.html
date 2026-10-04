@@ -2,26 +2,50 @@
     <h1>Test runner</h1>
     <p>Run the client and server test suites.</p>
 
-    <button type="button" (click)="runTests()" [disabled]="isRunning">
-        {{ isRunning ? 'Running tests…' : 'Run tests' }}
-    </button>
+    <div class="test-runner-layout">
+        <section class="test-runner-main" aria-label="Test execution">
+            <button type="button" (click)="runTests()" [disabled]="isRunning">
+                {{ isRunning ? 'Running tests…' : 'Run tests' }}
+            </button>
 
-    <mat-progress-bar *ngIf="isRunning" mode="indeterminate" class="running-progress" aria-label="Tests are running"></mat-progress-bar>
-    <p role="status" aria-live="polite" *ngIf="isRunning">Tests are running. This may take a few minutes.</p>
-    <p class="error" role="alert" *ngIf="errorMessage">Could not run tests: {{ errorMessage }}</p>
+            <mat-progress-bar *ngIf="isRunning" mode="indeterminate" class="running-progress" aria-label="Tests are running"></mat-progress-bar>
+            <p role="status" aria-live="polite" *ngIf="isRunning">Tests are running. This may take a few minutes.</p>
+            <p class="error" role="alert" *ngIf="errorMessage">Could not run tests: {{ errorMessage }}</p>
 
-    <section *ngIf="result as runResult" aria-live="polite">
-        <h2 *ngIf="runResult.exitCode === null">Test output (running)</h2>
-        <h2 *ngIf="runResult.exitCode !== null" [class.error]="runResult.exitCode !== 0">
-            {{ runResult.exitCode === 0 ? 'Tests passed' : 'Tests failed' }} (exit code {{ runResult.exitCode }})
-        </h2>
+            <section *ngIf="result as runResult" aria-live="polite">
+                <h2 *ngIf="runResult.exitCode === null">Test output (running)</h2>
+                <h2 *ngIf="runResult.exitCode !== null" [class.error]="runResult.exitCode !== 0">
+                    {{ runResult.exitCode === 0 ? 'Tests passed' : 'Tests failed' }} (exit code {{ runResult.exitCode }})
+                </h2>
 
-        <h3>Standard output</h3>
-        <pre>{{ runResult.stdout || '(No output.)' }}</pre>
+                <h3>Standard output</h3>
+                <pre>{{ runResult.stdout || '(No output.)' }}</pre>
 
-        <ng-container *ngIf="runResult.exitCode !== null && runResult.exitCode !== 0 && runResult.stderr">
-            <h3>Standard error</h3>
-            <pre>{{ runResult.stderr }}</pre>
-        </ng-container>
-    </section>
+                <ng-container *ngIf="runResult.exitCode !== null && runResult.exitCode !== 0 && runResult.stderr">
+                    <h3>Standard error</h3>
+                    <pre>{{ runResult.stderr }}</pre>
+                </ng-container>
+            </section>
+        </section>
+
+        <aside class="cache-status" aria-live="polite" aria-label="Last cached test result">
+            <h2>Last cached test result</h2>
+            <p *ngIf="isLoadingCacheStatus" role="status">Checking cached test result…</p>
+            <p *ngIf="cacheStatusError" class="error" role="alert">
+                Could not load cached test status: {{ cacheStatusError }}
+            </p>
+            <p *ngIf="!isLoadingCacheStatus && !cacheStatusError && cacheStatus?.status === 'empty'">
+                No cached test runs.
+            </p>
+            <ng-container *ngIf="!isLoadingCacheStatus && !cacheStatusError && cacheStatus?.available">
+                <p [class.error]="cacheStatus?.status === 'failed' || cacheStatus?.status === 'error'">
+                    Status: {{ cacheStatus?.status }}
+                    <span *ngIf="cacheStatus?.exitCode !== null">(exit code {{ cacheStatus?.exitCode }})</span>
+                </p>
+                <p *ngIf="cacheStatus?.finishedAt">
+                    Finished: <time [attr.datetime]="cacheStatus?.finishedAt">{{ cacheStatus?.finishedAt | date:'medium' }}</time>
+                </p>
+            </ng-container>
+        </aside>
+    </div>
 </main>

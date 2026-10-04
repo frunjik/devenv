@@ -38,6 +38,14 @@ export interface GitStatus {
     }>;
 }
 
+export interface TestRunCacheStatus {
+    available: boolean;
+    status: 'empty' | 'passed' | 'failed' | 'error';
+    startedAt: string | null;
+    finishedAt: string | null;
+    exitCode: number | null;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -93,6 +101,10 @@ export class BackendService {
 
     getGitStatus(): Observable<GitStatus> {
         return this.get<GitStatus>('git/status');
+    }
+
+    getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
+        return this.get<TestRunCacheStatus>('tests/cache/status');
     }
 
     async runTests(onOutput: (stream: TestOutputStream, chunk: string) => void): Promise<number> {

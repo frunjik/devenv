@@ -74,6 +74,18 @@ describe('BackendService', () => {
         )).toBe(true);
     });
 
+    it('loads the cached test result status through the public API', async () => {
+        const status = await service.getTestRunCacheStatus().toPromise();
+
+        expect(status).toMatchObject({
+            available: expect.any(Boolean),
+            status: expect.stringMatching(/^(empty|passed|failed|error)$/),
+        });
+        expect(status.startedAt === null || typeof status.startedAt === 'string').toBe(true);
+        expect(status.finishedAt === null || typeof status.finishedAt === 'string').toBe(true);
+        expect(status.exitCode === null || typeof status.exitCode === 'number').toBe(true);
+    });
+
     it('loads file contents from the API', async () => {
         await expect(service.loadFile('sample.txt').toPromise()).resolves.toBe('initial');
     });

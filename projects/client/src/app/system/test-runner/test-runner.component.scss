@@ -2,6 +2,23 @@ main {
     margin: 1rem;
 }
 
+.test-runner-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.test-runner-main,
+.cache-status {
+    min-width: 0;
+}
+
+.cache-status {
+    padding-left: 1.25rem;
+    border-left: 1px solid rgb(255 255 255 / 14%);
+}
+
 button {
     padding: 0.5rem 1rem;
 }
@@ -25,4 +42,17 @@ pre {
 
 .error {
     color: #d69a90;
+}
+
+@media (max-width: 720px) {
+    .test-runner-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cache-status {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid rgb(255 255 255 / 14%);
+        padding-top: 1rem;
+    }
 }

@@ -5,6 +5,15 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 
 # Unreleased
 
+# 0.0.3 2026-10-02 Layout
+
+### Added
+
+### Changed
+
+### Removed
+
+
 # 0.0.2 2023-03-05 Cleanup
 
 ### Added

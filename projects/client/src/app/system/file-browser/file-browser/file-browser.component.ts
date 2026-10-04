@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../../../backend.service';
 import { PPTFolderEntry } from '@ppt';
 import { FormsModule } from '@angular/forms';
@@ -35,7 +36,7 @@ import { MatIconModule } from '@angular/material/icon';
     ],
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileBrowserComponent implements AfterViewInit {
+export class FileBrowserComponent implements OnInit {
     filename = signal<string>('');
     pathname = signal<string>('');
 
@@ -58,25 +59,39 @@ export class FileBrowserComponent implements AfterViewInit {
             );
     }
 
-    constructor(private backend: BackendService) {
-    }
+    constructor(
+        private backend: BackendService,
+        private route: ActivatedRoute,
+        private router: Router
+    ) {}
     
-    ngAfterViewInit(): void {
-        this.showFolder(this.pathname());
+    ngOnInit(): void {
+        this.route.queryParamMap.subscribe((params) => {
+            const pathname = params.get('path') ?? '';
+            const filename = params.get('file') ?? '';
+
+            this.showFolder(pathname);
+            if (filename) {
+                this.showFile(filename);
+            } else {
+                this.filename.set('');
+                this.fileContent = '';
+            }
+        });
     }
 
     clickFileOrFolder(entry: PPTFolderEntry) {
         const name = this.pathname() + '/' + entry.filename;
         if (entry.isFolder) {
-            this.showFolder(name);
+            this.navigateTo(name);
         } else {
-            this.showFile(name);
+            this.navigateTo(this.pathname(), name);
         }
     }
 
     clickPath(i: number) {
         this.filterText = '';
-        this.showFolder(this.folderNames.slice(0, 1 + i).join('/'));
+        this.navigateTo(this.folderNames.slice(0, 1 + i).join('/'));
     }
 
     searchTextChange(text: string) {
@@ -85,9 +100,21 @@ export class FileBrowserComponent implements AfterViewInit {
 
     private showFile(filename: string) {
         this.filename.set(filename);
+        this.fileContent = '';
         this.backend
             .loadFile(filename)
             .subscribe((fileContent) => (this.fileContent = fileContent));
+    }
+
+    private navigateTo(pathname: string, filename = '') {
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: {
+                path: pathname || null,
+                file: filename || null
+            },
+            queryParamsHandling: 'merge'
+        });
     }
 
     private showFolder(pathname: string) {

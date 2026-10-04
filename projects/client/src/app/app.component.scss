@@ -11,11 +11,18 @@ nav {
 }
 
 .current-entry {
-    max-width: 30vw;
+    max-width: 20vw;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.75rem;
-    opacity: 0.75;
+    font-size: 0.65rem;
+    opacity: 0.7;
+    cursor: help;
+    transition: color 120ms ease, opacity 120ms ease;
+
+    &:hover {
+        color: #e0ebe2;
+        opacity: 1;
+    }
 }
 
 .git-status-indicator {

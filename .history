@@ -19,3 +19,5 @@ History
 // [2026-10-04 22:16 +02:00] Removed unused imports from the separated server test suites; confirmed no unused-import diagnostics and retained 100% server coverage.
 // [2026-10-04 22:18 +02:00] Reformatted .current to match .history’s heading and dated one-line entry style; recorded the plan before editing.
 // [2026-10-04 22:23 +02:00] Added a server endpoint for the latest nonempty .current entry and a right-aligned client toolbar display that refreshes every 30 seconds; combined client/server coverage is 100% and the client build passes.
+// [2026-10-04 22:27 +02:00] Made the client .current toolbar entry more compact and date-free while preserving the complete dated entry on hover; client tests pass with 100% coverage and the client build succeeds.
+// [2026-10-04 22:28 +02:00] Improved the client .current hover styling with a larger, readable tooltip and a subtle hover affordance; client tests pass with 100% coverage and the build succeeds.

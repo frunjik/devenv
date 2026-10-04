@@ -10,6 +10,10 @@ export class CurrentEntryService {
     private readonly backend = inject(BackendService);
     private polling?: Subscription;
 
+    get summary(): string {
+        return this.entry?.replace(/^\/\/ \[\d{4}-\d{2}-\d{2}[^\]]*\]\s*/, '') ?? '';
+    }
+
     startPolling(): void {
         if (this.polling) {
             return;

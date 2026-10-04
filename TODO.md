@@ -12,6 +12,7 @@ Devenv
 - feature: use ./current as default commit message
 - feature: show (and update) the ./current last entry on the client in the toolbar on the right aligned
 - split projects\server\src\public-api.ts
+- feature: bottom toolbar
 - feature: history
 - test coverage
 - feature: dynamic styles

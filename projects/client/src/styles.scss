@@ -117,3 +117,20 @@ nav button[mat-button] {
     text-align: left;
     white-space: pre-line;
 }
+
+.current-entry-tooltip .mat-mdc-tooltip-surface {
+    --mat-tooltip-container-color: #24342a;
+    --mat-tooltip-supporting-text-color: #e2ece4;
+
+    max-width: min(42rem, 80vw);
+    padding: 0.75rem 1rem;
+    border: 1px solid #526b58;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 38%);
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    text-align: left;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}

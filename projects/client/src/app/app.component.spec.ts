@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import type { ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
@@ -8,6 +9,7 @@ import { provideRouter } from '@angular/router';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltip } from '@angular/material/tooltip';
 import { of, throwError } from 'rxjs';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 import { GitLogRefreshService } from './git-log-refresh.service';
@@ -83,18 +85,27 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
-        http.expectOne('http://localhost:3000/current').flush({ data: '// first current entry' });
+        http.expectOne('http://localhost:3000/current').flush({
+            data: '// [2026-10-04 22:23 +02:00] First current entry',
+        });
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('.current-entry').textContent.trim())
-            .toBe('// first current entry');
+            .toBe('First current entry');
+        expect(fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip).message)
+            .toBe('// [2026-10-04 22:23 +02:00] First current entry');
+        const currentTooltip = fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip);
+        expect(currentTooltip.tooltipClass).toBe('current-entry-tooltip');
+        expect(currentTooltip.position).toBe('below');
 
         fixture.componentInstance.currentEntry.startPolling();
         fixture.componentInstance.currentEntry.refresh();
-        http.expectOne('http://localhost:3000/current').flush({ data: '// updated current entry' });
+        http.expectOne('http://localhost:3000/current').flush({
+            data: '// [2026-10-04 22:24 +02:00] Updated current entry',
+        });
         fixture.detectChanges();
 
         const entry = fixture.nativeElement.querySelector('.current-entry');
-        expect(entry.textContent.trim()).toBe('// updated current entry');
+        expect(entry.textContent.trim()).toBe('Updated current entry');
         expect(entry.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
             & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
         fixture.destroy();

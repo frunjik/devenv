@@ -1,5 +1,3 @@
-/// <reference types="jasmine" />
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PPTFormFieldComponent } from './ppt-form-field.component';
 import { FormControl, FormGroup } from '@angular/forms';

@@ -10,4 +10,4 @@ Bootstrap
 Devenv
 - feature: add a menu link to the current page
 - fix style the breadcrumb menu - it gets too long and pushes the editor away
-- make the edit links sync the browser to show the edited file
+- make the edit links sync the browser to show the edited file - make the editor sync the browser ? / make a new route that combines both ?

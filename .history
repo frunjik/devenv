@@ -2,3 +2,4 @@ History
 // [2026-10-04 21:00 +02:00] Extracted Git status polling and tooltip formatting into GitStatusService.
 // [2026-10-04 21:01 +02:00] Current diff adds the Git status counter and styled change-details tooltip to the client toolbar, with polling/API wiring, tests, and existing TODO edits.
 // [2026-10-04 21:02 +02:00] Added Ctrl+Enter submission to the commit-message dialog.
+// [2026-10-04 21:11 +02:00] Added public-API client tests for Git status, Git log loading, and commit navigation; client coverage reached 99.49% statements and server coverage remains 100%.

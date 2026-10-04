@@ -1,8 +1,8 @@
 rules:
 - ask me every 7 minutes to continue or stop the loop
-- never change production code 
-- only write production code after getting stuck on a test writing loop and asking me for permission
-- find the minimal tests that cover 100 overall
+- never EVER change production code 
+- only write new production code after getting stuck on a test writing loop and asking me for permission
+- find the minimal tests that get us to 100% coverage overall
 
 loop:
 - ask me every 7 minutes to continue or stop the loop
@@ -14,6 +14,7 @@ task-write-target-tests:
 - ask me every 7 minutes to continue or stop the loop
 - only use the public api for testing
 - never use spy or extensive mockery
-- find the set of minimal tests that cover 100 overall for the current target
+- find the set of minimal tests to get 100% overall coverage for the current target
 - prefer separate 'it' clauses over bulk tests with more then 1 assert
+- if you cannot find more tests to add find a next target (loop)
 - add tests until the coverage is 100 or you run into problems or cannot add more tests to increase the coverage

@@ -1,24 +1,32 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import { BackendService, type GitLogEntry } from '../../backend.service';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import type { GitLogEntry } from '../../backend.service';
 import { GitLogComponent } from './git-log.component';
 
 describe('GitLogComponent', () => {
     let fixture: ComponentFixture<GitLogComponent>;
-    let getGitLog: jest.MockedFunction<BackendService['getGitLog']>;
+    let http: HttpTestingController;
 
     beforeEach(async () => {
-        getGitLog = jest.fn<BackendService['getGitLog']>();
+        (window as Window & { host?: string }).host = 'http://localhost:3000/';
         await TestBed.configureTestingModule({
             imports: [GitLogComponent],
-            providers: [{ provide: BackendService, useValue: { getGitLog } }],
+            providers: [provideHttpClient(), provideHttpClientTesting()],
         }).compileComponents();
+        http = TestBed.inject(HttpTestingController);
     });
+
+    afterEach(() => http.verify());
 
     function createComponent(): void {
         fixture = TestBed.createComponent(GitLogComponent);
         fixture.detectChanges();
+    }
+
+    function expectGitLogRequest() {
+        return http.expectOne('http://localhost:3000/git/log');
     }
 
     it('loads and displays commit details on initialization', () => {
@@ -28,11 +36,10 @@ describe('GitLogComponent', () => {
             date: '2026-10-04T12:00:00Z',
             subject: 'Add git log view',
         }];
-        getGitLog.mockReturnValue(of(entries));
-
         createComponent();
+        expectGitLogRequest().flush({ data: entries });
+        fixture.detectChanges();
 
-        expect(getGitLog).toHaveBeenCalledTimes(1);
         expect(fixture.nativeElement.textContent).toContain('Add git log view');
         expect(fixture.nativeElement.textContent).toContain('Test Author');
         expect(fixture.nativeElement.textContent).toContain('12345678');
@@ -41,28 +48,42 @@ describe('GitLogComponent', () => {
     });
 
     it('shows an empty state when there are no commits', () => {
-        getGitLog.mockReturnValue(of([]));
-
         createComponent();
+        expectGitLogRequest().flush({ data: [] });
+        fixture.detectChanges();
 
         expect(fixture.nativeElement.textContent).toContain('No commits yet.');
     });
 
     it('shows an error when loading the git log fails', () => {
-        getGitLog.mockReturnValue(throwError(() => new Error('Network unavailable')));
-
         createComponent();
+        expectGitLogRequest().flush(
+            { error: { message: 'Network unavailable' } },
+            { status: 500, statusText: 'Error' },
+        );
+        fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('[role="alert"]').textContent)
-            .toContain('Network unavailable');
+            .toContain('Could not load Git log');
+    });
+
+    it('does not send another request while a commit list request is pending', () => {
+        createComponent();
+
+        fixture.componentInstance.loadGitLog();
+
+        const requests = http.match('http://localhost:3000/git/log');
+        expect(requests).toHaveLength(1);
+        requests[0].flush({ data: [] });
     });
 
     it('refreshes the commit list when requested', () => {
-        getGitLog.mockReturnValue(of([]));
         createComponent();
+        expectGitLogRequest().flush({ data: [] });
+        fixture.detectChanges();
 
         fixture.nativeElement.querySelector('button').click();
 
-        expect(getGitLog).toHaveBeenCalledTimes(2);
+        expectGitLogRequest().flush({ data: [] });
     });
 });

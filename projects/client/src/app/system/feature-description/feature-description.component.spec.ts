@@ -92,6 +92,9 @@ describe('FeatureDescriptionComponent', () => {
                     title: expect.stringMatching(/^[0-9a-f-]{36}$/),
                 }),
             ]));
+        expect(Array.from<HTMLTableRowElement>(rows).map(row =>
+            (row.querySelector('.mat-column-status select') as HTMLSelectElement).value,
+        )).toEqual(['Backlog', 'Backlog']);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
             .toHaveLength(4);
     });
@@ -113,6 +116,10 @@ describe('FeatureDescriptionComponent', () => {
         });
         expect(fixture.nativeElement.querySelector('.feature-start-button').textContent.trim()).toBe('Started');
         expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('In progress');
     });
 
     it('marks a feature done, removes it from the list, and clears matching active work', async () => {
@@ -202,7 +209,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value).toBe('');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] Add a feature submission form\n$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] Add a feature submission form\n$/,
         );
         expect(Array.from<HTMLTableRowElement>(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
@@ -225,11 +232,79 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(await readFile(join(root, '.features'), 'utf8')).toMatch(/\[High\] Prioritize this feature/);
+        expect(await readFile(join(root, '.features'), 'utf8')).toMatch(/\[High\] \[Backlog\] Prioritize this feature/);
         expect(fixture.componentInstance.priority).toBe('Medium');
         expect((fixture.nativeElement.querySelector('select[aria-label="Feature priority"]') as HTMLSelectElement).value)
             .toBe('Medium');
         expect(fixture.nativeElement.querySelector('.mat-column-priority select').value).toBe('High');
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Backlog');
+    });
+
+    it('submits and resets the selected feature status', async () => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        const status: HTMLSelectElement = fixture.nativeElement.querySelector(
+            'select[aria-label="Feature status"]',
+        );
+        status.value = 'In progress';
+        status.dispatchEvent(new Event('change'));
+        textarea.value = 'Start this feature immediately';
+        textarea.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('button[type="submit"]').click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toMatch(/\[Medium\] \[In progress\] Start this feature immediately/);
+        expect(fixture.componentInstance.status).toBe('Backlog');
+        expect((fixture.nativeElement.querySelector('select[aria-label="Feature status"]') as HTMLSelectElement).value)
+            .toBe('Backlog');
+    });
+
+    it('updates an open feature status through the public API', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [High] Feature to track\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        expect(selector.value).toBe('Backlog');
+        selector.value = 'Done';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toContain('[High] [Done] Feature to track');
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Done');
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
+    it('reports status update failures and restores the previous selection', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to track\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Done';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(selector.value).toBe('Backlog');
+        expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
+            .toContain('500');
     });
 
     it('updates an open feature priority through the public API', async () => {
@@ -247,7 +322,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Low] Add a feature');
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Low] [Backlog] Add a feature');
         expect((fixture.nativeElement.querySelector('.mat-column-priority select') as HTMLSelectElement).value)
             .toBe('Low');
         expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
@@ -264,6 +339,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(row.querySelector('.mat-column-id')?.textContent.trim()).toMatch(/^[0-9a-f]{8}$/);
         expect(row.querySelector('.mat-column-description')?.textContent.trim()).toBe('Legacy feature');
         expect((row.querySelector('.mat-column-priority select') as HTMLSelectElement).value).toBe('Medium');
+        expect((row.querySelector('.feature-status-select') as HTMLSelectElement).value).toBe('Backlog');
     });
 
     it('keeps malformed legacy feature text visible', async () => {
@@ -276,7 +352,7 @@ describe('FeatureDescriptionComponent', () => {
 
         const row: HTMLTableRowElement = fixture.nativeElement.querySelector('.open-features tr.mat-mdc-row');
         expect(row.querySelector('.mat-column-description')?.textContent.trim())
-            .toBe(`unstructured legacy text [${id}] [Medium]`);
+            .toBe(`unstructured legacy text [${id}] [Medium] [Backlog]`);
         expect(row.querySelector('.mat-column-id')?.textContent.trim()).toBe('');
     });
 
@@ -316,8 +392,29 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Medium] Feature');
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Medium] [Backlog] Feature');
         expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
+    });
+
+    it('ignores invalid and unchanged status selections', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Invalid';
+        selector.dispatchEvent(new Event('change'));
+        selector.value = 'Backlog';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Backlog] Feature');
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
     });
 
     it('paginates the open features table', async () => {
@@ -420,7 +517,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
         expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
-            new RegExp(`\\] \\[[0-9a-f-]{36}\\] \\[Medium\\] Submit with ${key}\\n$`),
+            new RegExp(`\\] \\[[0-9a-f-]{36}\\] \\[Medium\\] \\[Backlog\\] Submit with ${key}\\n$`),
         );
     });
 

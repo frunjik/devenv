@@ -125,6 +125,29 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 
+    it('accepts an explicit feature status', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature already underway', status: 'In progress' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(/\[Medium\] \[In progress\] Feature already underway$/);
+    });
+
+    it.each([
+        ['unsupported status', { status: 'Blocked' }],
+        ['non-string status', { status: 42 }],
+    ])('rejects a %s on feature creation', async (_caseName, status) => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature with invalid status', ...status });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            error: { message: 'Feature status must be Backlog, In progress, or Done.' },
+        });
+    });
+
     it('assigns a distinct UUID to each created feature', async () => {
         const first = await request(app).post('/features').send({ description: 'First feature' });
         const second = await request(app).post('/features').send({ description: 'Second feature' });

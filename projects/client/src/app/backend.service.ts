@@ -97,8 +97,12 @@ export class BackendService {
         return this.post<GitCommitResult>('git/commit', { message });
     }
 
-    addFeature(description: string, priority: FeaturePriority = 'Medium'): Observable<string> {
-        return this.post<string>('features', { description, priority });
+    addFeature(
+        description: string,
+        priority: FeaturePriority = 'Medium',
+        status: FeatureStatus = 'Backlog',
+    ): Observable<string> {
+        return this.post<string>('features', { description, priority, status });
     }
 
     updateFeaturePriority(id: string, priority: FeaturePriority): Observable<string> {

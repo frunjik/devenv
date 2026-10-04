@@ -89,7 +89,7 @@ describe('BackendService', () => {
     it('assigns the default Medium priority when adding a feature without selecting one', async () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 
-        expect(entry).toMatch(/\[Medium\] Feature with default priority$/);
+        expect(entry).toMatch(/\[Medium\] \[Backlog\] Feature with default priority$/);
         await rm(join(root, '.features'), { force: true });
     });
 

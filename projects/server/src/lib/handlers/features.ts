@@ -130,9 +130,17 @@ export function createFeatureHandler(root: string): RequestHandler {
             return;
         }
 
+        const requestedStatus: unknown = request.body?.status ?? 'Backlog';
+        if (typeof requestedStatus !== 'string'
+            || !featureStatuses.includes(requestedStatus as FeatureStatus)) {
+            response.status(400).json({ error: { message: 'Feature status must be Backlog, In progress, or Done.' } });
+            return;
+        }
+
         const oneLineDescription = description.trim().replace(/\s+/g, ' ');
         const id = randomUUID();
-        const entry = `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [Backlog] ${oneLineDescription}`;
+        const entry =
+            `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}`;
         const filename = join(root, '.features');
 
         void readFeatureEntries(filename)

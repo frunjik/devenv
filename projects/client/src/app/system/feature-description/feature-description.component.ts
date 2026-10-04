@@ -36,6 +36,7 @@ interface FeatureRow {
 export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     description = '';
     priority: FeaturePriority = 'Medium';
+    status: FeatureStatus = 'Backlog';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
     readonly statuses: FeatureStatus[] = ['Backlog', 'In progress', 'Done'];
     featureSearch = '';
@@ -98,7 +99,13 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     }
 
     startFeature(feature: FeatureRow): void {
-        this.featureWork.start(feature.id, feature.description);
+        if (!feature.id) {
+            return;
+        }
+        if (feature.status === 'In progress') {
+            this.featureWork.start(feature.id, feature.description);
+            return;
+        }
         this.updateFeatureStatus(feature, 'In progress');
     }
 
@@ -161,6 +168,9 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         target?: HTMLSelectElement,
     ): void {
         if (feature.status === status) {
+            if (status === 'In progress') {
+                this.featureWork.start(feature.id, feature.description);
+            }
             return;
         }
 
@@ -168,6 +178,11 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         this.backend.updateFeatureStatus(feature.id, status).subscribe({
             next: () => {
                 feature.status = status;
+                if (status === 'In progress') {
+                    this.featureWork.start(feature.id, feature.description);
+                } else {
+                    this.featureWork.complete(feature.id);
+                }
                 this.featureDataSource.data = [...this.featureDataSource.data];
             },
             error: (error: Error) => {
@@ -201,11 +216,12 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
         this.isSubmitting = true;
         this.errorMessage = '';
-        this.backend.addFeature(description, this.priority).subscribe({
+        this.backend.addFeature(description, this.priority, this.status).subscribe({
             next: () => {
                 this.isSubmitting = false;
                 this.description = '';
                 this.priority = 'Medium';
+                this.status = 'Backlog';
                 this.refreshFeatures();
             },
             error: (error: Error) => {

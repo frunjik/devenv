@@ -68,6 +68,28 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('.open-features').textContent).toContain('No open features.');
     });
 
+    it('refreshes the feature list from the client and shows newly added features', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+
+        await writeFile(join(root, '.features'), '// A feature added elsewhere\n');
+        const refreshButton: HTMLButtonElement =
+            fixture.nativeElement.querySelector('.feature-refresh-button');
+        expect(refreshButton.getAttribute('aria-label')).toBe('Refresh feature list');
+        refreshButton.click();
+        fixture.detectChanges();
+        expect(refreshButton.disabled).toBe(true);
+
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+            .toBe('A feature added elsewhere');
+        expect(refreshButton.disabled).toBe(false);
+    });
+
     it('shows saved features below the form', async () => {
         await fixture.whenStable();
         const content = '// [2026-10-04 22:45 +02:00] Add a saved feature\n// [2026-10-04 22:46 +02:00] Add another feature\n';

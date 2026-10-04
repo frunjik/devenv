@@ -37,16 +37,28 @@
         <p *ngIf="priorityError" id="feature-priority-error" role="alert">{{ priorityError }}</p>
         <p *ngIf="statusError" id="feature-status-error" role="alert">{{ statusError }}</p>
         <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
-        <mat-form-field appearance="outline" *ngIf="features.length > 0">
-            <mat-label>Search features</mat-label>
-            <input
-                matInput
-                type="search"
-                aria-label="Search features"
-                [value]="featureSearch"
-                (input)="onSearchInput($event)"
-            />
-        </mat-form-field>
+        <div class="feature-list-controls">
+            <mat-form-field appearance="outline" *ngIf="features.length > 0">
+                <mat-label>Search features</mat-label>
+                <input
+                    matInput
+                    type="search"
+                    aria-label="Search features"
+                    [value]="featureSearch"
+                    (input)="onSearchInput($event)"
+                />
+            </mat-form-field>
+            <button
+                type="button"
+                mat-button
+                class="feature-refresh-button"
+                aria-label="Refresh feature list"
+                [disabled]="isLoadingFeatures"
+                (click)="refreshFeatures()"
+            >
+                {{ isLoadingFeatures ? 'Refreshing…' : 'Refresh' }}
+            </button>
+        </div>
         <p *ngIf="!isLoadingFeatures && !featuresError && features.length === 0">No open features.</p>
         <table mat-table matSort [dataSource]="featureDataSource" *ngIf="features.length > 0">
             <ng-container matColumnDef="id">

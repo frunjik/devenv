@@ -54,7 +54,7 @@ export async function getFiles(req: express.Request, res: express.Response, next
     }
 }
 
-export async function postFiles(req: express.Request, res: express.Response, next: express.NextFunction) {
+export function postFiles(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
    
     const contents = req.body.data  as string || '';
     const filename = req.query['path'] as string;
@@ -70,39 +70,37 @@ export async function postFiles(req: express.Request, res: express.Response, nex
         res
             .status(400)
             .send(response);
+        return Promise.resolve();
 
     } else {
 
-        try {
-
-            const filesystem: FileSystem = req.app.locals['fileSystem'];
-            filesystem.writeFile(filename, contents);
-
-            const response: SuccessResponseBody<string> = {
-                data: 'OK'
-            };
-
-            res.json(response);
-
-        } catch (err: any) {
-
-            if ('ENOENT' === err.code) {
-
-                const response: FailureResponseBody = {
-                    error: {
-                        message: `ERROR: invalid path '${filename}'`
-                    }
+        const filesystem: FileSystem = req.app.locals['fileSystem'];
+        return filesystem.writeFile(filename, contents)
+            .then(() => {
+                const response: SuccessResponseBody<string> = {
+                    data: 'OK'
                 };
 
-                res
-                    .status(400)
-                    .send(response);
+                res.json(response);
+            })
+            .catch((err: NodeJS.ErrnoException) => {
+                if ('ENOENT' === err.code) {
 
-            } else {
+                    const response: FailureResponseBody = {
+                        error: {
+                            message: `ERROR: invalid path '${filename}'`
+                        }
+                    };
 
-                next(err);
+                    res
+                        .status(400)
+                        .send(response);
 
-            }
-        }
+                } else {
+
+                    next(err);
+
+                }
+            });
     }
 }

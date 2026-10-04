@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { spawn } from 'node:child_process';
+import { once } from 'node:events';
 import { resolve, relative, join } from 'node:path';
-import { pathToFileURL } from 'node:url';
 
 const serverRoot = process.cwd();
 const fixtureName = `.server-test-${process.pid}`;
@@ -11,6 +12,7 @@ const fixtureFile = join(fixturePath, 'sample.txt');
 const fixtureFolder = join(fixturePath, 'nested');
 const relativeFixturePath = relative(serverRoot, fixturePath).replaceAll('\\', '/');
 const origin = 'http://127.0.0.1:3000';
+let serverProcess;
 
 async function request(path, options) {
     return fetch(new URL(path, origin), options);
@@ -41,11 +43,15 @@ before(async () => {
     await writeFile(fixtureFile, 'initial');
 
     const bundle = resolve(serverRoot, 'dist/server/fesm2022/server.mjs');
-    await import(pathToFileURL(bundle).href);
+    serverProcess = spawn(process.execPath, [bundle], { stdio: 'inherit', windowsHide: true });
     await waitForServer();
 });
 
 after(async () => {
+    if (serverProcess && serverProcess.exitCode === null) {
+        serverProcess.kill();
+        await once(serverProcess, 'exit');
+    }
     await rm(fixturePath, { recursive: true, force: true });
 });
 
@@ -80,6 +86,16 @@ describe('server public HTTP API', () => {
         assert.equal(missingPath.status, 400);
         assert.deepEqual(await missingPath.json(), {
             error: { message: "ERROR: invalid path ''" },
+        });
+
+        const missingDirectory = await request(`/files?path=${encodeURIComponent(`${relativeFixturePath}/missing/file.txt`)}`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ data: 'unwritten' }),
+        });
+        assert.equal(missingDirectory.status, 400);
+        assert.deepEqual(await missingDirectory.json(), {
+            error: { message: `ERROR: invalid path '${relativeFixturePath}/missing/file.txt'` },
         });
 
         const write = await request(`/files?path=${encodeURIComponent(`${relativeFixturePath}/sample.txt`)}`, {

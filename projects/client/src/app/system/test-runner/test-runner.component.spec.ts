@@ -12,6 +12,7 @@ describe('TestRunnerComponent', () => {
 
     beforeEach(async () => {
         runTests = jest.fn<BackendService['runTests']>();
+        runTests.mockResolvedValue(0);
         await TestBed.configureTestingModule({
             imports: [TestRunnerComponent],
             providers: [{ provide: BackendService, useValue: { runTests } }],
@@ -19,17 +20,18 @@ describe('TestRunnerComponent', () => {
 
         fixture = TestBed.createComponent(TestRunnerComponent);
         component = fixture.componentInstance;
-        fixture.detectChanges();
     });
 
-    it('renders a button to run the test suites', () => {
-        expect(fixture.nativeElement.textContent).toContain('Run tests');
+    it('automatically runs the test suites when the page opens', () => {
+        fixture.detectChanges();
+
+        expect(runTests).toHaveBeenCalledTimes(1);
+        expect(fixture.nativeElement.querySelector('button')).not.toBeNull();
     });
 
     it('shows an indeterminate progress bar while the tests are running', () => {
         runTests.mockImplementation(() => new Promise(() => undefined));
 
-        component.runTests();
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('mat-progress-bar')).not.toBeNull();
@@ -38,7 +40,7 @@ describe('TestRunnerComponent', () => {
     it('hides the progress bar when the tests finish', async () => {
         runTests.mockResolvedValue(0);
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         await Promise.resolve();
         fixture.detectChanges();
@@ -53,7 +55,6 @@ describe('TestRunnerComponent', () => {
             return 0;
         });
 
-        component.runTests();
         fixture.detectChanges();
         expect(fixture.nativeElement.textContent).toContain('Client and server tests passed');
         expect(fixture.nativeElement.textContent).toContain('Test output (running)');
@@ -71,7 +72,7 @@ describe('TestRunnerComponent', () => {
             return 1;
         });
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -83,7 +84,7 @@ describe('TestRunnerComponent', () => {
     it('shows an API error when the request fails', async () => {
         runTests.mockRejectedValue(new Error('Server unavailable'));
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -96,7 +97,7 @@ describe('TestRunnerComponent', () => {
             error: { error: { message: 'Tests are already running' } },
         }));
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -106,7 +107,7 @@ describe('TestRunnerComponent', () => {
     it('shows the HTTP error message when the response body is empty', async () => {
         runTests.mockRejectedValue(new HttpErrorResponse({ status: 500, error: null }));
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -116,7 +117,7 @@ describe('TestRunnerComponent', () => {
     it('shows the HTTP error message when the response body has no API error', async () => {
         runTests.mockRejectedValue(new HttpErrorResponse({ status: 500, error: {} }));
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -129,7 +130,7 @@ describe('TestRunnerComponent', () => {
             error: { error: { message: 500 } },
         }));
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -139,7 +140,7 @@ describe('TestRunnerComponent', () => {
     it('shows a fallback message for non-Error failures', async () => {
         runTests.mockRejectedValue('failure');
 
-        component.runTests();
+        fixture.detectChanges();
         await Promise.resolve();
         fixture.detectChanges();
 
@@ -150,7 +151,7 @@ describe('TestRunnerComponent', () => {
         let finishRun: ((exitCode: number) => void) | undefined;
         runTests.mockImplementation(() => new Promise(resolve => finishRun = resolve));
 
-        component.runTests();
+        fixture.detectChanges();
         component.runTests();
 
         expect(runTests).toHaveBeenCalledTimes(1);

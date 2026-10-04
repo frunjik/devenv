@@ -12,7 +12,7 @@
     "test:server": "jest --config projects/server/jest.config.cjs --runInBand",
     "test:server:coverage": "jest --config projects/server/jest.config.cjs --coverage --runInBand",
     "test:all": "npm run test:client && npm run test:server",
-    "test:all:coverage": "npm run test:client:coverage && npm run test:server:coverage"
+    "test:all:coverage": "node scripts/run-all-tests-coverage.cjs"
   },
   "private": true,
   "dependencies": {

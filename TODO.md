@@ -1,7 +1,7 @@
 TDOD:
 
 Bootstrap
-- authentication
+- authentication / roles
 - make an indicator on the client to show we have open changes
 - field
 - model

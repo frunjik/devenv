@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
@@ -163,6 +163,150 @@ describe('server public HTTP API', () => {
                 delete process.env['npm_execpath'];
             } else {
                 process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('caches and returns the latest test run from the configured temp data directory', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const originalNpmExecPath = process.env['npm_execpath'];
+        const cacheDirectory = join(root, 'custom-test-data');
+        process.env['NODE_ENV'] = 'test';
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const execute: TestCommandExecutor = (_command, _args, _options, emit) => {
+            emit({ type: 'stdout', data: 'tests passed' });
+            emit({ type: 'stderr', data: 'coverage summary' });
+            emit({ type: 'complete', exitCode: 0 });
+        };
+
+        try {
+            const testApp = createApp(root, execute, process.cwd(), cacheDirectory);
+            const runResponse = await request(testApp).post('/tests/run');
+            expect(runResponse.status).toBe(200);
+            expect(runResponse.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'stdout', data: 'tests passed' },
+                { type: 'stderr', data: 'coverage summary' },
+                { type: 'complete', exitCode: 0 },
+            ]);
+
+            const cachedResponse = await request(testApp).get('/tests/last');
+            expect(cachedResponse.status).toBe(200);
+            expect(cachedResponse.body.data).toMatchObject({
+                exitCode: 0,
+                stdout: 'tests passed',
+                stderr: 'coverage summary',
+                error: null,
+            });
+            expect(Date.parse(cachedResponse.body.data.startedAt)).not.toBeNaN();
+            expect(Date.parse(cachedResponse.body.data.finishedAt)).not.toBeNaN();
+
+            const cachedFile = await readFile(join(cacheDirectory, 'last-test-run.json'), 'utf8');
+            expect(JSON.parse(cachedFile)).toEqual(cachedResponse.body.data);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('returns null when no test run has been cached', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const cacheDirectory = join(root, 'empty-test-data');
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const response = await request(createApp(root, undefined, process.cwd(), cacheDirectory))
+                .get('/tests/last');
+            expect(response.body).toEqual({ data: null });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('stores only the first terminal event from a test run', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['NODE_ENV'] = 'test';
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const cacheDirectory = join(root, 'single-terminal-event');
+        const execute: TestCommandExecutor = (_command, _args, _options, emit) => {
+            emit({ type: 'complete', exitCode: 0 });
+            throw new Error('executor emitted completion before throwing');
+        };
+
+        try {
+            const response = await request(createApp(root, execute, process.cwd(), cacheDirectory))
+                .post('/tests/run');
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'complete', exitCode: 0 },
+            ]);
+            const cachedRun = JSON.parse(await readFile(join(cacheDirectory, 'last-test-run.json'), 'utf8'));
+            expect(cachedRun.exitCode).toBe(0);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports cache write and retrieval failures', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['NODE_ENV'] = 'test';
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const cacheDirectory = join(root, 'not-a-directory');
+        await writeFile(cacheDirectory, 'block directory creation');
+        const execute: TestCommandExecutor = (_command, _args, _options, emit) => {
+            emit({ type: 'complete', exitCode: 0 });
+        };
+
+        try {
+            const testApp = createApp(root, execute, process.cwd(), cacheDirectory);
+            testApp.use(handleError);
+            const runResponse = await request(testApp).post('/tests/run');
+            expect(runResponse.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'complete', exitCode: 0 },
+                expect.objectContaining({
+                    type: 'error',
+                    message: expect.stringContaining('could not be cached'),
+                }),
+            ]);
+
+            const corruptCacheDirectory = join(root, 'corrupt-test-data');
+            await mkdir(corruptCacheDirectory);
+            await writeFile(join(corruptCacheDirectory, 'last-test-run.json'), '{invalid json');
+            const corruptCacheApp = createApp(root, undefined, process.cwd(), corruptCacheDirectory);
+            corruptCacheApp.use(handleError);
+            const cachedResponse = await request(corruptCacheApp).get('/tests/last');
+            expect(cachedResponse.status).toBe(500);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
             }
         }
     });
@@ -352,6 +496,8 @@ describe('server public HTTP API', () => {
             const productionApp = createApp(root);
             const response = await request(productionApp).post('/tests/run');
             expect(response.status).toBe(404);
+            const cachedResponse = await request(productionApp).get('/tests/last');
+            expect(cachedResponse.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];

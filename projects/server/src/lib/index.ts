@@ -7,12 +7,17 @@ import { getFolders } from './handlers/folders';
 import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
-import { createTestRunHandler, type TestCommandExecutor } from './handlers/test-runner';
+import {
+    createLastTestRunHandler,
+    createTestRunHandler,
+    type TestCommandExecutor,
+} from './handlers/test-runner';
 
 export function createApp(
     root: string,
     testCommandExecutor?: TestCommandExecutor,
     gitCommitCwd = process.cwd(),
+    testRunCacheDirectory?: string,
 ): Express {
     const app = express();
 
@@ -26,7 +31,8 @@ export function createApp(
     app.get('/folders', getFolders as RequestHandler);
 
     if (process.env['NODE_ENV'] !== 'production') {
-        app.post('/tests/run', createTestRunHandler(testCommandExecutor));
+        app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
+        app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
         app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));
         app.get('/git/status', createGitStatusHandler(gitCommitCwd));
@@ -35,7 +41,7 @@ export function createApp(
     return app;
 }
 
-export type { TestCommandEvent, TestCommandExecutor } from './handlers/test-runner';
+export type { LastTestRun, TestCommandEvent, TestCommandExecutor } from './handlers/test-runner';
 export type { GitStatus, GitStatusFile } from './handlers/git-status';
 
 export interface ServerListener {

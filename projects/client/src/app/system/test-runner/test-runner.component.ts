@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BackendService, type TestOutputStream } from '../../backend.service';
 
@@ -17,12 +17,16 @@ interface TestRunResult {
     templateUrl: './test-runner.component.html',
     styleUrl: './test-runner.component.scss',
 })
-export class TestRunnerComponent {
+export class TestRunnerComponent implements OnInit {
     isRunning = false;
     result: TestRunResult | null = null;
     errorMessage = '';
 
     constructor(private backend: BackendService) {}
+
+    ngOnInit(): void {
+        this.runTests();
+    }
 
     runTests(): void {
         if (this.isRunning) {

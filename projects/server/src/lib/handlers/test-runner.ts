@@ -1,5 +1,8 @@
 import { execFile, type ExecFileOptions } from 'node:child_process';
 import type { Buffer } from 'node:buffer';
+import { randomUUID } from 'node:crypto';
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import type { RequestHandler } from 'express';
 
 export type TestCommandEvent =
@@ -13,6 +16,25 @@ export type TestCommandExecutor = (
     options: ExecFileOptions,
     emit: (event: TestCommandEvent) => void,
 ) => void;
+
+export interface LastTestRun {
+    startedAt: string;
+    finishedAt: string;
+    exitCode: number | null;
+    stdout: string;
+    stderr: string;
+    error: string | null;
+}
+
+const defaultTestDataDirectory = join(process.cwd(), 'test-run-cache');
+
+async function cacheLastTestRun(directory: string, result: LastTestRun): Promise<void> {
+    const filePath = join(directory, 'last-test-run.json');
+    const temporaryPath = join(directory, `last-test-run-${process.pid}-${randomUUID()}.tmp`);
+    await mkdir(directory, { recursive: true });
+    await writeFile(temporaryPath, JSON.stringify(result), 'utf8');
+    await rename(temporaryPath, filePath);
+}
 
 interface TestProcess {
     stdout: { on(event: 'data', listener: (data: string | Buffer) => void): unknown } | null;
@@ -44,7 +66,10 @@ const executeCommand: TestCommandExecutor = (command, args, options, emit) => {
     forwardTestProcessOutput(child, emit);
 };
 
-export function createTestRunHandler(execute: TestCommandExecutor = executeCommand): RequestHandler {
+export function createTestRunHandler(
+    execute: TestCommandExecutor = executeCommand,
+    cacheDirectory = defaultTestDataDirectory,
+): RequestHandler {
     let isRunning = false;
 
     return (_request, response, next) => {
@@ -69,8 +94,41 @@ export function createTestRunHandler(execute: TestCommandExecutor = executeComma
         response.flushHeaders();
 
         let finished = false;
-        const finish = () => {
+        const startedAt = new Date().toISOString();
+        const result: LastTestRun = {
+            startedAt,
+            finishedAt: '',
+            exitCode: null,
+            stdout: '',
+            stderr: '',
+            error: null,
+        };
+        const finish = async (event: TestCommandEvent) => {
+            if (finished) {
+                return;
+            }
             finished = true;
+            result.finishedAt = new Date().toISOString();
+            if (event.type === 'complete') {
+                result.exitCode = event.exitCode;
+            } else {
+                result.error = event.message;
+            }
+
+            let cacheError: string | null = null;
+            try {
+                await cacheLastTestRun(cacheDirectory, result);
+            } catch (error) {
+                cacheError = String(error);
+            }
+
+            response.write(`${JSON.stringify(event)}\n`);
+            if (cacheError !== null) {
+                response.write(`${JSON.stringify({
+                    type: 'error',
+                    message: `Test run finished but could not be cached: ${cacheError}`,
+                })}\n`);
+            }
             isRunning = false;
             response.end();
         };
@@ -84,17 +142,35 @@ export function createTestRunHandler(execute: TestCommandExecutor = executeComma
                 if (finished) {
                     return;
                 }
-                response.write(`${JSON.stringify(event)}\n`);
-                if (event.type === 'complete' || event.type === 'error') {
-                    finish();
+                if (event.type === 'stdout') {
+                    result.stdout += event.data;
+                    response.write(`${JSON.stringify(event)}\n`);
+                } else if (event.type === 'stderr') {
+                    result.stderr += event.data;
+                    response.write(`${JSON.stringify(event)}\n`);
+                } else {
+                    void finish(event);
                 }
             });
         } catch (error) {
-            response.write(`${JSON.stringify({
+            void finish({
                 type: 'error',
                 message: error instanceof Error ? error.message : 'Unable to start test process',
-            })}\n`);
-            finish();
+            });
         }
+    };
+}
+
+export function createLastTestRunHandler(cacheDirectory = defaultTestDataDirectory): RequestHandler {
+    return (_request, response, next) => {
+        void readFile(join(cacheDirectory, 'last-test-run.json'), 'utf8')
+            .then(contents => response.json({ data: JSON.parse(contents) as LastTestRun }))
+            .catch((error: NodeJS.ErrnoException) => {
+                if (error.code === 'ENOENT') {
+                    response.json({ data: null });
+                    return;
+                }
+                next(error);
+            });
     };
 }

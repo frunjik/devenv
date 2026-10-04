@@ -31,6 +31,7 @@ interface FeatureRow {
 })
 export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     description = '';
+    featureSearch = '';
     isSubmitting = false;
     successMessage = '';
     errorMessage = '';
@@ -41,7 +42,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     featuresError = '';
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-    constructor(private backend: BackendService) {}
+    constructor(private backend: BackendService) {
+        this.featureDataSource.filterPredicate = (feature, filter) =>
+            `${feature.id} ${feature.description}`.toLocaleLowerCase().includes(filter);
+    }
 
     ngOnInit(): void {
         this.refreshFeatures();
@@ -65,6 +69,19 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
                 this.isLoadingFeatures = false;
             },
         });
+    }
+
+    searchFeatures(search: string): void {
+        this.featureSearch = search;
+        this.featureDataSource.filter = search.trim().toLocaleLowerCase();
+        this.paginator?.firstPage();
+    }
+
+    onSearchInput(event: Event): void {
+        const target = event.target;
+        if (target instanceof HTMLInputElement) {
+            this.searchFeatures(target.value);
+        }
     }
 
     private parseFeature(feature: string): FeatureRow {

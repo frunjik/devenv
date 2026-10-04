@@ -154,6 +154,56 @@ describe('FeatureDescriptionComponent', () => {
         ]));
     });
 
+    it('filters features by ID or description and resets to the first page', async () => {
+        await fixture.whenStable();
+        const content = Array.from({ length: 7 }, (_, index) =>
+            `// [2026-10-04 22:45 +02:00] [123e4567-e89b-42d3-a456-42661417400${index}] Feature ${index + 1}`,
+        ).join('\n');
+        await writeFile(join(root, '.features'), content);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next').click();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('mat-paginator').textContent).toContain('6 – 7 of 7');
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'FEATURE 2';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.featureSearch).toBe('FEATURE 2');
+        expect(fixture.nativeElement.querySelector('mat-paginator').textContent).toContain('1 – 1 of 1');
+        const rows: HTMLTableRowElement[] = Array.from(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        );
+        expect(rows).toHaveLength(1);
+        expect(rows[0].querySelector('.mat-column-description')?.textContent.trim()).toBe('Feature 2');
+
+        search.value = '123e4567';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(5);
+    });
+
+    it('shows an empty state when no feature matches the search', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// One feature');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'missing';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.open-features').textContent)
+            .toContain('No features match your search.');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+    });
+
     it.each([
         ['Ctrl+S', 's'],
         ['Ctrl+Enter', 'Enter'],

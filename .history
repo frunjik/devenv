@@ -32,3 +32,4 @@ History
 // [2026-10-04 23:16 +02:00] Wrapped feature entry in a top-level submit form; Ctrl+S and Ctrl+Enter now submit through the form, with all 121 client tests passing at 100% coverage and the build succeeding.
 // [2026-10-04 23:21 +02:00] Replaced the open-feature list with a paginated Angular Material table and added an unwired Start button per row; all 122 client tests pass with 100% coverage and the client build succeeds.
 // [2026-10-04 23:23 +02:00] Separated client feature rows into 8-character IDs and date-free descriptions, keeping full IDs accessible on hover; all 122 client tests pass at 100% coverage and the build succeeds.
+// [2026-10-04 23:29 +02:00] Added case-insensitive client feature search across IDs and descriptions, resetting pagination and showing a no-match state; all 124 client tests pass with 100% coverage and the build succeeds.

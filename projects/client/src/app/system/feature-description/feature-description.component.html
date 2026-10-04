@@ -23,6 +23,16 @@
         <h2 id="open-features-heading">Open features</h2>
         <p *ngIf="isLoadingFeatures" role="status">Loading features…</p>
         <p *ngIf="featuresError" id="feature-list-error" role="alert">{{ featuresError }}</p>
+        <mat-form-field appearance="outline" *ngIf="features.length > 0">
+            <mat-label>Search features</mat-label>
+            <input
+                matInput
+                type="search"
+                aria-label="Search features"
+                [value]="featureSearch"
+                (input)="onSearchInput($event)"
+            />
+        </mat-form-field>
         <p *ngIf="!isLoadingFeatures && !featuresError && features.length === 0">No open features.</p>
         <table mat-table [dataSource]="featureDataSource" *ngIf="features.length > 0">
             <ng-container matColumnDef="id">
@@ -42,6 +52,9 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
+        <p *ngIf="features.length > 0 && featureDataSource.filteredData.length === 0">
+            No features match your search.
+        </p>
         <mat-paginator
             [hidden]="features.length === 0"
             [pageSize]="5"

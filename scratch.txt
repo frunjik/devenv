@@ -2,6 +2,7 @@ dumpers
 
 
 xx
+./workflow
 
 ./wishlist
 ./backlog

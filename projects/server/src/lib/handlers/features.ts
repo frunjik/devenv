@@ -95,6 +95,39 @@ function setFeatureStatus(entry: string, status: FeatureStatus): string {
         + ` [${status}]${statusMatch[2]}`;
 }
 
+async function addStartedFeatureToDevEnv(root: string, entry: string, id: string): Promise<void> {
+    const filename = join(root, 'DEVENVOPDEV.md');
+    const contents = await readFile(filename, 'utf8');
+    const lines = contents.split(/\r?\n/);
+    const description = entry.replace(
+        /^.*\] \[(?:High|Medium|Low)\] \[In progress\] /,
+        '',
+    );
+    const featureLine = `- [In progress] ${description} <!-- feature-id:${id} -->`;
+    const existingIndex = lines.findIndex(line => line.includes(`<!-- feature-id:${id} -->`));
+
+    if (existingIndex >= 0) {
+        lines[existingIndex] = featureLine;
+    } else {
+        const headingIndex = lines.findIndex(line =>
+            /^\s*The features you are writing are, take them one by one:\s*$/i.test(line),
+        );
+        if (headingIndex >= 0) {
+            lines.splice(headingIndex + 1, 0, featureLine);
+        } else {
+            if (lines.every(line => !line)) {
+                lines.length = 0;
+            } else if (lines[lines.length - 1] !== '') {
+                lines.push('');
+            }
+            lines.push('The features you are writing are, take them one by one:', featureLine);
+        }
+    }
+
+    const lineEnding = contents.includes('\r\n') ? '\r\n' : '\n';
+    await writeFile(filename, lines.join(lineEnding), 'utf8');
+}
+
 async function readFeatureEntries(filename: string): Promise<string[]> {
     let contents: string;
     try {
@@ -221,6 +254,36 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
                 entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as FeatureStatus);
                 await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
                 response.json({ data: entries[featureIndex] });
+            })
+            .catch(next);
+    };
+}
+
+export function createFeatureStartHandler(root: string): RequestHandler {
+    return (request, response, next) => {
+        const id = request.params['id'];
+        if (typeof id !== 'string'
+            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+            response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
+            return;
+        }
+
+        const filename = join(root, '.features');
+        void readFeatureEntries(filename)
+            .then(async entries => {
+                const featureIndex = entries.findIndex(entry =>
+                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
+                );
+                if (featureIndex < 0) {
+                    response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
+                    return;
+                }
+
+                const entry = setFeatureStatus(entries[featureIndex], 'In progress');
+                await addStartedFeatureToDevEnv(root, entry, id.toLowerCase());
+                entries[featureIndex] = entry;
+                await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                response.json({ data: entry });
             })
             .catch(next);
     };

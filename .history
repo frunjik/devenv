@@ -43,3 +43,4 @@ History
 // [2026-10-05 00:10 +02:00] Widened the client feature-list container to 72rem while keeping the feature-entry form capped at 48rem; all client (149) and server (116) tests pass at 100% coverage, and the client build succeeds.
 // [2026-10-05 00:15 +02:00] Added sortable ID, priority, status, and description headers to the client feature table; all client (150) and server (116) tests pass at 100% coverage, and the client build succeeds.
 // [2026-10-05 00:19 +02:00] Made the current task more prominent in the client toolbar with a labeled, high-contrast pill and larger summary; client (150) and server (116) tests pass at 100% coverage, and the client build succeeds.
+// [2026-10-05 00:21 +02:00] Updated feature Start and In progress selection to persist the feature status and add a deduplicated In progress item to DEVENVOPDEV.md; all client (152) and server (122) tests pass at 100% coverage, and the client build succeeds.

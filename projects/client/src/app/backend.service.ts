@@ -119,6 +119,13 @@ export class BackendService {
         ).pipe(map(response => response.data));
     }
 
+    startFeature(id: string): Observable<string> {
+        return this.httpservice.post<SuccessResponseBody<string>>(
+            `${this.host}features/${encodeURIComponent(id)}/start`,
+            {},
+        ).pipe(map(response => response.data));
+    }
+
     getFeatures(): Observable<string[]> {
         return this.get<string[]>('features');
     }

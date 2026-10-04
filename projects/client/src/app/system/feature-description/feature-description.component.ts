@@ -107,11 +107,17 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         if (!feature.id) {
             return;
         }
-        if (feature.status === 'In progress') {
-            this.featureWork.start(feature.id, feature.description);
-            return;
-        }
-        this.updateFeatureStatus(feature, 'In progress');
+        this.statusError = '';
+        this.backend.startFeature(feature.id).subscribe({
+            next: () => {
+                feature.status = 'In progress';
+                this.featureWork.start(feature.id, feature.description);
+                this.featureDataSource.data = [...this.featureDataSource.data];
+            },
+            error: (error: Error) => {
+                this.statusError = error.message;
+            },
+        });
     }
 
     markFeatureDone(feature: FeatureRow): void {
@@ -180,7 +186,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         }
 
         this.statusError = '';
-        this.backend.updateFeatureStatus(feature.id, status).subscribe({
+        const update = status === 'In progress'
+            ? this.backend.startFeature(feature.id)
+            : this.backend.updateFeatureStatus(feature.id, status);
+        update.subscribe({
             next: () => {
                 feature.status = status;
                 if (status === 'In progress') {

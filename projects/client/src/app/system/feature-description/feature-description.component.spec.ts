@@ -36,6 +36,9 @@ describe('FeatureDescriptionComponent', () => {
 
     beforeEach(async () => {
         await rm(join(root, '.features'), { recursive: true, force: true });
+        await rm(join(root, 'DEVENVOPDEV.md'), { recursive: true, force: true });
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions\n\n'
+            + 'The features you are writing are, take them one by one:\n');
         browserWindow.host = apiHost;
         await TestBed.configureTestingModule({
             imports: [FeatureDescriptionComponent],
@@ -155,9 +158,15 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('In progress');
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile).toContain(
+            `- [In progress] Add a feature <!-- feature-id:${id} -->`,
+        );
         fixture.nativeElement.querySelector('.feature-start-button').click();
         await fixture.whenStable();
         expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
+        expect((await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).match(/feature-id:/g))
+            .toHaveLength(1);
     });
 
     it('activates an already in-progress feature when its row action is clicked', async () => {
@@ -348,6 +357,31 @@ describe('FeatureDescriptionComponent', () => {
         expect(featureWork.activeFeature).toBeNull();
     });
 
+    it('records a feature as in progress in DEVENVOPDEV.md when its status is changed', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to promote\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'In progress';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toContain('[Medium] [In progress] Feature to promote');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain(`- [In progress] Feature to promote <!-- feature-id:${id} -->`);
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
+            id,
+            description: 'Feature to promote',
+        });
+    });
+
     it('reports status update failures and restores the previous selection', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
@@ -380,6 +414,26 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         await rm(join(root, '.features'));
         await mkdir(join(root, '.features'));
+
+        fixture.nativeElement.querySelector('.feature-start-button').click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
+            .toContain('500');
+    });
+
+    it('does not activate a feature when DEVENVOPDEV.md cannot be updated from Start', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to start\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, 'DEVENVOPDEV.md'));
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
 
         fixture.nativeElement.querySelector('.feature-start-button').click();
         await fixture.whenStable();

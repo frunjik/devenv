@@ -277,6 +277,99 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 
+    it('starts a feature in the backlog and records it as in progress in DEVENVOPDEV.md', async () => {
+        const created = await request(app).post('/features').send({ description: 'Implement feature tracking' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            'Existing feature',
+            '',
+        ].join('\r\n'));
+
+        const response = await request(app).post(`/features/${id}/start`).send({});
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toContain('[In progress] Implement feature tracking');
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile).toContain(
+            `The features you are writing are, take them one by one:\r\n- [In progress] Implement feature tracking <!-- feature-id:${id} -->\r\nExisting feature`,
+        );
+    });
+
+    it('updates the existing task marker instead of duplicating a started feature', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [In progress] Keep task listed\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Keep task listed <!-- feature-id:${id} -->`,
+            '',
+        ].join('\n'));
+
+        const response = await request(app).post(`/features/${id}/start`).send({});
+
+        expect(response.status).toBe(200);
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile.match(new RegExp(`feature-id:${id}`, 'g'))).toHaveLength(1);
+    });
+
+    it('adds the feature section when DEVENVOPDEV.md has no task heading', async () => {
+        const created = await request(app).post('/features').send({ description: 'Append task section' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions without a feature section');
+
+        const response = await request(app).post(`/features/${id}/start`).send({});
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
+            'Instructions without a feature section',
+            '',
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Append task section <!-- feature-id:${id} -->`,
+        ].join('\n'));
+    });
+
+    it('adds the feature section to an empty DEVENVOPDEV.md', async () => {
+        const created = await request(app).post('/features').send({ description: 'Start on empty task list' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), '');
+
+        const response = await request(app).post(`/features/${id}/start`).send({});
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Start on empty task list <!-- feature-id:${id} -->`,
+        ].join('\n'));
+    });
+
+    it('rejects malformed and unknown IDs when starting a feature', async () => {
+        const malformed = await request(app).post('/features/not-a-uuid/start').send({});
+        const unknown = await request(app)
+            .post('/features/123e4567-e89b-42d3-a456-426614174000/start')
+            .send({});
+
+        expect(malformed.status).toBe(400);
+        expect(malformed.body).toEqual({ error: { message: 'A valid feature ID is required.' } });
+        expect(unknown.status).toBe(404);
+        expect(unknown.body.error.message).toContain('was not found');
+    });
+
+    it('forwards DEVENVOPDEV.md write prerequisites failures when starting a feature', async () => {
+        const created = await request(app).post('/features').send({ description: 'Start with missing task file' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app).post(`/features/${id}/start`).send({});
+
+        expect(response.status).toBe(500);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
+    });
+
     it('accepts each supported feature status', async () => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];

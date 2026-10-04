@@ -17,7 +17,6 @@
             {{ isSubmitting ? 'Adding…' : 'Add feature' }}
         </button>
     </form>
-    <p *ngIf="successMessage" role="status">{{ successMessage }}</p>
     <p *ngIf="errorMessage" id="feature-submit-error" role="alert">{{ errorMessage }}</p>
     <section class="open-features" aria-labelledby="open-features-heading">
         <h2 id="open-features-heading">Open features</h2>
@@ -45,8 +44,16 @@
             </ng-container>
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
-                <td mat-cell *matCellDef>
-                    <button type="button" mat-button>Start</button>
+                <td mat-cell *matCellDef="let feature">
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-start-button"
+                        [attr.aria-pressed]="featureWork.activeFeature?.id === feature.id"
+                        (click)="startFeature(feature)"
+                    >
+                        {{ featureWork.activeFeature?.id === feature.id ? 'Started' : 'Start' }}
+                    </button>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

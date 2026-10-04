@@ -34,3 +34,5 @@ History
 // [2026-10-04 23:23 +02:00] Separated client feature rows into 8-character IDs and date-free descriptions, keeping full IDs accessible on hover; all 122 client tests pass at 100% coverage and the build succeeds.
 // [2026-10-04 23:29 +02:00] Added case-insensitive client feature search across IDs and descriptions, resetting pagination and showing a no-match state; all 124 client tests pass with 100% coverage and the build succeeds.
 // [2026-10-04 23:33 +02:00] Clear the client feature description after successful submission while retaining it on backend errors; all 124 client tests pass with 100% coverage and the build succeeds.
+// [2026-10-04 23:37 +02:00] Removed the “Feature added.” client success message while preserving save, input clearing, and list refresh; all 124 client tests pass at 100% coverage and the build succeeds.
+// [2026-10-04 23:43 +02:00] Connected Start to an active feature and remove it from .features only after a successful Git commit; all client (96) and server (130) tests pass at 100% coverage, and the client build succeeds.

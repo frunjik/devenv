@@ -8,7 +8,11 @@ import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
 import { createCurrentEntryHandler } from './handlers/current-entry';
-import { createFeatureHandler, createFeaturesListHandler } from './handlers/features';
+import {
+    createFeatureHandler,
+    createFeaturesListHandler,
+    createFeatureRemovalHandler,
+} from './handlers/features';
 import {
     createAuthenticationMiddleware,
     getDevelopmentAuthenticationService,
@@ -47,6 +51,7 @@ export function createApp(
     app.get('/current', createCurrentEntryHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
+    app.delete('/features/:id', createFeatureRemovalHandler(root));
 
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));

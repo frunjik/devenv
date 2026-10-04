@@ -12,6 +12,7 @@ import { CommitMessageDialogComponent } from './commit-message-dialog/commit-mes
 import { CurrentEntryService } from './current-entry.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
+import { FeatureWorkService } from './feature-work.service';
 
 @Component({
     selector: 'app-root',
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
     readonly currentEntry = inject(CurrentEntryService);
+    private featureWork = inject(FeatureWorkService);
     private gitLogRefresh = inject(GitLogRefreshService);
     private snackbar = inject(MatSnackBar);
     private dialog = inject(MatDialog);
@@ -97,6 +99,17 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.showCommitMessage(result.stdout.trim() || 'Changes committed.');
                 this.isCommitting = false;
                 this.gitStatus.refresh();
+                const activeFeature = this.featureWork.activeFeature;
+                if (activeFeature) {
+                    this.bs.removeFeature(activeFeature.id).subscribe({
+                        next: () => this.featureWork.complete(activeFeature.id),
+                        error: (error: Error) => this.showCommitMessage(
+                            `Changes committed, but feature '${activeFeature.id}' could not be removed: `
+                                + this.getApiErrorMessage(error, 'Feature could not be removed.'),
+                            true,
+                        ),
+                    });
+                }
                 this.gitLogRefresh.refresh().subscribe({
                     error: error => this.showCommitMessage(
                         `Changes committed, but the Git log could not be refreshed: ${error.message}`,
@@ -132,13 +145,17 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private getCommitError(error: unknown): string {
+        return this.getApiErrorMessage(error, 'Unable to commit changes.');
+    }
+
+    private getApiErrorMessage(error: unknown, fallback: string): string {
         if (error instanceof HttpErrorResponse && error.error
             && typeof error.error === 'object' && 'error' in error.error
             && error.error.error && typeof error.error.error === 'object'
             && 'message' in error.error.error && typeof error.error.error.message === 'string') {
             return error.error.error.message;
         }
-        return error instanceof Error ? error.message : 'Unable to commit changes.';
+        return error instanceof Error ? error.message : fallback;
     }
 
 }

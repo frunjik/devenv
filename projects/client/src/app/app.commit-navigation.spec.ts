@@ -5,6 +5,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, Router } from '@angular/router';
+import { FeatureWorkService } from './feature-work.service';
 import { MainComponent } from './system/main/main.component';
 import { AppComponent } from './app.component';
 
@@ -92,6 +93,87 @@ describe('AppComponent commit navigation', () => {
         expect(fixture.componentInstance.isCommitDialogOpen).toBe(false);
         expect(document.body.textContent).toContain('Git log navigation failed');
         http.expectNone('http://localhost:3000/git/commit');
+        fixture.destroy();
+    });
+
+    it('removes the active feature only after Git reports a successful commit', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start('123e4567-e89b-42d3-a456-426614174000', 'Add a feature');
+        await TestBed.inject(Router).navigateByUrl('/git/log');
+
+        fixture.componentInstance.commitChanges();
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
+
+        const commitDialog = TestBed.inject(MatDialog).openDialogs[0].componentInstance;
+        commitDialog.message = 'Complete feature';
+        commitDialog.submit();
+        await fixture.whenStable();
+
+        http.expectOne('http://localhost:3000/git/commit').flush({
+            data: { stdout: 'Committed', stderr: '' },
+        });
+        expect(featureWork.activeFeature?.id).toBe('123e4567-e89b-42d3-a456-426614174000');
+        http.expectOne('http://localhost:3000/features/123e4567-e89b-42d3-a456-426614174000')
+            .flush({ data: 'removed feature entry' });
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: { branch: 'main', ahead: 0, behind: 0, clean: true, files: [] },
+        });
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
+
+        expect(featureWork.activeFeature).toBeNull();
+        fixture.destroy();
+    });
+
+    it('keeps the active feature and does not remove it when the Git commit fails', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start('123e4567-e89b-42d3-a456-426614174000', 'Add a feature');
+        await TestBed.inject(Router).navigateByUrl('/git/log');
+
+        fixture.componentInstance.commitChanges();
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
+        const commitDialog = TestBed.inject(MatDialog).openDialogs[0].componentInstance;
+        commitDialog.message = 'Complete feature';
+        commitDialog.submit();
+        await fixture.whenStable();
+
+        http.expectOne('http://localhost:3000/git/commit').flush(
+            { error: { message: 'Commit failed' } },
+            { status: 500, statusText: 'Error' },
+        );
+
+        expect(featureWork.activeFeature?.id).toBe('123e4567-e89b-42d3-a456-426614174000');
+        http.expectNone('http://localhost:3000/features/123e4567-e89b-42d3-a456-426614174000');
+        fixture.destroy();
+    });
+
+    it('keeps the active feature and reports an error if removal fails after committing', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start('123e4567-e89b-42d3-a456-426614174000', 'Add a feature');
+        await TestBed.inject(Router).navigateByUrl('/git/log');
+
+        fixture.componentInstance.commitChanges();
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
+        const commitDialog = TestBed.inject(MatDialog).openDialogs[0].componentInstance;
+        commitDialog.message = 'Complete feature';
+        commitDialog.submit();
+        await fixture.whenStable();
+
+        http.expectOne('http://localhost:3000/git/commit').flush({
+            data: { stdout: 'Committed', stderr: '' },
+        });
+        http.expectOne('http://localhost:3000/features/123e4567-e89b-42d3-a456-426614174000')
+            .flush({ error: { message: 'Feature removal failed' } }, { status: 500, statusText: 'Error' });
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: { branch: 'main', ahead: 0, behind: 0, clean: true, files: [] },
+        });
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
+
+        expect(featureWork.activeFeature?.id).toBe('123e4567-e89b-42d3-a456-426614174000');
+        expect(document.body.textContent).toContain('could not be removed');
+        expect(document.body.textContent).toContain('Feature removal failed');
         fixture.destroy();
     });
 });

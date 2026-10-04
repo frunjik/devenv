@@ -77,3 +77,31 @@ export function createFeaturesListHandler(root: string): RequestHandler {
             .catch(next);
     };
 }
+
+export function createFeatureRemovalHandler(root: string): RequestHandler {
+    return (request, response, next) => {
+        const id = request.params['id'];
+        if (typeof id !== 'string'
+            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+            response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
+            return;
+        }
+
+        const filename = join(root, '.features');
+        void readFeatureEntries(filename)
+            .then(async entries => {
+                const featureIndex = entries.findIndex(entry =>
+                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
+                );
+                if (featureIndex < 0) {
+                    response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
+                    return;
+                }
+
+                const [removedFeature] = entries.splice(featureIndex, 1);
+                await writeFile(filename, entries.length ? `${entries.join('\n')}\n` : '', 'utf8');
+                response.json({ data: removedFeature });
+            })
+            .catch(next);
+    };
+}

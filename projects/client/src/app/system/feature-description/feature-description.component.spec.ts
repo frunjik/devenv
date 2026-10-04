@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import type { Server } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
 import { createApp } from '../../../../../server/src/public-api';
+import { FeatureWorkService } from '../../feature-work.service';
 import { FeatureDescriptionComponent } from './feature-description.component';
 
 describe('FeatureDescriptionComponent', () => {
@@ -95,6 +96,25 @@ describe('FeatureDescriptionComponent', () => {
             .toHaveLength(2);
     });
 
+    it('marks a feature as started when its row action is clicked', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
+            id,
+            description: 'Add a feature',
+        });
+        expect(fixture.nativeElement.querySelector('.feature-start-button').textContent.trim()).toBe('Started');
+        expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
+    });
+
     it('holds the entered feature description in the form', async () => {
         const textarea: HTMLTextAreaElement =
             fixture.nativeElement.querySelector('textarea[aria-label="Feature description"]');
@@ -106,7 +126,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.componentInstance.description).toBe('Add a route for planning the next feature');
     });
 
-    it('submits the description to the backend and displays success feedback', async () => {
+    it('submits the description and updates the feature list without a success message', async () => {
         const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
         textarea.value = 'Add a feature submission form';
         textarea.dispatchEvent(new Event('input'));
@@ -117,7 +137,8 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Feature added.');
+        expect(fixture.nativeElement.querySelector('#feature-submit-error')).toBeNull();
+        expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
         expect(fixture.componentInstance.description).toBe('');
         fixture.detectChanges();
         await fixture.whenStable();
@@ -230,7 +251,7 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(event.defaultPrevented).toBe(true);
         expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
-        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Feature added.');
+        expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
             new RegExp(`\\] \\[[0-9a-f-]{36}\\] Submit with ${key}\\n$`),
         );

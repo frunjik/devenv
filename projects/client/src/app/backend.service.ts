@@ -103,6 +103,12 @@ export class BackendService {
         return this.get<string[]>('features');
     }
 
+    removeFeature(id: string): Observable<string> {
+        return this.httpservice.delete<SuccessResponseBody<string>>(
+            `${this.host}features/${encodeURIComponent(id)}`,
+        ).pipe(map(response => response.data));
+    }
+
     getGitLog(): Observable<GitLogEntry[]> {
         return this.get<GitLogEntry[]>('git/log');
     }

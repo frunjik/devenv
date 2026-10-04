@@ -139,4 +139,49 @@ describe('features public API', () => {
 
         expect(response.status).toBe(500);
     });
+
+    it('removes a feature by UUID and preserves the other entries', async () => {
+        const first = await request(app).post('/features').send({ description: 'First feature' });
+        const second = await request(app).post('/features').send({ description: 'Second feature' });
+        const id = first.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app).delete(`/features/${id}`);
+
+        expect(response.body.data).toBe(first.body.data);
+        expect((await readFile(join(root, '.features'), 'utf8')).trim()).toBe(second.body.data);
+    });
+
+    it('leaves an empty features file when removing its final entry', async () => {
+        const feature = await request(app).post('/features').send({ description: 'Only feature' });
+        const id = feature.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app).delete(`/features/${id}`);
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe('');
+    });
+
+    it('returns not found when removing a feature that does not exist', async () => {
+        const response = await request(app)
+            .delete('/features/123e4567-e89b-42d3-a456-426614174000');
+
+        expect(response.status).toBe(404);
+        expect(response.body.error.message).toContain('was not found');
+    });
+
+    it('rejects malformed feature IDs', async () => {
+        const response = await request(app).delete('/features/not-a-uuid');
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: { message: 'A valid feature ID is required.' } });
+    });
+
+    it('forwards feature removal filesystem errors to Express', async () => {
+        await mkdir(join(root, '.features'));
+
+        const response = await request(app)
+            .delete('/features/123e4567-e89b-42d3-a456-426614174000');
+
+        expect(response.status).toBe(500);
+    });
 });

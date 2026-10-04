@@ -7,6 +7,6 @@ After finishing a feature add an entry to the ./history.
 
 The feature you are writing is:
 
-improve the display of the feature list on the client use a material table with paging and we want to be able to add a start button on each row
+after commiting a feature remove it from the feature list
 
-
+show the status of the last cached test run in the bottom client toolbar

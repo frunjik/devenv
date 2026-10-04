@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BackendService } from '../../backend.service';
+import { FeatureWorkService } from '../../feature-work.service';
 
 interface FeatureRow {
     id: string;
@@ -33,7 +34,6 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     description = '';
     featureSearch = '';
     isSubmitting = false;
-    successMessage = '';
     errorMessage = '';
     features: string[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
@@ -42,7 +42,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     featuresError = '';
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-    constructor(private backend: BackendService) {
+    constructor(
+        private backend: BackendService,
+        readonly featureWork: FeatureWorkService,
+    ) {
         this.featureDataSource.filterPredicate = (feature, filter) =>
             `${feature.id} ${feature.description}`.toLocaleLowerCase().includes(filter);
     }
@@ -84,6 +87,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         }
     }
 
+    startFeature(feature: FeatureRow): void {
+        this.featureWork.start(feature.id, feature.description);
+    }
+
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
             /^\/\/ \[[^\]]+\] \[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] (.+)$/i,
@@ -100,11 +107,9 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         }
 
         this.isSubmitting = true;
-        this.successMessage = '';
         this.errorMessage = '';
         this.backend.addFeature(description).subscribe({
             next: () => {
-                this.successMessage = 'Feature added.';
                 this.isSubmitting = false;
                 this.description = '';
                 this.refreshFeatures();

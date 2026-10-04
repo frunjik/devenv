@@ -62,6 +62,18 @@ describe('BackendService', () => {
         expect(service.host).toBe(apiHost);
     });
 
+    it('loads recent commit entries from the git log API', async () => {
+        const entries = await service.getGitLog().toPromise();
+
+        expect(entries).toEqual(expect.any(Array));
+        expect(entries?.every(entry =>
+            typeof entry.hash === 'string'
+            && typeof entry.author === 'string'
+            && typeof entry.date === 'string'
+            && typeof entry.subject === 'string',
+        )).toBe(true);
+    });
+
     it('loads file contents from the API', async () => {
         await expect(service.loadFile('sample.txt').toPromise()).resolves.toBe('initial');
     });

@@ -14,6 +14,13 @@ export interface GitCommitResult {
     stderr: string;
 }
 
+export interface GitLogEntry {
+    hash: string;
+    author: string;
+    date: string;
+    subject: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -61,6 +68,10 @@ export class BackendService {
 
     commitChanges(message: string): Observable<GitCommitResult> {
         return this.post<GitCommitResult>('git/commit', { message });
+    }
+
+    getGitLog(): Observable<GitLogEntry[]> {
+        return this.get<GitLogEntry[]>('git/log');
     }
 
     async runTests(onOutput: (stream: TestOutputStream, chunk: string) => void): Promise<number> {

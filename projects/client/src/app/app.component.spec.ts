@@ -4,12 +4,14 @@ import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { throwError } from 'rxjs';
 
 describe('AppComponent', () => {
     let http: HttpTestingController;
     let snackbarOpen: jest.MockedFunction<MatSnackBar['open']>;
+    let navigateByUrl: jest.SpiedFunction<Router['navigateByUrl']>;
     const originalPrompt = window.prompt;
 
     beforeEach(async () => {
@@ -27,6 +29,7 @@ describe('AppComponent', () => {
             })
             .compileComponents();
         http = TestBed.inject(HttpTestingController);
+        navigateByUrl = jest.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     });
 
     afterEach(() => {
@@ -60,11 +63,40 @@ describe('AppComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('Commit changes');
     });
 
-    it('does not commit when the prompt is cancelled', () => {
+    it('shows a menu link to the git log view', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        const gitLogLink = fixture.nativeElement.querySelector('a[href="/git/log"]');
+        expect(gitLogLink.textContent).toContain('Git log');
+    });
+
+    it('navigates to the git log before prompting for a commit message', async () => {
+        const order: string[] = [];
+        navigateByUrl.mockImplementation(async () => {
+            order.push('navigate');
+            return true;
+        });
+        window.prompt = () => {
+            order.push('prompt');
+            return null;
+        };
+        const fixture = TestBed.createComponent(AppComponent);
+
+        fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
+
+        expect(navigateByUrl).toHaveBeenCalledWith('/git/log');
+        expect(order).toEqual(['navigate', 'prompt']);
+        http.expectNone('http://localhost:3000/git/commit');
+    });
+
+    it('does not commit when the prompt is cancelled', async () => {
         window.prompt = () => null;
         const fixture = TestBed.createComponent(AppComponent);
 
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         http.expectNone('http://localhost:3000/git/commit');
     });
@@ -84,11 +116,12 @@ describe('AppComponent', () => {
         http.expectNone('http://localhost:3000/git/commit');
     });
 
-    it('shows a snackbar when the commit message is empty', () => {
+    it('shows a snackbar when the commit message is empty', async () => {
         window.prompt = () => '   ';
         const fixture = TestBed.createComponent(AppComponent);
 
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         expect(snackbarOpen).toHaveBeenCalledWith('A commit message is required.', 'Dismiss', {
             duration: 5000,
@@ -97,10 +130,11 @@ describe('AppComponent', () => {
         http.expectNone('http://localhost:3000/git/commit');
     });
 
-    it('posts the prompted message and shows commit output in a snackbar', () => {
+    it('posts the prompted message and shows commit output in a snackbar', async () => {
         window.prompt = () => 'Save progress';
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         const request = http.expectOne('http://localhost:3000/git/commit');
         expect(request.request.method).toBe('POST');
@@ -114,10 +148,11 @@ describe('AppComponent', () => {
         expect(fixture.componentInstance.isCommitting).toBe(false);
     });
 
-    it('shows a fallback success snackbar when Git returns no output', () => {
+    it('shows a fallback success snackbar when Git returns no output', async () => {
         window.prompt = () => 'Save progress';
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ data: { stdout: '', stderr: '' } });
@@ -128,10 +163,11 @@ describe('AppComponent', () => {
         });
     });
 
-    it('shows the server commit error in a snackbar', () => {
+    it('shows the server commit error in a snackbar', async () => {
         window.prompt = () => 'Save progress';
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ error: { message: 'Git commit failed' } }, { status: 500, statusText: 'Error' });
@@ -143,10 +179,11 @@ describe('AppComponent', () => {
         expect(fixture.componentInstance.isCommitting).toBe(false);
     });
 
-    it('falls back to the HTTP message when the server error message is invalid', () => {
+    it('falls back to the HTTP message when the server error message is invalid', async () => {
         window.prompt = () => 'Save progress';
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ error: { message: 500 } }, { status: 500, statusText: 'Error' });
@@ -157,12 +194,13 @@ describe('AppComponent', () => {
         });
     });
 
-    it('shows a fallback error for non-Error failures', () => {
+    it('shows a fallback error for non-Error failures', async () => {
         window.prompt = () => 'Save progress';
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.bs.commitChanges = () => throwError(() => 'failure');
 
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         expect(snackbarOpen).toHaveBeenCalledWith('Unable to commit changes.', 'Dismiss', {
             duration: 5000,
@@ -170,12 +208,13 @@ describe('AppComponent', () => {
         });
     });
 
-    it('shows the error message for Error failures', () => {
+    it('shows the error message for Error failures', async () => {
         window.prompt = () => 'Save progress';
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.bs.commitChanges = () => throwError(() => new Error('Network failure'));
 
         fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
 
         expect(snackbarOpen).toHaveBeenCalledWith('Network failure', 'Dismiss', {
             duration: 5000,

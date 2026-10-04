@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 // import pipe from 
 @Component({
@@ -19,7 +19,8 @@ export class AppComponent {
     title = 'DevEnv';
     isCommitting = false;
     private snackbar = inject(MatSnackBar);
-    
+    private router = inject(Router);
+
     constructor(public bs: BackendService) {
     }
 
@@ -31,6 +32,26 @@ export class AppComponent {
         if (this.isCommitting) {
             return;
         }
+        if (this.router.url === '/git/log') {
+            this.promptForCommitMessage();
+            return;
+        }
+
+        void this.router.navigateByUrl('/git/log')
+            .then(navigated => {
+                if (navigated) {
+                    this.promptForCommitMessage();
+                }
+            })
+            .catch((error: unknown) => {
+                this.showCommitMessage(
+                    error instanceof Error ? error.message : 'Unable to open the Git log.',
+                    true,
+                );
+            });
+    }
+
+    private promptForCommitMessage(): void {
         const message = window.prompt('Commit message');
         if (message === null) {
             return;

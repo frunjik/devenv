@@ -3,6 +3,7 @@ import { MainComponent } from './system/main/main.component';
 import { FileBrowserComponent } from './system/file-browser/file-browser/file-browser.component';
 import { PPTJSComponent } from './system/ppt/workspaces/js/js.component';
 import { TestRunnerComponent } from './system/test-runner/test-runner.component';
+import { GitLogComponent } from './system/git-log/git-log.component';
 
 export const routes: Routes = [
     {
@@ -24,6 +25,10 @@ export const routes: Routes = [
     {
         path: 'tests',
         component: TestRunnerComponent
+    },
+    {
+        path: 'git/log',
+        component: GitLogComponent
     },
     // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

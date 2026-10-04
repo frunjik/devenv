@@ -8,6 +8,11 @@ import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
 import {
+    createAuthenticationMiddleware,
+    getDevelopmentAuthenticationService,
+    type AuthenticationService,
+} from './authentication';
+import {
     createLastTestRunHandler,
     createTestRunHandler,
     createTestRunCacheStatusHandler,
@@ -19,11 +24,18 @@ export function createApp(
     testCommandExecutor?: TestCommandExecutor,
     gitCommitCwd = process.cwd(),
     testRunCacheDirectory?: string,
+    authenticationService?: AuthenticationService,
 ): Express {
     const app = express();
 
     app.use(express.json());
     app.use(cors());
+
+    const configuredAuthentication = authenticationService
+        ?? (process.env['NODE_ENV'] !== 'production' ? getDevelopmentAuthenticationService() : undefined);
+    if (configuredAuthentication) {
+        app.use(createAuthenticationMiddleware(configuredAuthentication));
+    }
 
     app.locals['fileSystem'] = new FileSystem(root);
 
@@ -49,6 +61,7 @@ export type {
     TestCommandExecutor,
     TestRunCacheStatus,
 } from './handlers/test-runner';
+export type { AuthenticatedPrincipal, AuthenticationService } from './authentication';
 export type { GitStatus, GitStatusFile } from './handlers/git-status';
 
 export interface ServerListener {
@@ -71,6 +84,7 @@ export function startServer(
     root = './',
     port = Number(process.env['PORT'] ?? 3000),
     listener: ServerListener = httpServerListener,
+    authenticationService?: AuthenticationService,
 ): Promise<Server> {
-    return listener.listen(createApp(root), port);
+    return listener.listen(createApp(root, undefined, process.cwd(), undefined, authenticationService), port);
 }

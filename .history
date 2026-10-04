@@ -14,3 +14,4 @@ History
 // [2026-10-04 21:48 +02:00] Added development-only GET /tests/cache/status to report empty, passed, failed, or errored cached test runs.
 // [2026-10-04 21:53 +02:00] Displayed the last cached test-run status, exit code, and completion time on the client test runner page and refreshes it after each run.
 // [2026-10-04 21:58 +02:00] Split the test runner into execution and cache-status columns, stacking the cache panel below on narrow screens.
+// [2026-10-04 22:03 +02:00] Added an injectable backend authentication service with development allow-all defaults and HTTP integration coverage.

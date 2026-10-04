@@ -2,7 +2,6 @@ TDOD:
 
 Bootstrap
 - authentication / roles
-- make an indicator on the client to show we have open changes
 - field
 - model
 - form
@@ -10,10 +9,11 @@ Bootstrap
 - dataset hydration
 
 Devenv
+- split projects\server\src\public-api.ts
+- feature: history
 - test coverage
 - feature: dynamic styles
 - make server calls with some prefix /api/server/ ?
-- feature: history
 - feature: send git diffs
 - feature: show client feedback on saving files
 - feature: show client and server version (and status)
@@ -25,6 +25,7 @@ System
 - update node
 
 DONE:
+- make an indicator on the client to show we have open changes
 - make a button to commit changes from the client
 - provide links in menu to edit /client and /server
 - allow to run a node command from the client

@@ -588,6 +588,27 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe('');
     });
 
+    it('preserves DEVENVOPDEV.md CRLF line endings when removing a task', async () => {
+        const created = await request(app).post('/features').send({ description: 'Windows line endings' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        const otherTask = '- [In progress] Keep this task <!-- feature-id:123e4567-e89b-42d3-a456-426614174000 -->';
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Windows line endings <!-- feature-id:${id} -->`,
+            otherTask,
+            '',
+        ].join('\r\n'));
+
+        const response = await request(app).delete(`/features/${id}`);
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
+            'The features you are writing are, take them one by one:',
+            otherTask,
+            '',
+        ].join('\r\n'));
+    });
+
     it('leaves an empty features file when removing its final entry', async () => {
         const feature = await request(app).post('/features').send({ description: 'Only feature' });
         const id = feature.body.data.match(/\[([0-9a-f-]{36})\]/)[1];

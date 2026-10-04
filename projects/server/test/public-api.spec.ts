@@ -753,6 +753,99 @@ describe('server public HTTP API', () => {
         expect(response.body.error.message).toBe('Git returned an invalid status result');
     });
 
+    it('parses branch tracking and all Git status categories', async () => {
+        const gitApp = express();
+        gitApp.get('/git/status', createGitStatusHandler(root, async () => ({
+            stdout: [
+                '## feature...origin/feature [ahead 2, behind 3]',
+                'M  staged.txt',
+                ' M unstaged.txt',
+                '?? untracked.txt',
+                'R  renamed-staged.txt',
+                'staged-source.txt',
+                ' R renamed-unstaged.txt',
+                'unstaged-source.txt',
+                'C  copied-staged.txt',
+                'copied-source.txt',
+                ' C copied-unstaged.txt',
+                'copied-unstaged-source.txt',
+                'UU conflicted.txt',
+                'AA added-conflict.txt',
+                'DD deleted-conflict.txt',
+            ].join('\0') + '\0',
+            stderr: '',
+        })));
+
+        const response = await request(gitApp).get('/git/status');
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toMatchObject({
+            branch: 'feature',
+            ahead: 2,
+            behind: 3,
+            clean: false,
+        });
+        expect(response.body.data.files).toEqual(expect.arrayContaining([
+            expect.objectContaining({ path: 'renamed-staged.txt', originalPath: 'staged-source.txt' }),
+            expect.objectContaining({ path: 'renamed-unstaged.txt', originalPath: 'unstaged-source.txt' }),
+            expect.objectContaining({ path: 'copied-staged.txt', originalPath: 'copied-source.txt' }),
+            expect.objectContaining({ path: 'copied-unstaged.txt', originalPath: 'copied-unstaged-source.txt' }),
+            expect.objectContaining({ path: 'conflicted.txt', conflicted: true }),
+            expect.objectContaining({ path: 'added-conflict.txt', conflicted: true }),
+            expect.objectContaining({ path: 'deleted-conflict.txt', conflicted: true }),
+        ]));
+    });
+
+    it('parses status without branch metadata and branch summary variants', async () => {
+        const outputs = [
+            { stdout: '', branch: null, ahead: 0, behind: 0 },
+            { stdout: '## ', branch: null, ahead: 0, behind: 0 },
+            { stdout: '## main', branch: 'main', ahead: 0, behind: 0 },
+            { stdout: '## main...origin/main [ahead 1]', branch: 'main', ahead: 1, behind: 0 },
+            { stdout: '## main...origin/main [behind 2]', branch: 'main', ahead: 0, behind: 2 },
+            { stdout: '## No commits yet on new-branch', branch: 'new-branch', ahead: 0, behind: 0 },
+            { stdout: '## HEAD (no branch)', branch: null, ahead: 0, behind: 0 },
+        ];
+
+        for (const { stdout, branch, ahead, behind } of outputs) {
+            const gitApp = express();
+            gitApp.get('/git/status', createGitStatusHandler(root, async () => ({ stdout, stderr: '' })));
+            const response = await request(gitApp).get('/git/status');
+
+            expect(response.status).toBe(200);
+            expect(response.body.data).toMatchObject({ branch, ahead, behind });
+        }
+    });
+
+    it('rejects malformed Git status records and missing rename paths', async () => {
+        for (const stdout of ['x\0', 'malformed', 'R  renamed.txt\0']) {
+            const gitApp = express();
+            gitApp.get('/git/status', createGitStatusHandler(root, async () => ({ stdout, stderr: '' })));
+            gitApp.use(handleError);
+
+            const response = await request(gitApp).get('/git/status');
+
+            expect(response.status).toBe(500);
+            expect(response.body.error.message).toBe('Git returned an invalid status result');
+        }
+    });
+
+    it('returns Git execution errors from the status endpoint', async () => {
+        const gitApp = express();
+        gitApp.get('/git/status', createGitStatusHandler(root, async () => {
+            throw Object.assign(new Error('git status failed'), { stdout: 'out', stderr: 'err' });
+        }));
+
+        const response = await request(gitApp).get('/git/status');
+
+        expect(response.status).toBe(500);
+        expect(response.body.error).toEqual({
+            message: 'git status failed',
+            stdout: 'out',
+            stderr: 'err',
+        });
+    });
+
     it('does not register the git status route in production', async () => {
         const originalNodeEnv = process.env['NODE_ENV'];
         process.env['NODE_ENV'] = 'production';
@@ -767,6 +860,10 @@ describe('server public HTTP API', () => {
                 process.env['NODE_ENV'] = originalNodeEnv;
             }
         }
+    });
+
+    it('defaults the git status route working directory to the current directory', () => {
+        expect(createGitStatusHandler()).toBeDefined();
     });
 
     it('defaults the git log route working directory to the current directory', () => {

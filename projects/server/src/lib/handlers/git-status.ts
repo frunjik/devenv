@@ -66,7 +66,7 @@ function parseGitStatus(output: string): GitStatus {
             ?? branchSummary.split('...')[0];
         branch = branchName === 'HEAD (no branch)' ? null : branchName || null;
         ahead = Number(branchSummary.match(/\[ahead (\d+)/)?.[1] ?? 0);
-        behind = Number(branchSummary.match(/\[behind (\d+)/)?.[1] ?? 0);
+        behind = Number(branchSummary.match(/\bbehind (\d+)/)?.[1] ?? 0);
         fileRecordIndex = 1;
     }
 

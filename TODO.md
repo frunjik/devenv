@@ -7,7 +7,6 @@ Bootstrap
 
 Devenv
 - make server calls with some prefix /api/server/ ?
-- fix the server test highlighting
 - feature: show client feedback on saving files
 - feature: show client and server version (and status)
 - feature: increase version number
@@ -22,3 +21,5 @@ DONE:
 - upate angular version to v21
 - increase test coverage to 100
 - make server restart on changes
+- fix the server test highlighting
+

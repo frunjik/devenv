@@ -5,7 +5,7 @@ import { once } from 'node:events';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 
-const serverOrigin = 'http://127.0.0.1:5555';
+const serverOrigin = 'http://127.0.0.1:3000';
 const serverRoot = process.cwd();
 const fixturePath = resolve(serverRoot, `.server-test-${process.pid}`);
 const fixtureFile = join(fixturePath, 'sample.txt');

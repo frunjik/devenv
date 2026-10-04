@@ -1,14 +1,15 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Server } from 'node:http';
 
 import { BackendService } from './backend.service';
 import { LoggerService } from './logger.service';
-import { startServer } from '../../../server/src/public-api';
+import { createApp, startServer } from '../../../server/src/public-api';
 
 describe('BackendService', () => {
     let service: BackendService;
@@ -128,6 +129,37 @@ describe('BackendService', () => {
         expect(status.startedAt === null || typeof status.startedAt === 'string').toBe(true);
         expect(status.finishedAt === null || typeof status.finishedAt === 'string').toBe(true);
         expect(status.exitCode === null || typeof status.exitCode === 'number').toBe(true);
+    });
+
+    it('loads the complete cached test result through the public API', async () => {
+        const cacheDirectory = join(root, 'last-test-run-client-api');
+        await mkdir(cacheDirectory);
+        const cachedRun = {
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 1,
+            stdout: 'Failed assertion details',
+            stderr: 'Coverage threshold not met',
+            error: null,
+        };
+        await writeFile(join(cacheDirectory, 'last-test-run.json'), JSON.stringify(cachedRun));
+        const cachedResultServer = createServer(createApp(root, undefined, process.cwd(), cacheDirectory));
+        await new Promise<void>(resolve => cachedResultServer.listen(0, resolve));
+        const address = cachedResultServer.address();
+        if (!address || typeof address === 'string') {
+            throw new Error('Test server did not bind to a TCP port');
+        }
+        browserWindow.host = `http://127.0.0.1:${address.port}/`;
+
+        try {
+            await expect(service.getLastTestRun().toPromise()).resolves.toEqual(cachedRun);
+        } finally {
+            await new Promise<void>((resolve, reject) => {
+                cachedResultServer.close(error => error ? reject(error) : resolve());
+            });
+            browserWindow.host = apiHost;
+            await rm(cacheDirectory, { recursive: true, force: true });
+        }
     });
 
     it('loads file contents from the API', async () => {

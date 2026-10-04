@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Subscription } from 'rxjs';
 import {
     BackendService,
+    type LastTestRun,
     type TestOutputStream,
 } from '../../backend.service';
 import { TestRunCacheStatusService } from '../../test-run-cache-status.service';
@@ -21,10 +23,14 @@ interface TestRunResult {
     templateUrl: './test-runner.component.html',
     styleUrl: './test-runner.component.scss',
 })
-export class TestRunnerComponent implements OnInit {
+export class TestRunnerComponent implements OnDestroy, OnInit {
     isRunning = false;
     result: TestRunResult | null = null;
     errorMessage = '';
+    lastTestRun: LastTestRun | null = null;
+    lastTestRunError = '';
+    isLoadingLastTestRun = false;
+    private lastTestRunSubscription = Subscription.EMPTY;
     constructor(
         private backend: BackendService,
         readonly cacheStatus: TestRunCacheStatusService,
@@ -32,7 +38,12 @@ export class TestRunnerComponent implements OnInit {
 
     ngOnInit(): void {
         this.cacheStatus.refresh();
+        this.refreshLastTestRun();
         this.runTests();
+    }
+
+    ngOnDestroy(): void {
+        this.lastTestRunSubscription.unsubscribe();
     }
 
     refreshCacheStatus(): void {
@@ -59,7 +70,24 @@ export class TestRunnerComponent implements OnInit {
             .finally(() => {
                 this.isRunning = false;
                 this.refreshCacheStatus();
+                this.refreshLastTestRun();
             });
+    }
+
+    private refreshLastTestRun(): void {
+        this.lastTestRunSubscription.unsubscribe();
+        this.isLoadingLastTestRun = true;
+        this.lastTestRunError = '';
+        this.lastTestRunSubscription = this.backend.getLastTestRun().subscribe({
+            next: lastTestRun => {
+                this.lastTestRun = lastTestRun;
+                this.isLoadingLastTestRun = false;
+            },
+            error: (error: Error) => {
+                this.lastTestRunError = error.message;
+                this.isLoadingLastTestRun = false;
+            },
+        });
     }
 
     private appendOutput(stream: TestOutputStream, chunk: string): void {

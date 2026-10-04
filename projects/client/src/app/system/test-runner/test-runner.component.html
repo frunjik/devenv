@@ -46,6 +46,29 @@
                     Finished: <time [attr.datetime]="cacheStatus.status?.finishedAt">{{ cacheStatus.status?.finishedAt | date:'medium' }}</time>
                 </p>
             </ng-container>
+            <p *ngIf="isLoadingLastTestRun" role="status">Loading last test output…</p>
+            <p *ngIf="lastTestRunError" class="error" role="alert">
+                Could not load last test output: {{ lastTestRunError }}
+            </p>
+            <section
+                *ngIf="!isLoadingLastTestRun && !lastTestRunError && lastTestRun
+                    && (lastTestRun.exitCode !== 0 || lastTestRun.error)"
+                aria-label="Last failed test run details"
+            >
+                <h3 class="error">Errors from the last failed test run</h3>
+                <p *ngIf="lastTestRun.error" class="error">{{ lastTestRun.error }}</p>
+                <ng-container *ngIf="lastTestRun.stdout">
+                    <h4>Test output</h4>
+                    <pre>{{ lastTestRun.stdout }}</pre>
+                </ng-container>
+                <ng-container *ngIf="lastTestRun.stderr">
+                    <h4>Standard error</h4>
+                    <pre>{{ lastTestRun.stderr }}</pre>
+                </ng-container>
+                <p *ngIf="!lastTestRun.error && !lastTestRun.stdout && !lastTestRun.stderr">
+                    No failure details were captured.
+                </p>
+            </section>
         </aside>
     </div>
 </main>

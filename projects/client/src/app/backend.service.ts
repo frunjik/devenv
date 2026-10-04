@@ -48,6 +48,15 @@ export interface TestRunCacheStatus {
     exitCode: number | null;
 }
 
+export interface LastTestRun {
+    startedAt: string;
+    finishedAt: string;
+    exitCode: number | null;
+    stdout: string;
+    stderr: string;
+    error: string | null;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -161,6 +170,10 @@ export class BackendService {
 
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
         return this.get<TestRunCacheStatus>('tests/cache/status');
+    }
+
+    getLastTestRun(): Observable<LastTestRun | null> {
+        return this.get<LastTestRun | null>('tests/last');
     }
 
     async runTests(onOutput: (stream: TestOutputStream, chunk: string) => void): Promise<number> {

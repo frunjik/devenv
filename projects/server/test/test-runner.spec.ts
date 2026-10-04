@@ -205,9 +205,16 @@ describe('test runner public API', () => {
         }));
 
         try {
-            const response = await request(createApp(root, undefined, process.cwd(), cacheDirectory))
-                .get('/tests/cache/status');
+            const testApp = createApp(root, undefined, process.cwd(), cacheDirectory);
+            const response = await request(testApp).get('/tests/cache/status');
             expect(response.body.data).toMatchObject({ available: true, status: 'failed', exitCode: 1 });
+            const lastRun = await request(testApp).get('/tests/last');
+            expect(lastRun.body.data).toMatchObject({
+                exitCode: 1,
+                stdout: '',
+                stderr: 'test failure',
+                error: null,
+            });
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];

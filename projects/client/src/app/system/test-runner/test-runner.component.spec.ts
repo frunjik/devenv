@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
-import { BackendService, type TestRunCacheStatus } from '../../backend.service';
+import { BackendService, type LastTestRun, type TestRunCacheStatus } from '../../backend.service';
 import { TestRunnerComponent } from './test-runner.component';
 
 describe('TestRunnerComponent', () => {
@@ -11,6 +11,7 @@ describe('TestRunnerComponent', () => {
     let component: TestRunnerComponent;
     let runTests: jest.MockedFunction<BackendService['runTests']>;
     let getCacheStatus: jest.MockedFunction<BackendService['getTestRunCacheStatus']>;
+    let getLastTestRun: jest.MockedFunction<BackendService['getLastTestRun']>;
 
     beforeEach(async () => {
         runTests = jest.fn<BackendService['runTests']>();
@@ -23,9 +24,14 @@ describe('TestRunnerComponent', () => {
             finishedAt: null,
             exitCode: null,
         }));
+        getLastTestRun = jest.fn<BackendService['getLastTestRun']>();
+        getLastTestRun.mockReturnValue(of(null));
         await TestBed.configureTestingModule({
             imports: [TestRunnerComponent],
-            providers: [{ provide: BackendService, useValue: { runTests, getTestRunCacheStatus: getCacheStatus } }],
+            providers: [{
+                provide: BackendService,
+                useValue: { runTests, getTestRunCacheStatus: getCacheStatus, getLastTestRun },
+            }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(TestRunnerComponent);
@@ -37,6 +43,7 @@ describe('TestRunnerComponent', () => {
 
         expect(runTests).toHaveBeenCalledTimes(1);
         expect(getCacheStatus).toHaveBeenCalledTimes(1);
+        expect(getLastTestRun).toHaveBeenCalledTimes(1);
         expect(fixture.nativeElement.querySelector('button')).not.toBeNull();
     });
 
@@ -62,6 +69,77 @@ describe('TestRunnerComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('exit code 0');
         expect(fixture.nativeElement.querySelector('time').getAttribute('datetime'))
             .toBe(status.finishedAt);
+    });
+
+    it('shows output and errors from the last cached failing test run', () => {
+        const failedRun: LastTestRun = {
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 1,
+            stdout: 'FAIL projects/client/example.spec.ts\\nExpected true to be false',
+            stderr: 'Coverage threshold not met',
+            error: null,
+        };
+        getCacheStatus.mockReturnValue(of({
+            available: true,
+            status: 'failed',
+            startedAt: failedRun.startedAt,
+            finishedAt: failedRun.finishedAt,
+            exitCode: failedRun.exitCode,
+        }));
+        getLastTestRun.mockReturnValue(of(failedRun));
+
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('Errors from the last failed test run');
+        expect(fixture.nativeElement.textContent).toContain('FAIL projects/client/example.spec.ts');
+        expect(fixture.nativeElement.textContent).toContain('Coverage threshold not met');
+    });
+
+    it('shows cached process errors when no test output was captured', () => {
+        getLastTestRun.mockReturnValue(of({
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:00:01.000Z',
+            exitCode: null,
+            stdout: '',
+            stderr: '',
+            error: 'Could not launch tests',
+        }));
+
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('Could not launch tests');
+        expect(fixture.nativeElement.textContent).not.toContain('No failure details were captured.');
+    });
+
+    it('reports failures while loading cached test output', () => {
+        getLastTestRun.mockReturnValue(throwError(() => new Error('Cached output unavailable')));
+
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain(
+            'Could not load last test output: Cached output unavailable',
+        );
+    });
+
+    it('refreshes cached failure details after the current test run finishes', async () => {
+        const failedRun: LastTestRun = {
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 1,
+            stdout: 'The latest suite failed',
+            stderr: '',
+            error: null,
+        };
+        getLastTestRun.mockReturnValueOnce(of(null)).mockReturnValueOnce(of(failedRun));
+        runTests.mockResolvedValue(1);
+
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(getLastTestRun).toHaveBeenCalledTimes(2);
+        expect(fixture.nativeElement.textContent).toContain('The latest suite failed');
     });
 
     it('refreshes the displayed cache status after a test run finishes', async () => {

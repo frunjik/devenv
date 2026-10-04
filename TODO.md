@@ -9,6 +9,7 @@ Bootstrap
 - dataset hydration
 
 Devenv
+- feature: show (and update) the ./current last entry on the client in the toolbar on the right aligned
 - split projects\server\src\public-api.ts
 - feature: history
 - test coverage

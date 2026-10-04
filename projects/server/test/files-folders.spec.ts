@@ -1,26 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { createServer } from 'node:http';
-import { EventEmitter } from 'node:events';
-import { PassThrough } from 'node:stream';
-import { execFileSync } from 'node:child_process';
-import express from 'express';
 import type { ErrorRequestHandler } from 'express';
 import request from 'supertest';
-import {
-    createApp,
-    startServer,
-    type AuthenticationService,
-    type ServerListener,
-    type TestCommandEvent,
-    type TestCommandExecutor,
-} from '../src/public-api';
-import { forwardTestProcessOutput } from '../src/lib/handlers/test-runner';
-import { createGitCommitHandler } from '../src/lib/handlers/git-commit';
-import { createGitLogHandler } from '../src/lib/handlers/git-log';
-import { createGitStatusHandler } from '../src/lib/handlers/git-status';
+import { createApp } from '../src/public-api';
 
 describe('files folders public API', () => {
     let root: string;

@@ -10,9 +10,9 @@
     <p class="error" role="alert" *ngIf="errorMessage">Could not run tests: {{ errorMessage }}</p>
 
     <section *ngIf="result as runResult" aria-live="polite">
-        <h2 [class.error]="runResult.exitCode !== 0">
-            {{ runResult.exitCode === 0 ? 'Tests passed' : 'Tests failed' }}
-            (exit code {{ runResult.exitCode }})
+        <h2 *ngIf="runResult.exitCode === null">Test output (running)</h2>
+        <h2 *ngIf="runResult.exitCode !== null" [class.error]="runResult.exitCode !== 0">
+            {{ runResult.exitCode === 0 ? 'Tests passed' : 'Tests failed' }} (exit code {{ runResult.exitCode }})
         </h2>
 
         <h3>Standard output</h3>

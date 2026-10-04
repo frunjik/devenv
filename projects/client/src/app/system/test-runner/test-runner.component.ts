@@ -1,8 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { finalize } from 'rxjs';
-import { BackendService, TestRunResult } from '../../backend.service';
+import { BackendService, type TestOutputStream } from '../../backend.service';
+
+interface TestRunResult {
+    exitCode: number | null;
+    stdout: string;
+    stderr: string;
+}
 
 @Component({
     selector: 'app-test-runner',
@@ -27,12 +32,21 @@ export class TestRunnerComponent {
         this.result = null;
         this.errorMessage = '';
 
-        this.backend.runTests()
-            .pipe(finalize(() => this.isRunning = false))
-            .subscribe({
-                next: result => this.result = result,
-                error: error => this.errorMessage = this.getErrorMessage(error),
-            });
+        this.result = { exitCode: null, stdout: '', stderr: '' };
+        void this.backend.runTests((stream, chunk) => this.appendOutput(stream, chunk))
+            .then(exitCode => {
+                if (this.result) {
+                    this.result.exitCode = exitCode;
+                }
+            })
+            .catch(error => this.errorMessage = this.getErrorMessage(error))
+            .finally(() => this.isRunning = false);
+    }
+
+    private appendOutput(stream: TestOutputStream, chunk: string): void {
+        if (this.result) {
+            this.result[stream] += chunk;
+        }
     }
 
     private getErrorMessage(error: unknown): string {

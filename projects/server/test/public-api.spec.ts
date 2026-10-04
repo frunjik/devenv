@@ -8,7 +8,7 @@ import {
     createApp,
     startServer,
     type ServerListener,
-    type TestCommandCallback,
+    type TestCommandEvent,
     type TestCommandExecutor,
 } from '../src/public-api';
 
@@ -125,28 +125,28 @@ describe('server public HTTP API', () => {
         expect(response.status).toBe(500);
     });
 
-    it('runs the fixed test script and returns captured output', async () => {
+    it('streams output from the fixed test script', async () => {
         const originalNpmExecPath = process.env['npm_execpath'];
         process.env['npm_execpath'] = 'npm-cli.js';
         let observedCommand = '';
         let observedArgs: string[] = [];
-        const execute: TestCommandExecutor = (command, args, _options, callback) => {
+        const execute: TestCommandExecutor = (command, args, _options, emit) => {
             observedCommand = command;
             observedArgs = args;
-            callback(null, 'client and server tests passed', '');
+            emit({ type: 'stdout', data: 'client and server tests passed' });
+            emit({ type: 'complete', exitCode: 0 });
+            emit({ type: 'complete', exitCode: 0 });
         };
         const testApp = createApp(root, execute);
         testApp.use(handleError);
 
         try {
             const response = await request(testApp).post('/tests/run');
-            expect(response.body).toEqual({
-                data: {
-                    exitCode: 0,
-                    stdout: 'client and server tests passed',
-                    stderr: '',
-                },
-            });
+            expect(response.headers['content-type']).toContain('application/x-ndjson');
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'stdout', data: 'client and server tests passed' },
+                { type: 'complete', exitCode: 0 },
+            ]);
             expect(observedCommand).toBe(process.execPath);
             expect(observedArgs).toEqual(['npm-cli.js', 'run', 'test:all']);
         } finally {
@@ -158,7 +158,7 @@ describe('server public HTTP API', () => {
         }
     });
 
-    it('executes the fixed test script and captures output from the child process', async () => {
+    it('streams output from the child process', async () => {
         const originalNpmExecPath = process.env['npm_execpath'];
         const npmCliPath = join(root, 'fake-npm.js');
         await writeFile(npmCliPath, "process.stdout.write('captured stdout'); process.stderr.write('captured stderr');");
@@ -167,13 +167,11 @@ describe('server public HTTP API', () => {
         try {
             const testApp = createApp(root);
             const response = await request(testApp).post('/tests/run');
-            expect(response.body).toEqual({
-                data: {
-                    exitCode: 0,
-                    stdout: 'captured stdout',
-                    stderr: 'captured stderr',
-                },
-            });
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'stdout', data: 'captured stdout' },
+                { type: 'stderr', data: 'captured stderr' },
+                { type: 'complete', exitCode: 0 },
+            ]);
         } finally {
             if (originalNpmExecPath === undefined) {
                 delete process.env['npm_execpath'];
@@ -183,23 +181,21 @@ describe('server public HTTP API', () => {
         }
     });
 
-    it('returns the test process exit code and output when tests fail', async () => {
+    it('streams child process launch errors', async () => {
         const originalNpmExecPath = process.env['npm_execpath'];
-        process.env['npm_execpath'] = 'npm-cli.js';
-        const commandError = Object.assign(new Error('tests failed'), { code: 2 });
-        const execute: TestCommandExecutor = (_command, _args, _options, callback) => {
-            callback(commandError, 'test output', 'failure details');
-        };
-        const testApp = createApp(root, execute);
-        testApp.use(handleError);
+        process.env['npm_execpath'] = join(root, 'missing-npm.js');
 
         try {
+            const testApp = createApp(root);
             const response = await request(testApp).post('/tests/run');
-            expect(response.body.data).toEqual({
-                exitCode: 2,
-                stdout: 'test output',
-                stderr: 'failure details',
-            });
+            const events = response.text.split('\n').filter(Boolean).map(line => JSON.parse(line));
+            const stderr = events
+                .filter((event): event is { type: 'stderr'; data: string } => event.type === 'stderr')
+                .map(event => event.data)
+                .join('');
+            expect(stderr).toContain('MODULE_NOT_FOUND');
+            expect(stderr).toContain('missing-npm.js');
+            expect(events.at(-1)).toEqual({ type: 'complete', exitCode: 1 });
         } finally {
             if (originalNpmExecPath === undefined) {
                 delete process.env['npm_execpath'];
@@ -209,18 +205,70 @@ describe('server public HTTP API', () => {
         }
     });
 
-    it('forwards test process launch failures as server errors', async () => {
+    it('reports the exit code of a child process that fails', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        const npmCliPath = join(root, 'failing-npm.js');
+        await writeFile(npmCliPath, "process.stdout.write('test failure'); process.exitCode = 2;");
+        process.env['npm_execpath'] = npmCliPath;
+
+        try {
+            const testApp = createApp(root);
+            const response = await request(testApp).post('/tests/run');
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'stdout', data: 'test failure' },
+                { type: 'complete', exitCode: 2 },
+            ]);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('streams output and the exit code when tests fail', async () => {
         const originalNpmExecPath = process.env['npm_execpath'];
         process.env['npm_execpath'] = 'npm-cli.js';
-        const execute: TestCommandExecutor = (_command, _args, _options, callback) => {
-            callback(Object.assign(new Error('npm could not start'), { code: 'ENOENT' }), '', '');
+        const execute: TestCommandExecutor = (_command, _args, _options, emit) => {
+            emit({ type: 'stdout', data: 'test output' });
+            emit({ type: 'stderr', data: 'failure details' });
+            emit({ type: 'complete', exitCode: 2 });
         };
         const testApp = createApp(root, execute);
         testApp.use(handleError);
 
         try {
             const response = await request(testApp).post('/tests/run');
-            expect(response.status).toBe(500);
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'stdout', data: 'test output' },
+                { type: 'stderr', data: 'failure details' },
+                { type: 'complete', exitCode: 2 },
+            ]);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('streams test process launch failures', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const execute: TestCommandExecutor = (_command, _args, _options, emit) => {
+            emit({ type: 'error', message: 'npm could not start' });
+        };
+        const testApp = createApp(root, execute);
+        testApp.use(handleError);
+
+        try {
+            const response = await request(testApp).post('/tests/run');
+            expect(response.status).toBe(200);
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'error', message: 'npm could not start' },
+            ]);
         } finally {
             if (originalNpmExecPath === undefined) {
                 delete process.env['npm_execpath'];
@@ -264,21 +312,59 @@ describe('server public HTTP API', () => {
     });
 
     it('rejects concurrent test runs while one is in progress', async () => {
-        let finishRun: TestCommandCallback | undefined;
-        const execute: TestCommandExecutor = (_command, _args, _options, callback) => {
-            finishRun = callback;
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        let finishRun: ((event: TestCommandEvent) => void) | undefined;
+        let markRunStarted: (() => void) | undefined;
+        const runStarted = new Promise<void>((resolve) => {
+            markRunStarted = resolve;
+        });
+        const execute: TestCommandExecutor = (_command, _args, _options, emit) => {
+            finishRun = emit;
+            markRunStarted?.();
         };
         const testApp = createApp(root, execute);
         testApp.use(handleError);
-        const firstRequest = request(testApp).post('/tests/run').then((response) => response);
-        await new Promise<void>((resolve) => setImmediate(resolve));
 
-        const secondResponse = await request(testApp).post('/tests/run');
-        expect(secondResponse.status).toBe(409);
+        try {
+            const firstRequest = request(testApp).post('/tests/run').then((response) => response);
+            await runStarted;
 
-        finishRun?.(null, '', '');
-        const firstResponse = await firstRequest;
-        expect(firstResponse.status).toBe(200);
+            const secondResponse = await request(testApp).post('/tests/run');
+            expect(secondResponse.status).toBe(409);
+
+            finishRun?.({ type: 'complete', exitCode: 0 });
+            const firstResponse = await firstRequest;
+            expect(firstResponse.status).toBe(200);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('streams a process error thrown by the executor', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const execute: TestCommandExecutor = () => {
+            throw new Error('process could not start');
+        };
+        const testApp = createApp(root, execute);
+
+        try {
+            const response = await request(testApp).post('/tests/run');
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'error', message: 'process could not start' },
+            ]);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
     });
 
     it('starts the server and binds an ephemeral port', async () => {

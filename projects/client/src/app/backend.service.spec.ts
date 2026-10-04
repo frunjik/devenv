@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Server } from 'node:http';
@@ -103,6 +103,18 @@ describe('BackendService', () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 
         expect(entry).toMatch(/\[Medium\] \[Backlog\] Feature with default priority$/);
+        await rm(join(root, '.features'), { force: true });
+    });
+
+    it('updates a feature description through the public API', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [Backlog] Original description\n`);
+
+        await expect(service.updateFeatureDescription(id, ' Updated description ').toPromise())
+            .resolves.toMatch(/\[High\] \[Backlog\] Updated description$/);
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toContain(`[${id}] [High] [Backlog] Updated description`);
         await rm(join(root, '.features'), { force: true });
     });
 

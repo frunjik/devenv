@@ -105,6 +105,13 @@ export class BackendService {
         return this.post<string>('features', { description, priority, status });
     }
 
+    updateFeatureDescription(id: string, description: string): Observable<string> {
+        return this.httpservice.patch<SuccessResponseBody<string>>(
+            `${this.host}features/${encodeURIComponent(id)}/description`,
+            { description },
+        ).pipe(map(response => response.data));
+    }
+
     updateFeaturePriority(id: string, priority: FeaturePriority): Observable<string> {
         return this.httpservice.patch<SuccessResponseBody<string>>(
             `${this.host}features/${encodeURIComponent(id)}`,

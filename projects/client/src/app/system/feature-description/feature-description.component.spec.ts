@@ -123,7 +123,7 @@ describe('FeatureDescriptionComponent', () => {
             (row.querySelector('.mat-column-status select') as HTMLSelectElement).value,
         )).toEqual(['Backlog', 'Backlog']);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
-            .toHaveLength(4);
+            .toHaveLength(6);
     });
 
     it('lists only in-progress features in its own section and keeps the complete list', async () => {
@@ -186,6 +186,164 @@ describe('FeatureDescriptionComponent', () => {
                 'feature-status-select status-in-progress',
                 'feature-status-select status-done',
             ]);
+    });
+
+    it('edits a feature description in a dialog and updates its active task', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [In progress] Old feature description\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Old feature description <!-- feature-id:${id} -->`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Old feature description');
+
+        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        );
+        expect(editor.value).toBe('Old feature description');
+        editor.value = '  Updated feature\n description  ';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        const saveButton: HTMLButtonElement = document.querySelector(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        );
+        expect(saveButton.disabled).toBe(false);
+        editor.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter',
+            ctrlKey: true,
+            bubbles: true,
+        }));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toContain(`[${id}] [High] [In progress] Updated feature description`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain(`- [In progress] Updated feature description <!-- feature-id:${id} -->`);
+        expect(featureWork.activeFeature).toEqual({
+            id,
+            description: 'Updated feature description',
+        });
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+            .toBe('Updated feature description');
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
+    });
+
+    it('does not update a feature when the edit dialog is cancelled', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// A feature to cancel editing\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        );
+        editor.value = 'Unsaved edit';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        editor.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter',
+            bubbles: true,
+        }));
+        expect(document.querySelector('app-edit-feature-dialog')).not.toBeNull();
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:first-child',
+        ).click();
+        await fixture.whenStable();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('A feature to cancel editing');
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
+    });
+
+    it('does not submit a blank description with the keyboard shortcut', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// A feature to keep while editing\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        );
+        editor.value = ' ';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        const saveButton: HTMLButtonElement = document.querySelector(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        );
+        expect(saveButton.disabled).toBe(true);
+        editor.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter',
+            ctrlKey: true,
+            bubbles: true,
+        }));
+
+        expect(document.querySelector('app-edit-feature-dialog')).not.toBeNull();
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('A feature to keep while editing');
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:first-child',
+        ).click();
+        await fixture.whenStable();
+    });
+
+    it('does not send a save when the description is unchanged', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// An unchanged feature\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.detectChanges();
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        ).click();
+        await fixture.whenStable();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('An unchanged feature');
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
+    });
+
+    it('reports edit failures and keeps the original feature description visible', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// Feature whose edit will fail\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        );
+        editor.value = 'Unpersisted edit';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        ).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#feature-edit-error').textContent).toContain('500');
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+            .toBe('Feature whose edit will fail');
     });
 
     it('sorts features by ID, priority, status, and description from the table headers', async () => {
@@ -285,19 +443,36 @@ describe('FeatureDescriptionComponent', () => {
         const completedId = '123e4567-e89b-42d3-a456-426614174000';
         const remainingId = '123e4567-e89b-42d3-a456-426614174001';
         await writeFile(join(root, '.features'), [
-            `// [2026-10-04 22:45 +02:00] [${completedId}] [High] Completed feature`,
-            `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] Remaining feature`,
+            `// [2026-10-04 22:45 +02:00] [${completedId}] [High] [Backlog] Completed feature`,
+            `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] [Backlog] Remaining feature`,
             '',
         ].join('\n'));
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
+        for (let attempt = 0; attempt < 10; attempt++) {
+            const rows = Array.from<HTMLTableRowElement>(
+                fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+            );
+            if (rows.some(row =>
+                row.querySelector('.mat-column-description')?.textContent.trim() === 'Completed feature',
+            )) {
+                break;
+            }
+            await new Promise(resolve => setTimeout(resolve, 10));
+            fixture.detectChanges();
+        }
         const featureWork = TestBed.inject(FeatureWorkService);
         featureWork.start(completedId, 'Completed feature');
 
-        const doneButton: HTMLButtonElement = fixture.nativeElement.querySelector(
-            '[aria-label="Mark done: Completed feature"]',
+        const completedRow: HTMLTableRowElement = Array.from<HTMLTableRowElement>(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        ).find(row =>
+            row.querySelector('.mat-column-description')?.textContent.trim() === 'Completed feature',
         );
+        expect(completedRow).toBeDefined();
+        const doneButton: HTMLButtonElement = completedRow.querySelector('.feature-done-button');
+        expect(doneButton?.getAttribute('aria-label')).toBe('Mark done: Completed feature');
         doneButton.click();
         doneButton.click();
         await fixture.whenStable();

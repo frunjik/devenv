@@ -11,6 +11,7 @@ import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createCurrentTaskHandler } from './handlers/current-task';
 import {
     createFeatureHandler,
+    createFeatureDescriptionHandler,
     createFeaturePriorityHandler,
     createFeatureStartHandler,
     createFeatureStatusHandler,
@@ -56,6 +57,7 @@ export function createApp(
     app.get('/task', createCurrentTaskHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
+    app.patch('/features/:id/description', createFeatureDescriptionHandler(root));
     app.patch('/features/:id', createFeaturePriorityHandler(root));
     app.post('/features/:id/start', createFeatureStartHandler(root));
     app.patch('/features/:id/status', createFeatureStatusHandler(root));

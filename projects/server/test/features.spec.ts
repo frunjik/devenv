@@ -223,6 +223,105 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 
+    it('updates a description while preserving the feature ID, priority, and status', async () => {
+        const created = await request(app).post('/features')
+            .send({ description: 'Old description', priority: 'High', status: 'In progress' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Old description <!-- feature-id:${id} -->`,
+            '',
+        ].join('\r\n'));
+
+        const response = await request(app).patch(`/features/${id}/description`)
+            .send({ description: '  Revised\n\t description  ' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(created.body.data.replace(
+            'Old description',
+            'Revised description',
+        ));
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toContain(
+            `- [In progress] Revised description <!-- feature-id:${id} -->`,
+        );
+    });
+
+    it('updates backlog descriptions when DEVENVOPDEV.md does not exist', async () => {
+        const created = await request(app).post('/features')
+            .send({ description: 'Backlog feature', status: 'Backlog' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app).patch(`/features/${id}/description`)
+            .send({ description: 'Updated backlog feature' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toContain('[Backlog] Updated backlog feature');
+        await expect(readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('updates in-progress descriptions when the task marker is absent', async () => {
+        const created = await request(app).post('/features')
+            .send({ description: 'Unlisted task', status: 'In progress' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions without a matching marker\n');
+
+        const response = await request(app).patch(`/features/${id}/description`)
+            .send({ description: 'Updated unlisted task' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toContain('[In progress] Updated unlisted task');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toBe('Instructions without a matching marker\n');
+    });
+
+    it.each([
+        ['missing description', {}],
+        ['empty description', { description: '' }],
+        ['blank description', { description: ' \n\t ' }],
+        ['non-string description', { description: 42 }],
+    ])('rejects a %s on description updates', async (_caseName, body) => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/description')
+            .send(body);
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: { message: 'Feature description is required.' } });
+    });
+
+    it('rejects malformed feature IDs for description updates', async () => {
+        const response = await request(app).patch('/features/not-a-uuid/description')
+            .send({ description: 'New description' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: { message: 'A valid feature ID is required.' } });
+    });
+
+    it('returns not found when updating a missing feature description', async () => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/description')
+            .send({ description: 'New description' });
+
+        expect(response.status).toBe(404);
+        expect(response.body.error.message).toContain('was not found');
+    });
+
+    it('does not change features when updating an in-progress task file fails', async () => {
+        const created = await request(app).post('/features').send({
+            description: 'Old task description',
+            status: 'In progress',
+        });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+
+        const response = await request(app)
+            .patch(`/features/${id}/description`)
+            .send({ description: 'New task description' });
+
+        expect(response.status).toBe(500);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
+    });
+
     it('rejects invalid feature priority update requests', async () => {
         const response = await request(app)
             .patch('/features/123e4567-e89b-42d3-a456-426614174000')

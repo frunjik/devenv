@@ -37,6 +37,7 @@
         <p *ngIf="priorityError" id="feature-priority-error" role="alert">{{ priorityError }}</p>
         <p *ngIf="statusError" id="feature-status-error" role="alert">{{ statusError }}</p>
         <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
+        <p *ngIf="editError" id="feature-edit-error" role="alert">{{ editError }}</p>
         <section class="in-progress-features" aria-labelledby="in-progress-features-heading">
             <h3 id="in-progress-features-heading">
                 In progress <span class="feature-count">({{ inProgressFeatures.length }})</span>
@@ -123,6 +124,15 @@
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let feature">
                     <div class="feature-actions">
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-edit-button"
+                            [attr.aria-label]="'Edit: ' + feature.description"
+                            (click)="editFeature(feature)"
+                        >
+                            Edit
+                        </button>
                         <button
                             type="button"
                             mat-button

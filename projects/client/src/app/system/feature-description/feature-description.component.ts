@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -10,6 +11,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
 import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
+import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
 
 interface FeatureRow {
     id: string;
@@ -24,6 +26,7 @@ interface FeatureRow {
     imports: [
         FormsModule,
         MatButtonModule,
+        MatDialogModule,
         MatFormFieldModule,
         MatInputModule,
         MatPaginatorModule,
@@ -48,6 +51,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     priorityError = '';
     statusError = '';
     completionError = '';
+    editError = '';
     readonly completingFeatureIds = new Set<string>();
     features: string[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
@@ -67,6 +71,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         private backend: BackendService,
         readonly featureWork: FeatureWorkService,
         private currentTask: CurrentTaskService,
+        private dialog: MatDialog,
     ) {
         this.featureDataSource.filterPredicate = (feature, filter) =>
             `${feature.id} ${feature.priority} ${feature.description}`.toLocaleLowerCase().includes(filter);
@@ -144,6 +149,39 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
                 this.completionError = error.message;
                 this.completingFeatureIds.delete(feature.id);
             },
+        });
+    }
+
+    editFeature(feature: FeatureRow): void {
+        const featureId = feature.id;
+
+        this.dialog.open(EditFeatureDialogComponent, {
+            width: 'min(48rem, calc(100vw - 2rem))',
+            ariaLabel: 'Edit feature',
+            data: { description: feature.description },
+        }).afterClosed().subscribe(description => {
+            if (typeof description !== 'string' || !description.trim()
+                || description.trim() === feature.description) {
+                return;
+            }
+
+            this.editError = '';
+            this.backend.updateFeatureDescription(featureId, description).subscribe({
+                next: entry => {
+                    const updatedFeature = this.parseFeature(entry);
+                    feature.description = updatedFeature.description;
+                    if (this.featureWork.activeFeature?.id === featureId) {
+                        this.featureWork.start(featureId, feature.description);
+                    }
+                    if (feature.status === 'In progress') {
+                        this.currentTask.refresh();
+                    }
+                    this.featureDataSource.data = [...this.featureDataSource.data];
+                },
+                error: (error: Error) => {
+                    this.editError = error.message;
+                },
+            });
         });
     }
 

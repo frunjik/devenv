@@ -12,7 +12,7 @@
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [In progress] make the current task client display longer (to cover more text)
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator
-// [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [Backlog] clear current task after commit
+// [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [In progress] clear current task after commit
 // [2026-10-05 00:21 +02:00] [94aa6582-e140-4587-96ac-248ee1c641fc] [Medium] [Backlog] add commited state to feature
 // [2026-10-05 00:24 +02:00] [67766a83-30b9-4e55-85e6-96891449e37e] [Medium] [Backlog] prevent duplicate features
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
@@ -34,3 +34,5 @@
 // [2026-10-05 01:00 +02:00] [876234ff-990a-4b61-989d-43dabbaafc15] [Medium] [Backlog] add abort button on in progress features that puts the feature back in ./features with status Aborted
 // [2026-10-05 01:01 +02:00] [ac4d3847-af47-45a1-b042-81f9ebe3fc07] [Medium] [Backlog] allow prioritizing open feature list items from the client
 // [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress
+// [2026-10-05 01:06 +02:00] [32084c42-c61c-4133-af88-f672298c9717] [Medium] [Backlog] stable versions
+// [2026-10-05 01:10 +02:00] [48da0605-50be-4be6-988e-49e6ac880011] [Medium] [Backlog] mark current feature in progress

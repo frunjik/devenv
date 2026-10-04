@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:server": "ng build server && node --test --test-reporter=tap projects/server/test/public-api.test.mjs"
   },
   "private": true,
   "dependencies": {

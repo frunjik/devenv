@@ -2,23 +2,23 @@
     PPT - {{host}}
     |
     <nav>
-        <a routerLink="/">Main</a>
+        <a mat-button routerLink="/">Main</a>
         |
-        <a routerLink="/ppt/browse">Browse</a>
+        <a mat-button routerLink="/ppt/browse">Browse</a>
         |
-        <a routerLink="/tests">TEST</a>
+        <a mat-button routerLink="/tests">TEST</a>
         |
-        <a routerLink="/ppt/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
         |
-        <a routerLink="/ppt/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
         |
-        <a routerLink="/ppt/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
         |
-        <a routerLink="/ppt/browse" [queryParams]="{file: '/scratch.txt'}">SCRATCH</a>
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{file: '/scratch.txt'}">SCRATCH</a>
         |
-        <a routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/app.component.html'}">EDIT-MENU</a>
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/app.component.html'}">EDIT-MENU</a>
 
-        <button type="button" mat-button (click)="commitChanges()" [disabled]="isCommitting">
+        <button type="button" mat-button class="commit-button" (click)="commitChanges()" [disabled]="isCommitting">
             {{ isCommitting ? 'Committing…' : 'Commit changes' }}
         </button>
 

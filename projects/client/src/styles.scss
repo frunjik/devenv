@@ -21,13 +21,41 @@ html {
 }
 
 body {
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
     background: #171d19;
-    color: #d5ded6;
+    color: #c3cec5;
+}
+
+button,
+input,
+textarea,
+.mat-typography {
+    font-family: Tahoma, Geneva, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #cbd6cd;
+    font-weight: 500;
+    letter-spacing: 0.015em;
 }
 
 a {
     color: #a8c4ae;
+}
+
+nav a[routerLink],
+nav button[mat-button] {
+    text-transform: lowercase;
+    font: inherit;
+    letter-spacing: inherit;
 }
 
 .mat-toolbar.mat-primary {

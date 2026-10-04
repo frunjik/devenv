@@ -7,5 +7,3 @@ You never EVER write or change production when writing tests unless you encounte
 After finishing a feature add an entry to the ./history, and remove it from this file.
 
 The features you are writing are, take them one by one:
-
-show entry of DEVENVOPDEV.md on client in top toolbar at the rightmost

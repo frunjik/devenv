@@ -415,7 +415,7 @@ describe('AppComponent', () => {
         await fixture.whenStable();
         expect(order).toEqual(['navigate', 'dialog']);
         expect(dialogOpen).toHaveBeenCalledWith(CommitMessageDialogComponent, {
-            width: 'min(32rem, calc(100vw - 2rem))',
+            width: 'min(48rem, calc(100vw - 2rem))',
             ariaLabel: 'Commit changes',
             data: { message: '' },
         });
@@ -430,7 +430,7 @@ describe('AppComponent', () => {
         await startCommit(fixture);
 
         expect(dialogOpen).toHaveBeenCalledWith(CommitMessageDialogComponent, {
-            width: 'min(32rem, calc(100vw - 2rem))',
+            width: 'min(48rem, calc(100vw - 2rem))',
             ariaLabel: 'Commit changes',
             data: { message: 'Implement toolbar feature' },
         });

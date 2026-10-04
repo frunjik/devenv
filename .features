@@ -7,7 +7,7 @@
 // [2026-10-04 23:15 +02:00] [7774313c-8e84-429e-819b-b1159ab91380] [Medium] [Backlog] improve the display of the feature list on the client
 // [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] [Low] [Backlog] more rows by default in the client feature list
 // [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] [Medium] [Backlog] create workflow
-// [2026-10-04 23:33 +02:00] [eb450804-a75f-4c3d-93c0-9a19182ed146] [High] [Backlog] make client commit dialog bigger
+// [2026-10-04 23:33 +02:00] [eb450804-a75f-4c3d-93c0-9a19182ed146] [High] [In progress] make client commit dialog bigger
 // [2026-10-04 23:34 +02:00] [946168e0-1215-4cec-980b-b461add0b2e4] [Medium] [Backlog] remove feature added from client feature page
 // [2026-10-04 23:35 +02:00] [a0616ec7-4811-48fe-bc7a-2e375bc724b0] [Medium] [Backlog] make the default feature list longer
 // [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] [Medium] [Backlog] review code changes on client
@@ -29,3 +29,4 @@
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
 // [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [Backlog] fix typesript errors
 // [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [Backlog] technical debt
+// [2026-10-05 00:36 +02:00] [c01bb9c0-69df-429b-b9f9-e49dfe1bfa17] [Medium] [Backlog] review changes

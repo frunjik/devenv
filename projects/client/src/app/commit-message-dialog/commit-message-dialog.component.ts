@@ -17,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
                 <textarea
                     matInput
                     [(ngModel)]="message"
-                    rows="3"
+                    rows="8"
                     maxlength="5000"
                     aria-label="Commit message"
                     (keydown)="onMessageKeydown($event)"
@@ -34,7 +34,6 @@ import { MatInputModule } from '@angular/material/input';
     styles: [`
         mat-form-field {
             width: 100%;
-            min-width: min(28rem, 70vw);
         }
 
         mat-dialog-content {

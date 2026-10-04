@@ -34,6 +34,14 @@ describe('CommitMessageDialogComponent', () => {
         expect(fixture.nativeElement.querySelector('textarea').value).toBe('Implement toolbar feature');
     });
 
+    it('renders a taller commit message editor', () => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector(
+            'textarea[aria-label="Commit message"]',
+        );
+
+        expect(textarea.rows).toBe(8);
+    });
+
     it('disables commit when the message is empty or whitespace', () => {
         const button = fixture.nativeElement.querySelector('mat-dialog-actions button:last-child');
         expect(button.disabled).toBe(true);

@@ -87,7 +87,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     private promptForCommitMessage(): void {
         this.dialog.open(CommitMessageDialogComponent, {
-            width: 'min(32rem, calc(100vw - 2rem))',
+            width: 'min(48rem, calc(100vw - 2rem))',
             ariaLabel: 'Commit changes',
             data: { message: this.currentEntry.summary },
         }).afterClosed().subscribe(message => {

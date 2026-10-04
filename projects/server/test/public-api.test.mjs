@@ -3,10 +3,10 @@ import { after, before, describe, it } from 'node:test';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:net';
 import { join, relative, resolve } from 'node:path';
 
 let serverOrigin;
-let startupOutput = '';
 const serverRoot = process.cwd();
 const fixturePath = resolve(serverRoot, `.server-test-${process.pid}`);
 const fixtureFile = join(fixturePath, 'sample.txt');
@@ -32,13 +32,6 @@ async function waitForServer() {
         }
 
         try {
-            const portMatch = startupOutput.match(/serving ".+" on port (\d+)/);
-            if (!portMatch) {
-                await new Promise((resolve) => setTimeout(resolve, 50));
-                continue;
-            }
-            assert.notEqual(Number(portMatch[1]), 3000);
-            serverOrigin = `http://127.0.0.1:${portMatch[1]}`;
             const response = await fetch(`${serverOrigin}/folders?path=${encodeURIComponent(relativeFixturePath)}`);
             if (response.ok) {
                 return;
@@ -51,6 +44,28 @@ async function waitForServer() {
     }
 
     throw lastError ?? new Error('Server did not start');
+}
+
+async function findAvailablePort() {
+    while (true) {
+        const portServer = createServer();
+        await new Promise((resolve, reject) => {
+            portServer.once('error', reject);
+            portServer.listen(0, '127.0.0.1', resolve);
+        });
+
+        const address = portServer.address();
+        if (!address || typeof address === 'string') {
+            throw new Error('Could not determine an available test port');
+        }
+
+        await new Promise((resolve, reject) => {
+            portServer.close((error) => error ? reject(error) : resolve());
+        });
+        if (address.port !== 3000) {
+            return address.port;
+        }
+    }
 }
 
 function postOptions(data) {
@@ -66,14 +81,12 @@ before(async () => {
     await writeFile(fixtureFile, 'initial');
 
     const bundle = resolve(serverRoot, 'dist/server/fesm2022/server.mjs');
+    const port = await findAvailablePort();
+    serverOrigin = `http://127.0.0.1:${port}`;
     serverProcess = spawn(process.execPath, [bundle], {
-        stdio: ['ignore', 'pipe', 'inherit'],
+        stdio: ['ignore', 'ignore', 'inherit'],
         windowsHide: true,
-        env: { ...process.env, PORT: '0' },
-    });
-    serverProcess.stdout.setEncoding('utf8');
-    serverProcess.stdout.on('data', (chunk) => {
-        startupOutput += chunk;
+        env: { ...process.env, PORT: String(port) },
     });
     await waitForServer();
 });

@@ -151,7 +151,7 @@ describe('server public HTTP API', () => {
                 { type: 'complete', exitCode: 0 },
             ]);
             expect(observedCommand).toBe(process.execPath);
-            expect(observedArgs).toEqual(['npm-cli.js', 'run', 'test:all']);
+            expect(observedArgs).toEqual(['npm-cli.js', 'run', 'test:all:coverage']);
         } finally {
             if (originalNpmExecPath === undefined) {
                 delete process.env['npm_execpath'];
@@ -385,24 +385,28 @@ describe('server public HTTP API', () => {
         };
         const testApp = createApp(root, execute);
         testApp.use(handleError);
+        let firstStatus: number | undefined;
+        let firstRequest = Promise.resolve();
 
         try {
-            const firstRequest = request(testApp).post('/tests/run').then((response) => response);
+            firstRequest = request(testApp).post('/tests/run').then((response) => {
+                firstStatus = response.status;
+            });
             await runStarted;
-
-            const secondResponse = await request(testApp).post('/tests/run');
+            const secondRequest = request(testApp).post('/tests/run');
+            const secondResponse = await secondRequest;
             expect(secondResponse.status).toBe(409);
-
-            finishRun?.({ type: 'complete', exitCode: 0 });
-            const firstResponse = await firstRequest;
-            expect(firstResponse.status).toBe(200);
         } finally {
+            finishRun?.({ type: 'complete', exitCode: 0 });
             if (originalNpmExecPath === undefined) {
                 delete process.env['npm_execpath'];
             } else {
                 process.env['npm_execpath'] = originalNpmExecPath;
             }
         }
+
+        await firstRequest;
+        expect(firstStatus).toBe(200);
     });
 
     it('streams a process error thrown by the executor', async () => {

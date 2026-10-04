@@ -76,7 +76,7 @@ export function createTestRunHandler(execute: TestCommandExecutor = executeComma
         };
 
         try {
-            execute(process.execPath, [npmExecPath, 'run', 'test:all'], {
+            execute(process.execPath, [npmExecPath, 'run', 'test:all:coverage'], {
                 cwd: process.cwd(),
                 timeout: 180_000,
                 windowsHide: true,

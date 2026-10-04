@@ -86,6 +86,13 @@ describe('BackendService', () => {
         await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
     });
 
+    it('assigns the default Medium priority when adding a feature without selecting one', async () => {
+        const entry = await service.addFeature('Feature with default priority').toPromise();
+
+        expect(entry).toMatch(/\[Medium\] Feature with default priority$/);
+        await rm(join(root, '.features'), { force: true });
+    });
+
     it('loads the cached test result status through the public API', async () => {
         const status = await service.getTestRunCacheStatus().toPromise();
 

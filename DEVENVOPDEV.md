@@ -5,10 +5,7 @@ When writing new code you make the code work first (runs without errors), then w
 You never EVER write or change production when writing tests unless you encounter a problem getting the coverage to 100%.
 After finishing a feature add an entry to the ./history.
 
-The feature you are writing is:
+The features you are writing are, take them one by one:
 
-after commiting a feature remove it from the feature list
-
-give features a priority
-
-show the status of the last cached test run in the bottom client toolbar
+mark feature as done client from the client
+make features priotizable from client

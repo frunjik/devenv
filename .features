@@ -1,30 +1,33 @@
-// [2026-10-04 22:57 +02:00] [18f5dc32-54b9-4651-bb6c-88ed39043105] show the status of the last cached test run in the bottom client toolbar
-// [2026-10-04 22:57 +02:00] [d8274016-1ff1-4f88-b636-daf5d1c1b04f] show the open features list on the client feature form page under the form
-// [2026-10-04 23:01 +02:00] [4723e595-de44-488d-902b-4728f159dcff] after commiting a feature remove it from the feature list
-// [2026-10-04 23:01 +02:00] [0c9f066e-7e22-4136-8b66-ff1d47ab6f1e] bind ctrl-enter to form submit
-// [2026-10-04 23:02 +02:00] [2216e5f7-8627-408b-a97c-0197a1adf82e] make feature list sortable on client
-// [2026-10-04 23:04 +02:00] [87366c34-ebbc-47b6-b779-c52651fd4865] start working on a feature from client
-// [2026-10-04 23:04 +02:00] [11ea4c78-238c-40f2-baed-5440ef67efca] make features priotizable from client
-// [2026-10-04 23:07 +02:00] [9d986558-3b3c-4e3e-a18f-12dabb20822b] give features a unique id
-// [2026-10-04 23:08 +02:00] [bdb0d3f3-db41-4031-a975-f06640977329] edit feature
-// [2026-10-04 23:10 +02:00] [7db093d1-fd2c-48aa-a0ff-c76c9afaa197] fix tests by adding jest test methods as first line of the file
-// [2026-10-04 23:11 +02:00] [efec2b22-6e71-442a-9f62-0533a4d6d8cc] make ctrl-s submit a form
-// [2026-10-04 23:11 +02:00] [e1ea0990-0355-47ea-b03c-e514b5607ea9] make feature priotizable
-// [2026-10-04 23:13 +02:00] [3ab314f0-e033-4c93-b784-ca9dc3536ee4] make feature display better
-// [2026-10-04 23:14 +02:00] [e44beae8-d973-4014-8fcb-bff1b67c0b9c] ./startwork
-// [2026-10-04 23:15 +02:00] [8662e088-16a4-4539-9903-107f54f0518b] clear client feature input after succesfull submitting it
-// [2026-10-04 23:15 +02:00] [7774313c-8e84-429e-819b-b1159ab91380] improve the display of the feature list on the client
-// [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] more rows by default in the client feature list
-// [2026-10-04 23:23 +02:00] [604c4674-1308-4554-a202-5ffc173dd8c2] more rows by default in the client feature list
-// [2026-10-04 23:23 +02:00] [ce7cc217-138b-40fd-a1fd-8202e55c9cbf] add search for the client feature list
-// [2026-10-04 23:28 +02:00] [ee113d41-5de1-4136-b023-6763de3557ac] mark feature as done client / server
-// [2026-10-04 23:30 +02:00] [1a2f73ae-6985-4d38-add7-7c99c6cb212f] add feature to backlog
-// [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] create workflow
-// [2026-10-04 23:33 +02:00] [eb450804-a75f-4c3d-93c0-9a19182ed146] make client commit dialog bigger
-// [2026-10-04 23:34 +02:00] [946168e0-1215-4cec-980b-b461add0b2e4] remove feature added from client feature page
-// [2026-10-04 23:35 +02:00] [a0616ec7-4811-48fe-bc7a-2e375bc724b0] make the default feature list longer
-// [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] review code changes on client
-// [2026-10-04 23:41 +02:00] [006ca492-cb32-452c-b16d-ed0aa30a654d] show current task more prominently on client
-// [2026-10-04 23:41 +02:00] [985a0326-bae1-4433-a283-f9be85e880c0] give features a priority
-// [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] extract subcomponents from client main form
-// [2026-10-04 23:48 +02:00] [5b9ba08f-6d26-46ac-885e-3f725b8d8dbd] manually mark a feature as done from the client list
+// [2026-10-04 22:57 +02:00] [18f5dc32-54b9-4651-bb6c-88ed39043105] [Low] show the status of the last cached test run in the bottom client toolbar
+// [2026-10-04 22:57 +02:00] [d8274016-1ff1-4f88-b636-daf5d1c1b04f] [Medium] show the open features list on the client feature form page under the form
+// [2026-10-04 23:01 +02:00] [4723e595-de44-488d-902b-4728f159dcff] [Medium] after commiting a feature remove it from the feature list
+// [2026-10-04 23:01 +02:00] [0c9f066e-7e22-4136-8b66-ff1d47ab6f1e] [Medium] bind ctrl-enter to form submit
+// [2026-10-04 23:02 +02:00] [2216e5f7-8627-408b-a97c-0197a1adf82e] [Medium] make feature list sortable on client
+// [2026-10-04 23:04 +02:00] [87366c34-ebbc-47b6-b779-c52651fd4865] [Medium] start working on a feature from client
+// [2026-10-04 23:04 +02:00] [11ea4c78-238c-40f2-baed-5440ef67efca] [Medium] make features priotizable from client
+// [2026-10-04 23:07 +02:00] [9d986558-3b3c-4e3e-a18f-12dabb20822b] [Medium] give features a unique id
+// [2026-10-04 23:08 +02:00] [bdb0d3f3-db41-4031-a975-f06640977329] [Medium] edit feature
+// [2026-10-04 23:10 +02:00] [7db093d1-fd2c-48aa-a0ff-c76c9afaa197] [Medium] fix tests by adding jest test methods as first line of the file
+// [2026-10-04 23:11 +02:00] [efec2b22-6e71-442a-9f62-0533a4d6d8cc] [Medium] make ctrl-s submit a form
+// [2026-10-04 23:11 +02:00] [e1ea0990-0355-47ea-b03c-e514b5607ea9] [Medium] make feature priotizable
+// [2026-10-04 23:13 +02:00] [3ab314f0-e033-4c93-b784-ca9dc3536ee4] [Medium] make feature display better
+// [2026-10-04 23:14 +02:00] [e44beae8-d973-4014-8fcb-bff1b67c0b9c] [Medium] ./startwork
+// [2026-10-04 23:15 +02:00] [8662e088-16a4-4539-9903-107f54f0518b] [Medium] clear client feature input after succesfull submitting it
+// [2026-10-04 23:15 +02:00] [7774313c-8e84-429e-819b-b1159ab91380] [Medium] improve the display of the feature list on the client
+// [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] [Medium] more rows by default in the client feature list
+// [2026-10-04 23:23 +02:00] [604c4674-1308-4554-a202-5ffc173dd8c2] [Medium] more rows by default in the client feature list
+// [2026-10-04 23:23 +02:00] [ce7cc217-138b-40fd-a1fd-8202e55c9cbf] [Medium] add search for the client feature list
+// [2026-10-04 23:28 +02:00] [ee113d41-5de1-4136-b023-6763de3557ac] [Medium] mark feature as done client / server
+// [2026-10-04 23:30 +02:00] [1a2f73ae-6985-4d38-add7-7c99c6cb212f] [Medium] add feature to backlog
+// [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] [Medium] create workflow
+// [2026-10-04 23:33 +02:00] [eb450804-a75f-4c3d-93c0-9a19182ed146] [Medium] make client commit dialog bigger
+// [2026-10-04 23:34 +02:00] [946168e0-1215-4cec-980b-b461add0b2e4] [Medium] remove feature added from client feature page
+// [2026-10-04 23:35 +02:00] [a0616ec7-4811-48fe-bc7a-2e375bc724b0] [Medium] make the default feature list longer
+// [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] [Medium] review code changes on client
+// [2026-10-04 23:41 +02:00] [006ca492-cb32-452c-b16d-ed0aa30a654d] [High] show current task more prominently on client
+// [2026-10-04 23:41 +02:00] [985a0326-bae1-4433-a283-f9be85e880c0] [Medium] give features a priority
+// [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] [Medium] extract subcomponents from client main form
+// [2026-10-04 23:48 +02:00] [5b9ba08f-6d26-46ac-885e-3f725b8d8dbd] [Medium] manually mark a feature as done from the client list
+// [2026-10-04 23:50 +02:00] [6d8fcf22-e5fd-48b5-928f-2662e95531ca] [High] make the feature list on client wider
+// [2026-10-04 23:51 +02:00] [1566328a-ff5c-442f-8576-4e1f7aedcb10] [Medium] make low the default for a feature
+// [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Medium] show the current ./thoughts on the client

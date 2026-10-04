@@ -6,6 +6,11 @@ import type { RequestHandler } from 'express';
 export type FeaturePriority = 'High' | 'Medium' | 'Low';
 
 const featurePriorities: readonly FeaturePriority[] = ['High', 'Medium', 'Low'];
+const canonicalPriorities: Record<string, FeaturePriority> = {
+    high: 'High',
+    medium: 'Medium',
+    low: 'Low',
+};
 
 function formatTimestamp(date: Date): string {
     const offsetMinutes = -date.getTimezoneOffset();
@@ -35,32 +40,25 @@ function addFeatureId(entry: string): string {
 }
 
 function addFeaturePriority(entry: string): string {
-    const identifiedEntry = entry.match(
-        /^(.*\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\])(.*)$/i,
-    );
-    if (!identifiedEntry) {
-        return entry;
-    }
-
-    const priorityMatch = identifiedEntry[2].match(/^\s+\[(High|Medium|Low)\](.*)$/i);
+    const idMatch = entry.match(featureIdPattern)!;
+    const idEnd = idMatch.index + idMatch[0].length;
+    const suffix = entry.slice(idEnd);
+    const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i);
     if (!priorityMatch) {
-        return `${identifiedEntry[1]} [Medium]${identifiedEntry[2]}`;
+        return `${entry.slice(0, idEnd)} [Medium]${suffix}`;
     }
 
-    const priority = priorityMatch[1].toLowerCase() as Lowercase<FeaturePriority>;
-    const formattedPriority = priority.charAt(0).toUpperCase() + priority.slice(1);
-    return `${identifiedEntry[1]} [${formattedPriority}]${priorityMatch[2]}`;
+    const priority = canonicalPriorities[priorityMatch[1].toLowerCase()];
+    return `${entry.slice(0, idEnd)} [${priority}]${priorityMatch[2]}`;
 }
 
 function setFeaturePriority(entry: string, priority: FeaturePriority): string {
     const prioritizedEntry = addFeaturePriority(entry);
-    const match = prioritizedEntry.match(
-        /^(.*\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\]) \[(High|Medium|Low)\](.*)$/i,
-    );
-    if (!match) {
-        throw new Error('Feature entry is missing its ID or priority.');
-    }
-    return `${match[1]} [${priority}]${match[3]}`;
+    const idMatch = prioritizedEntry.match(featureIdPattern)!;
+    const idEnd = idMatch.index + idMatch[0].length;
+    const suffix = prioritizedEntry.slice(idEnd);
+    const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
+    return `${prioritizedEntry.slice(0, idEnd)} [${priority}]${priorityMatch[2]}`;
 }
 
 async function readFeatureEntries(filename: string): Promise<string[]> {

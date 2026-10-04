@@ -122,7 +122,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ \[[^\]]+\] \[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] (.+)$/i,
+            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] (.+)$/i,
         );
         return match
             ? { id: match[1], priority: match[2] as FeaturePriority, description: match[3] }

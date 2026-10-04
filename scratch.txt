@@ -2,6 +2,8 @@ dumpers
 
 
 xx
+
+./thoughts
 ./workflow
 
 ./wishlist

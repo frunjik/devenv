@@ -41,7 +41,7 @@ describe('features public API', () => {
         const existingId = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'), [
             '// [2026-10-04 22:45 +02:00] legacy feature',
-            `// [2026-10-04 22:46 +02:00] [${existingId}] identified feature`,
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [high] identified feature`,
             '',
         ].join('\n'));
 
@@ -51,7 +51,17 @@ describe('features public API', () => {
             /^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] \[Medium\] legacy feature$/,
         );
         expect(response.body.data[1]).toBe(
-            `// [2026-10-04 22:46 +02:00] [${existingId}] [Medium] identified feature`,
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [High] identified feature`,
+        );
+    });
+
+    it('adds a Medium priority to legacy entries without timestamps', async () => {
+        await writeFile(join(root, '.features'), '// legacy feature\n');
+
+        const response = await request(app).get('/features');
+
+        expect(response.body.data[0]).toMatch(
+            /^\/\/ \[[0-9a-f-]{36}\] \[Medium\] legacy feature$/,
         );
     });
 

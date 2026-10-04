@@ -196,6 +196,73 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
     });
 
+    it('shows legacy feature priorities and descriptions without a timestamp', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// Legacy feature\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const row: HTMLTableRowElement = fixture.nativeElement.querySelector('.open-features tr.mat-mdc-row');
+        expect(row.querySelector('.mat-column-id')?.textContent.trim()).toMatch(/^[0-9a-f]{8}$/);
+        expect(row.querySelector('.mat-column-description')?.textContent.trim()).toBe('Legacy feature');
+        expect((row.querySelector('.mat-column-priority select') as HTMLSelectElement).value).toBe('Medium');
+    });
+
+    it('keeps malformed legacy feature text visible', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `unstructured legacy text [${id}]\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const row: HTMLTableRowElement = fixture.nativeElement.querySelector('.open-features tr.mat-mdc-row');
+        expect(row.querySelector('.mat-column-description')?.textContent.trim())
+            .toBe(`unstructured legacy text [${id}] [Medium]`);
+        expect(row.querySelector('.mat-column-id')?.textContent.trim()).toBe('');
+    });
+
+    it('reports priority update failures and restores the previous selection', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature to prioritize\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await writeFile(join(root, '.features'), '');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
+        selector.value = 'High';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(selector.value).toBe('Medium');
+        expect(fixture.nativeElement.querySelector('#feature-priority-error').textContent)
+            .toContain('404');
+    });
+
+    it('ignores invalid and unchanged priority selections', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
+        selector.value = 'Invalid';
+        selector.dispatchEvent(new Event('change'));
+        selector.value = 'Medium';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Medium] Feature');
+        expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
+    });
+
     it('paginates the open features table', async () => {
         await fixture.whenStable();
         await writeFile(join(root, '.features'), Array.from(
@@ -296,7 +363,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
         expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
-            new RegExp(`\\] \\[[0-9a-f-]{36}\\] Submit with ${key}\\n$`),
+            new RegExp(`\\] \\[[0-9a-f-]{36}\\] \\[Medium\\] Submit with ${key}\\n$`),
         );
     });
 

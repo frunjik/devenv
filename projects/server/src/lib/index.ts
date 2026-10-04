@@ -11,6 +11,7 @@ import { createCurrentEntryHandler } from './handlers/current-entry';
 import {
     createFeatureHandler,
     createFeaturePriorityHandler,
+    createFeatureStatusHandler,
     createFeaturesListHandler,
     createFeatureRemovalHandler,
 } from './handlers/features';
@@ -53,6 +54,7 @@ export function createApp(
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id', createFeaturePriorityHandler(root));
+    app.patch('/features/:id/status', createFeatureStatusHandler(root));
     app.delete('/features/:id', createFeatureRemovalHandler(root));
 
     if (process.env['NODE_ENV'] !== 'production') {

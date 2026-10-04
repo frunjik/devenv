@@ -9,6 +9,7 @@ import { LoggerService } from './logger.service';
 
 export type TestOutputStream = 'stdout' | 'stderr';
 export type FeaturePriority = 'High' | 'Medium' | 'Low';
+export type FeatureStatus = 'Backlog' | 'In progress' | 'Done';
 
 export interface GitCommitResult {
     stdout: string;
@@ -104,6 +105,13 @@ export class BackendService {
         return this.httpservice.patch<SuccessResponseBody<string>>(
             `${this.host}features/${encodeURIComponent(id)}`,
             { priority },
+        ).pipe(map(response => response.data));
+    }
+
+    updateFeatureStatus(id: string, status: FeatureStatus): Observable<string> {
+        return this.httpservice.patch<SuccessResponseBody<string>>(
+            `${this.host}features/${encodeURIComponent(id)}/status`,
+            { status },
         ).pipe(map(response => response.data));
     }
 

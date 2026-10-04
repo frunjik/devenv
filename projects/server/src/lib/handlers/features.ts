@@ -4,12 +4,19 @@ import { join } from 'node:path';
 import type { RequestHandler } from 'express';
 
 export type FeaturePriority = 'High' | 'Medium' | 'Low';
+export type FeatureStatus = 'Backlog' | 'In progress' | 'Done';
 
 const featurePriorities: readonly FeaturePriority[] = ['High', 'Medium', 'Low'];
+const featureStatuses: readonly FeatureStatus[] = ['Backlog', 'In progress', 'Done'];
 const canonicalPriorities: Record<string, FeaturePriority> = {
     high: 'High',
     medium: 'Medium',
     low: 'Low',
+};
+const canonicalStatuses: Record<string, FeatureStatus> = {
+    backlog: 'Backlog',
+    'in progress': 'In progress',
+    done: 'Done',
 };
 
 function formatTimestamp(date: Date): string {
@@ -61,6 +68,33 @@ function setFeaturePriority(entry: string, priority: FeaturePriority): string {
     return `${prioritizedEntry.slice(0, idEnd)} [${priority}]${priorityMatch[2]}`;
 }
 
+function addFeatureStatus(entry: string): string {
+    const idMatch = entry.match(featureIdPattern)!;
+    const idEnd = idMatch.index + idMatch[0].length;
+    const suffix = entry.slice(idEnd);
+    const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
+    const remaining = priorityMatch[2];
+    const statusMatch = remaining.match(/^\s+\[(Backlog|In progress|Done)\](.*)$/i);
+    if (!statusMatch) {
+        return `${entry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}] [Backlog]${remaining}`;
+    }
+
+    const status = canonicalStatuses[statusMatch[1].toLowerCase()];
+    return `${entry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}]`
+        + ` [${status}]${statusMatch[2]}`;
+}
+
+function setFeatureStatus(entry: string, status: FeatureStatus): string {
+    const normalizedEntry = addFeatureStatus(addFeaturePriority(entry));
+    const idMatch = normalizedEntry.match(featureIdPattern)!;
+    const idEnd = idMatch.index + idMatch[0].length;
+    const suffix = normalizedEntry.slice(idEnd);
+    const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
+    const statusMatch = priorityMatch[2].match(/^\s+\[(Backlog|In progress|Done)\](.*)$/i)!;
+    return `${normalizedEntry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}]`
+        + ` [${status}]${statusMatch[2]}`;
+}
+
 async function readFeatureEntries(filename: string): Promise<string[]> {
     let contents: string;
     try {
@@ -73,7 +107,7 @@ async function readFeatureEntries(filename: string): Promise<string[]> {
     }
 
     const entries = contents.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-    const identifiedEntries = entries.map(entry => addFeaturePriority(addFeatureId(entry)));
+    const identifiedEntries = entries.map(entry => addFeatureStatus(addFeaturePriority(addFeatureId(entry))));
     const normalizedContents = identifiedEntries.length ? `${identifiedEntries.join('\n')}\n` : '';
     if (contents !== normalizedContents) {
         await writeFile(filename, normalizedContents, 'utf8');
@@ -98,7 +132,7 @@ export function createFeatureHandler(root: string): RequestHandler {
 
         const oneLineDescription = description.trim().replace(/\s+/g, ' ');
         const id = randomUUID();
-        const entry = `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] ${oneLineDescription}`;
+        const entry = `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [Backlog] ${oneLineDescription}`;
         const filename = join(root, '.features');
 
         void readFeatureEntries(filename)
@@ -143,6 +177,40 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
                 }
 
                 entries[featureIndex] = setFeaturePriority(entries[featureIndex], requestedPriority as FeaturePriority);
+                await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                response.json({ data: entries[featureIndex] });
+            })
+            .catch(next);
+    };
+}
+
+export function createFeatureStatusHandler(root: string): RequestHandler {
+    return (request, response, next) => {
+        const id = request.params['id'];
+        const requestedStatus: unknown = request.body?.status;
+        if (typeof id !== 'string'
+            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+            response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
+            return;
+        }
+        if (typeof requestedStatus !== 'string'
+            || !featureStatuses.includes(requestedStatus as FeatureStatus)) {
+            response.status(400).json({ error: { message: 'Feature status must be Backlog, In progress, or Done.' } });
+            return;
+        }
+
+        const filename = join(root, '.features');
+        void readFeatureEntries(filename)
+            .then(async entries => {
+                const featureIndex = entries.findIndex(entry =>
+                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
+                );
+                if (featureIndex < 0) {
+                    response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
+                    return;
+                }
+
+                entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as FeatureStatus);
                 await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
                 response.json({ data: entries[featureIndex] });
             })

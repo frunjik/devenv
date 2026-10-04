@@ -6,13 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { BackendService, type FeaturePriority } from '../../backend.service';
+import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
 import { FeatureWorkService } from '../../feature-work.service';
 
 interface FeatureRow {
     id: string;
     description: string;
     priority: FeaturePriority;
+    status: FeatureStatus;
 }
 
 @Component({
@@ -36,15 +37,17 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     description = '';
     priority: FeaturePriority = 'Medium';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
+    readonly statuses: FeatureStatus[] = ['Backlog', 'In progress', 'Done'];
     featureSearch = '';
     isSubmitting = false;
     errorMessage = '';
     priorityError = '';
+    statusError = '';
     completionError = '';
     readonly completingFeatureIds = new Set<string>();
     features: string[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
-    readonly displayedColumns = ['id', 'priority', 'description', 'actions'];
+    readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
     isLoadingFeatures = false;
     featuresError = '';
     @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -96,6 +99,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
 
     startFeature(feature: FeatureRow): void {
         this.featureWork.start(feature.id, feature.description);
+        this.updateFeatureStatus(feature, 'In progress');
     }
 
     markFeatureDone(feature: FeatureRow): void {
@@ -142,13 +146,51 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         });
     }
 
+    onStatusChange(feature: FeatureRow, event: Event): void {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement) || !this.statuses.includes(target.value as FeatureStatus)) {
+            return;
+        }
+
+        this.updateFeatureStatus(feature, target.value as FeatureStatus, target);
+    }
+
+    private updateFeatureStatus(
+        feature: FeatureRow,
+        status: FeatureStatus,
+        target?: HTMLSelectElement,
+    ): void {
+        if (feature.status === status) {
+            return;
+        }
+
+        this.statusError = '';
+        this.backend.updateFeatureStatus(feature.id, status).subscribe({
+            next: () => {
+                feature.status = status;
+                this.featureDataSource.data = [...this.featureDataSource.data];
+            },
+            error: (error: Error) => {
+                this.statusError = error.message;
+                if (target) {
+                    target.value = feature.status;
+                }
+            },
+        });
+    }
+
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] (.+)$/i,
+            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Backlog|In progress|Done)\] (.+)$/i,
         );
         return match
-            ? { id: match[1], priority: match[2] as FeaturePriority, description: match[3] }
-            : { id: '', priority: 'Medium', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
+            ? {
+                id: match[1],
+                priority: match[2] as FeaturePriority,
+                status: match[3] as FeatureStatus,
+                description: match[4],
+            }
+            : { id: '', priority: 'Medium', status: 'Backlog', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
     }
 
     submit(): void {

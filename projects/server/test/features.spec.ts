@@ -30,8 +30,8 @@ describe('features public API', () => {
         const response = await request(app).get('/features');
 
         expect(response.body.data).toHaveLength(2);
-        expect(response.body.data[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] first feature$/);
-        expect(response.body.data[1]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] second feature$/);
+        expect(response.body.data[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] first feature$/);
+        expect(response.body.data[1]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] second feature$/);
         const persistedEntries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(persistedEntries).toEqual(response.body.data);
         expect(new Set(persistedEntries.map(entry => entry.match(/\[([0-9a-f-]{36})\]/)?.[1])).size).toBe(2);
@@ -41,17 +41,17 @@ describe('features public API', () => {
         const existingId = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'), [
             '// [2026-10-04 22:45 +02:00] legacy feature',
-            `// [2026-10-04 22:46 +02:00] [${existingId}] [high] identified feature`,
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [high] [in progress] identified feature`,
             '',
         ].join('\n'));
 
         const response = await request(app).get('/features');
 
         expect(response.body.data[0]).toMatch(
-            /^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] \[Medium\] legacy feature$/,
+            /^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] legacy feature$/,
         );
         expect(response.body.data[1]).toBe(
-            `// [2026-10-04 22:46 +02:00] [${existingId}] [High] identified feature`,
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [In progress] identified feature`,
         );
     });
 
@@ -61,7 +61,23 @@ describe('features public API', () => {
         const response = await request(app).get('/features');
 
         expect(response.body.data[0]).toMatch(
-            /^\/\/ \[[0-9a-f-]{36}\] \[Medium\] legacy feature$/,
+            /^\/\/ \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] legacy feature$/,
+        );
+    });
+
+    it('adds a Backlog status to legacy entries and preserves existing statuses', async () => {
+        const existingId = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), [
+            '// legacy feature',
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [dOnE] completed feature`,
+            '',
+        ].join('\n'));
+
+        const response = await request(app).get('/features');
+
+        expect(response.body.data[0]).toMatch(/\[Medium\] \[Backlog\] legacy feature$/);
+        expect(response.body.data[1]).toBe(
+            `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [Done] completed feature`,
         );
     });
 
@@ -94,7 +110,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(201);
         expect(response.body.data).toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] Add a feature with multiline details$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] Add a feature with multiline details$/,
         );
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
@@ -105,7 +121,7 @@ describe('features public API', () => {
             .send({ description: 'Urgent feature', priority: 'High' });
 
         expect(response.status).toBe(201);
-        expect(response.body.data).toMatch(/\[High\] Urgent feature$/);
+        expect(response.body.data).toMatch(/\[High\] \[Backlog\] Urgent feature$/);
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 
@@ -127,7 +143,7 @@ describe('features public API', () => {
 
         const entries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(entries).toHaveLength(2);
-        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] existing entry$/);
+        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] existing entry$/);
         expect(entries[1]).toBe(response.body.data);
     });
 
@@ -138,7 +154,7 @@ describe('features public API', () => {
 
         const entries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(entries).toHaveLength(2);
-        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] existing entry$/);
+        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] \[Medium\] \[Backlog\] existing entry$/);
         expect(entries[1]).toBe(response.body.data);
     });
 
@@ -217,6 +233,77 @@ describe('features public API', () => {
         const response = await request(app)
             .patch('/features/123e4567-e89b-42d3-a456-426614174000')
             .send({ priority: 'High' });
+
+        expect(response.status).toBe(500);
+    });
+
+    it('updates a feature status and preserves its priority and description', async () => {
+        const created = await request(app)
+            .post('/features')
+            .send({ description: 'Move this feature forward', priority: 'High' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'In progress' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(
+            created.body.data.replace('[Backlog]', '[In progress]'),
+        );
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+    });
+
+    it('accepts each supported feature status', async () => {
+        const created = await request(app).post('/features').send({ description: 'Complete this feature' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+
+        const response = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'Done' });
+
+        expect(response.body.data).toContain('[Done] Complete this feature');
+    });
+
+    it.each([
+        ['missing status', {}],
+        ['unsupported status', { status: 'Blocked' }],
+        ['non-string status', { status: 42 }],
+    ])('rejects a %s update', async (_caseName, body) => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/status')
+            .send(body);
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({
+            error: { message: 'Feature status must be Backlog, In progress, or Done.' },
+        });
+    });
+
+    it('rejects malformed feature IDs for status updates', async () => {
+        const response = await request(app)
+            .patch('/features/not-a-uuid/status')
+            .send({ status: 'Done' });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ error: { message: 'A valid feature ID is required.' } });
+    });
+
+    it('returns not found when updating a missing feature status', async () => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/status')
+            .send({ status: 'Done' });
+
+        expect(response.status).toBe(404);
+        expect(response.body.error.message).toContain('was not found');
+    });
+
+    it('forwards feature status update filesystem errors to Express', async () => {
+        await mkdir(join(root, '.features'));
+
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/status')
+            .send({ status: 'Done' });
 
         expect(response.status).toBe(500);
     });

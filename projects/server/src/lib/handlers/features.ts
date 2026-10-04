@@ -38,3 +38,20 @@ export function createFeatureHandler(root: string): RequestHandler {
             .catch(next);
     };
 }
+
+export function createFeaturesListHandler(root: string): RequestHandler {
+    return (_request, response, next) => {
+        void readFile(join(root, '.features'), 'utf8')
+            .then(contents => {
+                const entries = contents.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+                response.json({ data: entries });
+            })
+            .catch((error: NodeJS.ErrnoException) => {
+                if (error.code === 'ENOENT') {
+                    response.json({ data: [] });
+                    return;
+                }
+                next(error);
+            });
+    };
+}

@@ -5,4 +5,17 @@
     mat-form-field {
         width: 100%;
     }
+
+    .open-features {
+        margin-top: 2rem;
+        overflow-wrap: anywhere;
+    }
+
+    ul {
+        padding-left: 1.5rem;
+    }
+
+    li {
+        margin-block: 0.5rem;
+    }
 }

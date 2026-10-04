@@ -24,6 +24,36 @@ describe('features public API', () => {
         await rm(root, { recursive: true, force: true });
     });
 
+    it('lists nonempty feature entries in file order', async () => {
+        await writeFile(join(root, '.features'), '\n// first feature\n \n// second feature\n');
+
+        const response = await request(app).get('/features');
+
+        expect(response.body).toEqual({ data: ['// first feature', '// second feature'] });
+    });
+
+    it('returns an empty list when the features file is empty', async () => {
+        await writeFile(join(root, '.features'), ' \n\n');
+
+        const response = await request(app).get('/features');
+
+        expect(response.body).toEqual({ data: [] });
+    });
+
+    it('returns an empty list when the features file does not exist', async () => {
+        const response = await request(app).get('/features');
+
+        expect(response.body).toEqual({ data: [] });
+    });
+
+    it('forwards feature list read errors to Express', async () => {
+        await mkdir(join(root, '.features'));
+
+        const response = await request(app).get('/features');
+
+        expect(response.status).toBe(500);
+    });
+
     it('appends a timestamped one-line feature entry in history format', async () => {
         const response = await request(app)
             .post('/features')

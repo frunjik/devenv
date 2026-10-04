@@ -7,6 +7,6 @@ After finishing a feature add an entry to the ./history.
 
 The feature you are writing is:
 
-make the current status on the client refresh on clicking it
+show the open features list on the client feature form page under the form
 
 

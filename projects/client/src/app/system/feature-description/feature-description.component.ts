@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,17 +9,39 @@ import { BackendService } from '../../backend.service';
 @Component({
     selector: 'app-feature-description',
     standalone: true,
-    imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, NgIf],
+    imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, NgFor, NgIf],
     templateUrl: './feature-description.component.html',
     styleUrl: './feature-description.component.scss',
 })
-export class FeatureDescriptionComponent {
+export class FeatureDescriptionComponent implements OnInit {
     description = '';
     isSubmitting = false;
     successMessage = '';
     errorMessage = '';
+    features: string[] = [];
+    isLoadingFeatures = false;
+    featuresError = '';
 
     constructor(private backend: BackendService) {}
+
+    ngOnInit(): void {
+        this.refreshFeatures();
+    }
+
+    refreshFeatures(): void {
+        this.isLoadingFeatures = true;
+        this.featuresError = '';
+        this.backend.getFeatures().subscribe({
+            next: features => {
+                this.features = features;
+                this.isLoadingFeatures = false;
+            },
+            error: (error: Error) => {
+                this.featuresError = error.message;
+                this.isLoadingFeatures = false;
+            },
+        });
+    }
 
     submit(): void {
         const description = this.description.trim();
@@ -34,6 +56,7 @@ export class FeatureDescriptionComponent {
             next: () => {
                 this.successMessage = 'Feature added.';
                 this.isSubmitting = false;
+                this.refreshFeatures();
             },
             error: (error: Error) => {
                 this.errorMessage = error.message;

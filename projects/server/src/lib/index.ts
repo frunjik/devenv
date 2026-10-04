@@ -8,7 +8,7 @@ import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
 import { createCurrentEntryHandler } from './handlers/current-entry';
-import { createFeatureHandler } from './handlers/features';
+import { createFeatureHandler, createFeaturesListHandler } from './handlers/features';
 import {
     createAuthenticationMiddleware,
     getDevelopmentAuthenticationService,
@@ -45,6 +45,7 @@ export function createApp(
     app.post('/files', postFiles as RequestHandler);
     app.get('/folders', getFolders as RequestHandler);
     app.get('/current', createCurrentEntryHandler(root));
+    app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
 
     if (process.env['NODE_ENV'] !== 'production') {

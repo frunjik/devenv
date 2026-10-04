@@ -99,6 +99,10 @@ export class BackendService {
         return this.post<string>('features', { description });
     }
 
+    getFeatures(): Observable<string[]> {
+        return this.get<string[]>('features');
+    }
+
     getGitLog(): Observable<GitLogEntry[]> {
         return this.get<GitLogEntry[]>('git/log');
     }

@@ -3,3 +3,10 @@ dumpers
 
 xx
 
+./current
+./history
+./feature
+./tasks
+./success
+./failure
+./features

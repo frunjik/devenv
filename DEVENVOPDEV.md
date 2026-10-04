@@ -12,3 +12,7 @@ After a feature is done you can pick the next one from the list.
 
 
 The features you are writing are, take them one by one:
+- [In progress] put done features on a separate list <!-- feature-id:55736a9b-0824-45f9-8ca7-b0072678ba90 -->
+- [In progress] make the current task client display longer (to cover more text) <!-- feature-id:3d279160-c6fd-4f56-947a-f9b55e263557 -->
+- [In progress] add feature category <!-- feature-id:ef3b9d44-3a01-4e24-b28c-befe465095ee -->
+- [In progress] make low the default for a feature <!-- feature-id:1566328a-ff5c-442f-8576-4e1f7aedcb10 -->

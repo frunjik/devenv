@@ -73,39 +73,39 @@
     }
 
     .priority-high {
-        border-color: rgba(176, 55, 45, 0.3);
-        background: rgba(176, 55, 45, 0.12);
-        color: #a32920;
+        border-color: #e6a19a;
+        background: #f8d8d4;
+        color: #451712;
     }
 
     .priority-medium {
-        border-color: rgba(160, 112, 0, 0.3);
-        background: rgba(160, 112, 0, 0.12);
-        color: #805900;
+        border-color: #dfc16e;
+        background: #f7e9bb;
+        color: #3d2c00;
     }
 
     .priority-low {
-        border-color: rgba(39, 105, 120, 0.3);
-        background: rgba(39, 105, 120, 0.12);
-        color: #216071;
+        border-color: #8bc6d1;
+        background: #d1edf1;
+        color: #10343b;
     }
 
     .status-backlog {
-        border-color: rgba(100, 100, 100, 0.3);
-        background: rgba(100, 100, 100, 0.1);
-        color: #555;
+        border-color: #b7c2ba;
+        background: #e1e8e3;
+        color: #202b24;
     }
 
     .status-in-progress {
-        border-color: rgba(42, 92, 160, 0.3);
-        background: rgba(42, 92, 160, 0.12);
-        color: #24558f;
+        border-color: #91b4df;
+        background: #d5e5f8;
+        color: #142f50;
     }
 
     .status-done {
-        border-color: rgba(43, 119, 75, 0.3);
-        background: rgba(43, 119, 75, 0.12);
-        color: #286b45;
+        border-color: #8dc59c;
+        background: #d2ecd9;
+        color: #173b22;
     }
 
     .mat-column-actions {

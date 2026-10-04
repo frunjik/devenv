@@ -1,6 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { BackendService } from '../../backend.service';
@@ -14,6 +15,7 @@ import type { editor } from 'monaco-editor';
     imports: [
         FormsModule,
         MatButtonModule,
+        MatSnackBarModule,
         MatToolbarModule,
         MonacoEditorModule
     ]
@@ -29,7 +31,10 @@ export class FileEditorComponent implements OnDestroy {
     editorOptions   = { theme: 'vs-dark', language: 'ts' };
     private _saveKeybinding?: { dispose(): void };
 
-    constructor(private _backendService: BackendService) {}
+    constructor(
+        private _backendService: BackendService,
+        private _snackBar: MatSnackBar,
+    ) {}
 
     setFilename(event: any) {
         this.filename = event.target.innerText.trim();
@@ -47,7 +52,17 @@ export class FileEditorComponent implements OnDestroy {
         this._backendService
             .saveFile(this.filename, this.fileContent)
             .subscribe({
-                next: (data) => { ; }
+                next: data => {
+                    const succeeded = data === 'OK';
+                    this._snackBar.open(
+                        succeeded ? 'File saved.' : 'Unable to save file.',
+                        'Dismiss',
+                        {
+                            duration: 5000,
+                            panelClass: succeeded ? 'save-snackbar-success' : 'save-snackbar-error',
+                        },
+                    );
+                },
             });
     }
 

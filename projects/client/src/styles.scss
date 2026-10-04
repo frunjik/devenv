@@ -84,7 +84,19 @@ nav button[mat-button] {
     --mat-snack-bar-button-color: #e8efe9;
 }
 
+.mat-mdc-snack-bar-container.save-snackbar-success {
+    --mdc-snackbar-container-color: #45634d;
+    --mdc-snackbar-supporting-text-color: #e8efe9;
+    --mat-snack-bar-button-color: #e8efe9;
+}
+
 .mat-mdc-snack-bar-container.commit-snackbar-error {
+    --mdc-snackbar-container-color: #744843;
+    --mdc-snackbar-supporting-text-color: #f2e8e6;
+    --mat-snack-bar-button-color: #f2e8e6;
+}
+
+.mat-mdc-snack-bar-container.save-snackbar-error {
     --mdc-snackbar-container-color: #744843;
     --mdc-snackbar-supporting-text-color: #f2e8e6;
     --mat-snack-bar-button-color: #f2e8e6;

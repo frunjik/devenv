@@ -5,7 +5,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Server } from 'node:http';
 import type { editor, IKeyboardEvent } from 'monaco-editor';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { startServer } from '../../../../../server/src/public-api';
 import { BackendService } from '../../backend.service';
 import { FileEditorComponent } from './file-editor.component';
@@ -42,6 +43,7 @@ describe('FileEditorComponent', () => {
     let root: string;
     let server: Server;
     let apiHost: string;
+    let snackbarOpen: jest.MockedFunction<MatSnackBar['open']>;
     const browserWindow = window as Window & { host?: string };
 
     beforeAll(async () => {
@@ -57,13 +59,18 @@ describe('FileEditorComponent', () => {
 
     beforeEach(async () => {
         browserWindow.host = apiHost;
+        snackbarOpen = jest.fn<MatSnackBar['open']>();
         await TestBed.configureTestingModule({
             imports: [FileEditorComponent],
             providers: [
                 provideHttpClient(),
                 importProvidersFrom(MonacoEditorModule.forRoot())
             ]
-        }).compileComponents();
+        })
+            .overrideComponent(FileEditorComponent, {
+                add: { providers: [{ provide: MatSnackBar, useValue: { open: snackbarOpen } }] },
+            })
+            .compileComponents();
 
         fixture = TestBed.createComponent(FileEditorComponent);
         component = fixture.componentInstance;
@@ -102,15 +109,29 @@ describe('FileEditorComponent', () => {
         expect(component.fileContent).toBe('initial');
     });
 
-    it('saves the editor contents when the save button is clicked', async () => {
+    it('shows a success snackbar when the save button succeeds', () => {
         component.filename = 'sample.txt';
         component.fileContent = 'saved from editor';
+        const saveFile = jest.spyOn(TestBed.inject(BackendService), 'saveFile').mockReturnValue(of('OK'));
         fixture.detectChanges();
         fixture.nativeElement.querySelectorAll('button')[1].click();
-        await fixture.whenStable();
 
-        await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
-            .resolves.toBe('saved from editor');
+        expect(saveFile).toHaveBeenCalledWith('sample.txt', 'saved from editor');
+        expect(snackbarOpen).toHaveBeenCalledWith('File saved.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'save-snackbar-success',
+        });
+    });
+
+    it('shows a failure snackbar when saving fails', () => {
+        jest.spyOn(TestBed.inject(BackendService), 'saveFile').mockReturnValue(of(''));
+
+        component.saveFile();
+
+        expect(snackbarOpen).toHaveBeenCalledWith('Unable to save file.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'save-snackbar-error',
+        });
     });
 
     it('saves when Ctrl+S is pressed in the filename input', async () => {

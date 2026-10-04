@@ -21,14 +21,15 @@
 }
 
 .mat-mdc-button:not(:disabled) {
-    color: #503fad;
+    color: #b2cbb8;
 }
 
 .mat-mdc-button:disabled {
-    color: #cab1b1;
+    color: #758279;
 }
 
 textarea {
     overflow-y: scroll;
-    background-color: rgb(58, 29, 29);
+    background-color: #202923;
+    color: #d5ded6;
 }

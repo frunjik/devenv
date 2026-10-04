@@ -4,7 +4,7 @@
         <div>
             <span *ngFor="let foldername of folderNames; let i = index">
                 <span *ngIf="i > 0">/</span>
-                <button style="color: black" mat-button (click)="clickPath(i)">{{ foldername || "." }}</button>
+                <button mat-button (click)="clickPath(i)">{{ foldername || "." }}</button>
             </span>
         </div>
         <!-- <app-search-input

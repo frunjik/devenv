@@ -13,21 +13,51 @@
 html,
 body {
     height: 100%;
-    margin: 0px;
-    border-style: border;
+    margin: 0;
 }
+
+html {
+    color-scheme: dark;
+}
+
 body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
+    background: #171d19;
+    color: #d5ded6;
+}
+
+a {
+    color: #a8c4ae;
+}
+
+.mat-toolbar.mat-primary {
+    --mat-toolbar-container-background-color: #27352d;
+    --mat-toolbar-container-text-color: #dce6dd;
+}
+
+.mat-mdc-button:not(:disabled) {
+    --mat-text-button-label-text-color: #b2cbb8;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+    --mdc-filled-button-container-color: #4f7059;
+    --mdc-filled-button-label-text-color: #edf4ee;
+}
+
+.mat-mdc-progress-bar {
+    --mat-progress-bar-active-indicator-color: #9bb9a1;
+    --mat-progress-bar-track-color: #34453a;
 }
 
 .mat-mdc-snack-bar-container.commit-snackbar-success {
-    --mdc-snackbar-container-color: #2e7d32;
-    --mdc-snackbar-supporting-text-color: #fff;
-    --mat-snack-bar-button-color: #fff;
+    --mdc-snackbar-container-color: #45634d;
+    --mdc-snackbar-supporting-text-color: #e8efe9;
+    --mat-snack-bar-button-color: #e8efe9;
 }
 
 .mat-mdc-snack-bar-container.commit-snackbar-error {
-    --mdc-snackbar-container-color: #b3261e;
-    --mdc-snackbar-supporting-text-color: #fff;
-    --mat-snack-bar-button-color: #fff;
+    --mdc-snackbar-container-color: #744843;
+    --mdc-snackbar-supporting-text-color: #f2e8e6;
+    --mat-snack-bar-button-color: #f2e8e6;
 }

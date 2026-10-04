@@ -1,2 +1,2 @@
 call ./build-server.bat
-node dist\server\fesm2022\server.mjs
+node projects\server\start.mjs

@@ -1,193 +1,110 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
-import { spawn } from 'node:child_process';
-import { once } from 'node:events';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
-import { createServer } from 'node:net';
 import { join, relative, resolve } from 'node:path';
+import request from 'supertest';
+import { createApp, startServer } from '../../../dist/server/fesm2022/server.mjs';
 
-let serverOrigin;
 const serverRoot = process.cwd();
 const fixturePath = resolve(serverRoot, `.server-test-${process.pid}`);
 const fixtureFile = join(fixturePath, 'sample.txt');
 const fixtureFolder = join(fixturePath, 'nested');
 const relativeFixturePath = relative(serverRoot, fixturePath).replaceAll('\\', '/');
-let serverProcess;
+let app;
 
-async function sendRequest(path, options) {
-    const response = await fetch(new URL(path, serverOrigin), options);
-    return {
-        status: response.status,
-        body: response.status === 500 ? undefined : await response.json(),
-    };
-}
-
-async function waitForServer() {
-    const deadline = Date.now() + 5000;
-    let lastError;
-
-    while (Date.now() < deadline) {
-        if (serverProcess.exitCode !== null) {
-            throw new Error(`Server process exited with code ${serverProcess.exitCode}`);
-        }
-
-        try {
-            const response = await fetch(`${serverOrigin}/folders?path=${encodeURIComponent(relativeFixturePath)}`);
-            if (response.ok) {
-                return;
-            }
-            lastError = new Error(`Server returned ${response.status} while starting`);
-        } catch (error) {
-            lastError = error;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-
-    throw lastError ?? new Error('Server did not start');
-}
-
-async function findAvailablePort() {
-    while (true) {
-        const portServer = createServer();
-        await new Promise((resolve, reject) => {
-            portServer.once('error', reject);
-            portServer.listen(0, '127.0.0.1', resolve);
-        });
-
-        const address = portServer.address();
-        if (!address || typeof address === 'string') {
-            throw new Error('Could not determine an available test port');
-        }
-
-        await new Promise((resolve, reject) => {
-            portServer.close((error) => error ? reject(error) : resolve());
-        });
-        if (address.port !== 3000) {
-            return address.port;
-        }
-    }
-}
-
-function postOptions(data) {
-    return {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(data),
-    };
+function filePath(name) {
+    return `${relativeFixturePath}/${name}`;
 }
 
 before(async () => {
     await mkdir(fixtureFolder, { recursive: true });
     await writeFile(fixtureFile, 'initial');
-
-    const bundle = resolve(serverRoot, 'dist/server/fesm2022/server.mjs');
-    const port = await findAvailablePort();
-    serverOrigin = `http://127.0.0.1:${port}`;
-    serverProcess = spawn(process.execPath, [bundle], {
-        stdio: 'ignore',
-        windowsHide: true,
-        env: { ...process.env, PORT: String(port) },
-    });
-    await waitForServer();
+    app = createApp(serverRoot);
+    app.set('env', 'production');
 });
 
 after(async () => {
-    if (serverProcess && serverProcess.exitCode === null) {
-        serverProcess.kill();
-        await once(serverProcess, 'exit');
-    }
     await rm(fixturePath, { recursive: true, force: true });
 });
 
 describe('server public HTTP API', () => {
     it('reads an existing file', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(`${relativeFixturePath}/sample.txt`)}`),
-            { status: 200, body: { data: 'initial' } }
-        );
+        const response = await request(app).get('/files').query({ path: filePath('sample.txt') });
+        assert.deepEqual(response.body, { data: 'initial' });
     });
 
     it('rejects a file request without a path', async () => {
-        assert.deepEqual(await sendRequest('/files'), {
-            status: 400,
-            body: { error: { message: "ERROR: invalid path ''" } },
-        });
+        const response = await request(app).get('/files');
+        assert.deepEqual(response.body, { error: { message: "ERROR: invalid path ''" } });
     });
 
     it('reports an unknown file path', async () => {
-        const path = `${relativeFixturePath}/missing.txt`;
-        assert.deepEqual(await sendRequest(`/files?path=${encodeURIComponent(path)}`), {
-            status: 400,
-            body: { error: { message: `ERROR: invalid path '${path}'` } },
-        });
+        const path = filePath('missing.txt');
+        const response = await request(app).get('/files').query({ path });
+        assert.deepEqual(response.body, { error: { message: `ERROR: invalid path '${path}'` } });
     });
 
     it('forwards file read errors for directory paths', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(relativeFixturePath)}`),
-            { status: 500, body: undefined }
-        );
+        const response = await request(app).get('/files').query({ path: relativeFixturePath });
+        assert.equal(response.status, 500);
     });
 
     it('rejects a write request without a path', async () => {
-        assert.deepEqual(await sendRequest('/files', postOptions({ data: 'ignored' })), {
-            status: 400,
-            body: { error: { message: "ERROR: invalid path ''" } },
-        });
+        const response = await request(app).post('/files').send({ data: 'ignored' });
+        assert.deepEqual(response.body, { error: { message: "ERROR: invalid path ''" } });
     });
 
     it('writes the provided file contents', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(`${relativeFixturePath}/sample.txt`)}`, postOptions({ data: 'updated' })),
-            { status: 200, body: { data: 'OK' } }
-        );
+        const response = await request(app)
+            .post('/files')
+            .query({ path: filePath('sample.txt') })
+            .send({ data: 'updated' });
+        assert.deepEqual(response.body, { data: 'OK' });
     });
 
     it('persists written file contents', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(`${relativeFixturePath}/sample.txt`)}`),
-            { status: 200, body: { data: 'updated' } }
-        );
+        const response = await request(app).get('/files').query({ path: filePath('sample.txt') });
+        assert.deepEqual(response.body, { data: 'updated' });
     });
 
     it('defaults omitted write contents to an empty string', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(`${relativeFixturePath}/empty.txt`)}`, postOptions({})),
-            { status: 200, body: { data: 'OK' } }
-        );
+        const response = await request(app)
+            .post('/files')
+            .query({ path: filePath('empty.txt') })
+            .send({});
+        assert.deepEqual(response.body, { data: 'OK' });
     });
 
     it('persists omitted write contents as an empty file', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(`${relativeFixturePath}/empty.txt`)}`),
-            { status: 200, body: { data: '' } }
-        );
+        const response = await request(app).get('/files').query({ path: filePath('empty.txt') });
+        assert.deepEqual(response.body, { data: '' });
     });
 
     it('reports asynchronous write errors for missing directories', async () => {
-        const path = `${relativeFixturePath}/missing/file.txt`;
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(path)}`, postOptions({ data: 'unwritten' })),
-            { status: 400, body: { error: { message: `ERROR: invalid path '${path}'` } } }
-        );
+        const path = filePath('missing/file.txt');
+        const response = await request(app)
+            .post('/files')
+            .query({ path })
+            .send({ data: 'unwritten' });
+        assert.deepEqual(response.body, { error: { message: `ERROR: invalid path '${path}'` } });
     });
 
     it('forwards write errors for directory paths', async () => {
-        assert.deepEqual(
-            await sendRequest(`/files?path=${encodeURIComponent(relativeFixturePath)}`, postOptions({ data: 'unwritten' })),
-            { status: 500, body: undefined }
-        );
+        const response = await request(app)
+            .post('/files')
+            .query({ path: relativeFixturePath })
+            .send({ data: 'unwritten' });
+        assert.equal(response.status, 500);
     });
 
     it('lists the server root when no folder path is supplied', async () => {
-        const response = await fetch(`${serverOrigin}/folders`);
+        const response = await request(app).get('/folders');
         assert.equal(response.status, 200);
     });
 
     it('lists files and directories with their kinds', async () => {
-        const entries = (await sendRequest(`/folders?path=${encodeURIComponent(relativeFixturePath)}`))
-            .body.data
-            .sort((left, right) => left.filename.localeCompare(right.filename));
+        const response = await request(app).get('/folders').query({ path: relativeFixturePath });
+        const entries = response.body.data.sort((left, right) => left.filename.localeCompare(right.filename));
         assert.deepEqual(entries, [
             { filename: 'empty.txt', isFolder: false },
             { filename: 'nested', isFolder: true },
@@ -196,24 +113,31 @@ describe('server public HTTP API', () => {
     });
 
     it('rejects folder traversal paths', async () => {
-        assert.deepEqual(await sendRequest('/folders?path=..'), {
-            status: 400,
-            body: { error: { message: "ERROR: invalid path '..'" } },
-        });
+        const response = await request(app).get('/folders').query({ path: '..' });
+        assert.deepEqual(response.body, { error: { message: "ERROR: invalid path '..'" } });
     });
 
     it('reports unknown folder paths', async () => {
-        const path = `${relativeFixturePath}/missing`;
-        assert.deepEqual(await sendRequest(`/folders?path=${encodeURIComponent(path)}`), {
-            status: 400,
-            body: { error: { message: `ERROR: invalid path '${path}'` } },
-        });
+        const path = filePath('missing');
+        const response = await request(app).get('/folders').query({ path });
+        assert.deepEqual(response.body, { error: { message: `ERROR: invalid path '${path}'` } });
     });
 
     it('forwards folder read errors for file paths', async () => {
-        assert.deepEqual(
-            await sendRequest(`/folders?path=${encodeURIComponent(`${relativeFixturePath}/sample.txt`)}`),
-            { status: 500, body: undefined }
-        );
+        const response = await request(app).get('/folders').query({ path: filePath('sample.txt') });
+        assert.equal(response.status, 500);
+    });
+
+    it('starts the server and binds an ephemeral port', async () => {
+        const server = await startServer(serverRoot, 0);
+        const address = server.address();
+        assert.ok(address && typeof address === 'object' && address.port > 0);
+        await new Promise((resolve, reject) => {
+            server.close((error) => error ? reject(error) : resolve());
+        });
+    });
+
+    it('rejects startup when the requested port is invalid', async () => {
+        await assert.rejects(startServer(serverRoot, -1), { code: 'ERR_SOCKET_BAD_PORT' });
     });
 });

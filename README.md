@@ -43,6 +43,11 @@ build-shared.bat
 build-server.bat
 ```
 
+### Server tests
+```
+npm run test:server
+```
+
 ### Client
 ```
 build-client.bat

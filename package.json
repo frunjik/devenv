@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test:server": "ng build server && node --test --test-reporter=tap projects/server/test/public-api.test.mjs"
+    "test:server": "ng build server && node --experimental-test-coverage --test --test-reporter=tap --test-coverage-include='dist/server/fesm2022/server.mjs' projects/server/test/public-api.test.mjs"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +21,8 @@
     "@angular/platform-browser": "^19.1.7",
     "@angular/platform-browser-dynamic": "^19.2.14",
     "@angular/router": "^19.2.14",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^19.0.2",
     "rubico": "^2.7.3",
@@ -32,7 +34,10 @@
     "@angular-devkit/build-angular": "^19.2.15",
     "@angular/cli": "^19.2.15",
     "@angular/compiler-cli": "^19.2.14",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/jasmine": "~5.1.0",
+    "@types/supertest": "^7.2.1",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -40,6 +45,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^19.2.2",
+    "supertest": "^7.3.1",
     "typescript": "~5.7.3"
   }
 }

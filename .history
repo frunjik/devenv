@@ -25,3 +25,4 @@ History
 // [2026-10-04 22:36 +02:00] Made the client toolbar .current entry a keyboard-accessible refresh control that fetches and displays the latest entry on click; client tests pass with 100% coverage and the build succeeds.
 // [2026-10-04 22:42 +02:00] Added a fixed bottom client toolbar containing the current-entry refresh and Git status controls; all 110 client tests pass with 100% coverage and the client build succeeds.
 // [2026-10-04 22:45 +02:00] Added the /feature client route with an in-memory feature-description form and navigation link; all 112 client tests pass with 100% coverage and the client build succeeds.
+// [2026-10-04 22:52 +02:00] Added public POST /features to append validated, timestamped, single-line feature descriptions to the configured root .features file in .history format; all 85 server tests pass with 100% coverage.

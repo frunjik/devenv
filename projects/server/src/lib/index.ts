@@ -4,8 +4,13 @@ import type { Server } from 'node:http';
 import { FileSystem } from './filesystem/filesystem';
 import { getFiles, postFiles } from './handlers/files';
 import { getFolders } from './handlers/folders';
+import {
+    createTestCommandRunner,
+    createTestRunHandler,
+    type TestCommandExecutor,
+} from './handlers/test-runner';
 
-export function createApp(root: string): Express {
+export function createApp(root: string, testCommandExecutor?: TestCommandExecutor): Express {
     const app = express();
 
     app.use(express.json());
@@ -17,8 +22,14 @@ export function createApp(root: string): Express {
     app.post('/files', postFiles as RequestHandler);
     app.get('/folders', getFolders as RequestHandler);
 
+    if (process.env['NODE_ENV'] !== 'production') {
+        app.post('/tests/run', createTestRunHandler(createTestCommandRunner(testCommandExecutor)));
+    }
+
     return app;
 }
+
+export type { TestCommandCallback, TestCommandExecutor } from './handlers/test-runner';
 
 export interface ServerListener {
     listen(app: Express, port: number): Promise<Server>;

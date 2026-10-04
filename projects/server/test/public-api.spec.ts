@@ -4,11 +4,20 @@ import { join } from 'node:path';
 import { createServer } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
 import request from 'supertest';
-import { createApp, startServer, type ServerListener } from '../src/public-api';
+import {
+    createApp,
+    startServer,
+    type ServerListener,
+    type TestCommandCallback,
+    type TestCommandExecutor,
+} from '../src/public-api';
 
 describe('server public HTTP API', () => {
     let root: string;
     let app: ReturnType<typeof createApp>;
+    const handleError: ErrorRequestHandler = (_error, _request, response, _next) => {
+        response.status(500).end();
+    };
 
     beforeEach(async () => {
         root = await mkdtemp(join(tmpdir(), 'devenv-server-test-'));
@@ -16,9 +25,6 @@ describe('server public HTTP API', () => {
         await writeFile(join(root, 'sample.txt'), 'initial');
         app = createApp(root);
         app.set('env', 'production');
-        const handleError: ErrorRequestHandler = (_error, _request, response, _next) => {
-            response.status(500).end();
-        };
         app.use(handleError);
     });
 
@@ -117,6 +123,162 @@ describe('server public HTTP API', () => {
     it('forwards folder read errors for file paths', async () => {
         const response = await request(app).get('/folders').query({ path: 'sample.txt' });
         expect(response.status).toBe(500);
+    });
+
+    it('runs the fixed test script and returns captured output', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        let observedCommand = '';
+        let observedArgs: string[] = [];
+        const execute: TestCommandExecutor = (command, args, _options, callback) => {
+            observedCommand = command;
+            observedArgs = args;
+            callback(null, 'client and server tests passed', '');
+        };
+        const testApp = createApp(root, execute);
+        testApp.use(handleError);
+
+        try {
+            const response = await request(testApp).post('/tests/run');
+            expect(response.body).toEqual({
+                data: {
+                    exitCode: 0,
+                    stdout: 'client and server tests passed',
+                    stderr: '',
+                },
+            });
+            expect(observedCommand).toBe(process.execPath);
+            expect(observedArgs).toEqual(['npm-cli.js', 'run', 'test:all']);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('executes the fixed test script and captures output from the child process', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        const npmCliPath = join(root, 'fake-npm.js');
+        await writeFile(npmCliPath, "process.stdout.write('captured stdout'); process.stderr.write('captured stderr');");
+        process.env['npm_execpath'] = npmCliPath;
+
+        try {
+            const testApp = createApp(root);
+            const response = await request(testApp).post('/tests/run');
+            expect(response.body).toEqual({
+                data: {
+                    exitCode: 0,
+                    stdout: 'captured stdout',
+                    stderr: 'captured stderr',
+                },
+            });
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('returns the test process exit code and output when tests fail', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const commandError = Object.assign(new Error('tests failed'), { code: 2 });
+        const execute: TestCommandExecutor = (_command, _args, _options, callback) => {
+            callback(commandError, 'test output', 'failure details');
+        };
+        const testApp = createApp(root, execute);
+        testApp.use(handleError);
+
+        try {
+            const response = await request(testApp).post('/tests/run');
+            expect(response.body.data).toEqual({
+                exitCode: 2,
+                stdout: 'test output',
+                stderr: 'failure details',
+            });
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('forwards test process launch failures as server errors', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const execute: TestCommandExecutor = (_command, _args, _options, callback) => {
+            callback(Object.assign(new Error('npm could not start'), { code: 'ENOENT' }), '', '');
+        };
+        const testApp = createApp(root, execute);
+        testApp.use(handleError);
+
+        try {
+            const response = await request(testApp).post('/tests/run');
+            expect(response.status).toBe(500);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('rejects test execution when the server is running in production mode', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        process.env['NODE_ENV'] = 'production';
+
+        try {
+            const productionApp = createApp(root);
+            const response = await request(productionApp).post('/tests/run');
+            expect(response.status).toBe(404);
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('rejects test execution if the development server was not started by npm', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        delete process.env['npm_execpath'];
+
+        try {
+            const testApp = createApp(root);
+            testApp.use(handleError);
+            const response = await request(testApp).post('/tests/run');
+            expect(response.status).toBe(500);
+        } finally {
+            if (originalNpmExecPath !== undefined) {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('rejects concurrent test runs while one is in progress', async () => {
+        let finishRun: TestCommandCallback | undefined;
+        const execute: TestCommandExecutor = (_command, _args, _options, callback) => {
+            finishRun = callback;
+        };
+        const testApp = createApp(root, execute);
+        testApp.use(handleError);
+        const firstRequest = request(testApp).post('/tests/run').then((response) => response);
+        await new Promise<void>((resolve) => setImmediate(resolve));
+
+        const secondResponse = await request(testApp).post('/tests/run');
+        expect(secondResponse.status).toBe(409);
+
+        finishRun?.(null, '', '');
+        const firstResponse = await firstRequest;
+        expect(firstResponse.status).toBe(200);
     });
 
     it('starts the server and binds an ephemeral port', async () => {

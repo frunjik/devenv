@@ -12,4 +12,5 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
+- [In progress] remove the display of the top toolbar feature status <!-- feature-id:eddcde7f-775c-4e69-9579-97f07dedf83a -->
 - [Questions] add feature category <!-- feature-id:ef3b9d44-3a01-4e24-b28c-befe465095ee -->

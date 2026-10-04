@@ -7,7 +7,7 @@
 // [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Medium] [Backlog] show the current ./thoughts on the client
 // [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [In progress] a feature category describes which domain the feature is for
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog
-// [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [In progress] make the current task client display longer (to cover more text)
+// [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [Done] make the current task client display longer (to cover more text)
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator
 // [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [In progress] clear current task after commit
 // [2026-10-05 00:21 +02:00] [94aa6582-e140-4587-96ac-248ee1c641fc] [Medium] [Backlog] add commited state to feature
@@ -47,3 +47,5 @@
 // [2026-10-05 01:35 +02:00] [0e9d228a-e5e5-4657-bbe5-5ace4e522fce] [Medium] [Backlog] add feature priority as a number on top of the indication low, medium high
 // [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [Backlog] create a canban view
 // [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [Backlog] make a server endpoint to retrieve the current uncommited code
+// [2026-10-05 01:48 +02:00] [eddcde7f-775c-4e69-9579-97f07dedf83a] [Low] [In progress] remove the display of the top toolbar feature status
+// [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Low] [Backlog] add status verify

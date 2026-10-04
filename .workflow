@@ -12,5 +12,5 @@
 ./questions 
 
 
-feature status: new, backlog, commited, progress, questions, review, done, archived
+feature status: new, backlog, commited, progress, questions, review, verify, done, archived
 

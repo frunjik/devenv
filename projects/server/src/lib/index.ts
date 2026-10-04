@@ -19,11 +19,16 @@ function run(root: string, port: number): Promise<void> {
 
         const server = app.listen(port, () => {
             server.off('error', reject);
-            console.log(`serving "${root}" on port ${port}`);
+            const address = server.address();
+            const listeningPort = typeof address === 'object' && address !== null
+                ? address.port
+                : port;
+            console.log(`serving "${root}" on port ${listeningPort}`);
             resolve();
         });
         server.once('error', reject);
     });
 }
 
-run('./', 3000).catch((error: unknown) => console.error(error));
+const port = Number(process.env['PORT'] ?? 3000);
+run('./', port).catch((error: unknown) => console.error(error));

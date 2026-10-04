@@ -5,7 +5,8 @@ import { once } from 'node:events';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 
-const serverOrigin = 'http://127.0.0.1:3000';
+let serverOrigin;
+let startupOutput = '';
 const serverRoot = process.cwd();
 const fixturePath = resolve(serverRoot, `.server-test-${process.pid}`);
 const fixtureFile = join(fixturePath, 'sample.txt');
@@ -31,6 +32,13 @@ async function waitForServer() {
         }
 
         try {
+            const portMatch = startupOutput.match(/serving ".+" on port (\d+)/);
+            if (!portMatch) {
+                await new Promise((resolve) => setTimeout(resolve, 50));
+                continue;
+            }
+            assert.notEqual(Number(portMatch[1]), 3000);
+            serverOrigin = `http://127.0.0.1:${portMatch[1]}`;
             const response = await fetch(`${serverOrigin}/folders?path=${encodeURIComponent(relativeFixturePath)}`);
             if (response.ok) {
                 return;
@@ -58,7 +66,15 @@ before(async () => {
     await writeFile(fixtureFile, 'initial');
 
     const bundle = resolve(serverRoot, 'dist/server/fesm2022/server.mjs');
-    serverProcess = spawn(process.execPath, [bundle], { stdio: 'inherit', windowsHide: true });
+    serverProcess = spawn(process.execPath, [bundle], {
+        stdio: ['ignore', 'pipe', 'inherit'],
+        windowsHide: true,
+        env: { ...process.env, PORT: '0' },
+    });
+    serverProcess.stdout.setEncoding('utf8');
+    serverProcess.stdout.on('data', (chunk) => {
+        startupOutput += chunk;
+    });
     await waitForServer();
 });
 

@@ -78,22 +78,25 @@ describe('GitLogComponent', () => {
         requests[0].flush({ data: [] });
     });
 
-    it('refreshes the commit list when requested', () => {
+    it('updates the commit list with refreshed results', () => {
         createComponent();
         expectGitLogRequest().flush({ data: [] });
         fixture.detectChanges();
 
-        TestBed.inject(GitLogRefreshService).refresh();
+        TestBed.inject(GitLogRefreshService).refreshedEntries$.subscribe(entries => {
+            expect(entries).toEqual([expect.objectContaining({ subject: 'Fresh commit' })]);
+        });
+        TestBed.inject(GitLogRefreshService).refresh().subscribe();
+        expectGitLogRequest().flush({
+            data: [{
+                hash: 'fresh123',
+                author: 'Test Author',
+                date: '2026-10-04T12:00:00Z',
+                subject: 'Fresh commit',
+            }],
+        });
+        fixture.detectChanges();
 
-        expectGitLogRequest().flush({ data: [] });
-    });
-
-    it('refreshes after the current request finishes if a refresh is requested while loading', () => {
-        createComponent();
-
-        TestBed.inject(GitLogRefreshService).refresh();
-        expectGitLogRequest().flush({ data: [] });
-
-        expectGitLogRequest().flush({ data: [] });
+        expect(fixture.nativeElement.textContent).toContain('Fresh commit');
     });
 });

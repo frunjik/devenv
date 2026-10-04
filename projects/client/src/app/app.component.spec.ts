@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
+import type { ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -16,6 +17,16 @@ describe('AppComponent', () => {
     let snackbarOpen: jest.MockedFunction<MatSnackBar['open']>;
     let navigateByUrl: jest.SpiedFunction<Router['navigateByUrl']>;
     let dialogOpen: jest.Mock;
+
+    async function startCommit(fixture: ComponentFixture<AppComponent>): Promise<void> {
+        fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
+
+        const refreshRequest = http.expectOne('http://localhost:3000/git/log');
+        expect(refreshRequest.request.method).toBe('GET');
+        refreshRequest.flush({ data: [] });
+        await fixture.whenStable();
+    }
 
     beforeEach(async () => {
         snackbarOpen = jest.fn<MatSnackBar['open']>();
@@ -198,6 +209,9 @@ describe('AppComponent', () => {
         await fixture.whenStable();
 
         expect(navigateByUrl).toHaveBeenCalledWith('/git/log');
+        expect(dialogOpen).not.toHaveBeenCalled();
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
+        await fixture.whenStable();
         expect(order).toEqual(['navigate', 'dialog']);
         expect(dialogOpen).toHaveBeenCalledWith(CommitMessageDialogComponent, {
             width: 'min(32rem, calc(100vw - 2rem))',
@@ -210,8 +224,7 @@ describe('AppComponent', () => {
         dialogOpen.mockImplementation(() => ({ afterClosed: () => of(undefined) }));
         const fixture = TestBed.createComponent(AppComponent);
 
-        fixture.componentInstance.commitChanges();
-        await fixture.whenStable();
+        await startCommit(fixture);
 
         http.expectNone('http://localhost:3000/git/commit');
     });
@@ -229,29 +242,29 @@ describe('AppComponent', () => {
     it('posts the dialog message and shows commit output in a snackbar', async () => {
         const refreshGitLog = jest.spyOn(TestBed.inject(GitLogRefreshService), 'refresh');
         const fixture = TestBed.createComponent(AppComponent);
-        fixture.componentInstance.commitChanges();
-        await fixture.whenStable();
+        await startCommit(fixture);
 
         const request = http.expectOne('http://localhost:3000/git/commit');
         expect(request.request.method).toBe('POST');
         expect(request.request.body).toEqual({ message: 'Save progress' });
         request.flush({ data: { stdout: '[main abc123] Save progress', stderr: '' } });
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
 
         expect(snackbarOpen).toHaveBeenCalledWith('[main abc123] Save progress', 'Dismiss', {
             duration: 5000,
             panelClass: 'commit-snackbar-success',
         });
         expect(fixture.componentInstance.isCommitting).toBe(false);
-        expect(refreshGitLog).toHaveBeenCalledTimes(1);
+        expect(refreshGitLog).toHaveBeenCalledTimes(2);
     });
 
     it('shows a fallback success snackbar when Git returns no output', async () => {
         const fixture = TestBed.createComponent(AppComponent);
-        fixture.componentInstance.commitChanges();
-        await fixture.whenStable();
+        await startCommit(fixture);
 
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ data: { stdout: '', stderr: '' } });
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
 
         expect(snackbarOpen).toHaveBeenCalledWith('Changes committed.', 'Dismiss', {
             duration: 5000,
@@ -259,10 +272,56 @@ describe('AppComponent', () => {
         });
     });
 
-    it('shows the server commit error in a snackbar', async () => {
+    it('shows a fallback message when Git log refresh fails without an Error', async () => {
         const fixture = TestBed.createComponent(AppComponent);
+        fixture.componentInstance.bs.getGitLog = () => throwError(() => 'failure');
+
         fixture.componentInstance.commitChanges();
         await fixture.whenStable();
+
+        expect(dialogOpen).not.toHaveBeenCalled();
+        expect(snackbarOpen).toHaveBeenCalledWith(
+            'Could not refresh Git log: Unknown error',
+            'Dismiss',
+            { duration: 5000, panelClass: 'commit-snackbar-error' },
+        );
+    });
+
+    it('shows the Error message when Git log refresh fails', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.componentInstance.bs.getGitLog = () => throwError(() => new Error('Refresh failed'));
+
+        fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
+
+        expect(snackbarOpen).toHaveBeenCalledWith(
+            'Could not refresh Git log: Refresh failed',
+            'Dismiss',
+            { duration: 5000, panelClass: 'commit-snackbar-error' },
+        );
+    });
+
+    it('reports when the Git log cannot refresh after a successful commit', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        await startCommit(fixture);
+
+        http.expectOne('http://localhost:3000/git/commit')
+            .flush({ data: { stdout: '[main abc123] Save progress', stderr: '' } });
+        http.expectOne('http://localhost:3000/git/log').flush(
+            { error: { message: 'Git log unavailable' } },
+            { status: 500, statusText: 'Error' },
+        );
+
+        expect(snackbarOpen).toHaveBeenLastCalledWith(
+            'Changes committed, but the Git log could not be refreshed: Http failure response for http://localhost:3000/git/log: 500 Error',
+            'Dismiss',
+            { duration: 5000, panelClass: 'commit-snackbar-error' },
+        );
+    });
+
+    it('shows the server commit error in a snackbar', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        await startCommit(fixture);
 
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ error: { message: 'Git commit failed' } }, { status: 500, statusText: 'Error' });
@@ -276,8 +335,7 @@ describe('AppComponent', () => {
 
     it('falls back to the HTTP message when the server error message is invalid', async () => {
         const fixture = TestBed.createComponent(AppComponent);
-        fixture.componentInstance.commitChanges();
-        await fixture.whenStable();
+        await startCommit(fixture);
 
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ error: { message: 500 } }, { status: 500, statusText: 'Error' });
@@ -292,8 +350,7 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.bs.commitChanges = () => throwError(() => 'failure');
 
-        fixture.componentInstance.commitChanges();
-        await fixture.whenStable();
+        await startCommit(fixture);
 
         expect(snackbarOpen).toHaveBeenCalledWith('Unable to commit changes.', 'Dismiss', {
             duration: 5000,
@@ -305,8 +362,7 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.bs.commitChanges = () => throwError(() => new Error('Network failure'));
 
-        fixture.componentInstance.commitChanges();
-        await fixture.whenStable();
+        await startCommit(fixture);
 
         expect(snackbarOpen).toHaveBeenCalledWith('Network failure', 'Dismiss', {
             duration: 5000,

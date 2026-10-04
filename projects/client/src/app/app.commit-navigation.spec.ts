@@ -44,11 +44,30 @@ describe('AppComponent commit navigation', () => {
         await TestBed.inject(Router).navigateByUrl('/git/log');
         fixture.componentInstance.commitChanges();
 
+        expect(document.querySelector('mat-dialog-container')).toBeNull();
+        http.expectOne('http://localhost:3000/git/log').flush({ data: [] });
         expect(document.querySelector('mat-dialog-container')).not.toBeNull();
         expect(document.querySelector('textarea[aria-label="Commit message"]')).not.toBeNull();
         TestBed.inject(MatDialog).closeAll();
         fixture.destroy();
         http.expectNone('http://localhost:3000/git/commit');
+    });
+
+    it('does not open the commit dialog when the Git log refresh fails', async () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.componentInstance.commitChanges();
+        await fixture.whenStable();
+
+        http.expectOne('http://localhost:3000/git/log').flush(
+            { error: { message: 'Git log unavailable' } },
+            { status: 500, statusText: 'Error' },
+        );
+
+        expect(document.querySelector('mat-dialog-container')).toBeNull();
+        expect(fixture.componentInstance.isCommitDialogOpen).toBe(false);
+        expect(document.body.textContent).toContain('Could not refresh Git log');
+        http.expectNone('http://localhost:3000/git/commit');
+        fixture.destroy();
     });
 
     it('does not open the dialog when navigation to the Git log is cancelled', async () => {

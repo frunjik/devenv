@@ -17,7 +17,6 @@ export class GitLogComponent implements OnInit {
     entries: GitLogEntry[] = [];
     isLoading = false;
     errorMessage = '';
-    private refreshAfterLoad = false;
 
     private destroyRef = inject(DestroyRef);
 
@@ -27,17 +26,12 @@ export class GitLogComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.gitLogRefresh.refreshRequested$
+        this.gitLogRefresh.refreshedEntries$
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(() => this.refreshGitLog());
-        this.loadGitLog();
-    }
-
-    private refreshGitLog(): void {
-        if (this.isLoading) {
-            this.refreshAfterLoad = true;
-            return;
-        }
+            .subscribe(entries => {
+                this.entries = entries;
+                this.errorMessage = '';
+            });
         this.loadGitLog();
     }
 
@@ -51,20 +45,12 @@ export class GitLogComponent implements OnInit {
         this.backend.getGitLog().subscribe({
             next: entries => {
                 this.entries = entries;
-                this.finishLoading();
+                this.isLoading = false;
             },
             error: (error: HttpErrorResponse) => {
                 this.errorMessage = error.message;
-                this.finishLoading();
+                this.isLoading = false;
             },
         });
-    }
-
-    private finishLoading(): void {
-        this.isLoading = false;
-        if (this.refreshAfterLoad) {
-            this.refreshAfterLoad = false;
-            this.refreshGitLog();
-        }
     }
 }

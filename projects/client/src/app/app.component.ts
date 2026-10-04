@@ -52,14 +52,14 @@ export class AppComponent implements OnInit, OnDestroy {
         }
         this.isCommitDialogOpen = true;
         if (this.router.url === '/git/log') {
-            this.promptForCommitMessage();
+            this.refreshGitLogBeforeCommit();
             return;
         }
 
         void this.router.navigateByUrl('/git/log')
             .then(navigated => {
                 if (navigated) {
-                    this.promptForCommitMessage();
+                    this.refreshGitLogBeforeCommit();
                 } else {
                     this.isCommitDialogOpen = false;
                 }
@@ -92,11 +92,29 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.showCommitMessage(result.stdout.trim() || 'Changes committed.');
                 this.isCommitting = false;
                 this.gitStatus.refresh();
-                this.gitLogRefresh.refresh();
+                this.gitLogRefresh.refresh().subscribe({
+                    error: error => this.showCommitMessage(
+                        `Changes committed, but the Git log could not be refreshed: ${error.message}`,
+                        true,
+                    ),
+                });
             },
             error: error => {
                 this.showCommitMessage(this.getCommitError(error), true);
                 this.isCommitting = false;
+            },
+        });
+    }
+
+    private refreshGitLogBeforeCommit(): void {
+        this.gitLogRefresh.refresh().subscribe({
+            next: () => this.promptForCommitMessage(),
+            error: error => {
+                this.isCommitDialogOpen = false;
+                this.showCommitMessage(
+                    `Could not refresh Git log: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                    true,
+                );
             },
         });
     }

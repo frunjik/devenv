@@ -23,7 +23,7 @@ export function getFolders(req: express.Request, res: express.Response, next: ex
     } else {
 
         const filesystem: FileSystem = req.app.locals['fileSystem'];
-        return filesystem.readFolder(foldername)
+        return Promise.resolve(filesystem.readFolder(foldername))
             .then((data: FolderEntry[]) => {
                 const response: SuccessResponseBody<FolderEntry[]> = {
                     data

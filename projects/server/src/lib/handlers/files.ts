@@ -22,7 +22,7 @@ export function getFiles(req: express.Request, res: express.Response, next: expr
     } else {
 
         const filesystem: FileSystem = req.app.locals['fileSystem'];
-        return filesystem.readFile(filename)
+        return Promise.resolve(filesystem.readFile(filename))
             .then((data) => {
                 const response: SuccessResponseBody<string> = {
                     data
@@ -73,7 +73,7 @@ export function postFiles(req: express.Request, res: express.Response, next: exp
     } else {
 
         const filesystem: FileSystem = req.app.locals['fileSystem'];
-        return filesystem.writeFile(filename, contents)
+        return Promise.resolve(filesystem.writeFile(filename, contents))
             .then(() => {
                 const response: SuccessResponseBody<string> = {
                     data: 'OK'

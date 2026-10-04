@@ -148,4 +148,51 @@ describe('files folders public API', () => {
 
         expect(response.status).toBe(500);
     });
+
+    it('returns the first task entry from DEVENVOPDEV.md', async () => {
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            '',
+            '- [In progress] Current task',
+            '- Next task',
+            '',
+        ].join('\n'));
+
+        const response = await request(app).get('/task');
+
+        expect(response.body).toEqual({ data: '- [In progress] Current task' });
+    });
+
+    it('returns null when DEVENVOPDEV.md has no task entry', async () => {
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions without a task section');
+
+        const response = await request(app).get('/task');
+
+        expect(response.body).toEqual({ data: null });
+    });
+
+    it('returns null when the task section is empty', async () => {
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            'The features you are writing are, take them one by one:\n\n');
+
+        const response = await request(app).get('/task');
+
+        expect(response.body).toEqual({ data: null });
+    });
+
+    it('returns null when DEVENVOPDEV.md does not exist', async () => {
+        const response = await request(app).get('/task');
+
+        expect(response.body).toEqual({ data: null });
+    });
+
+    it('forwards DEVENVOPDEV.md read errors to Express', async () => {
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+
+        const response = await request(app).get('/task');
+
+        expect(response.status).toBe(500);
+    });
 });

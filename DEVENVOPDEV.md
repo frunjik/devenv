@@ -4,9 +4,8 @@ When creating a new feature you always stick to the following rules
 Before writing code add a line to ./current
 When writing new code you make the code work first (runs without errors), then write tests verify your assumptions and get to 100% test coverage using only public interface no jest tricks or mockery but when you get stuck ask me.
 You never EVER write or change production when writing tests unless you encounter a problem getting the coverage to 100%.
-After finishing a feature add an entry to the ./history.
+After finishing a feature add an entry to the ./history, and remove it from this file.
 
 The features you are writing are, take them one by one:
 
-show current task more prominently on client
-
+show entry of DEVENVOPDEV.md on client in top toolbar at the rightmost

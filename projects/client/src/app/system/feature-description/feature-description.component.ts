@@ -8,6 +8,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
+import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
 
 interface FeatureRow {
@@ -61,6 +62,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     constructor(
         private backend: BackendService,
         readonly featureWork: FeatureWorkService,
+        private currentTask: CurrentTaskService,
     ) {
         this.featureDataSource.filterPredicate = (feature, filter) =>
             `${feature.id} ${feature.priority} ${feature.description}`.toLocaleLowerCase().includes(filter);
@@ -112,6 +114,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
             next: () => {
                 feature.status = 'In progress';
                 this.featureWork.start(feature.id, feature.description);
+                this.currentTask.refresh();
                 this.featureDataSource.data = [...this.featureDataSource.data];
             },
             error: (error: Error) => {
@@ -194,6 +197,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
                 feature.status = status;
                 if (status === 'In progress') {
                     this.featureWork.start(feature.id, feature.description);
+                    this.currentTask.refresh();
                 } else {
                     this.featureWork.complete(feature.id);
                 }

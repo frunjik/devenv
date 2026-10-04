@@ -86,6 +86,19 @@ describe('BackendService', () => {
         await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
     });
 
+    it('loads the first task entry from DEVENVOPDEV.md', async () => {
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            '- Current task',
+            '- Next task',
+            '',
+        ].join('\n'));
+
+        await expect(service.getCurrentTask().toPromise()).resolves.toBe('- Current task');
+    });
+
     it('assigns the default Medium priority when adding a feature without selecting one', async () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 

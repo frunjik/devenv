@@ -27,3 +27,5 @@
 // [2026-10-05 00:24 +02:00] [67766a83-30b9-4e55-85e6-96891449e37e] [Medium] [Backlog] prevent duplicate features
 // [2026-10-05 00:25 +02:00] [55736a9b-0824-45f9-8ca7-b0072678ba90] [Medium] [Backlog] put done features on a separate list
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
+// [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [Backlog] fix typesript errors
+// [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [Backlog] technical debt

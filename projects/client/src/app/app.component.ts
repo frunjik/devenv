@@ -10,6 +10,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 import { CurrentEntryService } from './current-entry.service';
+import { CurrentTaskService } from './current-task.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
 import { FeatureWorkService } from './feature-work.service';
@@ -30,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
     readonly currentEntry = inject(CurrentEntryService);
+    readonly currentTask = inject(CurrentTaskService);
     readonly testRunCacheStatus = inject(TestRunCacheStatusService);
     private featureWork = inject(FeatureWorkService);
     private gitLogRefresh = inject(GitLogRefreshService);
@@ -47,6 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.gitStatus.startPolling();
         this.currentEntry.startPolling();
+        this.currentTask.refresh();
         this.testRunCacheStatus.refresh();
     }
 

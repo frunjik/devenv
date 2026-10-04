@@ -32,6 +32,22 @@
         
         -->
     </nav>
+    <button
+        type="button"
+        mat-button
+        class="top-current-task"
+        aria-label="Refresh current task"
+        [matTooltip]="currentTask.entry || currentTask.errorMessage
+            || (currentTask.isLoading ? 'Loading current task…' : 'No active task.')"
+        matTooltipPosition="below"
+        (click)="currentTask.refresh()"
+    >
+        <span class="top-current-task-label">Task</span>
+        <span class="top-current-task-entry">
+            {{ currentTask.entry || currentTask.errorMessage
+                || (currentTask.isLoading ? 'Loading…' : 'No active task') }}
+        </span>
+    </button>
 
 </mat-toolbar>
 

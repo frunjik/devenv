@@ -8,6 +8,7 @@ import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
 import { createCurrentEntryHandler } from './handlers/current-entry';
+import { createCurrentTaskHandler } from './handlers/current-task';
 import {
     createFeatureHandler,
     createFeaturePriorityHandler,
@@ -52,6 +53,7 @@ export function createApp(
     app.post('/files', postFiles as RequestHandler);
     app.get('/folders', getFolders as RequestHandler);
     app.get('/current', createCurrentEntryHandler(root));
+    app.get('/task', createCurrentTaskHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id', createFeaturePriorityHandler(root));

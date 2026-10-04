@@ -64,6 +64,7 @@ describe('AppComponent', () => {
                 exitCode: null,
             },
         }));
+        http.match('http://localhost:3000/task').forEach(request => request.flush({ data: null }));
         http.match('http://localhost:3000/current').forEach(request => request.flush({ data: null }));
         http.match('http://localhost:3000/git/status').forEach(request => request.flush({
             data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
@@ -88,6 +89,60 @@ describe('AppComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.textContent).toContain('http://localhost:3000/');
+    });
+
+    it('shows and refreshes the DEVENVOPDEV task at the right side of the top toolbar', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('Loading…');
+
+        const initialRequest = http.expectOne('http://localhost:3000/task');
+        expect(initialRequest.request.method).toBe('GET');
+        initialRequest.flush({ data: '- [In progress] Implement current task toolbar' });
+        fixture.detectChanges();
+
+        const taskControl = fixture.nativeElement.querySelector('.top-current-task');
+        expect(taskControl.textContent).toContain('- [In progress] Implement current task toolbar');
+        expect(taskControl.getAttribute('aria-label')).toBe('Refresh current task');
+        expect(taskControl.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
+            & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+        expect(fixture.debugElement.query(By.css('.top-current-task')).injector.get(MatTooltip).message)
+            .toBe('- [In progress] Implement current task toolbar');
+
+        taskControl.click();
+        const refreshRequest = http.expectOne('http://localhost:3000/task');
+        refreshRequest.flush({ data: '- Next task' });
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('- Next task');
+        fixture.destroy();
+    });
+
+    it('shows an empty-task state when DEVENVOPDEV.md contains no active task', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/task').flush({ data: null });
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent)
+            .toContain('No active task');
+        fixture.destroy();
+    });
+
+    it('shows an error when the DEVENVOPDEV task cannot be loaded', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/task').flush(
+            { error: { message: 'Task file unavailable.' } },
+            { status: 500, statusText: 'Server Error' },
+        );
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent)
+            .toContain('500');
+        fixture.destroy();
     });
 
     it('shows and updates the latest current entry on the right side of the toolbar', () => {

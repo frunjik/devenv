@@ -148,6 +148,10 @@ export class BackendService {
         return this.get<string | null>('current');
     }
 
+    getCurrentTask(): Observable<string | null> {
+        return this.get<string | null>('task');
+    }
+
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
         return this.get<TestRunCacheStatus>('tests/cache/status');
     }

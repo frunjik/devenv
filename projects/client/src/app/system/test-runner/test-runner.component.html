@@ -18,7 +18,7 @@
         <h3>Standard output</h3>
         <pre>{{ runResult.stdout || '(No output.)' }}</pre>
 
-        <ng-container *ngIf="runResult.stderr">
+        <ng-container *ngIf="runResult.exitCode !== null && runResult.exitCode !== 0 && runResult.stderr">
             <h3>Standard error</h3>
             <pre>{{ runResult.stderr }}</pre>
         </ng-container>

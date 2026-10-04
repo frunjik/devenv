@@ -41,17 +41,23 @@ describe('TestRunnerComponent', () => {
         await Promise.resolve();
         fixture.detectChanges();
         expect(fixture.nativeElement.textContent).toContain('Tests passed (exit code 0)');
-        expect(fixture.nativeElement.textContent).toContain('warning');
+        expect(fixture.nativeElement.textContent).not.toContain('Standard error');
+        expect(fixture.nativeElement.textContent).not.toContain('warning');
     });
 
-    it('shows the nonzero exit code when tests fail', async () => {
-        runTests.mockResolvedValue(1);
+    it('shows standard error when tests fail', async () => {
+        runTests.mockImplementation(async onOutput => {
+            onOutput('stderr', 'test failure details');
+            return 1;
+        });
 
         component.runTests();
         await Promise.resolve();
         fixture.detectChanges();
 
         expect(fixture.nativeElement.textContent).toContain('Tests failed (exit code 1)');
+        expect(fixture.nativeElement.textContent).toContain('Standard error');
+        expect(fixture.nativeElement.textContent).toContain('test failure details');
     });
 
     it('shows an API error when the request fails', async () => {

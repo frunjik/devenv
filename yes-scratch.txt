@@ -1,6 +1,7 @@
 rules:
 - ask me every 7 minutes to continue or stop the loop
-- never EVER change production code 
+- never change production code 
+- only write production code after getting stuck on a test writing loop and asking me for permission
 - find the minimal tests that cover 100 overall
 
 loop:

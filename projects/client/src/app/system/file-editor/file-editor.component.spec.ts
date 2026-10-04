@@ -4,6 +4,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Server } from 'node:http';
+import type { editor, IKeyboardEvent } from 'monaco-editor';
 import { firstValueFrom } from 'rxjs';
 import { startServer } from '../../../../../server/src/public-api';
 import { BackendService } from '../../backend.service';
@@ -11,6 +12,29 @@ import { FileEditorComponent } from './file-editor.component';
 import { provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+
+function createEditorStub() {
+    let onKeyDown: ((event: IKeyboardEvent) => void) | undefined;
+    let disposed = false;
+    const instance = {
+        onKeyDown: (listener: (event: IKeyboardEvent) => void) => {
+            onKeyDown = listener;
+            return {
+                dispose: () => {
+                    disposed = true;
+                },
+            };
+        },
+    } as unknown as editor.IStandaloneCodeEditor;
+
+    return {
+        instance,
+        emitKeyDown: (browserEvent: KeyboardEvent) => {
+            onKeyDown?.({ browserEvent } as IKeyboardEvent);
+        },
+        isDisposed: () => disposed,
+    };
+}
 
 describe('FileEditorComponent', () => {
     let component: FileEditorComponent;
@@ -138,4 +162,31 @@ describe('FileEditorComponent', () => {
         await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
             .resolves.toBe('saved with command shortcut');
     });
+
+    it('saves when Ctrl+S is pressed in the initialized editor', async () => {
+        component.filename = 'sample.txt';
+        component.fileContent = 'saved from editor shortcut';
+        const editorStub = createEditorStub();
+        component.onEditorInit(editorStub.instance);
+        const event = new KeyboardEvent('keydown', {
+            key: 's',
+            ctrlKey: true,
+            cancelable: true,
+        });
+        editorStub.emitKeyDown(event);
+        await fixture.whenStable();
+
+        expect(event.defaultPrevented).toBe(true);
+        await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
+            .resolves.toBe('saved from editor shortcut');
+    });
+
+    it('disposes the editor key handler when destroyed', () => {
+        const editorStub = createEditorStub();
+        component.onEditorInit(editorStub.instance);
+        fixture.destroy();
+
+        expect(editorStub.isDisposed()).toBe(true);
+    });
+
 });

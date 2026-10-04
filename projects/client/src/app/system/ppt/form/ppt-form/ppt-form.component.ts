@@ -10,9 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 type PPTKeyedItems = Record<string, PPTValue>;
 type PPTOrderedItems = Array<PPTValue>;
 
-const pptIdentity = (o:any) => o;
-
-function pptConvertOrderedToKeyed(values: PPTOrderedItems, f: Function = pptIdentity): PPTKeyedItems {
+function pptConvertOrderedToKeyed(values: PPTOrderedItems, f: Function): PPTKeyedItems {
     const keyed: Record<string, PPTValue> = {};
     values.forEach((item) => {
         keyed[item.id] = f(item);

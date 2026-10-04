@@ -10,6 +10,7 @@ import { createGitStatusHandler } from './handlers/git-status';
 import {
     createLastTestRunHandler,
     createTestRunHandler,
+    createTestRunCacheStatusHandler,
     type TestCommandExecutor,
 } from './handlers/test-runner';
 
@@ -33,6 +34,7 @@ export function createApp(
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
+        app.get('/tests/cache/status', createTestRunCacheStatusHandler(testRunCacheDirectory));
         app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));
         app.get('/git/status', createGitStatusHandler(gitCommitCwd));
@@ -41,7 +43,12 @@ export function createApp(
     return app;
 }
 
-export type { LastTestRun, TestCommandEvent, TestCommandExecutor } from './handlers/test-runner';
+export type {
+    LastTestRun,
+    TestCommandEvent,
+    TestCommandExecutor,
+    TestRunCacheStatus,
+} from './handlers/test-runner';
 export type { GitStatus, GitStatusFile } from './handlers/git-status';
 
 export interface ServerListener {

@@ -26,6 +26,14 @@ export interface LastTestRun {
     error: string | null;
 }
 
+export interface TestRunCacheStatus {
+    available: boolean;
+    status: 'empty' | 'passed' | 'failed' | 'error';
+    startedAt: string | null;
+    finishedAt: string | null;
+    exitCode: number | null;
+}
+
 const defaultTestDataDirectory = join(process.cwd(), 'test-run-cache');
 
 async function cacheLastTestRun(directory: string, result: LastTestRun): Promise<void> {
@@ -168,6 +176,42 @@ export function createLastTestRunHandler(cacheDirectory = defaultTestDataDirecto
             .catch((error: NodeJS.ErrnoException) => {
                 if (error.code === 'ENOENT') {
                     response.json({ data: null });
+                    return;
+                }
+                next(error);
+            });
+    };
+}
+
+export function createTestRunCacheStatusHandler(cacheDirectory = defaultTestDataDirectory): RequestHandler {
+    return (_request, response, next) => {
+        void readFile(join(cacheDirectory, 'last-test-run.json'), 'utf8')
+            .then(contents => {
+                const result = JSON.parse(contents) as LastTestRun;
+                const status: TestRunCacheStatus['status'] = result.error !== null
+                    ? 'error'
+                    : result.exitCode === 0 ? 'passed' : 'failed';
+                response.json({
+                    data: {
+                        available: true,
+                        status,
+                        startedAt: result.startedAt,
+                        finishedAt: result.finishedAt,
+                        exitCode: result.exitCode,
+                    } satisfies TestRunCacheStatus,
+                });
+            })
+            .catch((error: NodeJS.ErrnoException) => {
+                if (error.code === 'ENOENT') {
+                    response.json({
+                        data: {
+                            available: false,
+                            status: 'empty',
+                            startedAt: null,
+                            finishedAt: null,
+                            exitCode: null,
+                        } satisfies TestRunCacheStatus,
+                    });
                     return;
                 }
                 next(error);

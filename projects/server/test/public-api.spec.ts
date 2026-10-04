@@ -234,6 +234,142 @@ describe('server public HTTP API', () => {
         }
     });
 
+    it('reports an empty test-run cache', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const cacheDirectory = join(root, 'empty-cache-status');
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const response = await request(createApp(root, undefined, process.cwd(), cacheDirectory))
+                .get('/tests/cache/status');
+            expect(response.body).toEqual({
+                data: {
+                    available: false,
+                    status: 'empty',
+                    startedAt: null,
+                    finishedAt: null,
+                    exitCode: null,
+                },
+            });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports a passed cached test run', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const cacheDirectory = join(root, 'passed-cache-status');
+        process.env['NODE_ENV'] = 'test';
+        await mkdir(cacheDirectory);
+        await writeFile(join(cacheDirectory, 'last-test-run.json'), JSON.stringify({
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 0,
+            stdout: 'passed',
+            stderr: '',
+            error: null,
+        }));
+
+        try {
+            const response = await request(createApp(root, undefined, process.cwd(), cacheDirectory))
+                .get('/tests/cache/status');
+            expect(response.body).toEqual({
+                data: {
+                    available: true,
+                    status: 'passed',
+                    startedAt: '2026-10-04T12:00:00.000Z',
+                    finishedAt: '2026-10-04T12:01:00.000Z',
+                    exitCode: 0,
+                },
+            });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports a failed cached test run', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const cacheDirectory = join(root, 'failed-cache-status');
+        process.env['NODE_ENV'] = 'test';
+        await mkdir(cacheDirectory);
+        await writeFile(join(cacheDirectory, 'last-test-run.json'), JSON.stringify({
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 1,
+            stdout: '',
+            stderr: 'test failure',
+            error: null,
+        }));
+
+        try {
+            const response = await request(createApp(root, undefined, process.cwd(), cacheDirectory))
+                .get('/tests/cache/status');
+            expect(response.body.data).toMatchObject({ available: true, status: 'failed', exitCode: 1 });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports a cached test-run process error', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const cacheDirectory = join(root, 'error-cache-status');
+        process.env['NODE_ENV'] = 'test';
+        await mkdir(cacheDirectory);
+        await writeFile(join(cacheDirectory, 'last-test-run.json'), JSON.stringify({
+            startedAt: '2026-10-04T12:00:00.000Z',
+            finishedAt: '2026-10-04T12:00:01.000Z',
+            exitCode: null,
+            stdout: '',
+            stderr: '',
+            error: 'Could not launch tests',
+        }));
+
+        try {
+            const response = await request(createApp(root, undefined, process.cwd(), cacheDirectory))
+                .get('/tests/cache/status');
+            expect(response.body.data).toMatchObject({ available: true, status: 'error', exitCode: null });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports invalid cached test-run data as a server error', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const cacheDirectory = join(root, 'invalid-cache-status');
+        process.env['NODE_ENV'] = 'test';
+        await mkdir(cacheDirectory);
+        await writeFile(join(cacheDirectory, 'last-test-run.json'), '{invalid json');
+
+        try {
+            const testApp = createApp(root, undefined, process.cwd(), cacheDirectory);
+            testApp.use(handleError);
+            const response = await request(testApp).get('/tests/cache/status');
+            expect(response.status).toBe(500);
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
     it('stores only the first terminal event from a test run', async () => {
         const originalNodeEnv = process.env['NODE_ENV'];
         const originalNpmExecPath = process.env['npm_execpath'];
@@ -498,6 +634,8 @@ describe('server public HTTP API', () => {
             expect(response.status).toBe(404);
             const cachedResponse = await request(productionApp).get('/tests/last');
             expect(cachedResponse.status).toBe(404);
+            const cacheStatusResponse = await request(productionApp).get('/tests/cache/status');
+            expect(cacheStatusResponse.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];

@@ -66,6 +66,8 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('.open-features').textContent).toContain('No open features.');
+        expect(fixture.nativeElement.querySelector('.in-progress-features').textContent)
+            .toContain('No features in progress.');
     });
 
     it('refreshes the feature list from the client and shows newly added features', async () => {
@@ -122,6 +124,32 @@ describe('FeatureDescriptionComponent', () => {
         )).toEqual(['Backlog', 'Backlog']);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
             .toHaveLength(4);
+    });
+
+    it('lists only in-progress features in its own section and keeps the complete list', async () => {
+        await fixture.whenStable();
+        const inProgressId = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), [
+            `// [${inProgressId}] [High] [In progress] Feature being worked on`,
+            '// [123e4567-e89b-42d3-a456-426614174001] [Medium] [Backlog] Feature waiting',
+            '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const currentTasks: NodeListOf<HTMLLIElement> =
+            fixture.nativeElement.querySelectorAll('.in-progress-feature');
+        expect(currentTasks).toHaveLength(1);
+        expect(currentTasks[0].querySelector('.in-progress-feature-id').textContent.trim())
+            .toBe('123e4567');
+        expect(currentTasks[0].querySelector('.in-progress-feature-id').getAttribute('title'))
+            .toBe(inProgressId);
+        expect(currentTasks[0].querySelector('.in-progress-feature-description').textContent.trim())
+            .toBe('Feature being worked on');
+        expect(fixture.nativeElement.querySelector('.feature-count').textContent.trim()).toBe('(1)');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(3);
     });
 
     it('displays priority and status as distinct badges within card-like rows', async () => {
@@ -216,6 +244,9 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('In progress');
+        expect(fixture.nativeElement.querySelectorAll('.in-progress-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.in-progress-feature-description').textContent.trim())
+            .toBe('Add a feature');
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).toContain(
             `- [In progress] Add a feature <!-- feature-id:${id} -->`,
@@ -411,6 +442,7 @@ describe('FeatureDescriptionComponent', () => {
             .toContain('[High] [Done] Feature to track');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Done');
+        expect(fixture.nativeElement.querySelectorAll('.in-progress-feature')).toHaveLength(0);
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
         expect(featureWork.activeFeature).toBeNull();
     });

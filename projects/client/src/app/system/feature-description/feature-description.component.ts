@@ -59,6 +59,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
         this.featureDataSource.sort = sort;
     }
 
+    get inProgressFeatures(): FeatureRow[] {
+        return this.featureDataSource.data.filter(feature => feature.status === 'In progress');
+    }
+
     constructor(
         private backend: BackendService,
         readonly featureWork: FeatureWorkService,

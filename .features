@@ -1,4 +1,4 @@
-// [2026-10-04 23:08 +02:00] [bdb0d3f3-db41-4031-a975-f06640977329] [Low] [Backlog] edit feature
+// [2026-10-04 23:08 +02:00] [bdb0d3f3-db41-4031-a975-f06640977329] [High] [In progress] edit feature
 // [2026-10-04 23:14 +02:00] [e44beae8-d973-4014-8fcb-bff1b67c0b9c] [Medium] [Backlog] ./startwork
 // [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] [Low] [Backlog] more rows by default in the client feature list
 // [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] [Medium] [Backlog] create workflow
@@ -15,7 +15,6 @@
 // [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [Backlog] clear current task after commit
 // [2026-10-05 00:21 +02:00] [94aa6582-e140-4587-96ac-248ee1c641fc] [Medium] [Backlog] add commited state to feature
 // [2026-10-05 00:24 +02:00] [67766a83-30b9-4e55-85e6-96891449e37e] [Medium] [Backlog] prevent duplicate features
-// [2026-10-05 00:25 +02:00] [55736a9b-0824-45f9-8ca7-b0072678ba90] [Medium] [In progress] put done features on a separate list
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
 // [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [Backlog] fix typesript errors
 // [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [Backlog] technical debt
@@ -30,3 +29,8 @@
 // [2026-10-05 00:50 +02:00] [00d2fcfe-4386-4b35-8f02-2176423c3acc] [Medium] [Backlog] make a display of features that are in progress to the right side of the input form
 // [2026-10-05 00:50 +02:00] [7ea1abc7-030a-444e-9fc0-5e307dfc9b5d] [Medium] [Backlog] extract components
 // [2026-10-05 00:53 +02:00] [79985af5-96fd-478a-a572-85ebf50d479f] [Medium] [Backlog] mark a feature with Questions
+// [2026-10-05 00:55 +02:00] [e1a4b339-fde5-47c9-ba8e-9bccc794953f] [Medium] [In progress] list features in progress
+// [2026-10-05 00:59 +02:00] [bfb88622-58cd-4bd5-afdf-c7efcb5f1961] [Medium] [Backlog] questions form
+// [2026-10-05 01:00 +02:00] [876234ff-990a-4b61-989d-43dabbaafc15] [Medium] [Backlog] add abort button on in progress features that puts the feature back in ./features with status Aborted
+// [2026-10-05 01:01 +02:00] [ac4d3847-af47-45a1-b042-81f9ebe3fc07] [Medium] [Backlog] allow prioritizing open feature list items from the client
+// [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress

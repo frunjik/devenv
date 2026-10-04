@@ -37,6 +37,18 @@
         <p *ngIf="priorityError" id="feature-priority-error" role="alert">{{ priorityError }}</p>
         <p *ngIf="statusError" id="feature-status-error" role="alert">{{ statusError }}</p>
         <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
+        <section class="in-progress-features" aria-labelledby="in-progress-features-heading">
+            <h3 id="in-progress-features-heading">
+                In progress <span class="feature-count">({{ inProgressFeatures.length }})</span>
+            </h3>
+            <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
+            <ul *ngIf="inProgressFeatures.length > 0">
+                <li *ngFor="let feature of inProgressFeatures" class="in-progress-feature">
+                    <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                    <span class="in-progress-feature-description">{{ feature.description }}</span>
+                </li>
+            </ul>
+        </section>
         <div class="feature-list-controls">
             <mat-form-field appearance="outline" *ngIf="features.length > 0">
                 <mat-label>Search features</mat-label>

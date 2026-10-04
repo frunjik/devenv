@@ -7,6 +7,12 @@ import { Observable, of } from 'rxjs';
 import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
 import { LoggerService } from './logger.service';
 
+export interface TestRunResult {
+    exitCode: number;
+    stdout: string;
+    stderr: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -50,6 +56,10 @@ export class BackendService {
                     return of([]);
                 })
             );
+    }
+
+    runTests(): Observable<TestRunResult> {
+        return this.post<TestRunResult>('tests/run', {});
     }
 
     logError(message: string, e: Error) {

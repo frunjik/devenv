@@ -1,0 +1,26 @@
+<main>
+    <h1>Test runner</h1>
+    <p>Run the client and server test suites.</p>
+
+    <button type="button" (click)="runTests()" [disabled]="isRunning">
+        {{ isRunning ? 'Running tests…' : 'Run tests' }}
+    </button>
+
+    <p role="status" aria-live="polite" *ngIf="isRunning">Tests are running. This may take a few minutes.</p>
+    <p class="error" role="alert" *ngIf="errorMessage">Could not run tests: {{ errorMessage }}</p>
+
+    <section *ngIf="result as runResult" aria-live="polite">
+        <h2 [class.error]="runResult.exitCode !== 0">
+            {{ runResult.exitCode === 0 ? 'Tests passed' : 'Tests failed' }}
+            (exit code {{ runResult.exitCode }})
+        </h2>
+
+        <h3>Standard output</h3>
+        <pre>{{ runResult.stdout || '(No output.)' }}</pre>
+
+        <ng-container *ngIf="runResult.stderr">
+            <h3>Standard error</h3>
+            <pre>{{ runResult.stderr }}</pre>
+        </ng-container>
+    </section>
+</main>

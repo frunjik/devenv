@@ -6,7 +6,9 @@ Bootstrap
 - show the test output on the client
 
 Devenv
+- make server calls with some prefix /api/server/ ?
 - fix the server test highlighting
+- feature: show client feedback on saving files
 - feature: show client and server version (and status)
 - feature: increase version number
 - feature: add a menu link to the current page

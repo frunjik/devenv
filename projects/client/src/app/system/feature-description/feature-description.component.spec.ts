@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { createServer } from 'node:http';
@@ -72,12 +73,26 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        const list = fixture.nativeElement.querySelector('.open-features ul');
-        expect(Array.from(list.querySelectorAll('li')).map((item: HTMLLIElement) => item.textContent.trim()))
+        const rows = fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row');
+        expect(Array.from<HTMLTableRowElement>(rows).map(row => ({
+            id: row.querySelector('.mat-column-id')?.textContent.trim(),
+            description: row.querySelector('.mat-column-description')?.textContent.trim(),
+            title: row.querySelector('.mat-column-id')?.getAttribute('title'),
+        })))
             .toEqual(expect.arrayContaining([
-                expect.stringMatching(/^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] Add a saved feature$/),
-                expect.stringMatching(/^\/\/ \[2026-10-04 22:46 \+02:00\] \[[0-9a-f-]{36}\] Add another feature$/),
+                expect.objectContaining({
+                    id: expect.stringMatching(/^[0-9a-f]{8}$/),
+                    description: 'Add a saved feature',
+                    title: expect.stringMatching(/^[0-9a-f-]{36}$/),
+                }),
+                expect.objectContaining({
+                    id: expect.stringMatching(/^[0-9a-f]{8}$/),
+                    description: 'Add another feature',
+                    title: expect.stringMatching(/^[0-9a-f-]{36}$/),
+                }),
             ]));
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
+            .toHaveLength(2);
     });
 
     it('holds the entered feature description in the form', async () => {
@@ -106,9 +121,37 @@ describe('FeatureDescriptionComponent', () => {
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
             /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] Add a feature submission form\n$/,
         );
-        expect(Array.from(fixture.nativeElement.querySelectorAll('.open-features li'))
-            .map((item: HTMLLIElement) => item.textContent.trim()))
-            .toEqual([expect.stringMatching(/Add a feature submission form$/)]);
+        expect(Array.from<HTMLTableRowElement>(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        ).map(row => row.querySelector('.mat-column-description')?.textContent.trim()))
+            .toEqual(['Add a feature submission form']);
+    });
+
+    it('paginates the open features table', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), Array.from(
+            { length: 7 },
+            (_, index) => `// Feature ${index + 1}`,
+        ).join('\n'));
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(5);
+        expect(fixture.nativeElement.querySelector('mat-paginator').textContent).toContain('1 – 5 of 7');
+
+        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next').click();
+        fixture.detectChanges();
+
+        const rows: HTMLTableRowElement[] = Array.from(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        );
+        expect(rows).toHaveLength(2);
+        expect(rows.map(row => row.textContent)).toEqual(expect.arrayContaining([
+            expect.stringContaining('Feature 6'),
+            expect.stringContaining('Feature 7'),
+        ]));
     });
 
     it.each([

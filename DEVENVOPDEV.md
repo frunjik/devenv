@@ -7,6 +7,6 @@ After finishing a feature add an entry to the ./history.
 
 The feature you are writing is:
 
-show the open features list on the client feature form page under the form
+improve the display of the feature list on the client use a material table with paging and we want to be able to add a start button on each row
 
 

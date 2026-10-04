@@ -1,31 +1,54 @@
-import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { NgIf, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BackendService } from '../../backend.service';
+
+interface FeatureRow {
+    id: string;
+    description: string;
+}
 
 @Component({
     selector: 'app-feature-description',
     standalone: true,
-    imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, NgFor, NgIf],
+    imports: [
+        FormsModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatPaginatorModule,
+        MatTableModule,
+        NgIf,
+        SlicePipe,
+    ],
     templateUrl: './feature-description.component.html',
     styleUrl: './feature-description.component.scss',
 })
-export class FeatureDescriptionComponent implements OnInit {
+export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     description = '';
     isSubmitting = false;
     successMessage = '';
     errorMessage = '';
     features: string[] = [];
+    readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
+    readonly displayedColumns = ['id', 'description', 'actions'];
     isLoadingFeatures = false;
     featuresError = '';
+    @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     constructor(private backend: BackendService) {}
 
     ngOnInit(): void {
         this.refreshFeatures();
+    }
+
+    ngAfterViewInit(): void {
+        this.featureDataSource.paginator = this.paginator;
     }
 
     refreshFeatures(): void {
@@ -34,6 +57,7 @@ export class FeatureDescriptionComponent implements OnInit {
         this.backend.getFeatures().subscribe({
             next: features => {
                 this.features = features;
+                this.featureDataSource.data = features.map(feature => this.parseFeature(feature));
                 this.isLoadingFeatures = false;
             },
             error: (error: Error) => {
@@ -41,6 +65,15 @@ export class FeatureDescriptionComponent implements OnInit {
                 this.isLoadingFeatures = false;
             },
         });
+    }
+
+    private parseFeature(feature: string): FeatureRow {
+        const match = feature.match(
+            /^\/\/ \[[^\]]+\] \[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] (.+)$/i,
+        );
+        return match
+            ? { id: match[1], description: match[2] }
+            : { id: '', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
     }
 
     submit(): void {

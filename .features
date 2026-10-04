@@ -14,3 +14,6 @@
 // [2026-10-04 23:14 +02:00] [e44beae8-d973-4014-8fcb-bff1b67c0b9c] ./startwork
 // [2026-10-04 23:15 +02:00] [8662e088-16a4-4539-9903-107f54f0518b] clear client feature input after succesfull submitting it
 // [2026-10-04 23:15 +02:00] [7774313c-8e84-429e-819b-b1159ab91380] improve the display of the feature list on the client
+// [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] more rows by default in the client feature list
+// [2026-10-04 23:23 +02:00] [604c4674-1308-4554-a202-5ffc173dd8c2] more rows by default in the client feature list
+// [2026-10-04 23:23 +02:00] [ce7cc217-138b-40fd-a1fd-8202e55c9cbf] add search for the client feature list

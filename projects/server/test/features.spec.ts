@@ -275,6 +275,27 @@ describe('features public API', () => {
             .toBe('Instructions without a matching marker\n');
     });
 
+    it('preserves LF endings when updating a matching task marker', async () => {
+        const created = await request(app).post('/features')
+            .send({ description: 'LF task', status: 'In progress' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] LF task <!-- feature-id:${id} -->`,
+            '',
+        ].join('\n'));
+
+        const response = await request(app).patch(`/features/${id}/description`)
+            .send({ description: 'Updated LF task' });
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Updated LF task <!-- feature-id:${id} -->`,
+            '',
+        ].join('\n'));
+    });
+
     it.each([
         ['missing description', {}],
         ['empty description', { description: '' }],

@@ -36,3 +36,8 @@
 // [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress
 // [2026-10-05 01:06 +02:00] [32084c42-c61c-4133-af88-f672298c9717] [Medium] [Backlog] stable versions
 // [2026-10-05 01:10 +02:00] [48da0605-50be-4be6-988e-49e6ac880011] [Medium] [Backlog] mark current feature in progress
+// [2026-10-05 01:14 +02:00] [e2fd467c-4499-450e-9492-d518db4ea857] [Medium] [In progress] refresh open feature list on client
+// [2026-10-05 01:14 +02:00] [84536587-745f-4b22-aa4b-947925dc69b9] [Medium] [Backlog] add status Questions to features
+// [2026-10-05 01:14 +02:00] [761f28d0-bb20-407c-807c-1320d2fc9d4e] [Medium] [Backlog] add model for features
+// [2026-10-05 01:14 +02:00] [3aa9e269-c494-42d0-9e8a-77527fb24ad5] [Medium] [Backlog] use json for data persistence
+// [2026-10-05 01:15 +02:00] [31cfbd9f-abb5-4830-8480-c1a1a8718344] [Medium] [Backlog] mark as done in open features

@@ -12,6 +12,7 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
+- [In progress] refresh open feature list on client <!-- feature-id:e2fd467c-4499-450e-9492-d518db4ea857 -->
 - [In progress] clear current task after commit <!-- feature-id:85dabfd0-abf4-4a5c-80f7-d0bb981b4a04 -->
 - [In progress] edit feature <!-- feature-id:bdb0d3f3-db41-4031-a975-f06640977329 -->
 - [In progress] put done features on a separate list <!-- feature-id:55736a9b-0824-45f9-8ca7-b0072678ba90 -->

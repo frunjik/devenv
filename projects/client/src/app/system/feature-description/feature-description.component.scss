@@ -1,6 +1,10 @@
 .feature-description {
-    width: min(48rem, calc(100% - 2rem));
+    width: min(72rem, calc(100% - 2rem));
     margin: 2rem auto;
+
+    form {
+        max-width: 48rem;
+    }
 
     mat-form-field {
         width: 100%;

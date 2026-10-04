@@ -1,4 +1,4 @@
-// [2026-10-04 23:01 +02:00] [4723e595-de44-488d-902b-4728f159dcff] [Medium] [Backlog] after commiting a feature remove it from the feature list
+// [2026-10-04 23:01 +02:00] [4723e595-de44-488d-902b-4728f159dcff] [Medium] [In progress] after commiting a feature remove it from the feature list
 // [2026-10-04 23:02 +02:00] [2216e5f7-8627-408b-a97c-0197a1adf82e] [High] [Backlog] make feature list sortable on client
 // [2026-10-04 23:04 +02:00] [87366c34-ebbc-47b6-b779-c52651fd4865] [Medium] [Backlog] start working on a feature from client
 // [2026-10-04 23:04 +02:00] [11ea4c78-238c-40f2-baed-5440ef67efca] [High] [Backlog] make features priotizable from client
@@ -30,3 +30,4 @@
 // [2026-10-05 00:02 +02:00] [a84349ff-be96-48cf-9c90-f3baa667dcb0] [Medium] [Backlog] add status to feature
 // [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [Backlog] add feature category
 // [2026-10-05 00:08 +02:00] [e05d7e93-fb68-462f-b234-bb2655d411f9] [Medium] [Backlog] show current test coverage on client
+// [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog

@@ -8,3 +8,5 @@ After finishing a feature add an entry to the ./history.
 The feature you are writing is:
 
 showing the status of the last cached result on the client test runner page
+
+

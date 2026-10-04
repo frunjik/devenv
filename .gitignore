@@ -8,6 +8,7 @@ coverage
 /bazel-out
 .angular
 /test-run-cache/
+.current
 
 # Private Scratch Files
 scratch

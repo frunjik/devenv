@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="file-editor-toolbar">
     <button (click)="loadFile()" mat-button>load</button>
     <span class="example-spacer"></span>
     <input class="filename-input" aria-label="Filename" [(ngModel)]="filename" (keydown)="onFilenameKeydown($event)">
@@ -6,6 +6,6 @@
     <button (click)="saveFile()" mat-button>save</button>
 </mat-toolbar>
 
-<div style="height: 95%; width: 100%;">
-    <ngx-monaco-editor #monacoEditor style="height: 100%" [options]="editorOptions" [(ngModel)]="fileContent" (onInit)="onEditorInit($event)"></ngx-monaco-editor>
+<div class="editor-surface">
+    <ngx-monaco-editor #monacoEditor [options]="editorOptions" [(ngModel)]="fileContent" (onInit)="onEditorInit($event)"></ngx-monaco-editor>
 </div>

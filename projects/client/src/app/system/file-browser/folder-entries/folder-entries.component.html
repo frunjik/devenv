@@ -1,5 +1,5 @@
 <div
-    class="row"
+    class="row folder-row"
     *ngFor="let entry of folders"
     (click)="clickFileOrFolder.emit(entry)"
 >
@@ -7,7 +7,7 @@
     <span>{{ entry.filename }}</span>
 </div>
 <div
-    class="row"
+    class="row file-row"
     *ngFor="let entry of files"
     (click)="clickFileOrFolder.emit(entry)"
 >

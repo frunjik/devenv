@@ -1,20 +1,27 @@
 TDOD:
 
 Bootstrap
-- make a button to commit changes from the client
-- fix style the breadcrumb menu - it gets too long and pushes the editor away
+- field
+- model
+- form
+- rows
+- dataset hydration
 
 Devenv
+- make an indicator on the client to show we have open changes
+- feature: dynamic styles
 - make server calls with some prefix /api/server/ ?
 - feature: show client feedback on saving files
 - feature: show client and server version (and status)
 - feature: increase version number
 - feature: add a menu link to the current page
+- fix style the breadcrumb menu - it gets too long and pushes the editor away
 
 System
 - update node
 
 DONE:
+- make a button to commit changes from the client
 - provide links in menu to edit /client and /server
 - allow to run a node command from the client
 - allow running test

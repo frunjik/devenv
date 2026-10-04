@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import type { ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
@@ -52,6 +52,14 @@ describe('AppComponent', () => {
         navigateByUrl = jest.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     });
 
+    afterEach(() => {
+        http.match('http://localhost:3000/current').forEach(request => request.flush({ data: null }));
+        http.match('http://localhost:3000/git/status').forEach(request => request.flush({
+            data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
+        }));
+        http.verify();
+    });
+
     it('should create the app', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
@@ -69,6 +77,43 @@ describe('AppComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.textContent).toContain('http://localhost:3000/');
+    });
+
+    it('shows and updates the latest current entry on the right side of the toolbar', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/current').flush({ data: '// first current entry' });
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('.current-entry').textContent.trim())
+            .toBe('// first current entry');
+
+        fixture.componentInstance.currentEntry.startPolling();
+        fixture.componentInstance.currentEntry.refresh();
+        http.expectOne('http://localhost:3000/current').flush({ data: '// updated current entry' });
+        fixture.detectChanges();
+
+        const entry = fixture.nativeElement.querySelector('.current-entry');
+        expect(entry.textContent.trim()).toBe('// updated current entry');
+        expect(entry.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
+            & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
+        fixture.destroy();
+        fixture.componentInstance.currentEntry.stopPolling();
+    });
+
+    it('shows an error if the current entry cannot be loaded', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/current').flush(
+            { error: { message: 'Current entry unavailable' } },
+            { status: 500, statusText: 'Error' },
+        );
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.current-entry').textContent)
+            .toContain('Http failure response');
+        fixture.destroy();
     });
 
     it('shows a button to commit changes', () => {

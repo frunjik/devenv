@@ -49,6 +49,10 @@
         -->
     </nav>
 
+    <span class="toolbar-spacer"></span>
+    <span class="current-entry" [matTooltip]="currentEntry.errorMessage">
+        {{ currentEntry.entry || currentEntry.errorMessage || 'Loading current…' }}
+    </span>
 
 </mat-toolbar>
 

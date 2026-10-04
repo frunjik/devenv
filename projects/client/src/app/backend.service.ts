@@ -103,6 +103,10 @@ export class BackendService {
         return this.get<GitStatus>('git/status');
     }
 
+    getCurrentEntry(): Observable<string | null> {
+        return this.get<string | null>('current');
+    }
+
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
         return this.get<TestRunCacheStatus>('tests/cache/status');
     }

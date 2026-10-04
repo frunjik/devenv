@@ -18,3 +18,4 @@ History
 // [2026-10-04 22:12 +02:00] Split the server public API integration tests into seven domain-focused suites; all 73 tests pass with 100% server coverage.
 // [2026-10-04 22:16 +02:00] Removed unused imports from the separated server test suites; confirmed no unused-import diagnostics and retained 100% server coverage.
 // [2026-10-04 22:18 +02:00] Reformatted .current to match .history’s heading and dated one-line entry style; recorded the plan before editing.
+// [2026-10-04 22:23 +02:00] Added a server endpoint for the latest nonempty .current entry and a right-aligned client toolbar display that refreshes every 30 seconds; combined client/server coverage is 100% and the client build passes.

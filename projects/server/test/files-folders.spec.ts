@@ -118,4 +118,34 @@ describe('files folders public API', () => {
         const response = await request(app).get('/folders').query({ path: 'sample.txt' });
         expect(response.status).toBe(500);
     });
+
+    it('returns the last nonempty line from the current file', async () => {
+        await writeFile(join(root, '.current'), 'Current\n// older entry\n// latest entry\n');
+
+        const response = await request(app).get('/current');
+
+        expect(response.body).toEqual({ data: '// latest entry' });
+    });
+
+    it('returns null when the current file is empty', async () => {
+        await writeFile(join(root, '.current'), ' \n\n');
+
+        const response = await request(app).get('/current');
+
+        expect(response.body).toEqual({ data: null });
+    });
+
+    it('returns null when the current file does not exist', async () => {
+        const response = await request(app).get('/current');
+
+        expect(response.body).toEqual({ data: null });
+    });
+
+    it('forwards current file read errors to Express', async () => {
+        await mkdir(join(root, '.current'));
+
+        const response = await request(app).get('/current');
+
+        expect(response.status).toBe(500);
+    });
 });

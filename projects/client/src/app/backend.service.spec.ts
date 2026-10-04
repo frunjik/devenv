@@ -74,6 +74,18 @@ describe('BackendService', () => {
         )).toBe(true);
     });
 
+    it('loads the latest nonempty current entry from the API', async () => {
+        await writeFile(join(root, '.current'), 'Current\n// previous entry\n// latest entry\n');
+
+        await expect(service.getCurrentEntry().toPromise()).resolves.toBe('// latest entry');
+    });
+
+    it('returns null from the API when the current entry file is missing', async () => {
+        await rm(join(root, '.current'), { force: true });
+
+        await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
+    });
+
     it('loads the cached test result status through the public API', async () => {
         const status = await service.getTestRunCacheStatus().toPromise();
 

@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
+import { CurrentEntryService } from './current-entry.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
 
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitting = false;
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
+    readonly currentEntry = inject(CurrentEntryService);
     private gitLogRefresh = inject(GitLogRefreshService);
     private snackbar = inject(MatSnackBar);
     private dialog = inject(MatDialog);
@@ -40,10 +42,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.gitStatus.startPolling();
+        this.currentEntry.startPolling();
     }
 
     ngOnDestroy(): void {
         this.gitStatus.stopPolling();
+        this.currentEntry.stopPolling();
     }
 
     commitChanges(): void {

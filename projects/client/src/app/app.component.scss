@@ -1,5 +1,21 @@
+mat-toolbar {
+    white-space: nowrap;
+}
+
 nav {
     margin: 10px;
+}
+
+.toolbar-spacer {
+    flex: 1 1 auto;
+}
+
+.current-entry {
+    max-width: 30vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+    opacity: 0.75;
 }
 
 .git-status-indicator {

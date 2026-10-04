@@ -109,6 +109,8 @@ describe('FeatureDescriptionComponent', () => {
 
         fixture.nativeElement.querySelector('.feature-start-button').click();
         fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
 
         expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
             id,
@@ -116,10 +118,33 @@ describe('FeatureDescriptionComponent', () => {
         });
         expect(fixture.nativeElement.querySelector('.feature-start-button').textContent.trim()).toBe('Started');
         expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
-        await fixture.whenStable();
-        fixture.detectChanges();
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('In progress');
+        fixture.nativeElement.querySelector('.feature-start-button').click();
+        await fixture.whenStable();
+        expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
+    });
+
+    it('activates an already in-progress feature when its row action is clicked', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [In progress] Continue this feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.detectChanges();
+        const statusSelector: HTMLSelectElement =
+            fixture.nativeElement.querySelector('.feature-status-select');
+        statusSelector.dispatchEvent(new Event('change'));
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
+            id,
+            description: 'Continue this feature',
+        });
     });
 
     it('marks a feature done, removes it from the list, and clears matching active work', async () => {
@@ -273,6 +298,8 @@ describe('FeatureDescriptionComponent', () => {
 
         const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
         expect(selector.value).toBe('Backlog');
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature to track');
         selector.value = 'Done';
         selector.dispatchEvent(new Event('change'));
         await fixture.whenStable();
@@ -283,6 +310,7 @@ describe('FeatureDescriptionComponent', () => {
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Done');
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+        expect(featureWork.activeFeature).toBeNull();
     });
 
     it('reports status update failures and restores the previous selection', async () => {
@@ -303,6 +331,26 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(selector.value).toBe('Backlog');
+        expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
+            .toContain('500');
+    });
+
+    it('does not activate a feature when its status cannot be updated from Start', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to start\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        fixture.nativeElement.querySelector('.feature-start-button').click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
         expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
             .toContain('500');
     });
@@ -354,6 +402,8 @@ describe('FeatureDescriptionComponent', () => {
         expect(row.querySelector('.mat-column-description')?.textContent.trim())
             .toBe(`unstructured legacy text [${id}] [Medium] [Backlog]`);
         expect(row.querySelector('.mat-column-id')?.textContent.trim()).toBe('');
+        row.querySelector<HTMLButtonElement>('.feature-start-button')!.click();
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
     });
 
     it('reports priority update failures and restores the previous selection', async () => {

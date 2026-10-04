@@ -1,4 +1,5 @@
 import { execFile, type ExecFileOptions } from 'node:child_process';
+import type { Buffer } from 'node:buffer';
 import type { RequestHandler } from 'express';
 
 export type TestCommandEvent =
@@ -13,22 +14,34 @@ export type TestCommandExecutor = (
     emit: (event: TestCommandEvent) => void,
 ) => void;
 
-const executeCommand: TestCommandExecutor = (command, args, options, emit) => {
-    const child = execFile(command, args, { ...options, encoding: 'utf8' });
-    child.stdout?.on('data', (data: string | Buffer) => {
+interface TestProcess {
+    stdout: { on(event: 'data', listener: (data: string | Buffer) => void): unknown } | null;
+    stderr: { on(event: 'data', listener: (data: string | Buffer) => void): unknown } | null;
+    on(event: 'error', listener: (error: Error) => void): unknown;
+    on(event: 'close', listener: (code: number | null) => void): unknown;
+}
+
+export function forwardTestProcessOutput(
+    child: TestProcess,
+    emit: (event: TestCommandEvent) => void,
+): void {
+    child.stdout?.on('data', (data) => {
         emit({ type: 'stdout', data: data.toString() });
     });
-    child.stderr?.on('data', (data: string | Buffer) => {
+    child.stderr?.on('data', (data) => {
         emit({ type: 'stderr', data: data.toString() });
     });
     child.on('error', (error) => {
         emit({ type: 'error', message: error.message });
     });
     child.on('close', (code) => {
-        if (typeof code === 'number') {
-            emit({ type: 'complete', exitCode: code });
-        }
+        emit({ type: 'complete', exitCode: code ?? 1 });
     });
+}
+
+const executeCommand: TestCommandExecutor = (command, args, options, emit) => {
+    const child = execFile(command, args, { ...options, encoding: 'utf8' });
+    forwardTestProcessOutput(child, emit);
 };
 
 export function createTestRunHandler(execute: TestCommandExecutor = executeCommand): RequestHandler {
@@ -57,9 +70,6 @@ export function createTestRunHandler(execute: TestCommandExecutor = executeComma
 
         let finished = false;
         const finish = () => {
-            if (finished) {
-                return;
-            }
             finished = true;
             isRunning = false;
             response.end();

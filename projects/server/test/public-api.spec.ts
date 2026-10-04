@@ -2,6 +2,8 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
+import { EventEmitter } from 'node:events';
+import { PassThrough } from 'node:stream';
 import type { ErrorRequestHandler } from 'express';
 import request from 'supertest';
 import {
@@ -11,6 +13,7 @@ import {
     type TestCommandEvent,
     type TestCommandExecutor,
 } from '../src/public-api';
+import { forwardTestProcessOutput } from '../src/lib/handlers/test-runner';
 
 describe('server public HTTP API', () => {
     let root: string;
@@ -227,6 +230,63 @@ describe('server public HTTP API', () => {
         }
     });
 
+    it('streams child process spawn errors', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        const originalExecPath = process.execPath;
+        process.env['npm_execpath'] = 'npm-cli.js';
+        process.execPath = join(root, 'missing-node.exe');
+
+        try {
+            const testApp = createApp(root);
+            const response = await request(testApp).post('/tests/run');
+            const events = response.text.split('\n').filter(Boolean).map(line => JSON.parse(line));
+            expect(events).toHaveLength(1);
+            expect(events[0]).toMatchObject({ type: 'error' });
+            expect(events[0].message).toContain('missing-node.exe');
+        } finally {
+            process.execPath = originalExecPath;
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('reports a nonzero exit code when the child exits from a signal', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        const npmCliPath = join(root, 'signaled-npm.js');
+        await writeFile(npmCliPath, "process.kill(process.pid, 'SIGTERM');");
+        process.env['npm_execpath'] = npmCliPath;
+
+        try {
+            const testApp = createApp(root);
+            const response = await request(testApp).post('/tests/run');
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'complete', exitCode: 1 },
+            ]);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('uses a failure exit code when the child closes without an exit code', () => {
+        const child = Object.assign(new EventEmitter(), {
+            stdout: new PassThrough(),
+            stderr: new PassThrough(),
+        });
+        const events: TestCommandEvent[] = [];
+        forwardTestProcessOutput(child, event => events.push(event));
+
+        child.emit('close', null);
+
+        expect(events).toEqual([{ type: 'complete', exitCode: 1 }]);
+    });
+
     it('streams output and the exit code when tests fail', async () => {
         const originalNpmExecPath = process.env['npm_execpath'];
         process.env['npm_execpath'] = 'npm-cli.js';
@@ -357,6 +417,28 @@ describe('server public HTTP API', () => {
             const response = await request(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'error', message: 'process could not start' },
+            ]);
+        } finally {
+            if (originalNpmExecPath === undefined) {
+                delete process.env['npm_execpath'];
+            } else {
+                process.env['npm_execpath'] = originalNpmExecPath;
+            }
+        }
+    });
+
+    it('reports a fallback message when the executor throws a non-error value', async () => {
+        const originalNpmExecPath = process.env['npm_execpath'];
+        process.env['npm_execpath'] = 'npm-cli.js';
+        const execute: TestCommandExecutor = () => {
+            throw 'process could not start';
+        };
+        const testApp = createApp(root, execute);
+
+        try {
+            const response = await request(testApp).post('/tests/run');
+            expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
+                { type: 'error', message: 'Unable to start test process' },
             ]);
         } finally {
             if (originalNpmExecPath === undefined) {

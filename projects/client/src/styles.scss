@@ -20,4 +20,14 @@ body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
+.mat-mdc-snack-bar-container.commit-snackbar-success {
+    --mdc-snackbar-container-color: #2e7d32;
+    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-snack-bar-button-color: #fff;
+}
 
+.mat-mdc-snack-bar-container.commit-snackbar-error {
+    --mdc-snackbar-container-color: #b3261e;
+    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-snack-bar-button-color: #fff;
+}

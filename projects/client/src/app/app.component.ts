@@ -36,7 +36,7 @@ export class AppComponent {
             return;
         }
         if (!message.trim()) {
-            this.showCommitMessage('A commit message is required.');
+            this.showCommitMessage('A commit message is required.', true);
             return;
         }
 
@@ -47,14 +47,17 @@ export class AppComponent {
                 this.isCommitting = false;
             },
             error: error => {
-                this.showCommitMessage(this.getCommitError(error));
+                this.showCommitMessage(this.getCommitError(error), true);
                 this.isCommitting = false;
             },
         });
     }
 
-    private showCommitMessage(message: string): void {
-        this.snackbar.open(message, 'Dismiss', { duration: 5000 });
+    private showCommitMessage(message: string, isError = false): void {
+        this.snackbar.open(message, 'Dismiss', {
+            duration: 5000,
+            panelClass: isError ? 'commit-snackbar-error' : 'commit-snackbar-success',
+        });
     }
 
     private getCommitError(error: unknown): string {

@@ -90,7 +90,10 @@ describe('AppComponent', () => {
 
         fixture.componentInstance.commitChanges();
 
-        expect(snackbarOpen).toHaveBeenCalledWith('A commit message is required.', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('A commit message is required.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-error',
+        });
         http.expectNone('http://localhost:3000/git/commit');
     });
 
@@ -104,7 +107,10 @@ describe('AppComponent', () => {
         expect(request.request.body).toEqual({ message: 'Save progress' });
         request.flush({ data: { stdout: '[main abc123] Save progress', stderr: '' } });
 
-        expect(snackbarOpen).toHaveBeenCalledWith('[main abc123] Save progress', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('[main abc123] Save progress', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-success',
+        });
         expect(fixture.componentInstance.isCommitting).toBe(false);
     });
 
@@ -116,7 +122,10 @@ describe('AppComponent', () => {
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ data: { stdout: '', stderr: '' } });
 
-        expect(snackbarOpen).toHaveBeenCalledWith('Changes committed.', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('Changes committed.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-success',
+        });
     });
 
     it('shows the server commit error in a snackbar', () => {
@@ -127,7 +136,10 @@ describe('AppComponent', () => {
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ error: { message: 'Git commit failed' } }, { status: 500, statusText: 'Error' });
 
-        expect(snackbarOpen).toHaveBeenCalledWith('Git commit failed', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('Git commit failed', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-error',
+        });
         expect(fixture.componentInstance.isCommitting).toBe(false);
     });
 
@@ -139,7 +151,10 @@ describe('AppComponent', () => {
         http.expectOne('http://localhost:3000/git/commit')
             .flush({ error: { message: 500 } }, { status: 500, statusText: 'Error' });
 
-        expect(snackbarOpen).toHaveBeenCalledWith('Unable to commit changes.', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('Unable to commit changes.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-error',
+        });
     });
 
     it('shows a fallback error for non-Error failures', () => {
@@ -149,7 +164,10 @@ describe('AppComponent', () => {
 
         fixture.componentInstance.commitChanges();
 
-        expect(snackbarOpen).toHaveBeenCalledWith('Unable to commit changes.', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('Unable to commit changes.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-error',
+        });
     });
 
     it('shows the error message for Error failures', () => {
@@ -159,6 +177,9 @@ describe('AppComponent', () => {
 
         fixture.componentInstance.commitChanges();
 
-        expect(snackbarOpen).toHaveBeenCalledWith('Network failure', 'Dismiss', { duration: 5000 });
+        expect(snackbarOpen).toHaveBeenCalledWith('Network failure', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'commit-snackbar-error',
+        });
     });
 });

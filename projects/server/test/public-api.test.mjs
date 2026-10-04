@@ -84,7 +84,7 @@ before(async () => {
     const port = await findAvailablePort();
     serverOrigin = `http://127.0.0.1:${port}`;
     serverProcess = spawn(process.execPath, [bundle], {
-        stdio: ['ignore', 'ignore', 'inherit'],
+        stdio: 'ignore',
         windowsHide: true,
         env: { ...process.env, PORT: String(port) },
     });

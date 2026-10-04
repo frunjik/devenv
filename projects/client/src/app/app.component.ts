@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
-// import pipe from 
+import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 @Component({
     selector: 'app-root',
     imports: [RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule],
@@ -18,7 +19,9 @@ import { BackendService } from './backend.service';
 export class AppComponent {
     title = 'DevEnv';
     isCommitting = false;
+    isCommitDialogOpen = false;
     private snackbar = inject(MatSnackBar);
+    private dialog = inject(MatDialog);
     private router = inject(Router);
 
     constructor(public bs: BackendService) {
@@ -29,9 +32,10 @@ export class AppComponent {
     }
 
     commitChanges(): void {
-        if (this.isCommitting) {
+        if (this.isCommitting || this.isCommitDialogOpen) {
             return;
         }
+        this.isCommitDialogOpen = true;
         if (this.router.url === '/git/log') {
             this.promptForCommitMessage();
             return;
@@ -41,9 +45,12 @@ export class AppComponent {
             .then(navigated => {
                 if (navigated) {
                     this.promptForCommitMessage();
+                } else {
+                    this.isCommitDialogOpen = false;
                 }
             })
             .catch((error: unknown) => {
+                this.isCommitDialogOpen = false;
                 this.showCommitMessage(
                     error instanceof Error ? error.message : 'Unable to open the Git log.',
                     true,
@@ -52,15 +59,18 @@ export class AppComponent {
     }
 
     private promptForCommitMessage(): void {
-        const message = window.prompt('Commit message');
-        if (message === null) {
-            return;
-        }
-        if (!message.trim()) {
-            this.showCommitMessage('A commit message is required.', true);
-            return;
-        }
+        this.dialog.open(CommitMessageDialogComponent, {
+            width: 'min(32rem, calc(100vw - 2rem))',
+            ariaLabel: 'Commit changes',
+        }).afterClosed().subscribe(message => {
+            this.isCommitDialogOpen = false;
+            if (message) {
+                this.commitWithMessage(message);
+            }
+        });
+    }
 
+    private commitWithMessage(message: string): void {
         this.isCommitting = true;
         this.bs.commitChanges(message).subscribe({
             next: result => {

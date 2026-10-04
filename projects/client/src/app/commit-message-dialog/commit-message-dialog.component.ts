@@ -1,0 +1,54 @@
+import { Component, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+@Component({
+    selector: 'app-commit-message-dialog',
+    standalone: true,
+    imports: [FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule],
+    template: `
+        <h2 mat-dialog-title>Commit changes</h2>
+        <mat-dialog-content>
+            <mat-form-field appearance="outline">
+                <mat-label>Commit message</mat-label>
+                <textarea
+                    matInput
+                    [(ngModel)]="message"
+                    rows="3"
+                    maxlength="5000"
+                    aria-label="Commit message"
+                ></textarea>
+            </mat-form-field>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button mat-dialog-close>Cancel</button>
+            <button type="button" mat-flat-button color="primary" [disabled]="!message.trim()" (click)="submit()">
+                Commit
+            </button>
+        </mat-dialog-actions>
+    `,
+    styles: [`
+        mat-form-field {
+            width: 100%;
+            min-width: min(28rem, 70vw);
+        }
+
+        mat-dialog-content {
+            padding-top: 0.5rem;
+        }
+    `],
+})
+export class CommitMessageDialogComponent {
+    message = '';
+    private dialogRef = inject(MatDialogRef<CommitMessageDialogComponent, string>);
+
+    submit(): void {
+        const message = this.message.trim();
+        if (message) {
+            this.dialogRef.close(message);
+        }
+    }
+}

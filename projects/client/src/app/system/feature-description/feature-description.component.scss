@@ -16,7 +16,15 @@
     }
 
     .mat-column-actions {
-        width: 6rem;
+        width: 12rem;
         text-align: right;
+        white-space: nowrap;
+    }
+
+    .feature-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.25rem;
     }
 }

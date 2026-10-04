@@ -1,10 +1,7 @@
-// [2026-10-04 22:57 +02:00] [18f5dc32-54b9-4651-bb6c-88ed39043105] [Low] show the status of the last cached test run in the bottom client toolbar
-// [2026-10-04 22:57 +02:00] [d8274016-1ff1-4f88-b636-daf5d1c1b04f] [Medium] show the open features list on the client feature form page under the form
 // [2026-10-04 23:01 +02:00] [4723e595-de44-488d-902b-4728f159dcff] [Medium] after commiting a feature remove it from the feature list
-// [2026-10-04 23:01 +02:00] [0c9f066e-7e22-4136-8b66-ff1d47ab6f1e] [Medium] bind ctrl-enter to form submit
-// [2026-10-04 23:02 +02:00] [2216e5f7-8627-408b-a97c-0197a1adf82e] [Medium] make feature list sortable on client
+// [2026-10-04 23:02 +02:00] [2216e5f7-8627-408b-a97c-0197a1adf82e] [High] make feature list sortable on client
 // [2026-10-04 23:04 +02:00] [87366c34-ebbc-47b6-b779-c52651fd4865] [Medium] start working on a feature from client
-// [2026-10-04 23:04 +02:00] [11ea4c78-238c-40f2-baed-5440ef67efca] [Medium] make features priotizable from client
+// [2026-10-04 23:04 +02:00] [11ea4c78-238c-40f2-baed-5440ef67efca] [High] make features priotizable from client
 // [2026-10-04 23:07 +02:00] [9d986558-3b3c-4e3e-a18f-12dabb20822b] [Medium] give features a unique id
 // [2026-10-04 23:08 +02:00] [bdb0d3f3-db41-4031-a975-f06640977329] [Medium] edit feature
 // [2026-10-04 23:10 +02:00] [7db093d1-fd2c-48aa-a0ff-c76c9afaa197] [Medium] fix tests by adding jest test methods as first line of the file

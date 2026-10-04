@@ -68,25 +68,27 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let feature">
-                    <button
-                        type="button"
-                        mat-button
-                        class="feature-start-button"
-                        [attr.aria-pressed]="featureWork.activeFeature?.id === feature.id"
-                        (click)="startFeature(feature)"
-                    >
-                        {{ featureWork.activeFeature?.id === feature.id ? 'Started' : 'Start' }}
-                    </button>
-                    <button
-                        type="button"
-                        mat-button
-                        class="feature-done-button"
-                        [disabled]="completingFeatureIds.has(feature.id)"
-                        [attr.aria-label]="'Mark done: ' + feature.description"
-                        (click)="markFeatureDone(feature)"
-                    >
-                        {{ completingFeatureIds.has(feature.id) ? 'Saving…' : 'Mark done' }}
-                    </button>
+                    <div class="feature-actions">
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-start-button"
+                            [attr.aria-pressed]="featureWork.activeFeature?.id === feature.id"
+                            (click)="startFeature(feature)"
+                        >
+                            {{ featureWork.activeFeature?.id === feature.id ? 'Started' : 'Start' }}
+                        </button>
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-done-button"
+                            [disabled]="completingFeatureIds.has(feature.id)"
+                            [attr.aria-label]="'Mark done: ' + feature.description"
+                            (click)="markFeatureDone(feature)"
+                        >
+                            {{ completingFeatureIds.has(feature.id) ? 'Saving…' : 'Mark done' }}
+                        </button>
+                    </div>
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

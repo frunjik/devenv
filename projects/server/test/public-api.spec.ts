@@ -19,6 +19,7 @@ import {
 import { forwardTestProcessOutput } from '../src/lib/handlers/test-runner';
 import { createGitCommitHandler } from '../src/lib/handlers/git-commit';
 import { createGitLogHandler } from '../src/lib/handlers/git-log';
+import { createGitStatusHandler } from '../src/lib/handlers/git-status';
 
 describe('server public HTTP API', () => {
     let root: string;
@@ -615,6 +616,149 @@ describe('server public HTTP API', () => {
         try {
             const productionApp = createApp(root);
             const response = await request(productionApp).get('/git/log');
+            expect(response.status).toBe(404);
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('returns the current branch and open worktree changes', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const gitRoot = join(root, 'git-status-repo');
+        await mkdir(gitRoot);
+        execFileSync('git', ['init', '-b', 'main', gitRoot]);
+        execFileSync('git', ['-C', gitRoot, 'config', 'user.name', 'Test User']);
+        execFileSync('git', ['-C', gitRoot, 'config', 'user.email', 'test@example.com']);
+        await writeFile(join(gitRoot, 'tracked.txt'), 'initial');
+        execFileSync('git', ['-C', gitRoot, 'add', '--all']);
+        execFileSync('git', ['-C', gitRoot, 'commit', '-m', 'Initial commit']);
+        await writeFile(join(gitRoot, 'tracked.txt'), 'updated');
+        await writeFile(join(gitRoot, 'untracked.txt'), 'new file');
+        await writeFile(join(gitRoot, 'staged.txt'), 'staged change');
+        execFileSync('git', ['-C', gitRoot, 'add', 'staged.txt']);
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const gitApp = createApp(root, undefined, gitRoot);
+            const response = await request(gitApp).get('/git/status');
+
+            expect(response.status).toBe(200);
+            expect(response.body.data).toMatchObject({
+                branch: 'main',
+                ahead: 0,
+                behind: 0,
+                clean: false,
+            });
+            expect(response.body.data.files).toEqual(expect.arrayContaining([
+                expect.objectContaining({
+                    path: 'tracked.txt',
+                    indexStatus: ' ',
+                    workTreeStatus: 'M',
+                    staged: false,
+                    unstaged: true,
+                    untracked: false,
+                    conflicted: false,
+                }),
+                expect.objectContaining({
+                    path: 'untracked.txt',
+                    indexStatus: '?',
+                    workTreeStatus: '?',
+                    staged: false,
+                    unstaged: true,
+                    untracked: true,
+                    conflicted: false,
+                }),
+                expect.objectContaining({
+                    path: 'staged.txt',
+                    indexStatus: 'A',
+                    workTreeStatus: ' ',
+                    staged: true,
+                    unstaged: false,
+                    untracked: false,
+                    conflicted: false,
+                }),
+            ]));
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('returns an empty and clean status for a clean repository', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const gitRoot = join(root, 'clean-git-status-repo');
+        await mkdir(gitRoot);
+        execFileSync('git', ['init', gitRoot]);
+        execFileSync('git', ['-C', gitRoot, 'config', 'user.name', 'Test User']);
+        execFileSync('git', ['-C', gitRoot, 'config', 'user.email', 'test@example.com']);
+        await writeFile(join(gitRoot, 'tracked.txt'), 'initial');
+        execFileSync('git', ['-C', gitRoot, 'add', '--all']);
+        execFileSync('git', ['-C', gitRoot, 'commit', '-m', 'Initial commit']);
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const response = await request(createApp(root, undefined, gitRoot)).get('/git/status');
+            expect(response.status).toBe(200);
+            expect(response.body.data).toEqual({
+                branch: expect.any(String),
+                ahead: 0,
+                behind: 0,
+                clean: true,
+                files: [],
+            });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports git status errors when the working directory is not a repository', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const response = await request(createApp(root, undefined, root)).get('/git/status');
+            expect(response.status).toBe(500);
+            expect(response.body.error.stderr).toContain('not a git repository');
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports malformed git status output', async () => {
+        const gitApp = express();
+        gitApp.get('/git/status', createGitStatusHandler(root, async () => ({
+            stdout: 'malformed',
+            stderr: '',
+        })));
+        gitApp.use(handleError);
+
+        const response = await request(gitApp).get('/git/status');
+
+        expect(response.status).toBe(500);
+        expect(response.body.error.message).toBe('Git returned an invalid status result');
+    });
+
+    it('does not register the git status route in production', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        process.env['NODE_ENV'] = 'production';
+
+        try {
+            const response = await request(createApp(root)).get('/git/status');
             expect(response.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {

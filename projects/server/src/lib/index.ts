@@ -6,6 +6,7 @@ import { getFiles, postFiles } from './handlers/files';
 import { getFolders } from './handlers/folders';
 import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitLogHandler } from './handlers/git-log';
+import { createGitStatusHandler } from './handlers/git-status';
 import { createTestRunHandler, type TestCommandExecutor } from './handlers/test-runner';
 
 export function createApp(
@@ -28,12 +29,14 @@ export function createApp(
         app.post('/tests/run', createTestRunHandler(testCommandExecutor));
         app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));
+        app.get('/git/status', createGitStatusHandler(gitCommitCwd));
     }
 
     return app;
 }
 
 export type { TestCommandEvent, TestCommandExecutor } from './handlers/test-runner';
+export type { GitStatus, GitStatusFile } from './handlers/git-status';
 
 export interface ServerListener {
     listen(app: Express, port: number): Promise<Server>;

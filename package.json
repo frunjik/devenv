@@ -6,9 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "npm run test:client",
     "test:client": "jest --config projects/client/jest.config.cjs --runInBand",
-    "test:server": "jest --config projects/server/jest.config.cjs --coverage --runInBand"
+    "test:client:coverage": "jest --config projects/client/jest.config.cjs --coverage --runInBand",
+    "test:server": "jest --config projects/server/jest.config.cjs --coverage --runInBand",
+    "test:server:coverage": "jest --config projects/server/jest.config.cjs --coverage --runInBand"
   },
   "private": true,
   "dependencies": {

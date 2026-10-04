@@ -555,6 +555,39 @@ describe('features public API', () => {
         expect((await readFile(join(root, '.features'), 'utf8')).trim()).toBe(second.body.data);
     });
 
+    it('removes the matching task from DEVENVOPDEV.md and preserves other tasks', async () => {
+        const created = await request(app).post('/features').send({ description: 'Completed feature' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        const taskMarker = `<!-- feature-id:${id} -->`;
+        const otherTask = '- [In progress] Keep this task <!-- feature-id:123e4567-e89b-42d3-a456-426614174000 -->';
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Completed feature ${taskMarker}`,
+            otherTask,
+            '',
+        ].join('\n'));
+
+        const response = await request(app).delete(`/features/${id}`);
+
+        expect(response.status).toBe(200);
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile).not.toContain(taskMarker);
+        expect(taskFile).toContain(otherTask);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe('');
+    });
+
+    it('removes a feature when its task marker is not present', async () => {
+        const created = await request(app).post('/features').send({ description: 'No task marker' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'Keep this task.\n');
+
+        const response = await request(app).delete(`/features/${id}`);
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe('Keep this task.\n');
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe('');
+    });
+
     it('leaves an empty features file when removing its final entry', async () => {
         const feature = await request(app).post('/features').send({ description: 'Only feature' });
         const id = feature.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
@@ -587,5 +620,20 @@ describe('features public API', () => {
             .delete('/features/123e4567-e89b-42d3-a456-426614174000');
 
         expect(response.status).toBe(500);
+    });
+
+    it('preserves the feature when its DEVENVOPDEV.md task cannot be removed', async () => {
+        const created = await request(app).post('/features').send({ description: 'Keep on failure' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        const taskEntry = `- [In progress] Keep on failure <!-- feature-id:${id} -->`;
+        await writeFile(join(root, 'DEVENVOPDEV.md'), taskEntry);
+        const previousFeatures = `${created.body.data}\n`;
+        await rm(join(root, 'DEVENVOPDEV.md'));
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+
+        const response = await request(app).delete(`/features/${id}`);
+
+        expect(response.status).toBe(500);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(previousFeatures);
     });
 });

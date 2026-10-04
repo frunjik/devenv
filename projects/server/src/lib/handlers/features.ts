@@ -165,6 +165,33 @@ async function updateStartedFeatureTask(
     return { filename, contents, updated };
 }
 
+async function removeStartedFeatureTask(
+    root: string,
+    id: string,
+): Promise<{ filename: string; contents: string } | null> {
+    const filename = join(root, 'DEVENVOPDEV.md');
+    let contents: string;
+    try {
+        contents = await readFile(filename, 'utf8');
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return null;
+        }
+        throw error;
+    }
+
+    const marker = `<!-- feature-id:${id} -->`;
+    const lines = contents.split(/\r?\n/);
+    const remainingLines = lines.filter(line => !line.includes(marker));
+    if (remainingLines.length === lines.length) {
+        return null;
+    }
+
+    const lineEnding = contents.includes('\r\n') ? '\r\n' : '\n';
+    await writeFile(filename, remainingLines.join(lineEnding), 'utf8');
+    return { filename, contents };
+}
+
 async function readFeatureEntries(filename: string): Promise<string[]> {
     let contents: string;
     try {
@@ -389,8 +416,15 @@ export function createFeatureRemovalHandler(root: string): RequestHandler {
                     return;
                 }
 
+                const previousContents = `${entries.join('\n')}\n`;
                 const [removedFeature] = entries.splice(featureIndex, 1);
-                await writeFile(filename, entries.length ? `${entries.join('\n')}\n` : '', 'utf8');
+                try {
+                    await writeFile(filename, entries.length ? `${entries.join('\n')}\n` : '', 'utf8');
+                    await removeStartedFeatureTask(root, id.toLowerCase());
+                } catch (error) {
+                    await writeFile(filename, previousContents, 'utf8');
+                    throw error;
+                }
                 response.json({ data: removedFeature });
             })
             .catch(next);

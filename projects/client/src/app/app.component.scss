@@ -1,3 +1,27 @@
 nav {
     margin: 10px;
 }
+
+.git-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border-radius: 50%;
+    color: #aebbb0;
+    background: rgba(174, 187, 176, 0.08);
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+.git-status-open {
+    color: #d0b18a;
+    background: rgba(208, 177, 138, 0.12);
+}
+
+.git-status-error {
+    color: #c99b94;
+    background: rgba(201, 155, 148, 0.1);
+}

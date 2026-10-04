@@ -21,6 +21,23 @@ export interface GitLogEntry {
     subject: string;
 }
 
+export interface GitStatus {
+    branch: string | null;
+    ahead: number;
+    behind: number;
+    clean: boolean;
+    files: Array<{
+        path: string;
+        originalPath?: string;
+        indexStatus: string;
+        workTreeStatus: string;
+        staged: boolean;
+        unstaged: boolean;
+        untracked: boolean;
+        conflicted: boolean;
+    }>;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -72,6 +89,10 @@ export class BackendService {
 
     getGitLog(): Observable<GitLogEntry[]> {
         return this.get<GitLogEntry[]>('git/log');
+    }
+
+    getGitStatus(): Observable<GitStatus> {
+        return this.get<GitStatus>('git/status');
     }
 
     async runTests(onOutput: (stream: TestOutputStream, chunk: string) => void): Promise<number> {

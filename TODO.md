@@ -1,6 +1,8 @@
 TDOD:
 
 Bootstrap
+- authentication
+- make an indicator on the client to show we have open changes
 - field
 - model
 - form
@@ -8,7 +10,7 @@ Bootstrap
 - dataset hydration
 
 Devenv
-- make an indicator on the client to show we have open changes
+- test coverage
 - feature: dynamic styles
 - make server calls with some prefix /api/server/ ?
 - feature: history

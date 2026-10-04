@@ -24,6 +24,23 @@
         <button type="button" mat-button class="commit-button" (click)="commitChanges()" [disabled]="isCommitting">
             {{ isCommitting ? 'Committing…' : 'Commit changes' }}
         </button>
+        |
+        <a
+            mat-button
+            routerLink="/git/log"
+            class="git-status-indicator"
+            [ngClass]="{
+                'git-status-clean': gitStatus.status && gitStatus.status.files.length === 0,
+                'git-status-open': gitStatus.status && gitStatus.status.files.length > 0,
+                'git-status-error': gitStatus.hasError
+            }"
+            [attr.aria-label]="'Git status: ' + gitStatus.label"
+            [matTooltip]="gitStatus.tooltip"
+            matTooltipClass="git-status-tooltip"
+            matTooltipPosition="below"
+            [matTooltipShowDelay]="250"
+            aria-live="polite"
+        >{{ gitStatus.count }}</a>
 
         <!--
         

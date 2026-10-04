@@ -1,25 +1,30 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
+import { GitStatusService } from './git-status.service';
+
 @Component({
     selector: 'app-root',
-    imports: [RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule],
+    imports: [NgClass, RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule, MatTooltipModule],
     // providers: [
 
     // ]
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
     title = 'DevEnv';
     isCommitting = false;
     isCommitDialogOpen = false;
+    readonly gitStatus = inject(GitStatusService);
     private snackbar = inject(MatSnackBar);
     private dialog = inject(MatDialog);
     private router = inject(Router);
@@ -29,6 +34,14 @@ export class AppComponent {
 
     get host(): string {
         return this.bs.host;
+    }
+
+    ngOnInit(): void {
+        this.gitStatus.startPolling();
+    }
+
+    ngOnDestroy(): void {
+        this.gitStatus.stopPolling();
     }
 
     commitChanges(): void {
@@ -76,6 +89,7 @@ export class AppComponent {
             next: result => {
                 this.showCommitMessage(result.stdout.trim() || 'Changes committed.');
                 this.isCommitting = false;
+                this.gitStatus.refresh();
             },
             error: error => {
                 this.showCommitMessage(this.getCommitError(error), true);
@@ -100,4 +114,5 @@ export class AppComponent {
         }
         return error instanceof Error ? error.message : 'Unable to commit changes.';
     }
+
 }

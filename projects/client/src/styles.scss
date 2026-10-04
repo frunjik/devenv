@@ -101,3 +101,19 @@ nav button[mat-button] {
     --mat-snack-bar-supporting-text-color: #462b27;
     --mat-snack-bar-button-color: #462b27;
 }
+
+.git-status-tooltip .mat-mdc-tooltip-surface {
+    --mat-tooltip-container-color: #29372e;
+    --mat-tooltip-supporting-text-color: #d4ded6;
+
+    max-width: 22rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #3b4b40;
+    border-radius: 0.4rem;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 22%);
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-align: left;
+    white-space: pre-line;
+}

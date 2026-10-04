@@ -74,6 +74,113 @@ describe('AppComponent', () => {
         expect(gitLogLink.textContent).toContain('Git log');
     });
 
+    it('shows the number of open changes from the git status API', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: {
+                branch: 'main',
+                ahead: 0,
+                behind: 0,
+                clean: false,
+                files: [
+                    {
+                        path: 'one.txt',
+                        indexStatus: 'M',
+                        workTreeStatus: ' ',
+                        staged: true,
+                        unstaged: false,
+                        untracked: false,
+                        conflicted: false,
+                    },
+                    {
+                        path: 'two.txt',
+                        indexStatus: ' ',
+                        workTreeStatus: 'M',
+                        staged: false,
+                        unstaged: true,
+                        untracked: false,
+                        conflicted: false,
+                    },
+                ],
+            },
+        });
+        fixture.detectChanges();
+
+        const indicator = fixture.nativeElement.querySelector('.git-status-indicator');
+        expect(indicator.textContent.trim()).toBe('2');
+        expect(indicator.getAttribute('aria-label')).toBe('Git status: 2 open changes');
+        expect(fixture.componentInstance.gitStatus.tooltip).toContain('Branch: main');
+        expect(fixture.componentInstance.gitStatus.tooltip).toContain('one.txt (staged)');
+        expect(fixture.componentInstance.gitStatus.tooltip).toContain('two.txt (unstaged)');
+        expect(indicator.classList).toContain('git-status-open');
+        const commitButton = fixture.nativeElement.querySelector('.commit-button');
+        expect(commitButton.compareDocumentPosition(indicator) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('shows a clean status when there are no open changes', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: { branch: 'main', ahead: 0, behind: 0, clean: true, files: [] },
+        });
+        fixture.detectChanges();
+
+        const indicator = fixture.nativeElement.querySelector('.git-status-indicator');
+        expect(indicator.textContent.trim()).toBe('0');
+        expect(indicator.getAttribute('aria-label')).toBe('Git status: No open changes');
+        expect(indicator.classList).toContain('git-status-clean');
+    });
+
+    it('includes ahead and behind counts and caps long file lists in the tooltip', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: {
+                branch: 'feature',
+                ahead: 2,
+                behind: 3,
+                clean: false,
+                files: Array.from({ length: 10 }, (_, index) => ({
+                    path: `file-${index}.txt`,
+                    indexStatus: '?',
+                    workTreeStatus: '?',
+                    staged: false,
+                    unstaged: true,
+                    untracked: true,
+                    conflicted: false,
+                })),
+            },
+        });
+        fixture.detectChanges();
+
+        const indicator = fixture.nativeElement.querySelector('.git-status-indicator');
+        const tooltip = fixture.componentInstance.gitStatus.tooltip;
+        expect(tooltip).toContain('Branch: feature (2 ahead, 3 behind)');
+        expect(tooltip).toContain('file-7.txt (untracked)');
+        expect(tooltip).not.toContain('file-8.txt');
+        expect(tooltip).toContain('…and 2 more');
+        expect(indicator.hasAttribute('title')).toBe(false);
+    });
+
+    it('shows when the git status cannot be retrieved', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/git/status')
+            .flush({ error: { message: 'Not a repository' } }, { status: 500, statusText: 'Error' });
+        fixture.detectChanges();
+
+        const indicator = fixture.nativeElement.querySelector('.git-status-indicator');
+        expect(indicator.textContent.trim()).toBe('!');
+        expect(indicator.getAttribute('aria-label')).toBe('Git status: Git status unavailable');
+        expect(fixture.componentInstance.gitStatus.tooltip).toContain('Not a repository');
+        expect(indicator.classList).toContain('git-status-error');
+    });
+
     it('navigates to the git log before opening the commit dialog', async () => {
         const order: string[] = [];
         navigateByUrl.mockImplementation(async () => {

@@ -1,0 +1,3 @@
+History
+// [2026-10-04 21:00 +02:00] Extracted Git status polling and tooltip formatting into GitStatusService.
+// [2026-10-04 21:01 +02:00] Current diff adds the Git status counter and styled change-details tooltip to the client toolbar, with polling/API wiring, tests, and existing TODO edits.

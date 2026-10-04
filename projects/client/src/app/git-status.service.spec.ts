@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -20,6 +20,7 @@ describe('GitStatusService', () => {
     afterEach(() => {
         service.stopPolling();
         http.verify();
+        jest.useRealTimers();
     });
 
     it('shows the checking state before polling starts', () => {
@@ -43,6 +44,43 @@ describe('GitStatusService', () => {
 
         service.stopPolling();
         service.stopPolling();
+    });
+
+    it('refreshes status every 30 seconds', () => {
+        jest.useFakeTimers();
+        service.startPolling();
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: { branch: 'main', ahead: 0, behind: 0, clean: true, files: [] },
+        });
+
+        jest.advanceTimersByTime(30_000);
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: { branch: 'main', ahead: 0, behind: 0, clean: true, files: [] },
+        });
+        service.stopPolling();
+    });
+
+    it('uses singular wording for a single open change', () => {
+        service.startPolling();
+        http.expectOne('http://localhost:3000/git/status').flush({
+            data: {
+                branch: 'main',
+                ahead: 0,
+                behind: 0,
+                clean: false,
+                files: [{
+                    path: 'changed.txt',
+                    indexStatus: ' ',
+                    workTreeStatus: 'M',
+                    staged: false,
+                    unstaged: true,
+                    untracked: false,
+                    conflicted: false,
+                }],
+            },
+        });
+
+        expect(service.label).toBe('1 open change');
     });
 
     it('does not duplicate an in-flight status request', () => {
@@ -149,4 +187,14 @@ describe('GitStatusService', () => {
         expect(service.tooltip).toBe('Branch: feature (1 ahead, 2 behind)\nNo open changes');
         service.stopPolling();
     });
+
+    it('uses the HTTP error message when the API error body has no message', () => {
+        service.startPolling();
+        http.expectOne('http://localhost:3000/git/status')
+            .flush({ error: { message: 42 } }, { status: 500, statusText: 'Error' });
+
+        expect(service.tooltip).toContain('Http failure response');
+        service.stopPolling();
+    });
+
 });

@@ -62,10 +62,10 @@ export class AppComponent implements OnInit, OnDestroy {
                     this.isCommitDialogOpen = false;
                 }
             })
-            .catch((error: unknown) => {
+            .catch((error: Error) => {
                 this.isCommitDialogOpen = false;
                 this.showCommitMessage(
-                    error instanceof Error ? error.message : 'Unable to open the Git log.',
+                    error.message,
                     true,
                 );
             });

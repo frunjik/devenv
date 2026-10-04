@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe, NgFor, NgIf, SlicePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { BackendService, type GitLogEntry } from '../../backend.service';
 
@@ -33,8 +34,8 @@ export class GitLogComponent implements OnInit {
                 this.entries = entries;
                 this.isLoading = false;
             },
-            error: (error: unknown) => {
-                this.errorMessage = error instanceof Error ? error.message : 'Unable to load the Git log.';
+            error: (error: HttpErrorResponse) => {
+                this.errorMessage = error.message;
                 this.isLoading = false;
             },
         });

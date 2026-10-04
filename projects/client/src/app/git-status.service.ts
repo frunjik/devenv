@@ -95,7 +95,7 @@ export class GitStatusService {
                 this.errorMessage = '';
                 this.isLoading = false;
             },
-            error: (error: unknown) => {
+            error: (error: HttpErrorResponse) => {
                 this.status = null;
                 this.hasError = true;
                 this.errorMessage = this.getErrorMessage(error);
@@ -104,13 +104,13 @@ export class GitStatusService {
         });
     }
 
-    private getErrorMessage(error: unknown): string {
-        if (error instanceof HttpErrorResponse && error.error
+    private getErrorMessage(error: HttpErrorResponse): string {
+        if (error.error
             && typeof error.error === 'object' && 'error' in error.error
             && error.error.error && typeof error.error.error === 'object'
             && 'message' in error.error.error && typeof error.error.error.message === 'string') {
             return error.error.error.message;
         }
-        return error instanceof Error ? error.message : 'Unable to retrieve the Git status.';
+        return error.message;
     }
 }

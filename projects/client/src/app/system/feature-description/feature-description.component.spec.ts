@@ -118,6 +118,11 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Feature added.');
+        expect(fixture.componentInstance.description).toBe('');
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value).toBe('');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
             /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] Add a feature submission form\n$/,
         );
@@ -253,7 +258,10 @@ describe('FeatureDescriptionComponent', () => {
 
     it('shows backend errors to the user', async () => {
         await mkdir(join(root, '.features'));
-        fixture.componentInstance.description = 'This cannot be saved';
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        textarea.value = 'This cannot be saved';
+        textarea.dispatchEvent(new Event('input'));
+        await fixture.whenStable();
 
         fixture.componentInstance.submit();
         await fixture.whenStable();
@@ -261,6 +269,10 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(fixture.nativeElement.querySelector('#feature-submit-error').textContent.trim()).not.toBe('');
         expect(fixture.componentInstance.isSubmitting).toBe(false);
+        expect(fixture.componentInstance.description).toBe('This cannot be saved');
+        fixture.detectChanges();
+        expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value)
+            .toBe('This cannot be saved');
     });
 
     it('shows backend errors when loading the open feature list', async () => {

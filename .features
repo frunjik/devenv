@@ -17,3 +17,6 @@
 // [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] more rows by default in the client feature list
 // [2026-10-04 23:23 +02:00] [604c4674-1308-4554-a202-5ffc173dd8c2] more rows by default in the client feature list
 // [2026-10-04 23:23 +02:00] [ce7cc217-138b-40fd-a1fd-8202e55c9cbf] add search for the client feature list
+// [2026-10-04 23:28 +02:00] [ee113d41-5de1-4136-b023-6763de3557ac] mark feature as done client / server
+// [2026-10-04 23:30 +02:00] [1a2f73ae-6985-4d38-add7-7c99c6cb212f] add feature to backlog
+// [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] create workflow

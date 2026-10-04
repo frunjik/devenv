@@ -106,6 +106,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
             next: () => {
                 this.successMessage = 'Feature added.';
                 this.isSubmitting = false;
+                this.description = '';
                 this.refreshFeatures();
             },
             error: (error: Error) => {

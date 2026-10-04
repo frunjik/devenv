@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 // import pipe from 
 @Component({
     selector: 'app-root',
-    imports: [NgIf, RouterLink, RouterOutlet, MatButtonModule, MatToolbarModule],
+    imports: [RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule],
     // providers: [
 
     // ]
@@ -18,8 +18,7 @@ import { BackendService } from './backend.service';
 export class AppComponent {
     title = 'DevEnv';
     isCommitting = false;
-    commitStatus = '';
-    commitError = '';
+    private snackbar = inject(MatSnackBar);
     
     constructor(public bs: BackendService) {
     }
@@ -37,24 +36,25 @@ export class AppComponent {
             return;
         }
         if (!message.trim()) {
-            this.commitError = 'A commit message is required.';
-            this.commitStatus = '';
+            this.showCommitMessage('A commit message is required.');
             return;
         }
 
         this.isCommitting = true;
-        this.commitError = '';
-        this.commitStatus = '';
         this.bs.commitChanges(message).subscribe({
             next: result => {
-                this.commitStatus = result.stdout.trim() || 'Changes committed.';
+                this.showCommitMessage(result.stdout.trim() || 'Changes committed.');
                 this.isCommitting = false;
             },
             error: error => {
-                this.commitError = this.getCommitError(error);
+                this.showCommitMessage(this.getCommitError(error));
                 this.isCommitting = false;
             },
         });
+    }
+
+    private showCommitMessage(message: string): void {
+        this.snackbar.open(message, 'Dismiss', { duration: 5000 });
     }
 
     private getCommitError(error: unknown): string {

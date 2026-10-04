@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import type { Server } from 'node:http';
 
 import { BackendService } from './backend.service';
+import { LoggerService } from './logger.service';
 import { startServer } from '../../../server/src/public-api';
 
 describe('BackendService', () => {
@@ -25,12 +26,17 @@ describe('BackendService', () => {
             throw new Error('Test server did not bind to a TCP port');
         }
         apiHost = `http://127.0.0.1:${address.port}/`;
-
     });
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [provideHttpClient()],
+            providers: [
+                provideHttpClient(),
+                {
+                    provide: LoggerService,
+                    useValue: { error: (_message: string, _error: Error) => undefined },
+                },
+            ],
         });
         service = TestBed.inject(BackendService);
         browserWindow.host = apiHost;

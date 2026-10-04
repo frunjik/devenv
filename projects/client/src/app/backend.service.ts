@@ -5,6 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
 import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
+import { LoggerService } from './logger.service';
 
 @Injectable({
     providedIn: 'root',
@@ -13,6 +14,7 @@ export class BackendService {
 
     private defaultHost = 'http://localhost:3000/';
     private httpservice = inject(HttpClient);
+    private logger = inject(LoggerService);
 
     constructor() { }
 
@@ -51,7 +53,7 @@ export class BackendService {
     }
 
     logError(message: string, e: Error) {
-        console.error(`ERROR BackendService.${message}`, e);
+        this.logger.error(`ERROR BackendService.${message}`, e);
     }
 
 

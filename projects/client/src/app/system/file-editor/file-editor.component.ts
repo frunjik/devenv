@@ -51,14 +51,22 @@ export class FileEditorComponent implements OnDestroy {
             });
     }
 
+    onFilenameKeydown(event: KeyboardEvent) {
+        this._handleSaveShortcut(event);
+    }
+
     onEditorInit(editorInstance: editor.IStandaloneCodeEditor) {
         this._saveKeybinding = editorInstance.onKeyDown((event) => {
-            if ((event.ctrlKey || event.metaKey) && event.browserEvent.key.toLowerCase() === 's') {
-                event.preventDefault();
-                event.stopPropagation();
-                this.saveFile();
-            }
+            this._handleSaveShortcut(event.browserEvent);
         });
+    }
+
+    private _handleSaveShortcut(event: KeyboardEvent) {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.saveFile();
+        }
     }
 
     ngOnDestroy() {

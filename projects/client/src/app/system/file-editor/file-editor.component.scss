@@ -1,3 +1,22 @@
 .example-spacer {
     flex: 1 1 auto;
 }
+
+.filename-input {
+    width: 50%;
+    max-width: 32rem;
+    min-width: 0;
+    padding: 0.25rem 0;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+}
+
+.filename-input:focus-visible {
+    border-bottom-color: currentColor;
+}

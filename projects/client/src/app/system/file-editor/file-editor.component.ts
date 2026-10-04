@@ -25,7 +25,7 @@ export class FileEditorComponent {
     @Input()
     filename        = 'web/angular-express/client/tsconfig.json';
 
-    editorOptions   = { theme: 'vs-dark', language: 'html' };
+    editorOptions   = { theme: 'vs-dark', language: 'ts' };
 
     constructor(private backendService: BackendService) {}
 

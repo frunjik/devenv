@@ -28,7 +28,7 @@
             </mat-form-field> -->
     </div>
 
-    <div class="files" *ngIf="!!fileContent">
+    <div class="files" *ngIf="!!filename()">
         <div style="height: 93vh">
             <app-file-editor [filename]="filename()" [fileContent]="fileContent"></app-file-editor>
         </div>

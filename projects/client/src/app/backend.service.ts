@@ -95,6 +95,10 @@ export class BackendService {
         return this.post<GitCommitResult>('git/commit', { message });
     }
 
+    addFeature(description: string): Observable<string> {
+        return this.post<string>('features', { description });
+    }
+
     getGitLog(): Observable<GitLogEntry[]> {
         return this.get<GitLogEntry[]>('git/log');
     }

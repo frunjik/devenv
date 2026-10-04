@@ -10,4 +10,10 @@
             placeholder="Describe the feature to write"
         ></textarea>
     </mat-form-field>
+    <button type="button" mat-raised-button color="primary" [disabled]="!description.trim() || isSubmitting"
+        (click)="submit()">
+        {{ isSubmitting ? 'Adding…' : 'Add feature' }}
+    </button>
+    <p *ngIf="successMessage" role="status">{{ successMessage }}</p>
+    <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
 </main>

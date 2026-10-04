@@ -9,6 +9,11 @@ import { LoggerService } from './logger.service';
 
 export type TestOutputStream = 'stdout' | 'stderr';
 
+export interface GitCommitResult {
+    stdout: string;
+    stderr: string;
+}
+
 @Injectable({
     providedIn: 'root',
 })
@@ -52,6 +57,10 @@ export class BackendService {
                     return of([]);
                 })
             );
+    }
+
+    commitChanges(message: string): Observable<GitCommitResult> {
+        return this.post<GitCommitResult>('git/commit', { message });
     }
 
     async runTests(onOutput: (stream: TestOutputStream, chunk: string) => void): Promise<number> {

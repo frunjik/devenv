@@ -18,6 +18,9 @@
         |
         <a routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/app.component.html'}">EDIT-MENU</a>
 
+        <button type="button" mat-button (click)="commitChanges()" [disabled]="isCommitting">
+            {{ isCommitting ? 'Committing…' : 'Commit changes' }}
+        </button>
 
         <!--
         
@@ -29,5 +32,7 @@
 
 </mat-toolbar>
 
+<p role="status" aria-live="polite" *ngIf="commitStatus">{{commitStatus}}</p>
+<p role="alert" *ngIf="commitError">{{commitError}}</p>
 
 <router-outlet />

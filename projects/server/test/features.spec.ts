@@ -29,7 +29,28 @@ describe('features public API', () => {
 
         const response = await request(app).get('/features');
 
-        expect(response.body).toEqual({ data: ['// first feature', '// second feature'] });
+        expect(response.body.data).toHaveLength(2);
+        expect(response.body.data[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] first feature$/);
+        expect(response.body.data[1]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] second feature$/);
+        const persistedEntries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
+        expect(persistedEntries).toEqual(response.body.data);
+        expect(new Set(persistedEntries.map(entry => entry.match(/\[([0-9a-f-]{36})\]/)?.[1])).size).toBe(2);
+    });
+
+    it('adds IDs to legacy dated entries and preserves existing UUIDs', async () => {
+        const existingId = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), [
+            '// [2026-10-04 22:45 +02:00] legacy feature',
+            `// [2026-10-04 22:46 +02:00] [${existingId}] identified feature`,
+            '',
+        ].join('\n'));
+
+        const response = await request(app).get('/features');
+
+        expect(response.body.data[0]).toMatch(
+            /^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] legacy feature$/,
+        );
+        expect(response.body.data[1]).toBe(`// [2026-10-04 22:46 +02:00] [${existingId}] identified feature`);
     });
 
     it('returns an empty list when the features file is empty', async () => {
@@ -61,9 +82,20 @@ describe('features public API', () => {
 
         expect(response.status).toBe(201);
         expect(response.body.data).toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] Add a feature with multiline details$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] Add a feature with multiline details$/,
         );
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+    });
+
+    it('assigns a distinct UUID to each created feature', async () => {
+        const first = await request(app).post('/features').send({ description: 'First feature' });
+        const second = await request(app).post('/features').send({ description: 'Second feature' });
+        const idFrom = (entry: string) =>
+            entry.match(/\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\]/)?.[1];
+
+        expect(idFrom(first.body.data)).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+        expect(idFrom(second.body.data)).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+        expect(idFrom(first.body.data)).not.toBe(idFrom(second.body.data));
     });
 
     it('appends new entries after existing feature entries', async () => {
@@ -71,11 +103,10 @@ describe('features public API', () => {
 
         const response = await request(app).post('/features').send({ description: 'Next feature' });
 
-        expect((await readFile(join(root, '.features'), 'utf8')).split(/\r?\n/)).toEqual([
-            '// existing entry',
-            response.body.data,
-            '',
-        ]);
+        const entries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
+        expect(entries).toHaveLength(2);
+        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] existing entry$/);
+        expect(entries[1]).toBe(response.body.data);
     });
 
     it('separates an existing file without a trailing newline', async () => {
@@ -83,11 +114,10 @@ describe('features public API', () => {
 
         const response = await request(app).post('/features').send({ description: 'Next feature' });
 
-        expect((await readFile(join(root, '.features'), 'utf8')).split(/\r?\n/)).toEqual([
-            '// existing entry',
-            response.body.data,
-            '',
-        ]);
+        const entries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
+        expect(entries).toHaveLength(2);
+        expect(entries[0]).toMatch(/^\/\/ \[[0-9a-f-]{36}\] existing entry$/);
+        expect(entries[1]).toBe(response.body.data);
     });
 
     it.each([

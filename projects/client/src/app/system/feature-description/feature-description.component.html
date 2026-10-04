@@ -1,19 +1,22 @@
 <main class="feature-description">
     <h1>New feature</h1>
-    <mat-form-field appearance="outline">
-        <mat-label>Feature description</mat-label>
-        <textarea
-            matInput
-            [(ngModel)]="description"
-            rows="8"
-            aria-label="Feature description"
-            placeholder="Describe the feature to write"
-        ></textarea>
-    </mat-form-field>
-    <button type="button" mat-raised-button color="primary" [disabled]="!description.trim() || isSubmitting"
-        (click)="submit()">
-        {{ isSubmitting ? 'Adding…' : 'Add feature' }}
-    </button>
+    <form (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+            <mat-label>Feature description</mat-label>
+            <textarea
+                matInput
+                name="description"
+                [(ngModel)]="description"
+                rows="8"
+                aria-label="Feature description"
+                placeholder="Describe the feature to write"
+                (keydown)="onDescriptionKeydown($event)"
+            ></textarea>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!description.trim() || isSubmitting">
+            {{ isSubmitting ? 'Adding…' : 'Add feature' }}
+        </button>
+    </form>
     <p *ngIf="successMessage" role="status">{{ successMessage }}</p>
     <p *ngIf="errorMessage" id="feature-submit-error" role="alert">{{ errorMessage }}</p>
     <section class="open-features" aria-labelledby="open-features-heading">

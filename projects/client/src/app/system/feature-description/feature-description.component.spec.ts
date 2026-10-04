@@ -74,10 +74,10 @@ describe('FeatureDescriptionComponent', () => {
 
         const list = fixture.nativeElement.querySelector('.open-features ul');
         expect(Array.from(list.querySelectorAll('li')).map((item: HTMLLIElement) => item.textContent.trim()))
-            .toEqual([
-                '// [2026-10-04 22:45 +02:00] Add a saved feature',
-                '// [2026-10-04 22:46 +02:00] Add another feature',
-            ]);
+            .toEqual(expect.arrayContaining([
+                expect.stringMatching(/^\/\/ \[2026-10-04 22:45 \+02:00\] \[[0-9a-f-]{36}\] Add a saved feature$/),
+                expect.stringMatching(/^\/\/ \[2026-10-04 22:46 \+02:00\] \[[0-9a-f-]{36}\] Add another feature$/),
+            ]));
     });
 
     it('holds the entered feature description in the form', async () => {
@@ -104,11 +104,38 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Feature added.');
         await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] Add a feature submission form\n$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] Add a feature submission form\n$/,
         );
         expect(Array.from(fixture.nativeElement.querySelectorAll('.open-features li'))
             .map((item: HTMLLIElement) => item.textContent.trim()))
             .toEqual([expect.stringMatching(/Add a feature submission form$/)]);
+    });
+
+    it.each([
+        ['Ctrl+S', 's'],
+        ['Ctrl+Enter', 'Enter'],
+    ])('submits the top-level form with %s', async (_shortcut, key) => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        textarea.value = `Submit with ${key}`;
+        textarea.dispatchEvent(new Event('input'));
+        await fixture.whenStable();
+
+        const event = new KeyboardEvent('keydown', {
+            key,
+            ctrlKey: true,
+            bubbles: true,
+            cancelable: true,
+        });
+        textarea.dispatchEvent(event);
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
+        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Feature added.');
+        await expect(readFile(join(root, '.features'), 'utf8')).resolves.toMatch(
+            new RegExp(`\\] \\[[0-9a-f-]{36}\\] Submit with ${key}\\n$`),
+        );
     });
 
     it('does not submit an empty description', async () => {

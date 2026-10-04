@@ -12,6 +12,7 @@ Devenv
 - feature: add feature
 - feature: remove outer client scrollbar
 - feature: gitundo
+- feature: current intermediate status
 - feature: add feature backend route
 - feature: testcache status in bottom client toolbar
 - feature: increase version number

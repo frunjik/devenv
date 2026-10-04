@@ -28,3 +28,5 @@ History
 // [2026-10-04 22:52 +02:00] Added public POST /features to append validated, timestamped, single-line feature descriptions to the configured root .features file in .history format; all 85 server tests pass with 100% coverage.
 // [2026-10-04 22:56 +02:00] Connected the client feature form to POST /features with pending, success, and error feedback; real HTTP integration tests pass and all 116 client tests retain 100% coverage.
 // [2026-10-04 23:01 +02:00] Added GET /features and displayed saved feature entries below the client form, refreshing after successful submission; client (119 tests) and server (89 tests) pass with 100% coverage, and the client build succeeds.
+// [2026-10-04 23:13 +02:00] Assigned UUIDs to new features and upgraded legacy entries on read or append while preserving existing IDs; client (119 tests) and server (91 tests) pass with 100% coverage, and the client build succeeds.
+// [2026-10-04 23:16 +02:00] Wrapped feature entry in a top-level submit form; Ctrl+S and Ctrl+Enter now submit through the form, with all 121 client tests passing at 100% coverage and the build succeeding.

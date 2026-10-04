@@ -64,4 +64,14 @@ export class FeatureDescriptionComponent implements OnInit {
             },
         });
     }
+
+    onDescriptionKeydown(event: KeyboardEvent): void {
+        if (event.ctrlKey && (event.key.toLowerCase() === 's' || event.key === 'Enter')) {
+            event.preventDefault();
+            const target = event.currentTarget;
+            if (target instanceof HTMLTextAreaElement && target.form) {
+                target.form.requestSubmit();
+            }
+        }
+    }
 }

@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { of, throwError } from 'rxjs';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
+import { GitLogRefreshService } from './git-log-refresh.service';
 
 describe('AppComponent', () => {
     let http: HttpTestingController;
@@ -226,6 +227,7 @@ describe('AppComponent', () => {
     });
 
     it('posts the dialog message and shows commit output in a snackbar', async () => {
+        const refreshGitLog = jest.spyOn(TestBed.inject(GitLogRefreshService), 'refresh');
         const fixture = TestBed.createComponent(AppComponent);
         fixture.componentInstance.commitChanges();
         await fixture.whenStable();
@@ -240,6 +242,7 @@ describe('AppComponent', () => {
             panelClass: 'commit-snackbar-success',
         });
         expect(fixture.componentInstance.isCommitting).toBe(false);
+        expect(refreshGitLog).toHaveBeenCalledTimes(1);
     });
 
     it('shows a fallback success snackbar when Git returns no output', async () => {

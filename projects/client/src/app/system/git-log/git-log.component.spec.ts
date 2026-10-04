@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import type { GitLogEntry } from '../../backend.service';
+import { GitLogRefreshService } from '../../git-log-refresh.service';
 import { GitLogComponent } from './git-log.component';
 
 describe('GitLogComponent', () => {
@@ -82,7 +83,16 @@ describe('GitLogComponent', () => {
         expectGitLogRequest().flush({ data: [] });
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('button').click();
+        TestBed.inject(GitLogRefreshService).refresh();
+
+        expectGitLogRequest().flush({ data: [] });
+    });
+
+    it('refreshes after the current request finishes if a refresh is requested while loading', () => {
+        createComponent();
+
+        TestBed.inject(GitLogRefreshService).refresh();
+        expectGitLogRequest().flush({ data: [] });
 
         expectGitLogRequest().flush({ data: [] });
     });

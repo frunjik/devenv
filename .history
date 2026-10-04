@@ -9,3 +9,4 @@ History
 // [2026-10-04 21:27 +02:00] Started the client test suites automatically when the test runner page opens; client coverage remains 100%.
 // [2026-10-04 21:32 +02:00] Made direct npm run test:all:coverage invocations atomically cache their combined output and result in the same server temp cache.
 // [2026-10-04 21:35 +02:00] Moved test-run cache storage into the repository-root test-run-cache folder and added it to .gitignore.
+// [2026-10-04 21:39 +02:00] Refresh the client Git log after a successful commit, queuing the refresh if a log request is already in progress.

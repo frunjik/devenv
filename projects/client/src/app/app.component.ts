@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
+import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
 
 @Component({
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitting = false;
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
+    private gitLogRefresh = inject(GitLogRefreshService);
     private snackbar = inject(MatSnackBar);
     private dialog = inject(MatDialog);
     private router = inject(Router);
@@ -90,6 +92,7 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.showCommitMessage(result.stdout.trim() || 'Changes committed.');
                 this.isCommitting = false;
                 this.gitStatus.refresh();
+                this.gitLogRefresh.refresh();
             },
             error: error => {
                 this.showCommitMessage(this.getCommitError(error), true);

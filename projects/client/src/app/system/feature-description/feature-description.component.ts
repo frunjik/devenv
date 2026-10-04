@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
 import { FeatureWorkService } from '../../feature-work.service';
@@ -25,6 +26,7 @@ interface FeatureRow {
         MatFormFieldModule,
         MatInputModule,
         MatPaginatorModule,
+        MatSortModule,
         MatTableModule,
         NgFor,
         NgIf,
@@ -52,6 +54,9 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnInit {
     isLoadingFeatures = false;
     featuresError = '';
     @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(MatSort) set sort(sort: MatSort) {
+        this.featureDataSource.sort = sort;
+    }
 
     constructor(
         private backend: BackendService,

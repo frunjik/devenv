@@ -8,5 +8,5 @@ After finishing a feature add an entry to the ./history.
 
 The features you are writing are, take them one by one:
 
-make features priotizable from client
-make the feature list on client wider
+make feature list sortable on client
+

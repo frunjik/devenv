@@ -99,6 +99,41 @@ describe('FeatureDescriptionComponent', () => {
             .toHaveLength(4);
     });
 
+    it('sorts features by ID, priority, status, and description from the table headers', async () => {
+        await fixture.whenStable();
+        const firstId = '223e4567-e89b-42d3-a456-426614174001';
+        const secondId = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), [
+            `// [2026-10-04 22:45 +02:00] [${firstId}] [Low] [Done] Zebra feature`,
+            `// [2026-10-04 22:46 +02:00] [${secondId}] [High] [Backlog] Apple feature`,
+            '',
+        ].join('\n'));
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const firstCell = (column: string): string =>
+            fixture.nativeElement.querySelector(`tr.mat-mdc-row .mat-column-${column}`).textContent.trim();
+        const sortBy = (column: string): void => {
+            fixture.nativeElement.querySelector(`th.mat-column-${column}`).click();
+            fixture.detectChanges();
+        };
+
+        sortBy('id');
+        expect(firstCell('id')).toBe('123e4567');
+        sortBy('priority');
+        const firstPriority: HTMLSelectElement =
+            fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-priority select');
+        expect(firstPriority.value).toBe('High');
+        sortBy('status');
+        const firstStatus: HTMLSelectElement =
+            fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-status select');
+        expect(firstStatus.value).toBe('Backlog');
+        sortBy('description');
+        expect(firstCell('description')).toBe('Apple feature');
+    });
+
     it('marks a feature as started when its row action is clicked', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';

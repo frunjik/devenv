@@ -61,6 +61,10 @@
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
                 <td mat-cell *matCellDef="let feature">
                     <select
+                        class="feature-priority-select"
+                        [class.priority-high]="feature.priority === 'High'"
+                        [class.priority-medium]="feature.priority === 'Medium'"
+                        [class.priority-low]="feature.priority === 'Low'"
                         [attr.aria-label]="'Priority for ' + feature.description"
                         (change)="onPriorityChange(feature, $event)"
                     >
@@ -77,6 +81,9 @@
                 <td mat-cell *matCellDef="let feature">
                     <select
                         class="feature-status-select"
+                        [class.status-backlog]="feature.status === 'Backlog'"
+                        [class.status-in-progress]="feature.status === 'In progress'"
+                        [class.status-done]="feature.status === 'Done'"
                         [attr.aria-label]="'Status for ' + feature.description"
                         (change)="onStatusChange(feature, $event)"
                     >
@@ -115,7 +122,7 @@
                 </td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr mat-row class="feature-card-row" *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
         <p *ngIf="features.length > 0 && featureDataSource.filteredData.length === 0">
             No features match your search.

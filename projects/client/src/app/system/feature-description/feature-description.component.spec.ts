@@ -102,6 +102,42 @@ describe('FeatureDescriptionComponent', () => {
             .toHaveLength(4);
     });
 
+    it('displays priority and status as distinct badges within card-like rows', async () => {
+        await fixture.whenStable();
+        const ids = [
+            '123e4567-e89b-42d3-a456-426614174000',
+            '123e4567-e89b-42d3-a456-426614174001',
+            '123e4567-e89b-42d3-a456-426614174002',
+        ];
+        await writeFile(join(root, '.features'), [
+            `// [${ids[0]}] [High] [Backlog] Urgent task`,
+            `// [${ids[1]}] [Medium] [In progress] Active task`,
+            `// [${ids[2]}] [Low] [Done] Finished task`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const rows: HTMLTableRowElement[] = Array.from(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        );
+        expect(rows).toHaveLength(3);
+        expect(rows.every(row => row.classList.contains('feature-card-row'))).toBe(true);
+        expect(rows.map(row => row.querySelector('.feature-priority-select')?.className))
+            .toEqual([
+                'feature-priority-select priority-high',
+                'feature-priority-select priority-medium',
+                'feature-priority-select priority-low',
+            ]);
+        expect(rows.map(row => row.querySelector('.feature-status-select')?.className))
+            .toEqual([
+                'feature-status-select status-backlog',
+                'feature-status-select status-in-progress',
+                'feature-status-select status-done',
+            ]);
+    });
+
     it('sorts features by ID, priority, status, and description from the table headers', async () => {
         await fixture.whenStable();
         const firstId = '223e4567-e89b-42d3-a456-426614174001';

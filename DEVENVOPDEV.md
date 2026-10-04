@@ -7,3 +7,4 @@ You never EVER write or change production when writing tests unless you encounte
 After finishing a feature add an entry to the ./history, and remove it from this file.
 
 The features you are writing are, take them one by one:
+- [In progress] refresh feature list from client <!-- feature-id:145ded61-8269-4c9f-820c-2dfd0b5157c9 -->

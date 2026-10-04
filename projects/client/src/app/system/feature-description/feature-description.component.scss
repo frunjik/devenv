@@ -17,6 +17,84 @@
 
     table {
         width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 0.5rem;
+    }
+
+    .mat-mdc-header-row {
+        height: 3rem;
+    }
+
+    .feature-card-row {
+        height: 4rem;
+
+        td {
+            border-top: 1px solid rgba(127, 127, 127, 0.2);
+            border-bottom: 1px solid rgba(127, 127, 127, 0.2);
+            background: rgba(127, 127, 127, 0.06);
+        }
+
+        td:first-child {
+            border-left: 1px solid rgba(127, 127, 127, 0.2);
+            border-radius: 0.5rem 0 0 0.5rem;
+        }
+
+        td:last-child {
+            border-right: 1px solid rgba(127, 127, 127, 0.2);
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        &:hover td {
+            background: rgba(127, 127, 127, 0.12);
+        }
+    }
+
+    .feature-priority-select,
+    .feature-status-select {
+        max-width: 100%;
+        padding: 0.35rem 0.65rem;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        font: inherit;
+        font-size: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .priority-high {
+        border-color: rgba(176, 55, 45, 0.3);
+        background: rgba(176, 55, 45, 0.12);
+        color: #a32920;
+    }
+
+    .priority-medium {
+        border-color: rgba(160, 112, 0, 0.3);
+        background: rgba(160, 112, 0, 0.12);
+        color: #805900;
+    }
+
+    .priority-low {
+        border-color: rgba(39, 105, 120, 0.3);
+        background: rgba(39, 105, 120, 0.12);
+        color: #216071;
+    }
+
+    .status-backlog {
+        border-color: rgba(100, 100, 100, 0.3);
+        background: rgba(100, 100, 100, 0.1);
+        color: #555;
+    }
+
+    .status-in-progress {
+        border-color: rgba(42, 92, 160, 0.3);
+        background: rgba(42, 92, 160, 0.12);
+        color: #24558f;
+    }
+
+    .status-done {
+        border-color: rgba(43, 119, 75, 0.3);
+        background: rgba(43, 119, 75, 0.12);
+        color: #286b45;
     }
 
     .mat-column-actions {

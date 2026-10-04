@@ -26,3 +26,4 @@
 // [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] review code changes on client
 // [2026-10-04 23:41 +02:00] [006ca492-cb32-452c-b16d-ed0aa30a654d] show current task more prominently on client
 // [2026-10-04 23:41 +02:00] [985a0326-bae1-4433-a283-f9be85e880c0] give features a priority
+// [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] extract subcomponents from client main form

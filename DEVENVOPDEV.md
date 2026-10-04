@@ -9,4 +9,6 @@ The feature you are writing is:
 
 after commiting a feature remove it from the feature list
 
+give features a priority
+
 show the status of the last cached test run in the bottom client toolbar

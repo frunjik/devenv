@@ -55,6 +55,15 @@ describe('AppComponent', () => {
     });
 
     afterEach(() => {
+        http.match('http://localhost:3000/tests/cache/status').forEach(request => request.flush({
+            data: {
+                available: false,
+                status: 'empty',
+                startedAt: null,
+                finishedAt: null,
+                exitCode: null,
+            },
+        }));
         http.match('http://localhost:3000/current').forEach(request => request.flush({ data: null }));
         http.match('http://localhost:3000/git/status').forEach(request => request.flush({
             data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
@@ -140,8 +149,52 @@ describe('AppComponent', () => {
         expect(bottomToolbar.getAttribute('aria-label')).toBe('Status toolbar');
         expect(bottomToolbar.querySelector('.current-entry')).not.toBeNull();
         expect(bottomToolbar.querySelector('.git-status-indicator')).not.toBeNull();
+        expect(bottomToolbar.querySelector('.test-run-status')).not.toBeNull();
         expect(fixture.nativeElement.querySelector('router-outlet').compareDocumentPosition(bottomToolbar)
             & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        fixture.destroy();
+    });
+
+    it('shows the last cached test result in the bottom toolbar', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        const request = http.expectOne('http://localhost:3000/tests/cache/status');
+        expect(request.request.method).toBe('GET');
+        request.flush({
+            data: {
+                available: true,
+                status: 'failed',
+                startedAt: '2026-10-04T12:00:00.000Z',
+                finishedAt: '2026-10-04T12:01:00.000Z',
+                exitCode: 1,
+            },
+        });
+        fixture.detectChanges();
+
+        const indicator = fixture.nativeElement.querySelector('.test-run-status');
+        expect(indicator.textContent.trim()).toBe('Tests: failed');
+        expect(indicator.getAttribute('aria-label')).toBe('Last test run: failed');
+        expect(fixture.debugElement.query(By.css('.test-run-status')).injector.get(MatTooltip).message)
+            .toContain('exit code 1');
+        expect(indicator.classList).toContain('test-run-status-failed');
+        fixture.destroy();
+    });
+
+    it('shows cached test status errors in the bottom toolbar', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        http.expectOne('http://localhost:3000/tests/cache/status').flush(
+            { error: { message: 'Cache unavailable' } },
+            { status: 500, statusText: 'Error' },
+        );
+        fixture.detectChanges();
+
+        const indicator = fixture.nativeElement.querySelector('.test-run-status');
+        expect(indicator.textContent.trim()).toBe('Tests: unavailable');
+        expect(indicator.getAttribute('aria-label')).toBe('Last test run: unavailable');
+        expect(fixture.debugElement.query(By.css('.test-run-status')).injector.get(MatTooltip).message)
+            .toContain('Cache unavailable');
+        expect(indicator.classList).toContain('test-run-status-error');
         fixture.destroy();
     });
 

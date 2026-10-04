@@ -71,3 +71,15 @@ nav {
     color: #c99b94;
     background: rgba(201, 155, 148, 0.1);
 }
+
+.test-run-status {
+    min-width: auto;
+    padding-inline: 0.5rem;
+    color: #aebbb0;
+    font-size: 0.7rem;
+}
+
+.test-run-status-failed,
+.test-run-status-error {
+    color: #d7a29a;
+}

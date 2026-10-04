@@ -5,8 +5,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
     BackendService,
     type TestOutputStream,
-    type TestRunCacheStatus,
 } from '../../backend.service';
+import { TestRunCacheStatusService } from '../../test-run-cache-status.service';
 
 interface TestRunResult {
     exitCode: number | null;
@@ -25,30 +25,18 @@ export class TestRunnerComponent implements OnInit {
     isRunning = false;
     result: TestRunResult | null = null;
     errorMessage = '';
-    cacheStatus: TestRunCacheStatus | null = null;
-    isLoadingCacheStatus = false;
-    cacheStatusError = '';
-
-    constructor(private backend: BackendService) {}
+    constructor(
+        private backend: BackendService,
+        readonly cacheStatus: TestRunCacheStatusService,
+    ) {}
 
     ngOnInit(): void {
-        this.refreshCacheStatus();
+        this.cacheStatus.refresh();
         this.runTests();
     }
 
     refreshCacheStatus(): void {
-        this.isLoadingCacheStatus = true;
-        this.cacheStatusError = '';
-        this.backend.getTestRunCacheStatus().subscribe({
-            next: status => {
-                this.cacheStatus = status;
-                this.isLoadingCacheStatus = false;
-            },
-            error: (error: Error) => {
-                this.cacheStatusError = error.message;
-                this.isLoadingCacheStatus = false;
-            },
-        });
+        this.cacheStatus.refresh();
     }
 
     runTests(): void {

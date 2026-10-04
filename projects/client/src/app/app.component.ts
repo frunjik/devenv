@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,10 +13,11 @@ import { CurrentEntryService } from './current-entry.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
 import { FeatureWorkService } from './feature-work.service';
+import { TestRunCacheStatusService } from './test-run-cache-status.service';
 
 @Component({
     selector: 'app-root',
-    imports: [NgClass, RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule, MatTooltipModule],
+    imports: [DatePipe, NgClass, RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule, MatTooltipModule],
     // providers: [
 
     // ]
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
     readonly currentEntry = inject(CurrentEntryService);
+    readonly testRunCacheStatus = inject(TestRunCacheStatusService);
     private featureWork = inject(FeatureWorkService);
     private gitLogRefresh = inject(GitLogRefreshService);
     private snackbar = inject(MatSnackBar);
@@ -45,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.gitStatus.startPolling();
         this.currentEntry.startPolling();
+        this.testRunCacheStatus.refresh();
     }
 
     ngOnDestroy(): void {

@@ -36,3 +36,4 @@ History
 // [2026-10-04 23:33 +02:00] Clear the client feature description after successful submission while retaining it on backend errors; all 124 client tests pass with 100% coverage and the build succeeds.
 // [2026-10-04 23:37 +02:00] Removed the “Feature added.” client success message while preserving save, input clearing, and list refresh; all 124 client tests pass at 100% coverage and the build succeeds.
 // [2026-10-04 23:43 +02:00] Connected Start to an active feature and remove it from .features only after a successful Git commit; all client (96) and server (130) tests pass at 100% coverage, and the client build succeeds.
+// [2026-10-04 23:46 +02:00] Displayed the latest cached test-run status in the fixed client toolbar and shared status refreshes with the test runner; all client (134) and server (96) tests pass at 100% coverage, and the client build succeeds.

@@ -38,7 +38,18 @@ describe('AppComponent commit navigation', () => {
         http = TestBed.inject(HttpTestingController);
     });
 
-    afterEach(() => http.verify());
+    afterEach(() => {
+        http.match('http://localhost:3000/tests/cache/status').forEach(request => request.flush({
+            data: {
+                available: false,
+                status: 'empty',
+                startedAt: null,
+                finishedAt: null,
+                exitCode: null,
+            },
+        }));
+        http.verify();
+    });
 
     it('opens the commit dialog when already on the Git log route', async () => {
         const fixture = TestBed.createComponent(AppComponent);

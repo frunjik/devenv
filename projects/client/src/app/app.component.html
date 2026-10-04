@@ -54,6 +54,46 @@
         [matTooltipShowDelay]="250"
         aria-live="polite"
     >{{ gitStatus.count }}</a>
+    <a
+        mat-button
+        routerLink="/tests"
+        class="test-run-status"
+        [ngClass]="{
+            'test-run-status-failed': testRunCacheStatus.status?.status === 'failed'
+                || testRunCacheStatus.status?.status === 'error',
+            'test-run-status-error': !!testRunCacheStatus.error
+        }"
+        [attr.aria-label]="'Last test run: ' + (testRunCacheStatus.error
+            ? 'unavailable'
+            : testRunCacheStatus.isLoading
+                ? 'loading'
+                : testRunCacheStatus.status?.status || 'unknown')"
+        [matTooltip]="testRunCacheStatus.error
+            ? 'Could not load cached test status: ' + testRunCacheStatus.error
+            : testRunCacheStatus.status?.available
+                ? 'Last test run: ' + testRunCacheStatus.status?.status
+                    + (testRunCacheStatus.status?.exitCode !== null
+                        && testRunCacheStatus.status?.exitCode !== undefined
+                        ? ' (exit code ' + testRunCacheStatus.status?.exitCode + ')'
+                        : '')
+                    + (testRunCacheStatus.status?.finishedAt
+                        ? ' — ' + (testRunCacheStatus.status?.finishedAt | date:'medium')
+                        : '')
+                : testRunCacheStatus.isLoading
+                    ? 'Loading last cached test run…'
+                    : 'No cached test runs.'"
+        matTooltipPosition="above"
+        aria-live="polite"
+    >
+        Tests:
+        {{ testRunCacheStatus.error
+            ? 'unavailable'
+            : testRunCacheStatus.isLoading
+                ? '…'
+                : testRunCacheStatus.status?.status === 'empty'
+                    ? 'none'
+                    : testRunCacheStatus.status?.status || 'unknown' }}
+    </a>
     <span class="toolbar-spacer"></span>
     <button
         type="button"

@@ -18,6 +18,7 @@ import {
 } from '../src/public-api';
 import { forwardTestProcessOutput } from '../src/lib/handlers/test-runner';
 import { createGitCommitHandler } from '../src/lib/handlers/git-commit';
+import { createGitLogHandler } from '../src/lib/handlers/git-log';
 
 describe('server public HTTP API', () => {
     let root: string;
@@ -521,6 +522,111 @@ describe('server public HTTP API', () => {
                 process.env['NODE_ENV'] = originalNodeEnv;
             }
         }
+    });
+
+    it('returns recent commit details from the git log', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const gitRoot = join(root, 'git-log-repo');
+        await mkdir(gitRoot);
+        execFileSync('git', ['init', gitRoot]);
+        execFileSync('git', ['-C', gitRoot, 'config', 'user.name', 'Test User']);
+        execFileSync('git', ['-C', gitRoot, 'config', 'user.email', 'test@example.com']);
+        await writeFile(join(gitRoot, 'log.txt'), 'initial');
+        execFileSync('git', ['-C', gitRoot, 'add', '--all']);
+        execFileSync('git', ['-C', gitRoot, 'commit', '-m', 'Initial commit']);
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const gitApp = createApp(root, undefined, gitRoot);
+            const response = await request(gitApp).get('/git/log');
+            expect(response.status).toBe(200);
+            expect(response.body.data).toHaveLength(1);
+            expect(response.body.data[0]).toMatchObject({
+                hash: expect.stringMatching(/^[0-9a-f]{40}$/),
+                author: 'Test User',
+                subject: 'Initial commit',
+            });
+            expect(response.body.data[0].date).toEqual(expect.any(String));
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('returns an empty list when the git repository has no commits', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        const gitRoot = join(root, 'empty-git-repo');
+        await mkdir(gitRoot);
+        execFileSync('git', ['init', gitRoot]);
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const gitApp = createApp(root, undefined, gitRoot);
+            const response = await request(gitApp).get('/git/log');
+            expect(response.body).toEqual({ data: [] });
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('returns git errors when the working directory is not a repository', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        process.env['NODE_ENV'] = 'test';
+
+        try {
+            const gitApp = createApp(root, undefined, root);
+            const response = await request(gitApp).get('/git/log');
+            expect(response.status).toBe(500);
+            expect(response.body.error.stderr).toContain('not a git repository');
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('reports malformed git log output', async () => {
+        const gitApp = express();
+        gitApp.get('/git/log', createGitLogHandler(root, async () => ({
+            stdout: 'incomplete\x1fcommit',
+            stderr: '',
+        })));
+        gitApp.use(handleError);
+
+        const response = await request(gitApp).get('/git/log');
+
+        expect(response.status).toBe(500);
+        expect(response.body.error.message).toBe('Git returned an invalid log result');
+    });
+
+    it('does not register the git log route in production', async () => {
+        const originalNodeEnv = process.env['NODE_ENV'];
+        process.env['NODE_ENV'] = 'production';
+
+        try {
+            const productionApp = createApp(root);
+            const response = await request(productionApp).get('/git/log');
+            expect(response.status).toBe(404);
+        } finally {
+            if (originalNodeEnv === undefined) {
+                delete process.env['NODE_ENV'];
+            } else {
+                process.env['NODE_ENV'] = originalNodeEnv;
+            }
+        }
+    });
+
+    it('defaults the git log route working directory to the current directory', () => {
+        expect(createGitLogHandler()).toBeDefined();
     });
 
     it('rejects test execution if the development server was not started by npm', async () => {

@@ -12,5 +12,3 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] we need to display the current task in a better way then in the toolbar <!-- feature-id:cca73db4-75bd-4015-81c9-3711028a04dc -->
-- [In progress] make a server endpoint to retrieve the current uncommited code <!-- feature-id:9587581b-df62-4ba7-a0e5-45167be22a1d -->

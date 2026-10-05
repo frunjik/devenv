@@ -5,6 +5,7 @@ import { FileSystem } from './filesystem/filesystem';
 import { getFiles, postFiles } from './handlers/files';
 import { getFolders } from './handlers/folders';
 import { createGitCommitHandler } from './handlers/git-commit';
+import { createGitDiffHandler } from './handlers/git-diff';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
 import { createCurrentEntryHandler } from './handlers/current-entry';
@@ -68,6 +69,7 @@ export function createApp(
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
         app.get('/tests/cache/status', createTestRunCacheStatusHandler(testRunCacheDirectory));
         app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
+        app.get('/git/diff', createGitDiffHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));
         app.get('/git/status', createGitStatusHandler(gitCommitCwd));
     }

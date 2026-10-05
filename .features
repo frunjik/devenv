@@ -46,7 +46,7 @@
 // [2026-10-05 01:34 +02:00] [c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2] [Medium] [Backlog] verify the status of the system and leave the result as a feature to be confirmed
 // [2026-10-05 01:35 +02:00] [0e9d228a-e5e5-4657-bbe5-5ace4e522fce] [Medium] [Backlog] add feature priority as a number on top of the indication low, medium high
 // [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [Backlog] create a canban view
-// [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [In progress] make a server endpoint to retrieve the current uncommited code
+// [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [Done] make a server endpoint to retrieve the current uncommited code
 // [2026-10-05 01:48 +02:00] [eddcde7f-775c-4e69-9579-97f07dedf83a] [Low] [Done] remove the display of the top toolbar feature status
 // [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Low] [Backlog] add status verify
 // [2026-10-05 01:53 +02:00] [57db25d7-bf49-4f35-85ac-6f7e362c694b] [Low] [Backlog] show models
@@ -75,4 +75,4 @@
 // [2026-10-05 01:55 +02:00] [6c78b785-cb3d-446b-9189-34f4046a1056] [Low] [Questions] Define the AuthenticatedPrincipal model interface
 // [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Questions] Define the PPTFileStats model interface
 // [2026-10-05 02:00 +02:00] [250329d6-57f9-4e5d-ac72-a39f3626bed4] [Low] [Done] move questions with features from the ./DEVENVOPDEV.md file to the ./features file converting them to the correct format
-// [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [In progress] we need to display the current task in a better way then in the toolbar
+// [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [Questions] we need to display the current task in a better way then in the toolbar

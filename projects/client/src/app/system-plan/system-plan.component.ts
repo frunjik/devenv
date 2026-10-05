@@ -283,7 +283,7 @@ export class SystemPlanComponent {
             id: 'SC-017',
             title: 'Toggle sample and real data',
             kind: 'Behavior',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: ['SC-005', 'SC-016'],
             summary: 'Switch between showing sample and real data together and showing only real data.',
         },

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ImportedNote, ProblemTicket } from '@shared';
 import { ProblemInquiryPageComponent } from './problem-inquiry-page.component';
 
 describe('ProblemInquiryPageComponent', () => {
@@ -65,6 +66,74 @@ describe('ProblemInquiryPageComponent', () => {
         expect(content).toContain('The operation outcome is uncertain.');
     });
 
+    it('toggles between all notes and known-real notes without changing the records', () => {
+        fixture.componentInstance.addNote(makeNote('note-sample', 'synthetic', 'A sample report.'));
+        fixture.componentInstance.addNote(makeNote('note-real', 'external-report', 'A real report.'));
+        fixture.componentInstance.addNote(makeNote('note-unknown', 'unknown', 'An unknown-origin report.'));
+        fixture.componentInstance.addNote(makeNote('note-system', 'system-artifact', 'A system-artifact report.'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('A sample report.');
+        expect(fixture.nativeElement.textContent).toContain('A real report.');
+        expect(fixture.nativeElement.textContent).toContain('An unknown-origin report.');
+        expect(fixture.nativeElement.textContent).toContain('A system-artifact report.');
+
+        toggleSampleData();
+
+        expect(fixture.nativeElement.textContent).not.toContain('A sample report.');
+        expect(fixture.nativeElement.textContent).toContain('A real report.');
+        expect(fixture.nativeElement.textContent).not.toContain('An unknown-origin report.');
+        expect(fixture.nativeElement.textContent).toContain('A system-artifact report.');
+        expect((fixture.nativeElement.querySelector('#source-note-ids') as HTMLSelectElement).options.length)
+            .toBe(2);
+        expect(fixture.componentInstance.notes).toHaveLength(4);
+
+        toggleSampleData();
+
+        expect(fixture.nativeElement.textContent).toContain('A sample report.');
+        expect(fixture.nativeElement.textContent).toContain('A real report.');
+        expect(fixture.nativeElement.textContent).toContain('An unknown-origin report.');
+        expect(fixture.nativeElement.textContent).toContain('A system-artifact report.');
+    });
+
+    it('shows only tickets whose linked notes are all known-real in real-only mode', () => {
+        const sample = makeNote('note-sample', 'synthetic', 'A sample report.');
+        const real = makeNote('note-real', 'direct-observation', 'A real report.');
+        const systemNote = makeNote('note-system', 'system-artifact', 'A system-artifact report.');
+        fixture.componentInstance.notes = [sample, real, systemNote];
+        fixture.componentInstance.tickets = [
+            makeTicket('ticket-real', ['note-real']),
+            makeTicket('ticket-system', ['note-system']),
+            makeTicket('ticket-mixed', ['note-real', 'note-sample']),
+            makeTicket('ticket-sample', ['note-sample']),
+            makeTicket('ticket-unlinked', undefined),
+            makeTicket('ticket-empty-links', []),
+            makeTicket('ticket-missing-note', ['note-missing']),
+        ];
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.ticket-card').length).toBe(7);
+
+        toggleSampleData();
+
+        expect(fixture.nativeElement.querySelectorAll('.ticket-card').length).toBe(2);
+        expect(fixture.nativeElement.textContent).toContain('ticket-real');
+        expect(fixture.nativeElement.textContent).toContain('ticket-system');
+        expect(fixture.nativeElement.textContent).not.toContain('ticket-mixed');
+        expect(fixture.nativeElement.textContent).not.toContain('ticket-sample');
+        expect(fixture.nativeElement.textContent).not.toContain('ticket-unlinked');
+        expect(fixture.nativeElement.textContent).not.toContain('ticket-empty-links');
+        expect(fixture.nativeElement.textContent).not.toContain('ticket-missing-note');
+        expect(fixture.nativeElement.textContent).toContain('A real report.');
+        expect(fixture.nativeElement.textContent).not.toContain('A sample report.');
+    });
+
+    function toggleSampleData(): void {
+        const toggle = fixture.nativeElement.querySelector('#sample-data-toggle') as HTMLInputElement;
+        toggle.click();
+        fixture.detectChanges();
+    }
+
     function setText(selector: string, value: string): void {
         const control = fixture.nativeElement.querySelector(selector) as HTMLInputElement | HTMLTextAreaElement;
         control.value = value;
@@ -74,5 +143,38 @@ describe('ProblemInquiryPageComponent', () => {
     function submitForm(): void {
         fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit'));
         fixture.detectChanges();
+    }
+
+    function makeNote(id: string, sourceOrigin: ImportedNote['proposal']['sourceOrigin'], sourceText: string): ImportedNote {
+        return {
+            id,
+            proposal: {
+                sourceText,
+                sourceReference: { artifact: null, locator: null },
+                sourceOrigin,
+                verificationStatus: 'unreviewed',
+                interpretation: `Interpretation: ${sourceText}`,
+                openQuestions: [],
+            },
+            acceptedAt: '2026-10-05T12:00:00.000Z',
+        };
+    }
+
+    function makeTicket(id: string, sourceNoteIds: string[] | undefined): ProblemTicket {
+        return {
+            id,
+            title: `Title for ${id}`,
+            report: `Report for ${id}`,
+            problem: {
+                condition: 'An explicitly described undesirable condition.',
+                affected: 'Warehouse operator',
+                impact: 'The operator cannot proceed.',
+            },
+            sourceNoteIds,
+            scope: { level: 'workflow', label: 'Outbound scanning' },
+            context: { people: [], places: [], things: [] },
+            reportedBy: 'A. Reporter',
+            reportedAt: '2026-10-05T12:00:00.000Z',
+        };
     }
 });

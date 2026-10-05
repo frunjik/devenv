@@ -259,13 +259,14 @@ Connect accepted notes, explicit ticket framing, and the framed-ticket list with
 
 ### SC-017 — Toggle sample and real data
 
-**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-005, SC-016
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-005, SC-016
 
 Add a toggle to the inquiry data views. In the combined mode, show sample and real data together; when switched, show only real data. Switching back restores the combined view. Filtering changes visibility only and must not modify or delete records.
 
 **Working boundary:** Apply the visibility choice consistently to accepted notes and framed tickets.
-**Open questions:** Decide how records with unknown origin and tickets linked to both sample and real notes behave in real-only mode; clarify the concrete source-origin categories that count as real.
-**Validation evidence:** Requested by the user on 2026-10-06. The current model distinguishes `synthetic` from external reports, direct observations, system artifacts, and unknown origin; exact inclusion rules and mixed-provenance ticket behavior remain to be resolved before implementation.
+**Decision (user, 2026-10-06):** Real-only shows only notes with a known non-synthetic origin; `unknown` is excluded. A ticket appears in real-only only when it has one or more linked notes and every linked note is currently available with known non-synthetic origin. Thus mixed-provenance tickets, unlinked tickets, and tickets with unavailable source notes are hidden. Toggling affects visibility only; records are retained.
+**Open questions:** None for this in-memory visibility slice. Verification remains distinct from origin: a known non-synthetic source is not necessarily verified.
+**Validation evidence:** The page toggle switches accepted notes, ticket-form note choices, and framed tickets together. Public-interface tests cover synthetic, external-report, direct-observation, system-artifact, and unknown origins; retain all underlying notes when filtered; restore the combined view; and hide mixed, unlinked, empty-link, and unavailable-source tickets. Page coverage is 100% statements, branches, functions, and lines; client build passes.
 
 ### SC-018 — Explore a wide-screen inquiry layout
 

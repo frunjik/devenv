@@ -3,10 +3,10 @@
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Low] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Low] [Backlog] tasks done indicator
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
-// [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [Backlog] fix typesript errors
-// [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [Backlog] technical debt
+// [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [In progress] identify technical debt in the devenv app and make feature tickets in the .backlog
+// [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [In progress] fix typescript errors in al code use tsc to verify if its present ?
 // [2026-10-05 00:36 +02:00] [c01bb9c0-69df-429b-b9f9-e49dfe1bfa17] [Medium] [Backlog] review changes
-// [2026-10-05 00:39 +02:00] [497829fe-e624-48d7-8a88-b29c135d368f] [Medium] [In progress] add waiting for input status merge with @Questions
+// [2026-10-05 00:39 +02:00] [497829fe-e624-48d7-8a88-b29c135d368f] [Medium] [Done] Merge the waiting-for-input status into Questions; no separate status is needed. [Delivered: 2026-10-05]
 // [2026-10-05 00:41 +02:00] [8f772957-b253-44d3-871b-35458a8d412e] [Medium] [Backlog] ask question about feature
 // [2026-10-05 00:42 +02:00] [38737ce4-8b9c-4d63-a5d0-c63ff804a8c0] [Medium] [Backlog] mark features as progress
 // [2026-10-05 00:48 +02:00] [1b78bc47-a79c-457c-8c0c-6bb4aca2d623] [Medium] [Backlog] improve layout of feature clent page
@@ -16,16 +16,16 @@
 // [2026-10-05 00:53 +02:00] [79985af5-96fd-478a-a572-85ebf50d479f] [Medium] [Backlog] mark a feature with Questions
 // [2026-10-05 00:55 +02:00] [e1a4b339-fde5-47c9-ba8e-9bccc794953f] [Medium] [In progress] list features in progress
 // [2026-10-05 00:59 +02:00] [bfb88622-58cd-4bd5-afdf-c7efcb5f1961] [Medium] [Backlog] questions form
-// [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress
+// [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress; add paging to the client Done features list
 // [2026-10-05 01:06 +02:00] [32084c42-c61c-4133-af88-f672298c9717] [Medium] [Backlog] stable versions
 // [2026-10-05 01:10 +02:00] [48da0605-50be-4be6-988e-49e6ac880011] [Medium] [Backlog] mark current feature in progress
 // [2026-10-05 01:14 +02:00] [84536587-745f-4b22-aa4b-947925dc69b9] [Medium] [Backlog] add status Questions to features
 // [2026-10-05 01:14 +02:00] [3aa9e269-c494-42d0-9e8a-77527fb24ad5] [Medium] [In progress] use json for data persistence
-// [2026-10-05 01:15 +02:00] [31cfbd9f-abb5-4830-8480-c1a1a8718344] [Medium] [Backlog] mark as done in open features
-// [2026-10-05 01:27 +02:00] [51ed9afa-b542-457e-8ef2-a99197b89ed3] [Medium] [Backlog] open features refresh on client
+// [2026-10-05 01:15 +02:00] [31cfbd9f-abb5-4830-8480-c1a1a8718344] [Medium] [Denied] mark as done in open features
+// [2026-10-05 01:27 +02:00] [51ed9afa-b542-457e-8ef2-a99197b89ed3] [Medium] [Denied] open features refresh on client
 // [2026-10-05 01:28 +02:00] [708b8d3b-dd35-469f-94de-e64a61dd0b0e] [Medium] [Backlog] authentication
-// [2026-10-05 01:31 +02:00] [12306c80-889f-4161-9474-93a072dcb535] [Medium] [Backlog] mark features done with the current version of client or server depending on which domain they belong in
-// [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Medium] [Questions] Current application status codes are Questions, Backlog, In progress, Committed, Done, Aborted, and Denied. Question: Which status should be verified, and what should verification do?
+// [2026-10-05 01:31 +02:00] [12306c80-889f-4161-9474-93a072dcb535] [Medium] [In progress] mark features done with the current version of client or server depending on which domain they belong in
+// [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Medium] [In progress] Current application status codes are Questions, Backlog, InProgress, Committed, Done, Aborted, and Denied. Question: Which status should be verified, and what should verification do? A: features start in the .backlog, then the user moves them to .features to become visible in the open features list
 // [2026-10-05 01:55 +02:00] [1a61a983-122f-419e-92d4-647354a18744] [Low] [Questions] Define the shared PPTValue model interface
 // [2026-10-05 01:55 +02:00] [3b0101b5-4272-4a65-a1fb-ce477686bef7] [Low] [Questions] Define the shared PPTField model interface
 // [2026-10-05 01:55 +02:00] [9cef3a41-c2dc-464b-90dd-d300a3bbf09b] [Low] [Questions] Define the shared PPTModel model interface
@@ -48,23 +48,23 @@
 // [2026-10-05 01:55 +02:00] [aa72b943-3e95-4ad3-946b-7bb94e8380ee] [Low] [Questions] Define the shared FailureResponseBody model interface
 // [2026-10-05 01:55 +02:00] [6c78b785-cb3d-446b-9189-34f4046a1056] [Low] [Questions] Define the AuthenticatedPrincipal model interface
 // [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Questions] Define the PPTFileStats model interface
-// [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [In progress] we need to display the current task in a better way then in the toolbar
+// [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [Questions] The current task is already shown in the toolbar. Question: What alternative location and presentation should replace or supplement the toolbar display?
 // [2026-10-05 02:19 +02:00] [db79327c-2817-4476-80f2-089d7cd004e0] [High] [In progress] Should a JSON feature record include a category field, and should it be required with client and server as its allowed values? A: yes
 // [2026-10-05 02:19 +02:00] [c1643ad0-c69a-43e2-87d4-0568f14067e8] [High] [In progress] Should a JSON feature record include a numeric urgency field in addition to its High, Medium, or Low priority? A: the Hight, Medium and Low labels are derived from the urgency field.
-// [2026-10-05 02:19 +02:00] [9c8a43de-f7bb-425a-b148-8e0dbd909c35] [High] [Done] JSON feature records include both a committed boolean and a commit hash. This resolves the schema decision; persistence remains in the existing .features format until its separate migration. [Delivered: 2026-10-05]
-// [2026-10-05 02:19 +02:00] [45fa7646-916d-4e39-8649-6477254486f8] [High] [In progress] Should a completed JSON feature record include the client or server version it was completed against? A: Yes
+// [2026-10-05 02:19 +02:00] [9c8a43de-f7bb-425a-b148-8e0dbd909c35] [High] [Done] JSON feature records include both a committed boolean and a commit hash. This resolves the schema decision; persistence remains in the existing .features format until its separate migration.; add the open questions regarding JSON data persistence as features [Delivered: 2026-10-05]
+// [2026-10-05 02:19 +02:00] [45fa7646-916d-4e39-8649-6477254486f8] [High] [Done] Completed JSON feature records include the release version for their domain: client version for client features and server version for server features. This resolves the schema decision; implementation remains part of the JSON feature-record work. [Delivered: 2026-10-05]
 // [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [In progress] Clarify where uncommitted file contents should appear and whether full working-tree contents are needed for all changed files, including deleted, binary, and renamed files, rather than diffs in Git log. A: only diffs in git log
-// [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [High] [In progress] What feature status should be verified, at which workflow stage, and what outcome should verification produce? A: merge with features that have @Workflow
+// [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [High] [Done] Merge feature-status verification requirements into the Workflow feature [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4]. [Delivered: 2026-10-05]
 // [2026-10-05 02:21 +02:00] [9af332fe-e6a1-4926-af46-982a3c957c50] [Low] [In progress] Clarify whether this should document the Open tab's ID, priority, status, description, and actions, or change the UI; specify where the description should appear. A: what do you mean with 'this' ?
 // [2026-10-05 02:35 +02:00] [dc4cb587-bdc9-453f-bbea-075a26c3e3e7] [Low] [Backlog] create a ./denied list
 // [2026-10-05 02:42 +02:00] [95f66465-65c9-4150-bfd2-e1cc77158871] [Low] [Backlog] add playwright
 // [2026-10-05 02:50 +02:00] [cfdfd5c4-5ee7-46e8-9d94-739f6da20bb2] [Low] [Backlog] set prio of features with status Question to High
-// [2026-10-05 03:08 +02:00] [3076fb2b-198a-49e8-bd89-475f2651ba61] [Low] [In progress] What sources and domains count as "all terms," and where should the glossary be presented? The request does not define its scope, format, or audience. A: Merge with @Glossary features the Glossary is a list of all Terms used in the system.
-// [2026-10-05 03:09 +02:00] [951c879c-a2bb-48bc-b30b-8bde89535e39] [Low] [In progress] Should the server glossary be a read-only or editable API, and what fields, persistence format, and client access are required? The request only specifies a list maintained on the server. A: Editable API persistence in JSON start with a Term and short Description as Fields for the Glossary Model
+// [2026-10-05 03:08 +02:00] [3076fb2b-198a-49e8-bd89-475f2651ba61] [Low] [Done] Merged into the server Glossary feature: the glossary is a list of all terms used in the system. [Delivered: 2026-10-05]
+// [2026-10-05 03:09 +02:00] [951c879c-a2bb-48bc-b30b-8bde89535e39] [Low] [Questions] Server Glossary requirements clarified: editable API, JSON persistence, and Term plus short Description fields. Question: Should client access be a view-only glossary or include create, edit, and delete controls?
 // [2026-10-05 03:10 +02:00] [3aae2c05-ff03-49cc-8c96-a35ad2aa89c7] [Low] [Backlog] keep a list of closed features so we can commit them one by one
-// [2026-10-05 03:12 +02:00] [79c6f131-4386-42f2-b10c-c0bebf27a563] [Low] [In progress] What entities and field metadata should the Model/Field structure represent, and should it be runtime schema, persisted data, or documentation only? A: Model / Field are meta models that describe domain Models add them as empty interfaces to @shared
-// [2026-10-05 03:27 +02:00] [1e4eda64-32f3-4564-9ca0-8916c8935a3c] [Low] [In progress] [AI-generated question] Which entities and field metadata are required (types, optionality, validation, relations, defaults), and what runtime or persistence behavior should the structure provide? A: Merge with topic @ModelField
+// [2026-10-05 03:12 +02:00] [79c6f131-4386-42f2-b10c-c0bebf27a563] [Low] [Done] Added public empty Model and Field meta-model interfaces to the shared library as requested. Shared package build passes. [Delivered: 2026-10-05]
+// [2026-10-05 03:27 +02:00] [1e4eda64-32f3-4564-9ca0-8916c8935a3c] [Low] [Done] Merged into the existing Model/Field feature [79c6f131-4386-42f2-b10c-c0bebf27a563]; use the clarification there: Model and Field are meta-models for domain models, represented as empty interfaces in @shared. [Delivered: 2026-10-05]
 // [2026-10-05 03:19 +02:00] [2cc318e6-4209-4e31-a6db-b949f4d11912] [Low] [Backlog] add features to the open list according to their prio
 // [2026-10-05 04:02 +02:00] [7a81b09a-28f2-4999-9707-c6cb79f6a1b2] [Low] [Backlog] move all the .lists in a separate data folder
 // [2026-10-05 04:24 +02:00] [946cd992-3b74-4782-94f3-7f649b96cfb9] [Low] [Backlog] verify why added features do not
-// [2026-10-05 04:35 +02:00] [d059eaa0-b2e4-4dbd-8336-38a4feb51cd1] [Low] [In progress] add a list of models on the client by parsing the received models and show them in a table
+// [2026-10-05 04:35 +02:00] [d059eaa0-b2e4-4dbd-8336-38a4feb51cd1] [Low] [Committed] add a list of models on the client by parsing the received models and show them in a table

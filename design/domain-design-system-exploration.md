@@ -47,7 +47,7 @@ This supports future engineering; it does not imply automatic code generation.
 ## Design Lenses
 
 - **“Don’t Write Features”:** feature requests are clues, not the System definition. Connect capabilities to Problems, outcomes, and coherent responsibilities. This is a working interpretation of *Righting Software*, not a complete account; see [official site](https://rightingsoftware.org/) and [contents](https://www.informit.com/store/righting-software-9780136524038).
-- **Structure and flow:** Domains may need concepts and relationships as well as behavior and change over time. Commands, events, and views are optional lenses, not universal primitives or a commitment to event sourcing.
+- **Structure and flow:** People, Places, and Things offer a simple lens on a Domain. Time can be implicit in their actions and changes; a static inventory alone does not express sequence or duration. Commands, events, and views are optional lenses, not universal primitives or a commitment to event sourcing.
 - **Abstraction:** remove detail to expose essentials, but preserve context, meaningful variation, and traceability to examples.
 - **What and how:** focus on intended outcomes, while recognizing feasibility, quality attributes, medium, operations, and tradeoffs can reshape what is needed. Experiments can inform understanding without committing to production implementation.
 - **Iteration and naming:** expect concepts and boundaries to change as examples teach us more. Names such as “Feature” and “Work Item” are provisional until they consistently distinguish the kinds of things the Domain needs; revise the model rather than force unlike cases into one label.

@@ -34,6 +34,8 @@ The planned [Problem-framing Spike](./explorations/2026-10-05-problem-framing-as
 
 The [Warehouse Management System modernization inquiry](./explorations/2026-10-05-warehouse-web-modernization/README.md) applies these distinctions to a legacy-to-web replacement scenario. It is an initial hypothesis-based exploration; no legacy behavior or user needs have yet been independently verified.
 
+The planned [AI-assisted WMS authoring Spike](./explorations/2026-10-05-ai-assisted-wms-authoring/README.md) explores Terms and Types for builders using AI under limited discovery time and an impending knowledge-transfer constraint. It has not been conducted.
+
 ### Preserving Learning Toward Code
 
 Paper artifacts are not disposable: keep the question, assumptions, examples, observations, findings, decisions, and rationale. Maintain a traceable—but not necessarily one-to-one—path:

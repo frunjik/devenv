@@ -18,3 +18,36 @@ Contract
 
 Glossary
 - An organized collection of defined Terms used within a Domain or System.
+
+Acceptance Criterion
+- An observable condition that must hold for a Goal to count as achieved.
+
+Evidence
+- An observation or Artifact that supports a conclusion about whether an Acceptance Criterion holds.
+
+System Observation
+- A recorded, directly observable behavior or state of a System.
+
+Artifact
+- A persistent work product or System output that can be inspected as evidence.
+
+Test Case
+- A defined stimulus and expected observable result used to evaluate a System behavior, Contract, or Type rule.
+
+Test Result
+- The observed outcome of executing a Test Case, including whether its expected result held.
+
+Test Suite
+- An organized collection of Test Cases executed together for a stated purpose.
+
+Coverage Scope
+- The set of source files and code units included in a particular coverage measurement.
+
+Coverage Metric
+- A measured proportion of covered code units, such as statements, branches, functions, or lines, within a Coverage Scope.
+
+Coverage Report
+- A record of Coverage Metrics and thresholds for a declared Coverage Scope.
+
+Type Invariant
+- A rule that every valid instance of a Type must satisfy.

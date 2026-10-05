@@ -2,7 +2,7 @@
 
 ## Scope
 
-Reviewed the shared client/server contracts and representative server and client usage. The README describes an experimental Angular client and Express API, but does not state measurable system goals. This review assesses type clarity and consistency; it cannot determine whether the type set completely expresses how the system achieves its goals.
+Reviewed the shared client/server contracts and representative server and client usage. The README states that DevEnv helps define and achieve Goals, but does not define measurable acceptance criteria for those Goals. This review assesses type clarity and consistency; it cannot determine whether the type set completely expresses how the system achieves its goals.
 
 ## Findings
 
@@ -44,6 +44,72 @@ Consider naming the supported formats with a union and making the compatibility 
 4. **Constrain Git status codes and verify derived flags.** Introduce a finite type for the porcelain status characters supported by the parser. Keep the current booleans in the wire contract for compatibility, but test that they are always derived consistently from the status characters. Consider computing them from status codes in a later API revision rather than storing both representations.
 5. **Name and isolate current-entry parsing.** Define explicit parsed variants for the structured feature record and legacy text, with a single parser at the client boundary. Keep the raw API string unchanged until producers and consumers can migrate together; add tests for valid structured entries, legacy entries, and malformed JSON.
 
+## Types Needed to Express Goal-Oriented Testing
+
+These are conceptual Types for describing the testing domain identified in this review, not proposed runtime application DTOs.
+
+```text
+Goal {
+    desiredOutcome
+    acceptanceCriteria: AcceptanceCriterion[]
+}
+
+AcceptanceCriterion {
+    observableCondition
+}
+
+Evidence {
+    source: TestResult | Artifact | SystemObservation
+    observation
+}
+
+Contract {
+    producer
+    consumer
+    preconditions
+    input
+    postconditions
+    failureBehavior
+}
+
+TestCase {
+    verifies: AcceptanceCriterion | Contract | TypeInvariant
+    setup
+    stimulus
+    expectedObservation
+}
+
+TestResult {
+    testCase
+    observedOutcome
+    passed
+}
+
+CoverageScope {
+    includedSourceFiles
+    excludedSourceFiles
+}
+
+CoverageMeasurement {
+    metric: statement | branch | function | line
+    coveredUnits
+    totalUnits
+    threshold
+}
+
+CoverageReport {
+    scope: CoverageScope
+    measurements: CoverageMeasurement[]
+}
+```
+
+## Contracts Needed
+
+- **Goal achievement Contract:** A Goal is considered achieved only when evidence demonstrates that every one of its Acceptance Criteria holds. A test passing is evidence only for the behavior it actually observes.
+- **System boundary Contract:** For each client/server interaction, specify the producer, consumer, input, preconditions, successful postconditions, and failure behavior. Test the interaction at that boundary rather than relying only on internal implementation tests.
+- **Test Case Contract:** A Test Case names the Acceptance Criterion, Contract, or Type Invariant it evaluates, the stimulus, and the expected observable result. Its result records the actual observation so a pass/fail decision is traceable.
+- **Coverage reporting Contract:** Every CoverageReport declares its CoverageScope and reports statement, branch, function, and line measurements against their thresholds. A 100% result applies only to the included source files and measured code units; excluded or uncollected files must not be implied as covered.
+
 ## Overall Assessment
 
-The contracts are a useful baseline, but the Git-status and test-run types could better encode valid states. Without documented system goals, the completeness of the type set cannot be assessed.
+The contracts are a useful baseline, but the Git-status and test-run types could better encode valid states. The README states the system's purpose, but measurable Acceptance Criteria are not yet documented, so the completeness of the type set against Goal achievement cannot be assessed.

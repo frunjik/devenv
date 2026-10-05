@@ -287,6 +287,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-005', 'SC-016'],
             summary: 'Switch between showing sample and real data together and showing only real data.',
         },
+        {
+            id: 'SC-018',
+            title: 'Explore a wide-screen inquiry layout',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-016'],
+            summary: 'Evaluate a responsive grid-based arrangement against the current stacked page.',
+        },
     ];
 
     get validatedCount(): number {

@@ -267,6 +267,16 @@ Add a toggle to the inquiry data views. In the combined mode, show sample and re
 **Open questions:** Decide how records with unknown origin and tickets linked to both sample and real notes behave in real-only mode; clarify the concrete source-origin categories that count as real.
 **Validation evidence:** Requested by the user on 2026-10-06. The current model distinguishes `synthetic` from external reports, direct observations, system artifacts, and unknown origin; exact inclusion rules and mixed-provenance ticket behavior remain to be resolved before implementation.
 
+### SC-018 — Explore a wide-screen inquiry layout
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-016
+
+Evaluate how the inquiry workflow can use wide displays more effectively. Compare the current stacked arrangement with a responsive grid-based alternative, considering how the converter, accepted-note list, ticket-framing form, and framed-ticket list relate.
+
+**Working boundary:** This is a layout exploration, not a commitment to use a grid. Keep narrow-screen behavior usable and avoid reducing readability to fill available width.
+**Open questions:** Which sections should share a row or column at desktop sizes? Should the grid follow workflow stages, or place inputs beside their resulting lists? What viewport widths should trigger layout changes?
+**Validation evidence:** Requested by the user on 2026-10-06. No alternative layout has been prototyped or evaluated yet.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence
@@ -282,6 +292,7 @@ The dependency order does not authorize building both components together.
 9. Build the ticket-framing component in SC-014, then the framed-ticket list in SC-015, one component per slice.
 10. Integrate those components in SC-016.
 11. Define and implement the sample/real visibility toggle in SC-017.
+12. Explore a more effective wide-screen inquiry layout in SC-018.
 
 For each coding slice, derive tests from the synthetic inbox inputs and known Problem Domain scenarios where possible. Test through public interfaces, use only simple boundary mocks, and meet the project's full-coverage principle.
 

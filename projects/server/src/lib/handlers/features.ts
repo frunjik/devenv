@@ -237,6 +237,10 @@ function withStatus(feature: PPTFeature, status: PPTFeatureStatus): PPTFeature {
     };
 }
 
+function isQueuedStatus(status: PPTFeatureStatus): boolean {
+    return status === 'Queued' || status === 'Committed';
+}
+
 function findFeatureIndex(features: PPTFeature[], id: string): number {
     return features.findIndex(feature => feature.id.toLowerCase() === id.toLowerCase());
 }
@@ -366,7 +370,7 @@ export function createFeaturesListHandler(root: string): RequestHandler {
 export function createBacklogListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
         void readFeatureStore(root)
-            .then(store => response.json({ data: store.features.filter(feature => feature.status === 'Queued') }))
+            .then(store => response.json({ data: store.features.filter(feature => isQueuedStatus(feature.status)) }))
             .catch(next);
     };
 }
@@ -495,13 +499,13 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
-                if (features[featureIndex].status !== 'Queued') {
+                if (!isQueuedStatus(features[featureIndex].status)) {
                     response.status(409).json({ error: { message: `Feature '${id}' is not queued.` } });
                     return;
                 }
 
                 const queuedIndexes = features.reduce<number[]>((indexes, feature, index) => {
-                    if (feature.status === 'Queued') {
+                    if (isQueuedStatus(feature.status)) {
                         indexes.push(index);
                     }
                     return indexes;

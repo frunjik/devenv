@@ -81,7 +81,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     }
 
     get queuedFeatures(): PPTFeature[] {
-        return this.featureDataSource.data.filter(feature => feature.status === 'Queued');
+        return this.features.filter(feature => feature.status === 'Queued' || feature.status === 'Committed');
     }
 
     get matchingQueuedFeatures(): PPTFeature[] {
@@ -323,9 +323,6 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         target?: HTMLSelectElement,
     ): void {
         if (feature.status === status) {
-            if (status === 'Queued') {
-                this.featureWork.start(feature.id, feature.description);
-            }
             return;
         }
 
@@ -361,7 +358,8 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     private refreshFeatureLists(): void {
         const features = this.features;
         this.doneFeatures = [...features.filter(feature => feature.status === 'Done'), ...this.archivedFeatures];
-        this.featureDataSource.data = features.filter(feature => feature.status !== 'Done');
+        this.featureDataSource.data = features.filter(feature =>
+            feature.status !== 'Done' && feature.status !== 'Queued' && feature.status !== 'Committed');
         this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();
     }
 

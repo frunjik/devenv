@@ -248,10 +248,25 @@ describe('FeatureDescriptionComponent', () => {
         expect(currentTasks[0].querySelector('.queued-feature-description')!.textContent!.trim())
             .toBe('Feature being worked on');
         expect(fixture.nativeElement.querySelector('.feature-count')!.textContent!.trim()).toBe('(1)');
-        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(2);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
         expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
             .toBe('Completed feature');
+    });
+
+    it('shows Queued and Committed features only in the Queued list, not as open', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), [
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174000\",\"priority\":\"Low\",\"status\":\"Queued\",\"description\":\"Is queued\"}',
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174001\",\"priority\":\"Low\",\"status\":\"Committed\",\"description\":\"Is committed\"}',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(2);
     });
 
     it('moves queued features up and down and persists their order', async () => {
@@ -477,19 +492,17 @@ describe('FeatureDescriptionComponent', () => {
         const rows: HTMLTableRowElement[] = Array.from(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
         );
-        expect(rows).toHaveLength(3);
+        expect(rows).toHaveLength(2);
         expect(rows.every(row => row.classList.contains('feature-card-row'))).toBe(true);
         expect(rows.map(row => row.querySelector('.feature-priority-select')?.className))
             .toEqual([
                 'feature-priority-select priority-high',
-                'feature-priority-select priority-medium',
                 'feature-priority-select priority-medium',
             ]);
         expect(rows.map(row => row.querySelector('.feature-status-select')?.className))
             .toEqual([
                 'feature-status-select status-questions',
                 'feature-status-select status-backlog',
-                'feature-status-select status-queued',
             ]);
         expect(fixture.nativeElement.querySelector('.done-feature .feature-priority-select').className)
             .toBe('feature-priority-select priority-low');
@@ -527,7 +540,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'),
-            `// [${id}] [High] [Queued] Old feature description\n`);
+            `// [${id}] [High] [Backlog] Old feature description\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'The features you are writing are, take them one by one:',
             `- [In progress] Old feature description <!-- feature-id:${id} -->`,
@@ -561,7 +574,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile())
-            .toContain(`[${id}] [High] [Queued] Updated feature description`);
+            .toContain(`[${id}] [High] [Backlog] Updated feature description`);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
             .toContain(`"id":"${id}"`);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
@@ -735,45 +748,15 @@ describe('FeatureDescriptionComponent', () => {
             id,
             description: 'Add a feature',
         });
-        expect(fixture.nativeElement.querySelector('.feature-start-button')!.textContent!.trim()).toBe('Started');
-        expect(fixture.nativeElement.querySelector('.feature-start-button')!.getAttribute('aria-pressed')).toBe('true');
-        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
-            .toBe('Queued');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
         expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
         expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
             .toBe('Add a feature');
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).toContain(`"id":"${id}"`);
         expect(taskFile).toContain('"description":"Add a feature"');
-        fixture.nativeElement.querySelector('.feature-start-button')!.click();
-        await fixture.whenStable();
-        expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
         expect((await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).match(/"id":"/g))
             .toHaveLength(1);
-    });
-
-    it('activates an already queued feature when its row action is clicked', async () => {
-        await fixture.whenStable();
-        const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.features'),
-            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Queued] Continue this feature\n`);
-        fixture.componentInstance.refreshFeatures();
-        await fixture.whenStable();
-        fixture.detectChanges();
-
-        fixture.nativeElement.querySelector('.feature-start-button')!.click();
-        fixture.detectChanges();
-        await fixture.whenStable();
-        fixture.detectChanges();
-        const statusSelector: HTMLSelectElement =
-            fixture.nativeElement.querySelector('.feature-status-select');
-        statusSelector.dispatchEvent(new Event('change'));
-        fixture.detectChanges();
-
-        expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
-            id,
-            description: 'Continue this feature',
-        });
     });
 
     it('marks a feature done, removes it from the list, and clears matching active work', async () => {
@@ -976,7 +959,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'),
-            `// [2026-10-04 22:45 +02:00] [${id}] [High] [Queued] Feature needing clarification\n`);
+            `// [2026-10-04 22:45 +02:00] [${id}] [High] [Backlog] Feature needing clarification\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature needing clarification <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -1003,7 +986,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'),
-            `// [${id}] [High] [Queued] Feature to deny\n`);
+            `// [${id}] [High] [Backlog] Feature to deny\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to deny <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -1057,7 +1040,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'),
-            `// [${id}] [High] [Queued] Feature already committed\n`);
+            `// [${id}] [High] [Backlog] Feature already committed\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature already committed <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -1075,9 +1058,8 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(await readFeatureFile()).toContain('[Committed] Feature already committed');
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
-        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
-            .toBe('Committed');
-        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
         expect(featureWork.activeFeature).toBeNull();
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
     });

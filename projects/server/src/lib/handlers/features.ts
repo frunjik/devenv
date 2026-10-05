@@ -2,12 +2,12 @@ import { randomUUID } from 'node:crypto';
 import { appendFile, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
-import type { FeaturePriority, FeatureStatus } from '@ppt';
+import type { FeaturePriority, PPTFeatureStatus } from '@ppt';
 
-export type { FeaturePriority, FeatureStatus } from '@ppt';
+export type { FeaturePriority, PPTFeatureStatus } from '@ppt';
 
 const featurePriorities: readonly FeaturePriority[] = ['High', 'Medium', 'Low'];
-const featureStatuses: readonly FeatureStatus[] = [
+const featureStatuses: readonly PPTFeatureStatus[] = [
     'Questions',
     'Backlog',
     'In progress',
@@ -21,7 +21,7 @@ const canonicalPriorities: Record<string, FeaturePriority> = {
     medium: 'Medium',
     low: 'Low',
 };
-const canonicalStatuses: Record<string, FeatureStatus> = {
+const canonicalStatuses: Record<string, PPTFeatureStatus> = {
     questions: 'Questions',
     backlog: 'Backlog',
     'in progress': 'In progress',
@@ -96,7 +96,7 @@ function addFeatureStatus(entry: string): string {
         + ` [${status}]${statusMatch[2]}`;
 }
 
-function setFeatureStatus(entry: string, status: FeatureStatus): string {
+function setFeatureStatus(entry: string, status: PPTFeatureStatus): string {
     const normalizedEntry = addFeatureStatus(addFeaturePriority(entry));
     const idMatch = normalizedEntry.match(featureIdPattern)!;
     const idEnd = idMatch.index + idMatch[0].length;
@@ -267,7 +267,7 @@ export function createFeatureHandler(root: string): RequestHandler {
 
         const requestedStatus: unknown = request.body?.status ?? 'Backlog';
         if (typeof requestedStatus !== 'string'
-            || !featureStatuses.includes(requestedStatus as FeatureStatus)) {
+            || !featureStatuses.includes(requestedStatus as PPTFeatureStatus)) {
             response.status(400).json({ error: { message: 'Feature status must be Questions, Backlog, In progress, Committed, Done, Aborted, or Denied.' } });
             return;
         }
@@ -420,7 +420,7 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
             return;
         }
         if (typeof requestedStatus !== 'string'
-            || !featureStatuses.includes(requestedStatus as FeatureStatus)) {
+            || !featureStatuses.includes(requestedStatus as PPTFeatureStatus)) {
             response.status(400).json({ error: { message: 'Feature status must be Questions, Backlog, In progress, Committed, Done, Aborted, or Denied.' } });
             return;
         }
@@ -437,7 +437,7 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
                 }
 
                 const previousContents = `${entries.join('\n')}\n`;
-                entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as FeatureStatus);
+                entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as PPTFeatureStatus);
                 await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
                 if (requestedStatus !== 'In progress') {
                     try {

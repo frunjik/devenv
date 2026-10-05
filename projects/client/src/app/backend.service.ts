@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
-import type { FeaturePriority, FeatureStatus } from '@ppt';
+import type { FeaturePriority, PPTFeatureStatus } from '@ppt';
 import type {
     GitCommitResult,
     GitLogEntry,
@@ -18,7 +18,7 @@ import type {
 } from '@shared';
 import { LoggerService } from './logger.service';
 
-export type { FeaturePriority, FeatureStatus } from '@ppt';
+export type { FeaturePriority, PPTFeatureStatus } from '@ppt';
 export type {
     GitCommitResult,
     GitLogEntry,
@@ -80,7 +80,7 @@ export class BackendService {
     addFeature(
         description: string,
         priority: FeaturePriority = 'Low',
-        status: FeatureStatus = 'Backlog',
+        status: PPTFeatureStatus = 'Backlog',
     ): Observable<string> {
         return this.post<string>('features', { description, priority, status });
     }
@@ -106,7 +106,7 @@ export class BackendService {
         ).pipe(map(response => response.data));
     }
 
-    updateFeatureStatus(id: string, status: FeatureStatus): Observable<string> {
+    updateFeatureStatus(id: string, status: PPTFeatureStatus): Observable<string> {
         return this.httpservice.patch<SuccessResponseBody<string>>(
             `${this.host}features/${encodeURIComponent(id)}/status`,
             { status },

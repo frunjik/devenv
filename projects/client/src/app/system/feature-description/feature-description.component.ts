@@ -11,7 +11,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import type { PPTFeature } from '@ppt';
-import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
+import { BackendService, type FeaturePriority, type PPTFeatureStatus } from '../../backend.service';
 import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
@@ -41,9 +41,9 @@ type FeatureListTab = 'open' | 'in-progress' | 'done';
 export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, OnInit {
     description = '';
     priority: FeaturePriority = 'Low';
-    status: FeatureStatus = 'Backlog';
+    status: PPTFeatureStatus = 'Backlog';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
-    readonly statuses: FeatureStatus[] = [
+    readonly statuses: PPTFeatureStatus[] = [
         'Questions',
         'Backlog',
         'In progress',
@@ -309,16 +309,16 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     onStatusChange(feature: PPTFeature, event: Event): void {
         const target = event.target;
-        if (!(target instanceof HTMLSelectElement) || !this.statuses.includes(target.value as FeatureStatus)) {
+        if (!(target instanceof HTMLSelectElement) || !this.statuses.includes(target.value as PPTFeatureStatus)) {
             return;
         }
 
-        this.updateFeatureStatus(feature, target.value as FeatureStatus, target);
+        this.updateFeatureStatus(feature, target.value as PPTFeatureStatus, target);
     }
 
     private updateFeatureStatus(
         feature: PPTFeature,
-        status: FeatureStatus,
+        status: PPTFeatureStatus,
         target?: HTMLSelectElement,
     ): void {
         if (feature.status === status) {
@@ -360,7 +360,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
             ? {
                 id: match[1],
                 priority: match[2] as FeaturePriority,
-                status: match[3] as FeatureStatus,
+                status: match[3] as PPTFeatureStatus,
                 description: match[4],
                 deliveredDate: match[5],
             }

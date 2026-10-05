@@ -32,7 +32,7 @@
 | Declaration | Kind | Source |
 |---|---|---|
 | `FeaturePriority` | type | [models.ts:6](projects/ppt/src/lib/models.ts) |
-| `FeatureStatus` | type | [models.ts:8](projects/ppt/src/lib/models.ts) |
+| `PPTFeatureStatus` | type | [models.ts:8](projects/ppt/src/lib/models.ts) |
 | `PPTFeature` | interface | [models.ts:10](projects/ppt/src/lib/models.ts) |
 | `PPTTextModel` | interface | [models.ts:6](projects/ppt/src/lib/models.ts) |
 | `PPTTextComponentModel` | interface | [models.ts:12](projects/ppt/src/lib/models.ts) |

@@ -5,13 +5,13 @@ import { Signal } from "@angular/core";
 
 export type FeaturePriority = 'High' | 'Medium' | 'Low';
 
-export type FeatureStatus = 'Questions' | 'Backlog' | 'In progress' | 'Committed' | 'Done' | 'Aborted' | 'Denied';
+export type PPTFeatureStatus = 'Questions' | 'Wished' | 'Backlog' | 'Committed' | 'InProgress' | 'Delivered' | 'Done' | 'Aborted' | 'Denied' | 'Archived' ;
 
 export interface PPTFeature {
     id: string;
     description: string;
+    status: PPTFeatureStatus;
     priority: FeaturePriority;
-    status: FeatureStatus;
     deliveredDate?: string;
 }
 

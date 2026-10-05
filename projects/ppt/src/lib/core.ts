@@ -17,9 +17,6 @@ export interface PPTModel extends PPTValue {
     fields: PPTField[];
 };
 
-// // --- generate after this ?
-
-// instance
 export interface PPTItem extends PPTValue {
     name: string;
     title?: string;

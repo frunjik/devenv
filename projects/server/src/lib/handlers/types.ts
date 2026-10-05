@@ -1,9 +1,1 @@
-export interface SuccessResponseBody<T> {
-    data: T;
-}
-
-export interface FailureResponseBody {
-    error: {
-        message: string;
-    };
-}
+export type { FailureResponseBody, SuccessResponseBody } from '@ppt';

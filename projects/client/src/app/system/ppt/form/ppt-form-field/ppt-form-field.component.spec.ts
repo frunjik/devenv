@@ -1,0 +1,35 @@
+import { beforeEach, describe, expect, it } from '@jest/globals';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { PPTFormFieldComponent } from './ppt-form-field.component';
+import { FormControl, FormGroup } from '@angular/forms';
+
+describe('PPTFormFieldComponent', () => {
+    let component: PPTFormFieldComponent;
+    let fixture: ComponentFixture<PPTFormFieldComponent>;
+
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [PPTFormFieldComponent]
+        })
+            .compileComponents();
+
+        fixture = TestBed.createComponent(PPTFormFieldComponent);
+
+        fixture.componentRef.setInput('form', new FormGroup({
+            name: new FormControl('Example')
+        }));
+        fixture.componentRef.setInput('field', {
+            id: 'name',
+            name: 'Name',
+            type: 'string'
+        });
+
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+});

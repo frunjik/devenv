@@ -1,9 +1,1 @@
-export interface SuccessResponseBody<T> {
-    data: T;
-}
-
-export interface FailureResponseBody {
-    error: {
-        message: string;
-    };
-}
+export * from './models/response';

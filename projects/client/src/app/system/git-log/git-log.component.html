@@ -1,0 +1,28 @@
+<main>
+    <header class="page-header">
+        <div>
+            <h1>Git log</h1>
+            <p>Recent commits for this repository.</p>
+        </div>
+        <button type="button" mat-button (click)="loadGitLog()" [disabled]="isLoading">
+            {{ isLoading ? 'Refreshing…' : 'Refresh' }}
+        </button>
+    </header>
+
+    <p *ngIf="isLoading" role="status" aria-live="polite">Loading commits…</p>
+    <p *ngIf="errorMessage" class="error" role="alert">Could not load Git log: {{ errorMessage }}</p>
+    <p *ngIf="!isLoading && !errorMessage && entries.length === 0">No commits yet.</p>
+
+    <ol *ngIf="!errorMessage && entries.length > 0" class="commit-list">
+        <li *ngFor="let entry of entries" class="commit">
+            <div class="commit-heading">
+                <h2>{{ entry.subject }}</h2>
+                <code [title]="entry.hash">{{ entry.hash | slice:0:8 }}</code>
+            </div>
+            <p class="commit-meta">
+                <span>{{ entry.author }}</span>
+                <time [attr.datetime]="entry.date">{{ entry.date | date:'medium' }}</time>
+            </p>
+        </li>
+    </ol>
+</main>

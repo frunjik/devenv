@@ -7,6 +7,7 @@ coverage
 /out-tsc
 /bazel-out
 .angular
+/test-run-cache/
 
 # Private Scratch Files
 scratch

@@ -1,4 +1,1 @@
-export interface FolderEntry {
-    filename: string;
-    isFolder: boolean;
-}
+export type { PPTFolderEntry as FolderEntry } from '@ppt';

@@ -1,10 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { PPTFolderEntry } from './types.js';
+import type { PPTFileStats, PPTFS } from '@ppt';
 
-export interface PPTFileStats {
-    isDirectory(): boolean;
-}
+export type { PPTFileStats, PPTFS } from '@ppt';
 
 export function readFile(filename: string): Promise<string> {
     return fs.promises.readFile(filename, 'utf-8');
@@ -21,13 +20,6 @@ export function readFoldernames(foldername: string): Promise<string[]> {
 export function readFileStats(filename: string): Promise<PPTFileStats> {
     return fs.promises.stat(filename);
 };
-
-export interface PPTFS {
-    readFile(filename: string): Promise<string>;
-    writeFile(filename: string, contents: string): Promise<void>;
-    readFoldernames(foldername: string): Promise<string[]>;
-    readFileStats(filename: string): Promise<PPTFileStats>;
-}
 
 const nodeFS: PPTFS = {
     readFile,

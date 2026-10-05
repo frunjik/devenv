@@ -6,7 +6,7 @@ export function readFile(filename: string): Promise<string> {
     return fs.promises.readFile(filename, 'utf-8');
 }
 
-export function writeFile(filename: string, contents: string): Promise<any> {
+export function writeFile(filename: string, contents: string): Promise<void> {
     return fs.promises.writeFile(filename, contents, 'utf-8');
 }
 
@@ -30,7 +30,7 @@ export class FileSystem {
         return readFile(path.join(this.rootpath, filename));
     }
 
-    writeFile(filename: string, contents: string): Promise<string> {
+    writeFile(filename: string, contents: string): Promise<void> {
         return writeFile(path.join(this.rootpath, filename), contents);
     }
 

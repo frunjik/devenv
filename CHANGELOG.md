@@ -3,7 +3,26 @@ All notable changes to this project will be documented in this file.
 
 The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to Semantic Versioning.
 
-# Unreleased
+# 0.0.3 Unreleased
+
+### Added
+- Features are stored as `PPTFeature` JSON lines with a unique ID in `.features` (open, queued and done), `.current` and `.archived`.
+- `Queued` and `Committed` feature statuses; starting a feature sets it to `Queued` and adds a task to `DEVENVOPDEV.md`.
+- New features default to the `Wished` status.
+- Feature states page, and editing of Queued features on the client.
+- Archived tab on the Features page, an Archive button per Done feature and an Archive all button (`POST /features/:id/archive`, `POST /features/archive-done`).
+- The selected Features tab is kept in the URL (`?tab=`).
+- On commit, Done features in `.current` move into `.features`.
+
+### Changed
+- All shared types now live in `@ppt`; `@shared` imports them from there.
+- The features API and client use `PPTFeature` instead of the text representation.
+- The client feature list shows the Open tab first, followed by Queued, Done and Archived; Queued and Committed features are never listed as Open.
+- `.wishlist`, `.backlog` and `.delivered` are merged into `.features` on first read; `.archived` is converted to JSON on first read.
+- Build order is now `ppt`, `shared`, `client`.
+
+### Removed
+- `@shared/ppt-fields`; `GET /ppt/fields` returns an empty list.
 
 # 0.0.2 2023-03-05 Cleanup
 

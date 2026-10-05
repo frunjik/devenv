@@ -1,0 +1,124 @@
+.models-page {
+    box-sizing: border-box;
+    width: min(72rem, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1rem 0;
+}
+
+pre {
+    max-height: calc(100vh - 12rem);
+    overflow: auto;
+    padding: 1rem;
+    border: 1px solid rgb(127 127 127 / 25%);
+    border-radius: 0.5rem;
+    background: rgb(127 127 127 / 6%);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre;
+}
+
+section[aria-label="PPT field editor"] {
+    margin: 1.5rem 0 2rem;
+    padding: 1.25rem;
+    border: 1px solid rgb(127 127 127 / 28%);
+    border-radius: 0.75rem;
+    background: rgb(127 127 127 / 5%);
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 5%);
+}
+
+section[aria-label="Known PPT fields"] {
+    margin: 1.5rem 0;
+}
+
+section[aria-label="Known PPT fields"] h2 {
+    margin-bottom: 0.75rem;
+}
+
+.known-fields-list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.known-fields-list li {
+    display: grid;
+    grid-template-columns: minmax(8rem, 1fr) minmax(8rem, 1fr) minmax(5rem, 0.75fr) minmax(8rem, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgb(127 127 127 / 22%);
+    border-radius: 0.5rem;
+    background: rgb(127 127 127 / 4%);
+}
+
+.known-field-id,
+.known-field-type {
+    color: var(--mat-sys-on-surface-variant, #49454f);
+    font-size: 0.875rem;
+}
+
+.known-field-id {
+    overflow-wrap: anywhere;
+    font-family: var(--app-monospace-font, monospace);
+}
+
+@media (max-width: 42rem) {
+    .known-fields-list li {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.field-editor-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.field-editor-heading h2 {
+    margin-bottom: 0;
+}
+
+.field-editor-heading p {
+    margin: 0.35rem 0 0;
+    color: var(--mat-sys-on-surface-variant, #49454f);
+    font-size: 0.9rem;
+}
+
+.field-picker {
+    display: grid;
+    flex: 0 1 22rem;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.field-picker select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgb(127 127 127 / 45%);
+    border-radius: 0.35rem;
+    background: var(--mat-sys-surface, Canvas);
+    color: inherit;
+    font: inherit;
+}
+
+@media (max-width: 42rem) {
+    section[aria-label="PPT field editor"] {
+        padding: 1rem;
+    }
+
+    .field-editor-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .field-picker {
+        flex-basis: auto;
+    }
+}

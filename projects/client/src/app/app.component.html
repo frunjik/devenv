@@ -1,16 +1,12 @@
-<mat-toolbar color="primary">
-    PPT - {{host}}
-    |
-    <nav>
-        <a href="/">Main</a>
-        |
-        <a href="/ppt/browse">Browse</a>
-        |
-        <a href="/ppt/js">Workspace JS</a>
-    </nav>
-
-
-</mat-toolbar>
-
-
+<app-navigation-toolbar
+    [host]="host"
+    [isCommitting]="isCommitting"
+    [currentTask]="currentTask"
+    (commitRequested)="commitChanges()"
+/>
 <router-outlet />
+<app-status-toolbar
+    [gitStatus]="gitStatus"
+    [currentEntry]="currentEntry"
+    [testRunCacheStatus]="testRunCacheStatus"
+/>

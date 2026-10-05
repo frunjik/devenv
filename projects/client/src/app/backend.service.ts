@@ -1,10 +1,35 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { catchError, map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
-import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
+import type {
+    FeaturePriority,
+    PPTFeature,
+    PPTFeatureStatus,
+    GitCommitResult,
+    GitLogEntry,
+    GitStatus,
+    LastTestRun,
+    PPTField,
+    PPTFolderEntry,
+    SuccessResponseBody,
+    TestOutputStream,
+    TestRunCacheStatus,
+} from '@ppt';
+import { LoggerService } from './logger.service';
+
+export type {
+    FeaturePriority,
+    PPTFeatureStatus,
+    GitCommitResult,
+    GitLogEntry,
+    GitStatus,
+    LastTestRun,
+    TestOutputStream,
+    TestRunCacheStatus,
+} from '@ppt';
 
 @Injectable({
     providedIn: 'root',
@@ -13,6 +38,7 @@ export class BackendService {
 
     private defaultHost = 'http://localhost:3000/';
     private httpservice = inject(HttpClient);
+    private logger = inject(LoggerService);
 
     constructor() { }
 
@@ -25,7 +51,7 @@ export class BackendService {
             .pipe(
                 catchError(err => {
                     this.logError(`loadFile("${pathname}")`, err);
-                    return of('');
+                    return throwError(() => err);
                 })
             );
     }
@@ -35,7 +61,7 @@ export class BackendService {
             .pipe(
                 catchError(err => {
                     this.logError(`saveFile("${pathname}")`, err);
-                    return of('');
+                    return throwError(() => err);
                 })
             );
     }
@@ -45,13 +71,204 @@ export class BackendService {
             .pipe(
                 catchError(err => {
                     this.logError(`loadFolder("${pathname}")`, err);
-                    return of([]);
+                    return throwError(() => err);
                 })
             );
     }
 
+    commitChanges(message: string): Observable<GitCommitResult> {
+        return this.post<GitCommitResult>('git/commit', { message });
+    }
+
+    addFeature(
+        description: string,
+        priority: FeaturePriority = 'Low',
+        status: PPTFeatureStatus = 'Wished',
+    ): Observable<PPTFeature> {
+        return this.post<PPTFeature>('features', { description, priority, status });
+    }
+
+    updateFeatureDescription(id: string, description: string): Observable<PPTFeature> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}/description`,
+            { description },
+        ).pipe(map(response => response.data));
+    }
+
+    updateFeaturePriority(id: string, priority: FeaturePriority): Observable<PPTFeature> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}`,
+            { priority },
+        ).pipe(map(response => response.data));
+    }
+
+    moveQueuedFeature(id: string, direction: 'up' | 'down'): Observable<PPTFeature[]> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature[]>>(
+            `${this.host}features/${encodeURIComponent(id)}/order`,
+            { direction },
+        ).pipe(map(response => response.data));
+    }
+
+    updateFeatureStatus(id: string, status: PPTFeatureStatus): Observable<PPTFeature> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}/status`,
+            { status },
+        ).pipe(map(response => response.data));
+    }
+
+    startFeature(id: string): Observable<PPTFeature> {
+        return this.httpservice.post<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}/start`,
+            {},
+        ).pipe(map(response => response.data));
+    }
+
+    archiveFeature(id: string): Observable<PPTFeature> {
+        return this.httpservice.post<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}/archive`,
+            {},
+        ).pipe(map(response => response.data));
+    }
+    archiveDoneFeatures(): Observable<PPTFeature[]> {
+        return this.httpservice.post<SuccessResponseBody<PPTFeature[]>>(
+            `${this.host}features/archive-done`,
+            {},
+        ).pipe(map(response => response.data));
+    }
+    getFeatures(): Observable<PPTFeature[]> {
+        return this.get<PPTFeature[]>('features');
+    }
+
+    removeFeature(id: string): Observable<PPTFeature> {
+        return this.httpservice.delete<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}`,
+        ).pipe(map(response => response.data));
+    }
+
+    getGitLog(): Observable<GitLogEntry[]> {
+        return this.get<GitLogEntry[]>('git/log');
+    }
+
+    getGitStatus(): Observable<GitStatus> {
+        return this.get<GitStatus>('git/status');
+    }
+
+    getCurrentEntry(): Observable<string | null> {
+        return this.get<string | null>('current');
+    }
+
+    getHistory(): Observable<string[]> {
+        return this.get<string[]>('history');
+    }
+
+    getGlossary(): Observable<string[]> {
+        return this.get<string[]>('glossary');
+    }
+
+    getBacklog(): Observable<PPTFeature[]> {
+        return this.get<PPTFeature[]>('backlog');
+    }
+
+    getArchived(): Observable<PPTFeature[]> {
+        return this.get<PPTFeature[]>('archived');
+    }
+
+    getServerVersion(): Observable<string> {
+        return this.get<string>('version');
+    }
+
+    getPPTFields(): Observable<PPTField[]> {
+        return this.get<PPTField[]>('ppt/fields');
+    }
+
+    getCurrentTask(): Observable<string | null> {
+        return this.get<string | null>('task');
+    }
+
+    getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
+        return this.get<TestRunCacheStatus>('tests/cache/status');
+    }
+
+    getLastTestRun(): Observable<LastTestRun | null> {
+        return this.get<LastTestRun | null>('tests/last');
+    }
+
+    async runTests(onOutput: (stream: TestOutputStream, chunk: string) => void): Promise<number> {
+        const response = await fetch(this.host + 'tests/run', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: '{}',
+        });
+
+        if (!response.ok) {
+            const responseBody = await response.text();
+            let errorBody: unknown = responseBody;
+            try {
+                errorBody = JSON.parse(responseBody);
+            } catch {
+                // Preserve the response text when the server returns a non-JSON error.
+            }
+            throw new HttpErrorResponse({
+                status: response.status,
+                statusText: response.statusText,
+                url: response.url,
+                error: errorBody,
+            });
+        }
+
+        if (!response.body) {
+            throw new Error('The server did not provide a test output stream');
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let pendingLine = '';
+        let exitCode: number | undefined;
+
+        const processLine = (line: string) => {
+            if (!line.trim()) {
+                return;
+            }
+
+            const event: unknown = JSON.parse(line);
+            if (!event || typeof event !== 'object' || !('type' in event)) {
+                throw new Error('The server sent an invalid test output event');
+            }
+            if ((event.type === 'stdout' || event.type === 'stderr')
+                && 'data' in event && typeof event.data === 'string') {
+                onOutput(event.type, event.data);
+            } else if (event.type === 'complete' && 'exitCode' in event
+                && typeof event.exitCode === 'number') {
+                exitCode = event.exitCode;
+            } else if (event.type === 'error' && 'message' in event
+                && typeof event.message === 'string') {
+                throw new Error(event.message);
+            } else {
+                throw new Error('The server sent an invalid test output event');
+            }
+        };
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) {
+                pendingLine += decoder.decode();
+                processLine(pendingLine);
+                break;
+            }
+            pendingLine += decoder.decode(value, { stream: true });
+            const lines = pendingLine.split('\n');
+            pendingLine = lines.pop()!;
+            lines.forEach(processLine);
+        }
+
+        if (exitCode === undefined) {
+            throw new Error('The test output stream ended before the run completed');
+        }
+        return exitCode;
+    }
+
     logError(message: string, e: Error) {
-        console.error(`ERROR BackendService.${message}`, e);
+        this.logger.error(`ERROR BackendService.${message}`, e);
     }
 
 

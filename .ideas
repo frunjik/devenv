@@ -1,0 +1,9 @@
+1. For Product Development: The RICE Model
+When deciding what software features to build for users, most teams on Reddit agree that strategic alignment and structured scoring prevent building purely on gut feeling. The RICE framework multiplies factors to create an objective score:
+• Reach: How many users will this feature impact within a specific time period (e.g., number of active users per month)?
+• Impact: How much will this feature increase user value or conversion (measured on a scale, like 3 for massive impact, 0.5 for minimal)?
+• Confidence: How sure are you about your estimates (expressed as a percentage, like 80% confident)?
+• Effort: How much time and resources will it take from the team (measured in person-months)?
+The Formula:
+
+\(\text{Score}=\frac{\text{Reach}\times \text{Impact}\times \text{Confidence}}{\text{Effort}}\)

@@ -13,11 +13,124 @@
 html,
 body {
     height: 100%;
-    margin: 0px;
-    border-style: border;
+    margin: 0;
 }
+
+html {
+    color-scheme: dark;
+}
+
 body {
-    font-family: Roboto, 'Helvetica Neue', sans-serif;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    background: #171d19;
+    color: #c3cec5;
 }
 
+button,
+input,
+textarea,
+.mat-typography {
+    font-family: Tahoma, Geneva, sans-serif;
+}
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #cbd6cd;
+    font-weight: 500;
+    letter-spacing: 0.015em;
+}
+
+a {
+    color: #a8c4ae;
+}
+
+nav a[routerLink],
+nav button[mat-button] {
+    text-transform: lowercase;
+    font: inherit;
+    letter-spacing: inherit;
+}
+
+.mat-toolbar.mat-primary {
+    --mat-toolbar-container-background-color: #27352d;
+    --mat-toolbar-container-text-color: #dce6dd;
+}
+
+.mat-mdc-button:not(:disabled) {
+    --mat-text-button-label-text-color: #b2cbb8;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+    --mdc-filled-button-container-color: #4f7059;
+    --mdc-filled-button-label-text-color: #edf4ee;
+}
+
+.mat-mdc-progress-bar {
+    --mat-progress-bar-active-indicator-color: #9bb9a1;
+    --mat-progress-bar-track-color: #34453a;
+}
+
+.mat-mdc-snack-bar-container.commit-snackbar-success {
+    --mat-snack-bar-container-color: #a3b9a7;
+    --mat-snack-bar-supporting-text-color: #24372a;
+    --mat-snack-bar-button-color: #24372a;
+}
+
+.mat-mdc-snack-bar-container.save-snackbar-success {
+    --mat-snack-bar-container-color: #a3b9a7;
+    --mat-snack-bar-supporting-text-color: #24372a;
+    --mat-snack-bar-button-color: #24372a;
+}
+
+.mat-mdc-snack-bar-container.commit-snackbar-error {
+    --mat-snack-bar-container-color: #c8a09a;
+    --mat-snack-bar-supporting-text-color: #462b27;
+    --mat-snack-bar-button-color: #462b27;
+}
+
+.mat-mdc-snack-bar-container.save-snackbar-error {
+    --mat-snack-bar-container-color: #c8a09a;
+    --mat-snack-bar-supporting-text-color: #462b27;
+    --mat-snack-bar-button-color: #462b27;
+}
+
+.git-status-tooltip .mat-mdc-tooltip-surface {
+    --mat-tooltip-container-color: #29372e;
+    --mat-tooltip-supporting-text-color: #d4ded6;
+
+    max-width: 22rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #3b4b40;
+    border-radius: 0.4rem;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 22%);
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-align: left;
+    white-space: pre-line;
+}
+
+.current-entry-tooltip .mat-mdc-tooltip-surface {
+    --mat-tooltip-container-color: #24342a;
+    --mat-tooltip-supporting-text-color: #e2ece4;
+
+    max-width: min(42rem, 80vw);
+    padding: 0.75rem 1rem;
+    border: 1px solid #526b58;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 38%);
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    text-align: left;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}

@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="col">
+        <nav class="breadcrumbs" aria-label="Current folder">
+            <span *ngFor="let foldername of folderNames; let i = index">
+                <span *ngIf="i > 0">/</span>
+                <button mat-button (click)="clickPath(i)">{{ foldername || "." }}</button>
+            </span>
+        </nav>
+
+        <p *ngIf="folderLoadError" role="alert">Could not load folder: {{ folderLoadError }}</p>
+        <div class="folders">
+            <app-folder-entries [entries]="filteredEntries"
+                (clickFileOrFolder)="clickFileOrFolder($event)"></app-folder-entries>
+        </div>
+    </div>
+
+    <div class="files" *ngIf="!!filename()">
+        <p *ngIf="fileLoadError" role="alert">Could not load file: {{ fileLoadError }}</p>
+        <div class="editor-content">
+            <app-file-editor [filename]="filename()" [fileContent]="fileContent"></app-file-editor>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,406 @@
+<main class="feature-description">
+    <h1>New feature</h1>
+    <form (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+            <mat-label>Feature description</mat-label>
+            <textarea
+                matInput
+                name="description"
+                [(ngModel)]="description"
+                rows="8"
+                aria-label="Feature description"
+                placeholder="Describe the feature to write"
+                (keydown)="onDescriptionKeydown($event)"
+            ></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Priority</mat-label>
+            <select matNativeControl name="priority" [(ngModel)]="priority" aria-label="Feature priority">
+                <option *ngFor="let value of priorities" [value]="value">{{ value }}</option>
+            </select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Status</mat-label>
+            <select matNativeControl name="status" [(ngModel)]="status" aria-label="Feature status">
+                <option *ngFor="let value of statuses" [value]="value">{{ value }}</option>
+            </select>
+        </mat-form-field>
+        <button type="submit" mat-raised-button color="primary" [disabled]="!description.trim() || isSubmitting">
+            {{ isSubmitting ? 'Adding…' : 'Add feature' }}
+        </button>
+    </form>
+    <p *ngIf="errorMessage" id="feature-submit-error" role="alert">{{ errorMessage }}</p>
+    <div class="feature-list-tabs" role="tablist" aria-label="Feature lists">
+    <button
+        type="button"
+        mat-button
+            id="open-features-tab"
+            role="tab"
+            aria-controls="open-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'open'"
+            [attr.tabindex]="selectedFeatureTab === 'open' ? 0 : -1"
+            (click)="selectFeatureTab('open')"
+            (keydown)="onFeatureTabKeydown($event, 'open')"
+        >Open ({{ featureDataSource.data.length }})</button>
+        <button
+            type="button"
+            mat-button
+        id="queued-features-tab"
+        role="tab"
+        aria-controls="queued-features-panel"
+        [attr.aria-selected]="selectedFeatureTab === 'queued'"
+        [attr.tabindex]="selectedFeatureTab === 'queued' ? 0 : -1"
+        (click)="selectFeatureTab('queued')"
+        (keydown)="onFeatureTabKeydown($event, 'queued')"
+    >Queued ({{ queuedFeatures.length }})</button>
+        <button
+            type="button"
+            mat-button
+            id="done-features-tab"
+            role="tab"
+            aria-controls="done-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'done'"
+            [attr.tabindex]="selectedFeatureTab === 'done' ? 0 : -1"
+            (click)="selectFeatureTab('done')"
+            (keydown)="onFeatureTabKeydown($event, 'done')"
+        >Done ({{ doneFeatures.length }})</button>
+        <button
+            type="button"
+            mat-button
+            id="archived-features-tab"
+            role="tab"
+            aria-controls="archived-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'archived'"
+            [attr.tabindex]="selectedFeatureTab === 'archived' ? 0 : -1"
+            (click)="selectFeatureTab('archived')"
+            (keydown)="onFeatureTabKeydown($event, 'archived')"
+        >Archived ({{ archivedStatusFeatures.length }})</button>
+    </div>
+    <div class="feature-list-controls">
+        <mat-form-field appearance="outline" *ngIf="features.length > 0">
+            <mat-label>Search features</mat-label>
+            <input
+                matInput
+                type="search"
+                aria-label="Search features"
+                [value]="featureSearch"
+                (input)="onSearchInput($event)"
+            />
+        </mat-form-field>
+        <button
+            type="button"
+            mat-button
+            class="feature-refresh-button"
+            aria-label="Refresh feature list"
+            [disabled]="isLoadingFeatures"
+            (click)="refreshFeatures()"
+        >
+            {{ isLoadingFeatures ? 'Refreshing…' : 'Refresh' }}
+        </button>
+    </div>
+       <section
+           id="open-features-panel"
+           role="tabpanel"
+           aria-labelledby="open-features-tab"
+           [hidden]="selectedFeatureTab !== 'open'"
+           class="open-features"
+       >
+        <h2 id="open-features-heading">Open features</h2>
+        <p *ngIf="isLoadingFeatures" role="status">Loading features…</p>
+        <p *ngIf="featuresError" id="feature-list-error" role="alert">{{ featuresError }}</p>
+        <p *ngIf="priorityError" id="feature-priority-error" role="alert">{{ priorityError }}</p>
+        <p *ngIf="statusError" id="feature-status-error" role="alert">{{ statusError }}</p>
+        <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
+        <p *ngIf="editError" id="feature-edit-error" role="alert">{{ editError }}</p>
+        <p *ngIf="!isLoadingFeatures && !featuresError && featureDataSource.data.length === 0">
+            No open features.
+        </p>
+        <table mat-table matSort [dataSource]="featureDataSource" *ngIf="featureDataSource.data.length > 0">
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+                <td mat-cell *matCellDef="let feature" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</td>
+            </ng-container>
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Description</th>
+                <td mat-cell *matCellDef="let feature">{{ feature.description }}</td>
+            </ng-container>
+            <ng-container matColumnDef="priority">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Priority</th>
+                <td mat-cell *matCellDef="let feature">
+                    <select
+                        class="feature-priority-select"
+                        [class.priority-high]="feature.priority === 'High'"
+                        [class.priority-medium]="feature.priority === 'Medium'"
+                        [class.priority-low]="feature.priority === 'Low'"
+                        [attr.aria-label]="'Priority for ' + feature.description"
+                        (change)="onPriorityChange(feature, $event)"
+                    >
+                        <option
+                            *ngFor="let value of priorities"
+                            [value]="value"
+                            [selected]="value === feature.priority"
+                        >{{ value }}</option>
+                    </select>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+                <td mat-cell *matCellDef="let feature">
+                    <select
+                        class="feature-status-select"
+                        [class.status-questions]="feature.status === 'Questions'"
+                        [class.status-backlog]="feature.status === 'Backlog'"
+                        [class.status-queued]="feature.status === 'Queued'"
+                        [class.status-done]="feature.status === 'Done'"
+                        [attr.aria-label]="'Status for ' + feature.description"
+                        (change)="onStatusChange(feature, $event)"
+                    >
+                        <option
+                            *ngFor="let value of statuses"
+                            [value]="value"
+                            [selected]="value === feature.status"
+                        >{{ value }}</option>
+                    </select>
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let feature">
+                    <div class="feature-actions">
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-edit-button"
+                            [attr.aria-label]="'Edit: ' + feature.description"
+                            (click)="editFeature(feature)"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-start-button"
+                            [attr.aria-pressed]="featureWork.activeFeature?.id === feature.id"
+                            (click)="startFeature(feature)"
+                        >
+                            {{ featureWork.activeFeature?.id === feature.id ? 'Started' : 'Start' }}
+                        </button>
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-done-button"
+                            [disabled]="completingFeatureIds.has(feature.id)"
+                            [attr.aria-label]="'Mark done: ' + feature.description"
+                            (click)="markFeatureDone(feature)"
+                        >
+                            {{ completingFeatureIds.has(feature.id) ? 'Saving…' : 'Mark done' }}
+                        </button>
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-deny-button"
+                            [attr.aria-label]="'Deny: ' + feature.description"
+                            (click)="denyFeature(feature)"
+                        >
+                            Deny
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row class="feature-card-row" *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+        <p *ngIf="featureDataSource.data.length > 0 && featureDataSource.filteredData.length === 0">
+            No open features match your search.
+        </p>
+        <mat-paginator
+            [hidden]="featureDataSource.data.length === 0"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 25]"
+            showFirstLastButtons
+            aria-label="Open feature pages"
+        ></mat-paginator>
+       </section>
+       <section
+           id="queued-features-panel"
+           role="tabpanel"
+           aria-labelledby="queued-features-tab"
+           [hidden]="selectedFeatureTab !== 'queued'"
+           class="queued-features"
+       >
+        <h2 id="queued-features-heading">Queued</h2>
+        <p *ngIf="abortError" id="feature-abort-error" role="alert">{{ abortError }}</p>
+        <p *ngIf="featureOrderError" id="feature-order-error" role="alert">{{ featureOrderError }}</p>
+        <p *ngIf="!isLoadingFeatures && queuedFeatures.length === 0">No features queued.</p>
+        <p *ngIf="queuedFeatures.length > 0 && matchingQueuedFeatures.length === 0">
+            No queued features match your search.
+        </p>
+        <ul *ngIf="matchingQueuedFeatures.length > 0">
+            <li *ngFor="let feature of matchingQueuedFeatures" class="queued-feature">
+                <span class="queued-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="queued-feature-description">{{ feature.description }}</span>
+                <select
+                    class="queued-feature-status-select"
+                    [class.status-questions]="feature.status === 'Questions'"
+                    [class.status-backlog]="feature.status === 'Backlog'"
+                    [class.status-queued]="feature.status === 'Queued'"
+                    [class.status-done]="feature.status === 'Done'"
+                    [attr.aria-label]="'Status for ' + feature.description"
+                    (change)="onStatusChange(feature, $event)"
+                >
+                    <option
+                        *ngFor="let value of statuses"
+                        [value]="value"
+                        [selected]="value === feature.status"
+                    >{{ value }}</option>
+                </select>
+                <div class="queued-feature-order">
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-move-up-button"
+                        [attr.aria-label]="'Move up: ' + feature.description"
+                        [disabled]="isReorderingFeatures || queuedFeatures.indexOf(feature) === 0"
+                        (click)="moveQueuedFeature(feature, 'up')"
+                    ><mat-icon aria-hidden="true">arrow_upward</mat-icon></button>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-move-down-button"
+                        [attr.aria-label]="'Move down: ' + feature.description"
+                        [disabled]="isReorderingFeatures || queuedFeatures.indexOf(feature) === queuedFeatures.length - 1"
+                        (click)="moveQueuedFeature(feature, 'down')"
+                    ><mat-icon aria-hidden="true">arrow_downward</mat-icon></button>
+                </div>
+                <button
+                    type="button"
+                    mat-button
+                    class="queued-feature-edit-button"
+                    [attr.aria-label]="'Edit: ' + feature.description"
+                    (click)="editFeature(feature)"
+                >
+                    Edit
+                </button>
+                <button
+                    type="button"
+                    mat-button
+                    class="feature-abort-button"
+                    [attr.aria-label]="'Abort: ' + feature.description"
+                    [disabled]="abortingFeatureIds.has(feature.id)"
+                    (click)="abortFeature(feature)"
+                >
+                    {{ abortingFeatureIds.has(feature.id) ? 'Aborting…' : 'Abort' }}
+                </button>
+            </li>
+        </ul>
+       </section>
+       <section
+           id="done-features-panel"
+           role="tabpanel"
+           aria-labelledby="done-features-tab"
+           [hidden]="selectedFeatureTab !== 'done'"
+           class="done-features"
+       >
+        <h2 id="done-features-heading">
+            Done <span class="feature-count">({{ doneFeatures.length }})</span>
+        </h2>
+        <button
+            *ngIf="hasArchivableFeatures"
+            type="button"
+            mat-button
+            class="archive-all-button"
+            (click)="archiveAllDone()"
+        >
+            Archive all
+        </button>
+        <p *ngIf="!isLoadingFeatures && doneFeatures.length === 0">No completed features.</p>
+        <p *ngIf="doneFeatures.length > 0 && matchingDoneFeatures.length === 0">
+            No completed features match your search.
+        </p>
+        <ul *ngIf="matchingDoneFeatures.length > 0">
+            <li *ngFor="let feature of matchingDoneFeatures" class="done-feature">
+                <span class="done-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="done-feature-description">{{ feature.description }}</span>
+                <span *ngIf="feature.deliveredDate" class="feature-count">
+                    Delivered: {{ feature.deliveredDate }}
+                </span>
+                <div class="done-feature-actions">
+                    <select
+                        class="feature-priority-select"
+                        [class.priority-high]="feature.priority === 'High'"
+                        [class.priority-medium]="feature.priority === 'Medium'"
+                        [class.priority-low]="feature.priority === 'Low'"
+                        [attr.aria-label]="'Priority for ' + feature.description"
+                        (change)="onPriorityChange(feature, $event)"
+                    >
+                        <option
+                            *ngFor="let value of priorities"
+                            [value]="value"
+                            [selected]="value === feature.priority"
+                        >{{ value }}</option>
+                    </select>
+                    <select
+                        class="feature-status-select"
+                        [class.status-questions]="feature.status === 'Questions'"
+                        [class.status-backlog]="feature.status === 'Backlog'"
+                        [class.status-queued]="feature.status === 'Queued'"
+                        [class.status-done]="feature.status === 'Done'"
+                        [attr.aria-label]="'Status for ' + feature.description"
+                        (change)="onStatusChange(feature, $event)"
+                    >
+                        <option
+                            *ngFor="let value of statuses"
+                            [value]="value"
+                            [selected]="value === feature.status"
+                        >{{ value }}</option>
+                    </select>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-edit-button"
+                        [attr.aria-label]="'Edit: ' + feature.description"
+                        (click)="editFeature(feature)"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-start-button"
+                        (click)="startFeature(feature)"
+                    >
+                        Start
+                    </button>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-archive-button"
+                        [attr.aria-label]="'Archive: ' + feature.description"
+                        (click)="archiveFeature(feature)"
+                    >
+                        Archive
+                    </button>
+                </div>
+            </li>
+        </ul>
+       </section>
+       <section
+           id="archived-features-panel"
+           role="tabpanel"
+           aria-labelledby="archived-features-tab"
+           [hidden]="selectedFeatureTab !== 'archived'"
+           class="archived-features"
+       >
+        <h2 id="archived-features-heading">Archived</h2>
+        <p *ngIf="!isLoadingFeatures && archivedStatusFeatures.length === 0">No archived features.</p>
+        <p *ngIf="archivedStatusFeatures.length > 0 && matchingArchivedFeatures.length === 0">
+            No archived features match your search.
+        </p>
+        <ul *ngIf="matchingArchivedFeatures.length > 0">
+            <li *ngFor="let feature of matchingArchivedFeatures" class="archived-feature">
+                <span class="archived-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="archived-feature-description">{{ feature.description }}</span>
+            </li>
+        </ul>
+       </section>
+</main>

@@ -1,0 +1,74 @@
+<main>
+    <h1>Test runner</h1>
+    <p>Run the client and server test suites.</p>
+
+    <div class="test-runner-layout">
+        <section class="test-runner-main" aria-label="Test execution">
+            <button type="button" (click)="runTests()" [disabled]="isRunning">
+                {{ isRunning ? 'Running tests…' : 'Run tests' }}
+            </button>
+
+            <mat-progress-bar *ngIf="isRunning" mode="indeterminate" class="running-progress" aria-label="Tests are running"></mat-progress-bar>
+            <p role="status" aria-live="polite" *ngIf="isRunning">Tests are running. This may take a few minutes.</p>
+            <p class="error" role="alert" *ngIf="errorMessage">Could not run tests: {{ errorMessage }}</p>
+
+            <section *ngIf="result as runResult" aria-live="polite">
+                <h2 *ngIf="runResult.exitCode === null">Test output (running)</h2>
+                <h2 *ngIf="runResult.exitCode !== null" [class.error]="runResult.exitCode !== 0">
+                    {{ runResult.exitCode === 0 ? 'Tests passed' : 'Tests failed' }} (exit code {{ runResult.exitCode }})
+                </h2>
+
+                <h3>Standard output</h3>
+                <pre>{{ runResult.stdout || '(No output.)' }}</pre>
+
+                <ng-container *ngIf="runResult.exitCode !== null && runResult.exitCode !== 0 && runResult.stderr">
+                    <h3>Standard error</h3>
+                    <pre>{{ runResult.stderr }}</pre>
+                </ng-container>
+            </section>
+        </section>
+
+        <aside class="cache-status" aria-live="polite" aria-label="Last cached test result">
+            <h2>Last cached test result</h2>
+            <p *ngIf="cacheStatus.isLoading" role="status">Checking cached test result…</p>
+            <p *ngIf="cacheStatus.error" class="error" role="alert">
+                Could not load cached test status: {{ cacheStatus.error }}
+            </p>
+            <p *ngIf="!cacheStatus.isLoading && !cacheStatus.error && cacheStatus.status?.status === 'empty'">
+                No cached test runs.
+            </p>
+            <ng-container *ngIf="!cacheStatus.isLoading && !cacheStatus.error && cacheStatus.status?.available">
+                <p [class.error]="cacheStatus.status?.status === 'failed' || cacheStatus.status?.status === 'error'">
+                    Status: {{ cacheStatus.status?.status }}
+                    <span *ngIf="cacheStatus.status?.exitCode !== null">(exit code {{ cacheStatus.status?.exitCode }})</span>
+                </p>
+                <p *ngIf="cacheStatus.status?.finishedAt">
+                    Finished: <time [attr.datetime]="cacheStatus.status?.finishedAt">{{ cacheStatus.status?.finishedAt | date:'medium' }}</time>
+                </p>
+            </ng-container>
+            <p *ngIf="isLoadingLastTestRun" role="status">Loading last test output…</p>
+            <p *ngIf="lastTestRunError" class="error" role="alert">
+                Could not load last test output: {{ lastTestRunError }}
+            </p>
+            <section
+                *ngIf="!isLoadingLastTestRun && !lastTestRunError && lastTestRun
+                    && (lastTestRun.exitCode !== 0 || lastTestRun.error)"
+                aria-label="Last failed test run details"
+            >
+                <h3 class="error">Errors from the last failed test run</h3>
+                <p *ngIf="lastTestRun.error" class="error">{{ lastTestRun.error }}</p>
+                <ng-container *ngIf="lastTestRun.stdout">
+                    <h4>Test output</h4>
+                    <pre>{{ lastTestRun.stdout }}</pre>
+                </ng-container>
+                <ng-container *ngIf="lastTestRun.stderr">
+                    <h4>Standard error</h4>
+                    <pre>{{ lastTestRun.stderr }}</pre>
+                </ng-container>
+                <p *ngIf="!lastTestRun.error && !lastTestRun.stdout && !lastTestRun.stderr">
+                    No failure details were captured.
+                </p>
+            </section>
+        </aside>
+    </div>
+</main>

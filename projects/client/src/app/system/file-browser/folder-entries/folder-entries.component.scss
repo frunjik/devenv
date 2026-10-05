@@ -1,0 +1,35 @@
+.row {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 0.75rem;
+    border-top: 1px solid #29352e;
+    color: #c3cec5;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+
+.row:hover {
+    background: #26332b;
+    color: #e0e9e1;
+}
+
+.row:focus-visible {
+    outline: 2px solid #789b81;
+    outline-offset: -2px;
+}
+
+.folder-row mat-icon {
+    color: #a1b991;
+}
+
+.file-row mat-icon {
+    color: #83968a;
+}
+
+mat-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 0.65rem 0 0;
+    font-size: 20px;
+}

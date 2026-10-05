@@ -1,0 +1,1578 @@
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter, Router } from '@angular/router';
+import { createServer } from 'node:http';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import type { Server } from 'node:http';
+import type { ErrorRequestHandler } from 'express';
+import { createApp } from '../../../../../server/src/public-api';
+import { FeatureWorkService } from '../../feature-work.service';
+import { FeatureDescriptionComponent } from './feature-description.component';
+
+describe('FeatureDescriptionComponent', () => {
+    let fixture: ComponentFixture<FeatureDescriptionComponent>;
+    let root: string;
+    let server: Server;
+    let apiHost: string;
+    const browserWindow = window as Window & { host?: string };
+
+    async function readFeatureFile(): Promise<string> {
+        const contents = await readFile(join(root, '.features'), 'utf8');
+        return contents.split('\n').filter(Boolean).map(line => {
+            const feature = JSON.parse(line) as {
+                id: string;
+                createdAt?: string;
+                priority: string;
+                status: string;
+                description: string;
+                deliveredDate?: string;
+            };
+            return `// ${feature.createdAt ? `[${feature.createdAt}] ` : ''}[${feature.id}] [${feature.priority}]`
+                + ` [${feature.status}] ${feature.description}`
+                + `${feature.deliveredDate ? ` [Delivered: ${feature.deliveredDate}]` : ''}\n`;
+        }).join('');
+    }
+
+    beforeAll(async () => {
+        root = await mkdtemp(join(tmpdir(), 'devenv-feature-client-'));
+        const app = createApp(root);
+        const handleError: ErrorRequestHandler = (_error, _request, response, _next) => {
+            response.status(500).json({ error: { message: 'Feature submission failed.' } });
+        };
+        app.use(handleError);
+        server = createServer(app);
+        await new Promise<void>(resolve => server.listen(0, resolve));
+        const address = server.address();
+        if (!address || typeof address === 'string') {
+            throw new Error('Test server did not bind to a TCP port');
+        }
+        apiHost = `http://127.0.0.1:${address.port}/`;
+    });
+
+    beforeEach(async () => {
+        await rm(join(root, '.features'), { recursive: true, force: true });
+        await rm(join(root, '.archived'), { recursive: true, force: true });
+        await rm(join(root, 'DEVENVOPDEV.md'), { recursive: true, force: true });
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions\n\n'
+            + 'The features you are writing are, take them one by one:\n');
+        browserWindow.host = apiHost;
+        await TestBed.configureTestingModule({
+            imports: [FeatureDescriptionComponent],
+            providers: [provideHttpClient(), provideRouter([])],
+        }).compileComponents();
+
+        fixture = TestBed.createComponent(FeatureDescriptionComponent);
+        fixture.detectChanges();
+    });
+
+    afterAll(async () => {
+        await new Promise<void>((resolve, reject) => {
+            server.close(error => error ? reject(error) : resolve());
+        });
+        await rm(root, { recursive: true, force: true });
+    });
+
+    it('keeps the selected tab in the url and restores it', async () => {
+        const router = TestBed.inject(Router);
+        fixture.nativeElement.querySelector('#done-features-tab').click();
+        await fixture.whenStable();
+        expect(router.url).toBe('/?tab=done');
+
+        const restored = TestBed.createComponent(FeatureDescriptionComponent);
+        restored.detectChanges();
+        expect(restored.componentInstance.selectedFeatureTab).toBe('done');
+
+        await router.navigate([], { queryParams: { tab: 'bogus' } });
+        const ignored = TestBed.createComponent(FeatureDescriptionComponent);
+        ignored.detectChanges();
+        expect(ignored.componentInstance.selectedFeatureTab).toBe('queued');
+    });
+    it('shows a feature description form', () => {
+        expect(fixture.nativeElement.querySelector('h1')!.textContent).toContain('New feature');
+        expect(fixture.nativeElement.querySelector('textarea[aria-label="Feature description"]')).not.toBeNull();
+    });
+
+    it('shows an empty-state message when there are no open features', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.open-features')!.textContent).toContain('No open features.');
+        expect(fixture.nativeElement.querySelector('.queued-features')!.textContent)
+            .toContain('No features queued.');
+        expect(fixture.nativeElement.querySelector('.done-features')!.textContent)
+            .toContain('No completed features.');
+    });
+
+    it('organizes feature lists in accessible tabs with keyboard navigation', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const tabs: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('[role="tab"]');
+
+        expect(Array.from(tabs).map(tab => tab.textContent!.trim())).toEqual([
+            'Open (0)',
+            'Queued (0)',
+            'Done (0)',
+            'Archived (0)',
+        ]);
+        expect(tabs[1].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#queued-features-panel').hidden).toBe(false);
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(true);
+
+        tabs[0].click();
+        fixture.detectChanges();
+        expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
+
+        tabs[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[1].getAttribute('aria-selected')).toBe('true');
+        expect(document.activeElement).toBe(tabs[1]);
+
+        tabs[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+
+        tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[3].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#archived-features-panel').hidden).toBe(false);
+
+        tabs[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+
+        tabs[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[3].getAttribute('aria-selected')).toBe('true');
+
+        tabs[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[3].getAttribute('aria-selected')).toBe('true');
+    });
+
+    it('lists features with status Archived on the Archived tab, filtered by search, and not as open', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), [
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174000\",\"priority\":\"Low\",\"status\":\"Archived\",\"description\":\"Old kept feature\"}',
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174001\",\"priority\":\"Low\",\"status\":\"Archived\",\"description\":\"Another record\"}',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (2)');
+        expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(2);
+        expect(fixture.nativeElement.querySelector('.archived-feature-id').textContent.trim()).toBe('123e4567');
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'kept';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(1);
+        search.value = 'nothing';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.textContent).toContain('No archived features match your search.');
+    });
+
+    it('shows an empty message on the Archived tab without archived features', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('#archived-features-panel').textContent).toContain('No archived features.');
+    });
+
+    it('shows search outside the tabs and filters the initially selected queued list', async () => {
+        await fixture.whenStable();
+        const matchingId = '123e4567-e89b-42d3-a456-426614174000';
+        const otherId = '123e4567-e89b-42d3-a456-426614174001';
+        await writeFile(join(root, '.features'), [
+            `// [${matchingId}] [High] [Queued] Matching active feature`,
+            `// [${otherId}] [Low] [Queued] Unrelated active feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        expect(search).not.toBeNull();
+        expect(search.closest('[hidden]')).toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(2);
+
+        search.value = 'matching';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
+            .toBe('Matching active feature');
+        expect(fixture.nativeElement.querySelector('.queued-features')!.textContent)
+            .not.toContain('Unrelated active feature');
+    });
+
+    it('refreshes the feature list from the client and shows newly added features', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+
+        await writeFile(join(root, '.features'), '// A feature added elsewhere\n');
+        const refreshButton: HTMLButtonElement =
+            fixture.nativeElement.querySelector('.feature-refresh-button');
+        expect(refreshButton.getAttribute('aria-label')).toBe('Refresh feature list');
+        refreshButton.click();
+        fixture.detectChanges();
+        expect(refreshButton.disabled).toBe(true);
+
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
+            .toBe('A feature added elsewhere');
+        expect(refreshButton.disabled).toBe(false);
+    });
+
+    it('cancels an outstanding feature refresh when the component is destroyed', async () => {
+        await fixture.whenStable();
+        fixture.componentInstance.refreshFeatures();
+        fixture.destroy();
+        await new Promise(resolve => setTimeout(resolve, 10));
+
+        expect(fixture.componentInstance.features).toEqual([]);
+    });
+
+    it('shows saved features below the form', async () => {
+        await fixture.whenStable();
+        const content = '// [2026-10-04 22:45 +02:00] Add a saved feature\n// [2026-10-04 22:46 +02:00] Add another feature\n';
+        await writeFile(join(root, '.features'), content);
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const rows = fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row');
+        expect(Array.from<HTMLTableRowElement>(rows).map(row => ({
+            id: row.querySelector('.mat-column-id')?.textContent!.trim(),
+            description: row.querySelector('.mat-column-description')?.textContent!.trim(),
+            title: row.querySelector('.mat-column-id')?.getAttribute('title'),
+        })))
+            .toEqual(expect.arrayContaining([
+                expect.objectContaining({
+                    id: expect.stringMatching(/^[0-9a-f]{8}$/),
+                    description: 'Add a saved feature',
+                    title: expect.stringMatching(/^[0-9a-f-]{36}$/),
+                }),
+                expect.objectContaining({
+                    id: expect.stringMatching(/^[0-9a-f]{8}$/),
+                    description: 'Add another feature',
+                    title: expect.stringMatching(/^[0-9a-f-]{36}$/),
+                }),
+            ]));
+        expect(Array.from<HTMLTableRowElement>(rows).map(row =>
+            (row.querySelector('.mat-column-status select') as HTMLSelectElement).value,
+        )).toEqual(['Backlog', 'Backlog']);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
+            .toHaveLength(8);
+    });
+
+    it('lists only queued features in its own section and keeps the complete list', async () => {
+        await fixture.whenStable();
+        const queuedId = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), [
+            `// [${queuedId}] [High] [Queued] Feature being worked on`,
+            '// [123e4567-e89b-42d3-a456-426614174001] [Medium] [Backlog] Feature waiting',
+            '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const currentTasks: NodeListOf<HTMLLIElement> =
+            fixture.nativeElement.querySelectorAll('.queued-feature');
+        expect(currentTasks).toHaveLength(1);
+        expect(currentTasks[0].querySelector('.queued-feature-id')!.textContent!.trim())
+            .toBe('123e4567');
+        expect(currentTasks[0].querySelector('.queued-feature-id')!.getAttribute('title'))
+            .toBe(queuedId);
+        expect(currentTasks[0].querySelector('.queued-feature-description')!.textContent!.trim())
+            .toBe('Feature being worked on');
+        expect(fixture.nativeElement.querySelector('.feature-count')!.textContent!.trim()).toBe('(1)');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
+            .toBe('Completed feature');
+    });
+
+    it('shows Queued and Committed features only in the Queued list, not as open', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), [
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174000\",\"priority\":\"Low\",\"status\":\"Queued\",\"description\":\"Is queued\"}',
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174001\",\"priority\":\"Low\",\"status\":\"Committed\",\"description\":\"Is committed\"}',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(2);
+    });
+
+    it('moves queued features up and down and persists their order', async () => {
+        await fixture.whenStable();
+        const firstId = '123e4567-e89b-42d3-a456-426614174000';
+        const backlogId = '123e4567-e89b-42d3-a456-426614174001';
+        const secondId = '123e4567-e89b-42d3-a456-426614174002';
+        await writeFile(join(root, '.features'), [
+            `// [${firstId}] [High] [Queued] First active feature`,
+            `// [${backlogId}] [Low] [Backlog] Unchanged backlog feature`,
+            `// [${secondId}] [Medium] [Queued] Second active feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('queued');
+        fixture.detectChanges();
+
+        let rows: NodeListOf<HTMLLIElement> = fixture.nativeElement.querySelectorAll('.queued-feature');
+        expect(Array.from(rows).map(row => row.querySelector('.queued-feature-description')!.textContent!.trim()))
+            .toEqual(['First active feature', 'Second active feature']);
+        expect((rows[0].querySelector('.feature-move-up-button') as HTMLButtonElement).disabled).toBe(true);
+        expect((rows[1].querySelector('.feature-move-down-button') as HTMLButtonElement).disabled).toBe(true);
+        expect(rows[1].querySelector('.feature-move-up-button')!.getAttribute('aria-label'))
+            .toBe('Move up: Second active feature');
+        expect(rows[1].querySelector('.feature-move-up-button mat-icon')!.textContent!.trim()).toBe('arrow_upward');
+        expect(rows[1].querySelector('.feature-move-down-button mat-icon')!.textContent!.trim()).toBe('arrow_downward');
+        const activeFeatures = fixture.componentInstance.queuedFeatures;
+        fixture.componentInstance.moveQueuedFeature(activeFeatures[0], 'up');
+        fixture.componentInstance.moveQueuedFeature(activeFeatures[1], 'down');
+        fixture.componentInstance.moveQueuedFeature({ ...activeFeatures[0], id: 'missing' }, 'up');
+        fixture.componentInstance.isReorderingFeatures = true;
+        fixture.componentInstance.moveQueuedFeature(activeFeatures[1], 'up');
+        fixture.componentInstance.isReorderingFeatures = false;
+
+        (rows[1].querySelector('.feature-move-up-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        rows = fixture.nativeElement.querySelectorAll('.queued-feature');
+        expect(Array.from(rows).map(row => row.querySelector('.queued-feature-description')!.textContent!.trim()))
+            .toEqual(['Second active feature', 'First active feature']);
+        expect((await readFeatureFile()).split(/\r?\n/).filter(Boolean).map(entry =>
+            entry.match(/\[([0-9a-f-]{36})\]/)?.[1],
+        )).toEqual([secondId, backlogId, firstId]);
+
+        (rows[0].querySelector('.feature-move-down-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(Array.from<HTMLLIElement>(fixture.nativeElement.querySelectorAll('.queued-feature'))
+            .map((row: HTMLLIElement) => row.querySelector('.queued-feature-description')!.textContent!.trim()))
+            .toEqual(['First active feature', 'Second active feature']);
+    });
+
+    it('keeps the feature order and displays an error when reordering fails', async () => {
+        await fixture.whenStable();
+        const firstId = '123e4567-e89b-42d3-a456-426614174000';
+        const secondId = '123e4567-e89b-42d3-a456-426614174001';
+        await writeFile(join(root, '.features'), [
+            `// [${firstId}] [High] [Queued] First active feature`,
+            `// [${secondId}] [Medium] [Queued] Second active feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('queued');
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        (fixture.nativeElement.querySelectorAll('.feature-move-up-button')[1] as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.queuedFeatures.map(feature => feature.id))
+            .toEqual([firstId, secondId]);
+        expect(fixture.nativeElement.querySelector('#feature-order-error')!.textContent).toContain('500');
+        expect(fixture.componentInstance.isReorderingFeatures).toBe(false);
+    });
+
+    it('aborts an queued feature, returns it to the open list, and clears active work', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [Queued] Feature to abort\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature to abort <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature to abort');
+        const feature = fixture.componentInstance.queuedFeatures[0];
+        fixture.componentInstance.selectFeatureTab('queued');
+        fixture.detectChanges();
+
+        const button: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-abort-button');
+        expect(button.getAttribute('aria-label')).toBe('Abort: Feature to abort');
+        button.click();
+        fixture.componentInstance.abortFeature(feature);
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(featureWork.activeFeature).toBeNull();
+        expect(await readFeatureFile()).toContain('[Aborted] Feature to abort');
+        expect(fixture.componentInstance.queuedFeatures).toHaveLength(0);
+        expect((fixture.nativeElement.querySelector('.open-features .feature-status-select') as HTMLSelectElement).value)
+            .toBe('Aborted');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
+        expect(fixture.nativeElement.querySelector('#feature-abort-error')).toBeNull();
+    });
+
+    it('retains queued status and reports errors when aborting a feature fails', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [Medium] [Queued] Feature that cannot be aborted\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        TestBed.inject(FeatureWorkService).start(id, 'Feature that cannot be aborted');
+        await rm(join(root, 'DEVENVOPDEV.md'));
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+        fixture.componentInstance.selectFeatureTab('queued');
+        fixture.detectChanges();
+
+        (fixture.nativeElement.querySelector('.feature-abort-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile())
+            .toContain('[Queued] Feature that cannot be aborted');
+        expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
+        expect(fixture.nativeElement.querySelector('#feature-abort-error')!.textContent).toContain('500');
+        expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
+    });
+
+    it('shows completed features separately when there are no open features', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.open-features')!.textContent).toContain('No open features.');
+        expect(fixture.nativeElement.querySelector('.open-features table')).toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
+            .toBe('Completed feature');
+    });
+
+    it('lists .archived entries on the Archived tab, not on the Done tab', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174004","priority":"Low","status":"Done","description":"Wishlist entry"}\n');
+        await writeFile(join(root, '.archived'), 'Archived\n// [2026-10-04 21:00 +02:00] Archived entry\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
+            .map(element => element.textContent!.trim());
+        expect(done).toEqual(['Wishlist entry']);
+        expect(fixture.nativeElement.querySelector('.archived-feature-description').textContent.trim()).toBe('Archived entry');
+    });
+
+    it('lists features with status Done from .features on the Done tab', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174005","priority":"Low","status":"Done","description":"Delivered entry"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
+            .map(element => element.textContent!.trim());
+        expect(done).toEqual(['Delivered entry']);
+    });
+
+    it('archives a Done feature, moving it to the Archived tab and .archived', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174006';
+        await writeFile(join(root, '.features'),
+            `{"id":"${id}","priority":"Low","status":"Done","description":"To archive"}\n`);
+        await writeFile(join(root, '.archived'), 'Archived\n// [2026-10-04 21:00 +02:00] Legacy entry\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const archiveButtons = fixture.nativeElement.querySelectorAll('.feature-archive-button');
+        expect(archiveButtons).toHaveLength(1);
+
+        (archiveButtons[0] as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
+            .map(element => element.textContent!.trim());
+        expect(done).toEqual([]);
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (2)');
+        expect(fixture.nativeElement.textContent).toContain('To archive');
+        expect(await readFeatureFile()).toBe('');
+        expect(await readFile(join(root, '.archived'), 'utf8')).toContain('"status":"Archived"');
+    });
+
+    it('reports an error when archiving fails', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174007","priority":"Low","status":"Done","description":"Cannot archive"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        await rm(join(root, '.archived'), { force: true });
+        await mkdir(join(root, '.archived'));
+
+        fixture.componentInstance.archiveFeature(fixture.componentInstance.features[0]);
+        await fixture.whenStable();
+
+        expect(fixture.componentInstance.statusError).toContain('500');
+        expect(fixture.componentInstance.features).toHaveLength(1);
+        await rm(join(root, '.archived'), { recursive: true });
+    });
+    it('archives all Done features with the Archive all button', async () => {
+        await fixture.whenStable();
+        expect(fixture.nativeElement.querySelector('.archive-all-button')).toBeNull();
+        await writeFile(join(root, '.features'), [
+            '{"id":"123e4567-e89b-42d3-a456-426614174009","priority":"Low","status":"Done","description":"First done"}',
+            '{"id":"123e4567-e89b-42d3-a456-42661417400a","priority":"Low","status":"Done","description":"Second done"}',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        (fixture.nativeElement.querySelector('.archive-all-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelector('.archive-all-button')).toBeNull();
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (2)');
+        expect(await readFeatureFile()).toBe('');
+    });
+
+    it('reports an error when archiving all fails', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-42661417400b","priority":"Low","status":"Done","description":"Stuck"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        await rm(join(root, '.archived'), { force: true });
+        await mkdir(join(root, '.archived'));
+
+        fixture.componentInstance.archiveAllDone();
+        await fixture.whenStable();
+
+        expect(fixture.componentInstance.statusError).toContain('500');
+        expect(fixture.componentInstance.hasArchivableFeatures).toBe(true);
+        await rm(join(root, '.archived'), { recursive: true });
+    });
+    it('sets the status of a queued feature from the Queued tab', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-42661417400c';
+        await writeFile(join(root, '.features'),
+            `{"id":"${id}","priority":"Low","status":"Queued","description":"Change me"}\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('queued');
+        fixture.detectChanges();
+        const select: HTMLSelectElement = fixture.nativeElement.querySelector('.queued-feature-status-select');
+        expect(select.value).toBe('Queued');
+        expect(select.classList.contains('status-queued')).toBe(true);
+
+        select.value = 'Questions';
+        select.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(0);
+        expect(await readFeatureFile()).toContain('[Questions] Change me');
+    });
+    it('filters the completed list with the shared feature search', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), [
+            '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Finished feature',
+            '// [123e4567-e89b-42d3-a456-426614174003] [Medium] [Done] Other completion',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'Finished';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
+            .toBe('Finished feature');
+    });
+
+    it('shows features with status Questions on the Open tab', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174008","priority":"Medium","status":"Questions","description":"[AI Question] Which way?"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('open');
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
+        const rows = fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row');
+        expect(rows).toHaveLength(1);
+        expect(rows[0].textContent).toContain('[AI Question] Which way?');
+        expect(rows[0].querySelector('.feature-status-select').value).toBe('Questions');
+    });
+    it('displays priority and status as distinct badges within card-like rows', async () => {
+        await fixture.whenStable();
+        const ids = [
+            '123e4567-e89b-42d3-a456-426614174000',
+            '123e4567-e89b-42d3-a456-426614174001',
+            '123e4567-e89b-42d3-a456-426614174002',
+            '123e4567-e89b-42d3-a456-426614174003',
+        ];
+        await writeFile(join(root, '.features'), [
+            `// [${ids[0]}] [High] [Questions] Needs clarification`,
+            `// [${ids[1]}] [Medium] [Backlog] Urgent task`,
+            `// [${ids[2]}] [Medium] [Queued] Active task`,
+            `// [${ids[3]}] [Low] [Done] Finished task`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const rows: HTMLTableRowElement[] = Array.from(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        );
+        expect(rows).toHaveLength(2);
+        expect(rows.every(row => row.classList.contains('feature-card-row'))).toBe(true);
+        expect(rows.map(row => row.querySelector('.feature-priority-select')?.className))
+            .toEqual([
+                'feature-priority-select priority-high',
+                'feature-priority-select priority-medium',
+            ]);
+        expect(rows.map(row => row.querySelector('.feature-status-select')?.className))
+            .toEqual([
+                'feature-status-select status-questions',
+                'feature-status-select status-backlog',
+            ]);
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-priority-select').className)
+            .toBe('feature-priority-select priority-low');
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-status-select').className)
+            .toBe('feature-status-select status-done');
+    });
+
+    it('edits a Queued feature from the Queued list', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `{"id":"${id}","priority":"High","status":"Queued","description":"Queued feature"}\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.queued-feature .queued-feature-edit-button')!.click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        )!;
+        expect(editor.value).toBe('Queued feature');
+        editor.value = 'Queued feature, edited';
+        editor.dispatchEvent(new Event('input'));
+        editor.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true, bubbles: true }));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[High] [Queued] Queued feature, edited');
+        expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
+            .toBe('Queued feature, edited');
+    });
+
+    it('edits a feature description in a dialog and updates its active task', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [Backlog] Old feature description\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Old feature description <!-- feature-id:${id} -->`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Old feature description');
+
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        )!;
+        expect(editor.value).toBe('Old feature description');
+        editor.value = '  Updated feature\n description  ';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        const saveButton: HTMLButtonElement = document.querySelector(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        )!;
+        expect(saveButton.disabled).toBe(false);
+        editor.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter',
+            ctrlKey: true,
+            bubbles: true,
+        }));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile())
+            .toContain(`[${id}] [High] [Backlog] Updated feature description`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain(`"id":"${id}"`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain('"description":"Updated feature description"');
+        expect(featureWork.activeFeature).toEqual({
+            id,
+            description: 'Updated feature description',
+        });
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
+            .toBe('Updated feature description');
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
+    });
+
+    it('does not update a feature when the edit dialog is cancelled', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// A feature to cancel editing\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        )!;
+        editor.value = 'Unsaved edit';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        editor.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter',
+            bubbles: true,
+        }));
+        expect(document.querySelector('app-edit-feature-dialog')).not.toBeNull();
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:first-child',
+        )!.click();
+        await fixture.whenStable();
+
+        expect(await readFeatureFile()).toContain('A feature to cancel editing');
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
+    });
+
+    it('does not submit a blank description with the keyboard shortcut', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// A feature to keep while editing\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        )!;
+        editor.value = ' ';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        const saveButton: HTMLButtonElement = document.querySelector(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        )!;
+        expect(saveButton.disabled).toBe(true);
+        editor.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter',
+            ctrlKey: true,
+            bubbles: true,
+        }));
+
+        expect(document.querySelector('app-edit-feature-dialog')).not.toBeNull();
+        expect(await readFeatureFile()).toContain('A feature to keep while editing');
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:first-child',
+        )!.click();
+        await fixture.whenStable();
+    });
+
+    it('does not send a save when the description is unchanged', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// An unchanged feature\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
+        fixture.detectChanges();
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        )!.click();
+        await fixture.whenStable();
+
+        expect(await readFeatureFile()).toContain('An unchanged feature');
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
+    });
+
+    it('reports edit failures and keeps the original feature description visible', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// Feature whose edit will fail\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        )!;
+        editor.value = 'Unpersisted edit';
+        editor.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        document.querySelector<HTMLButtonElement>(
+            'app-edit-feature-dialog mat-dialog-actions button:last-child',
+        )!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')!.textContent).toContain('500');
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
+            .toBe('Feature whose edit will fail');
+    });
+
+    it('sorts features by ID, priority, status, and description from the table headers', async () => {
+        await fixture.whenStable();
+        const firstId = '223e4567-e89b-42d3-a456-426614174001';
+        const secondId = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), [
+            `// [2026-10-04 22:45 +02:00] [${firstId}] [Low] [Done] Zebra feature`,
+            `// [2026-10-04 22:46 +02:00] [${secondId}] [High] [Backlog] Apple feature`,
+            '',
+        ].join('\n'));
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const firstCell = (column: string): string =>
+            fixture.nativeElement.querySelector(`tr.mat-mdc-row .mat-column-${column}`).textContent!.trim();
+        const sortBy = (column: string): void => {
+            fixture.nativeElement.querySelector(`th.mat-column-${column}`).click();
+            fixture.detectChanges();
+        };
+
+        sortBy('id');
+        expect(firstCell('id')).toBe('123e4567');
+        sortBy('priority');
+        const firstPriority: HTMLSelectElement =
+            fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-priority select');
+        expect(firstPriority.value).toBe('High');
+        sortBy('status');
+        const firstStatus: HTMLSelectElement =
+            fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-status select');
+        expect(firstStatus.value).toBe('Backlog');
+        sortBy('description');
+        expect(firstCell('description')).toBe('Apple feature');
+    });
+
+    it('marks a feature as started when its row action is clicked', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
+            id,
+            description: 'Add a feature',
+        });
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
+            .toBe('Add a feature');
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile).toContain(`"id":"${id}"`);
+        expect(taskFile).toContain('"description":"Add a feature"');
+        expect((await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).match(/"id":"/g))
+            .toHaveLength(1);
+    });
+
+    it('marks a feature done, removes it from the list, and clears matching active work', async () => {
+        await fixture.whenStable();
+        const completedId = '123e4567-e89b-42d3-a456-426614174000';
+        const remainingId = '123e4567-e89b-42d3-a456-426614174001';
+        await writeFile(join(root, '.features'), [
+            `// [2026-10-04 22:45 +02:00] [${completedId}] [High] [Backlog] Completed feature`,
+            `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] [Backlog] Remaining feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        fixture.componentInstance.selectFeatureTab('open');
+        let completedRow: HTMLTableRowElement | undefined;
+        for (let attempt = 0; attempt < 500 && !completedRow; attempt++) {
+            fixture.detectChanges();
+            completedRow = Array.from<HTMLTableRowElement>(
+                fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+            ).find(row =>
+                row.querySelector('.mat-column-description')?.textContent!.trim() === 'Completed feature',
+            );
+            if (completedRow) {
+                break;
+            }
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(completedId, 'Completed feature');
+
+        expect(completedRow).toBeDefined();
+        if (!completedRow) {
+            throw new Error('Completed feature row did not render.');
+        }
+        const doneButton: HTMLButtonElement = completedRow.querySelector('.feature-done-button')!;
+        expect(doneButton?.getAttribute('aria-label')).toBe('Mark done: Completed feature');
+        doneButton.click();
+        doneButton.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(featureWork.activeFeature).toBeNull();
+        expect(await readFeatureFile()).toContain('[Done] Completed feature');
+        expect(await readFeatureFile()).toContain('Remaining feature');
+        expect(Array.from<HTMLTableRowElement>(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        ).map(row => row.querySelector('.mat-column-description')?.textContent!.trim()))
+            .toEqual(['Remaining feature']);
+        expect(Array.from<HTMLLIElement>(
+            fixture.nativeElement.querySelectorAll('.done-feature'),
+        ).map(row => row.querySelector('.done-feature-description')?.textContent!.trim()))
+            .toEqual(['Completed feature']);
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-count')!.textContent!.trim())
+            .toMatch(/^Delivered: \d{4}-\d{2}-\d{2}$/);
+        expect(fixture.nativeElement.querySelector('#feature-completion-error')).toBeNull();
+    }, 15000);
+
+    it('retains the feature and reports errors when marking it done fails', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Keep this feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        const doneButton: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-done-button');
+        doneButton.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
+            .toBe('Keep this feature');
+        expect(fixture.nativeElement.querySelector('#feature-completion-error')!.textContent)
+            .toContain('500');
+        expect(fixture.componentInstance.completingFeatureIds.size).toBe(0);
+    });
+
+    it('holds the entered feature description in the form', async () => {
+        const textarea: HTMLTextAreaElement =
+            fixture.nativeElement.querySelector('textarea[aria-label="Feature description"]');
+
+        textarea.value = 'Add a route for planning the next feature';
+        textarea.dispatchEvent(new Event('input'));
+        await fixture.whenStable();
+
+        expect(fixture.componentInstance.description).toBe('Add a route for planning the next feature');
+    });
+
+    it('submits the description and updates the feature list without a success message', async () => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        textarea.value = 'Add a feature submission form';
+        textarea.dispatchEvent(new Event('input'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('button')!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#feature-submit-error')).toBeNull();
+        expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
+        expect(fixture.componentInstance.description).toBe('');
+        expect(fixture.componentInstance.priority).toBe('Low');
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value).toBe('');
+        await expect(readFeatureFile()).resolves.toMatch(
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Wished\] Add a feature submission form\n$/,
+        );
+        expect(Array.from<HTMLTableRowElement>(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        ).map(row => row.querySelector('.mat-column-description')?.textContent!.trim()))
+            .toEqual(['Add a feature submission form']);
+    });
+
+    it('submits the selected priority and resets it to Low after success', async () => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        const priority: HTMLSelectElement = fixture.nativeElement.querySelector(
+            'select[aria-label="Feature priority"]',
+        );
+        priority.value = 'High';
+        priority.dispatchEvent(new Event('change'));
+        textarea.value = 'Prioritize this feature';
+        textarea.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('button[type="submit"]')!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toMatch(/\[High\] \[Wished\] Prioritize this feature/);
+        expect(fixture.componentInstance.priority).toBe('Low');
+        expect((fixture.nativeElement.querySelector('select[aria-label="Feature priority"]') as HTMLSelectElement).value)
+            .toBe('Low');
+        expect(fixture.nativeElement.querySelector('.mat-column-priority select')!.value).toBe('High');
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Wished');
+    });
+
+    it('submits and resets the selected feature status', async () => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        const status: HTMLSelectElement = fixture.nativeElement.querySelector(
+            'select[aria-label="Feature status"]',
+        );
+        status.value = 'Queued';
+        status.dispatchEvent(new Event('change'));
+        textarea.value = 'Start this feature immediately';
+        textarea.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('button[type="submit"]')!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile())
+            .toMatch(/\[Low\] \[Queued\] Start this feature immediately/);
+        expect(fixture.componentInstance.status).toBe('Wished');
+        expect(fixture.componentInstance.selectedFeatureTab).toBe('open');
+        expect((fixture.nativeElement.querySelector('select[aria-label="Feature status"]') as HTMLSelectElement).value)
+            .toBe('Wished');
+    });
+
+    it('updates an open feature status through the public API', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [High] Feature to track\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Feature to track <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        expect(selector.value).toBe('Backlog');
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature to track');
+        selector.value = 'Done';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile())
+            .toContain('[High] [Done] Feature to track');
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Done');
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+        expect(featureWork.activeFeature).toBeNull();
+    });
+
+    it('keeps a feature in Questions status and removes it from the active task list', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [High] [Backlog] Feature needing clarification\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature needing clarification <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature needing clarification');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Questions';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile())
+            .toContain('[High] [Questions] Feature needing clarification');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Questions');
+        expect(featureWork.activeFeature).toBeNull();
+    });
+
+    it('sets a feature to Denied from the client and clears its active task marker', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [Backlog] Feature to deny\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature to deny <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature to deny');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        expect(Array.from(selector.options).map(option => option.value)).toContain('Denied');
+        selector.value = 'Denied';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[Denied] Feature to deny');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Denied');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(featureWork.activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
+    it('denies an open feature using its action button', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [Medium] [Backlog] Feature to deny by button\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature to deny by button <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        fixture.componentInstance.selectFeatureTab('open');
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const denyButton: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-deny-button');
+        expect(denyButton.getAttribute('aria-label')).toBe('Deny: Feature to deny by button');
+        denyButton.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[Denied] Feature to deny by button');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Denied');
+    });
+
+    it('sets a feature to Committed from the client and keeps its feature record', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [Backlog] Feature already committed\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature already committed <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature already committed');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        expect(Array.from(selector.options).map(option => option.value)).toContain('Committed');
+        selector.value = 'Committed';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[Committed] Feature already committed');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
+        expect(featureWork.activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
+    it('records a feature as in progress in DEVENVOPDEV.md when its status is changed', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to promote\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Queued';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile())
+            .toContain('[Medium] [Queued] Feature to promote');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain(`"id":"${id}"`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain('"description":"Feature to promote"');
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
+            id,
+            description: 'Feature to promote',
+        });
+    });
+
+    it('reports status update failures and restores the previous selection', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to track\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Done';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(selector.value).toBe('Backlog');
+        expect(fixture.nativeElement.querySelector('#feature-status-error')!.textContent)
+            .toContain('500');
+    });
+
+    it('does not activate a feature when its status cannot be updated from Start', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to start\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error')!.textContent)
+            .toContain('500');
+    });
+
+    it('does not activate a feature when DEVENVOPDEV.md cannot be updated from Start', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to start\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await rm(join(root, 'DEVENVOPDEV.md'));
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error')!.textContent)
+            .toContain('500');
+    });
+
+    it('updates an open feature priority through the public API', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
+        expect(selector.value).toBe('Medium');
+        selector.value = 'Low';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[Low] [Backlog] Add a feature');
+        expect((fixture.nativeElement.querySelector('.mat-column-priority select') as HTMLSelectElement).value)
+            .toBe('Low');
+        expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
+    });
+
+    it('shows legacy feature priorities and descriptions without a timestamp', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// Legacy feature\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const row: HTMLTableRowElement = fixture.nativeElement.querySelector('.open-features tr.mat-mdc-row');
+        expect(row.querySelector('.mat-column-id')?.textContent!.trim()).toMatch(/^[0-9a-f]{8}$/);
+        expect(row.querySelector('.mat-column-description')?.textContent!.trim()).toBe('Legacy feature');
+        expect((row.querySelector('.mat-column-priority select') as HTMLSelectElement).value).toBe('Medium');
+        expect((row.querySelector('.feature-status-select') as HTMLSelectElement).value).toBe('Backlog');
+    });
+
+    it('reports priority update failures and restores the previous selection', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature to prioritize\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await writeFile(join(root, '.features'), '');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
+        selector.value = 'High';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(selector.value).toBe('Medium');
+        expect(fixture.nativeElement.querySelector('#feature-priority-error')!.textContent)
+            .toContain('404');
+    });
+
+    it('ignores invalid and unchanged priority selections', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
+        selector.value = 'Invalid';
+        selector.dispatchEvent(new Event('change'));
+        selector.value = 'Medium';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[Medium] [Backlog] Feature');
+        expect(fixture.nativeElement.querySelector('#feature-priority-error')).toBeNull();
+    });
+
+    it('ignores invalid and unchanged status selections', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Invalid';
+        selector.dispatchEvent(new Event('change'));
+        selector.value = 'Backlog';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[Backlog] Feature');
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
+    it('paginates the open features table', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), Array.from(
+            { length: 7 },
+            (_, index) => `// Feature ${index + 1}`,
+        ).join('\n'));
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(5);
+        expect(fixture.nativeElement.querySelector('mat-paginator')!.textContent).toContain('1 – 5 of 7');
+
+        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next')!.click();
+        fixture.detectChanges();
+
+        const rows: HTMLTableRowElement[] = Array.from(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        );
+        expect(rows).toHaveLength(2);
+        expect(rows.map(row => row.textContent)).toEqual(expect.arrayContaining([
+            expect.stringContaining('Feature 6'),
+            expect.stringContaining('Feature 7'),
+        ]));
+    });
+
+    it('filters features by ID or description and resets to the first page', async () => {
+        await fixture.whenStable();
+        const content = Array.from({ length: 7 }, (_, index) =>
+            `// [2026-10-04 22:45 +02:00] [123e4567-e89b-42d3-a456-42661417400${index}] Feature ${index + 1}`,
+        ).join('\n');
+        await writeFile(join(root, '.features'), content);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next')!.click();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('mat-paginator')!.textContent).toContain('6 – 7 of 7');
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'FEATURE 2';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.featureSearch).toBe('FEATURE 2');
+        expect(fixture.nativeElement.querySelector('mat-paginator')!.textContent).toContain('1 – 1 of 1');
+        const rows: HTMLTableRowElement[] = Array.from(
+            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+        );
+        expect(rows).toHaveLength(1);
+        expect(rows[0].querySelector('.mat-column-description')?.textContent!.trim()).toBe('Feature 2');
+
+        search.value = '123e4567';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(5);
+    });
+
+    it('shows an empty state when no feature matches the search', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), '// One feature');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'missing';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.open-features')!.textContent)
+            .toContain('No open features match your search.');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+    });
+
+    it.each([
+        ['Ctrl+S', 's'],
+        ['Ctrl+Enter', 'Enter'],
+    ])('submits the top-level form with %s', async (_shortcut, key) => {
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        textarea.value = `Submit with ${key}`;
+        textarea.dispatchEvent(new Event('input'));
+        await fixture.whenStable();
+
+        const event = new KeyboardEvent('keydown', {
+            key,
+            ctrlKey: true,
+            bubbles: true,
+            cancelable: true,
+        });
+        textarea.dispatchEvent(event);
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
+        expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
+        await expect(readFeatureFile()).resolves.toMatch(
+            new RegExp(`\\] \\[[0-9a-f-]{36}\\] \\[Low\\] \\[Wished\\] Submit with ${key}\\n$`),
+        );
+    });
+
+    it('does not submit an empty description', async () => {
+        fixture.componentInstance.description = ' \n ';
+
+        fixture.componentInstance.submit();
+
+        expect(fixture.componentInstance.isSubmitting).toBe(false);
+        await expect(readFile(join(root, '.features'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('prevents duplicate submissions while the backend request is pending', async () => {
+        fixture.componentInstance.description = 'Add one feature entry';
+
+        fixture.componentInstance.submit();
+        fixture.componentInstance.submit();
+        await fixture.whenStable();
+
+        const contents = await readFeatureFile();
+        expect(contents.match(/Add one feature entry/g)).toHaveLength(1);
+    });
+
+    it('shows backend errors to the user', async () => {
+        await mkdir(join(root, '.features'));
+        const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
+        textarea.value = 'This cannot be saved';
+        textarea.dispatchEvent(new Event('input'));
+        await fixture.whenStable();
+
+        fixture.componentInstance.submit();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#feature-submit-error')!.textContent!.trim()).not.toBe('');
+        expect(fixture.componentInstance.isSubmitting).toBe(false);
+        expect(fixture.componentInstance.description).toBe('This cannot be saved');
+        fixture.detectChanges();
+        expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value)
+            .toBe('This cannot be saved');
+    });
+
+    it('shows backend errors when loading the open feature list', async () => {
+        await fixture.whenStable();
+        await rm(join(root, '.features'), { force: true });
+        await mkdir(join(root, '.features'));
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#feature-list-error')!.textContent!.trim()).not.toBe('');
+        expect(fixture.componentInstance.isLoadingFeatures).toBe(false);
+    });
+});

@@ -1,0 +1,70 @@
+main {
+    max-width: 58rem;
+    margin: 1.5rem auto;
+    padding: 0 1.25rem;
+}
+
+.page-header,
+.commit-heading,
+.commit-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+h1,
+h2,
+p {
+    margin: 0;
+}
+
+.page-header p,
+.commit-meta {
+    color: #9eada1;
+}
+
+.commit-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid #34443a;
+}
+
+.commit {
+    padding: 1rem 0;
+    border-bottom: 1px solid #34443a;
+}
+
+.commit-heading h2 {
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+}
+
+.commit-heading code {
+    flex: 0 0 auto;
+    color: #a8c4ae;
+}
+
+.commit-meta {
+    justify-content: flex-start;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.error {
+    color: #d69a90;
+}
+
+@media (max-width: 36rem) {
+    .commit-heading,
+    .commit-meta {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+}

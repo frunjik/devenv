@@ -1,33 +1,138 @@
-import express, { Express, Request, RequestHandler, Response } from 'express';
+import express, { type Express, type RequestHandler } from 'express';
 import cors from 'cors';
+import type { Server } from 'node:http';
+import serverPackage from '../../package.json';
 import { FileSystem } from './filesystem/filesystem';
 import { getFiles, postFiles } from './handlers/files';
 import { getFolders } from './handlers/folders';
+import { createGitCommitHandler } from './handlers/git-commit';
+import { createGitDiffHandler } from './handlers/git-diff';
+import { createGitLogHandler } from './handlers/git-log';
+import { createGitStatusHandler } from './handlers/git-status';
+import { createGitUndoHandler } from './handlers/git-undo';
+import { createCurrentEntryHandler } from './handlers/current-entry';
+import { createLinesHandler } from './handlers/lines';
+import { createCurrentTaskHandler } from './handlers/current-task';
+import {
+    createFeatureHandler,
+    createFeatureDescriptionHandler,
+    createFeatureOrderHandler,
+    createFeaturePriorityHandler,
+    createFeatureStartHandler,
+    createFeatureStatusHandler,
+    createFeaturesListHandler,
+    createFeatureRemovalHandler,
+    createArchivedListHandler,
+    createFeatureArchiveHandler,
+    createArchiveDoneHandler,
+    createBacklogListHandler,
+    deliverDoneFeatures,
+} from './handlers/features';
+import {
+    createAuthenticationMiddleware,
+    getDevelopmentAuthenticationService,
+    type AuthenticationService,
+} from './authentication';
+import {
+    createLastTestRunHandler,
+    createTestRunHandler,
+    createTestRunCacheStatusHandler,
+    type TestCommandExecutor,
+} from './handlers/test-runner';
 
-function run(root: string, port: number) {
-    const app = express();
-    
-    app.use(express.json());
-    app.use(cors());
-    
-    app.locals['fileSystem'] = new FileSystem(root);
-    
-    app.get ('/files',   getFiles   as RequestHandler);
-    app.post('/files',   postFiles  as RequestHandler);
-    app.get ('/folders', getFolders as RequestHandler);
-    
-    app.listen(port, () => {
-        console.log(`serving "${root}" on port ${port}`);
-    });
+export interface CreateAppOptions {
+    testCommandExecutor?: TestCommandExecutor;
+    gitCommitCwd?: string;
+    testRunCacheDirectory?: string;
+    authenticationService?: AuthenticationService;
 }
 
-try {
+export function createApp(root: string, options: CreateAppOptions = {}): Express {
+    const {
+        testCommandExecutor,
+        gitCommitCwd = process.cwd(),
+        testRunCacheDirectory,
+        authenticationService,
+    } = options;
+    const app = express();
 
-    const root = './';
-    const port = 3000;
-    
-    run(root, port);
+    app.use(express.json());
+    app.use(cors());
 
-} catch(e) {
-    console.error(e);
+    const configuredAuthentication = authenticationService
+        ?? (process.env['NODE_ENV'] !== 'production' ? getDevelopmentAuthenticationService() : undefined);
+    if (configuredAuthentication) {
+        app.use(createAuthenticationMiddleware(configuredAuthentication));
+    }
+
+    app.locals['fileSystem'] = new FileSystem(root);
+
+    app.get('/files', getFiles as RequestHandler);
+    app.post('/files', postFiles as RequestHandler);
+    app.get('/folders', getFolders as RequestHandler);
+    app.get('/current', createCurrentEntryHandler(root));
+    app.get('/task', createCurrentTaskHandler(root));
+    app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
+    app.get('/ppt/fields', (_request, response) => response.json({ data: [] }));
+    app.get('/history', createLinesHandler(root, ['.history']));
+    app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
+    app.get('/backlog', createBacklogListHandler(root));
+    app.get('/archived', createArchivedListHandler(root));
+    app.get('/features', createFeaturesListHandler(root));
+    app.post('/features', createFeatureHandler(root));
+    app.patch('/features/:id/description', createFeatureDescriptionHandler(root));
+    app.patch('/features/:id/order', createFeatureOrderHandler(root));
+    app.patch('/features/:id', createFeaturePriorityHandler(root));
+    app.post('/features/:id/start', createFeatureStartHandler(root));
+    app.post('/features/archive-done', createArchiveDoneHandler(root));
+    app.post('/features/:id/archive', createFeatureArchiveHandler(root));
+    app.patch('/features/:id/status', createFeatureStatusHandler(root));
+    app.delete('/features/:id', createFeatureRemovalHandler(root));
+
+    if (process.env['NODE_ENV'] !== 'production') {
+        app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
+        app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
+        app.get('/tests/cache/status', createTestRunCacheStatusHandler(testRunCacheDirectory));
+        app.post('/git/commit', createGitCommitHandler(gitCommitCwd, undefined, () => deliverDoneFeatures(root)));
+        app.post('/git/undo', createGitUndoHandler(gitCommitCwd));
+        app.get('/git/diff', createGitDiffHandler(gitCommitCwd));
+        app.get('/git/log', createGitLogHandler(gitCommitCwd));
+        app.get('/git/status', createGitStatusHandler(gitCommitCwd));
+    }
+
+    return app;
+}
+
+export type {
+    LastTestRun,
+    TestCommandEvent,
+    TestCommandExecutor,
+    TestRunCacheStatus,
+} from './handlers/test-runner';
+export type { AuthenticatedPrincipal, AuthenticationService } from './authentication';
+export type { GitStatus, GitStatusFile } from './handlers/git-status';
+
+export interface ServerListener {
+    listen(app: Express, port: number): Promise<Server>;
+}
+
+const httpServerListener: ServerListener = {
+    listen(app, port) {
+        return new Promise((resolve, reject) => {
+            const server = app.listen(port, () => {
+                server.off('error', reject);
+                resolve(server);
+            });
+            server.once('error', reject);
+        });
+    },
+};
+
+export function startServer(
+    root = './',
+    port = Number(process.env['PORT'] ?? 3000),
+    listener: ServerListener = httpServerListener,
+    authenticationService?: AuthenticationService,
+): Promise<Server> {
+    return listener.listen(createApp(root, { authenticationService }), port);
 }

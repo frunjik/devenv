@@ -12,3 +12,6 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
+- [In progress] remove xml comment from DEVENVOPDEV.md entries replace it by a [] marked field <!-- feature-id:b27908cc-b8c2-47ba-bbd5-84632f4fd0f0 -->
+- [In progress] add the possibility to set the status to Denied from the client <!-- feature-id:7a75ec30-e877-4e77-8f70-ba5389cbf03b -->
+- [In progress] prevent duplicate features <!-- feature-id:67766a83-30b9-4e55-85e6-96891449e37e -->

@@ -11,7 +11,7 @@
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator
 // [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [In progress] clear current task after commit
 // [2026-10-05 00:21 +02:00] [94aa6582-e140-4587-96ac-248ee1c641fc] [Medium] [Backlog] add commited state to feature
-// [2026-10-05 00:24 +02:00] [67766a83-30b9-4e55-85e6-96891449e37e] [Medium] [Backlog] prevent duplicate features
+// [2026-10-05 00:24 +02:00] [67766a83-30b9-4e55-85e6-96891449e37e] [Medium] [In progress] prevent duplicate features
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
 // [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [Backlog] fix typesript errors
 // [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [Backlog] technical debt
@@ -19,9 +19,9 @@
 // [2026-10-05 00:39 +02:00] [497829fe-e624-48d7-8a88-b29c135d368f] [Medium] [Backlog] add waiting for input status
 // [2026-10-05 00:41 +02:00] [8f772957-b253-44d3-871b-35458a8d412e] [Medium] [Backlog] ask question about feature
 // [2026-10-05 00:42 +02:00] [38737ce4-8b9c-4d63-a5d0-c63ff804a8c0] [Medium] [Backlog] mark features as progress
-// [2026-10-05 00:46 +02:00] [b27908cc-b8c2-47ba-bbd5-84632f4fd0f0] [Medium] [Backlog] remove xml comment from ./features entries
+// [2026-10-05 00:46 +02:00] [b27908cc-b8c2-47ba-bbd5-84632f4fd0f0] [Medium] [In progress] remove xml comment from DEVENVOPDEV.md entries replace it by a [] marked field
 // [2026-10-05 00:48 +02:00] [1b78bc47-a79c-457c-8c0c-6bb4aca2d623] [Medium] [Backlog] improve layout of feature clent page
-// [2026-10-05 00:48 +02:00] [7a75ec30-e877-4e77-8f70-ba5389cbf03b] [Medium] [Backlog] mark feature as status Denied
+// [2026-10-05 00:48 +02:00] [7a75ec30-e877-4e77-8f70-ba5389cbf03b] [Medium] [In progress] add the possibility to set the status to Denied from the client
 // [2026-10-05 00:49 +02:00] [35817510-2c56-4ba0-9625-d58ce6e740e8] [Medium] [Backlog] Add status Later
 // [2026-10-05 00:50 +02:00] [00d2fcfe-4386-4b35-8f02-2176423c3acc] [Medium] [Backlog] make a display of features that are in progress to the right side of the input form
 // [2026-10-05 00:50 +02:00] [7ea1abc7-030a-444e-9fc0-5e307dfc9b5d] [Medium] [Backlog] extract components
@@ -76,3 +76,4 @@
 // [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Questions] Define the PPTFileStats model interface
 // [2026-10-05 02:00 +02:00] [250329d6-57f9-4e5d-ac72-a39f3626bed4] [Low] [Done] move questions with features from the ./DEVENVOPDEV.md file to the ./features file converting them to the correct format
 // [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [Questions] we need to display the current task in a better way then in the toolbar
+// [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [Backlog] make a client display of the open changes on the client show the new (uncommited) full file contents

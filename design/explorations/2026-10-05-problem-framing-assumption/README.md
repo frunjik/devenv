@@ -1,34 +1,21 @@
-# Spike Blueprint: Does Problem Framing Improve Understanding?
+# Spike Blueprint: Problem Framing
 
-**Status:** Planned; not yet conducted  
-**Mode:** Paper-based inquiry; no software implementation
+**Status:** Planned, not conducted · **Mode:** Paper-based, no code
 
-## Subject
+**Question:** Does separating observation, interpretation, possible cause, desired outcome, and response improve understanding of a real situation?
 
-Whether distinguishing observations, interpretations, possible causes, desired outcomes, and proposed responses helps people understand a real situation.
-
-## Assumption
-
-Separating these claims will expose assumptions or disagreement and improve shared understanding, rather than add unnecessary ceremony.
-
-## Question
-
-When we describe a real situation that motivated this System, does explicit Problem framing improve our understanding?
+**Assumption:** The distinctions expose assumptions or disagreement without adding needless ceremony.
 
 ## Exercise
 
-1. Choose one real situation and describe it freely in a few sentences.
-2. Separately record: observations; affected people; interpretation; possible causes; desired outcome; proposed responses.
-3. Compare the descriptions. Note anything revealed, obscured, or made harder to express.
+Choose one real situation motivating this System.
 
-## Record
+1. Describe it freely in a few sentences.
+2. Separately note observations, affected people, interpretation, possible causes, desired outcome, and responses.
+3. Compare: what became clearer, hidden, or harder to express?
 
-Keep brief notes on the situation and context, participants, observations, interpretations, disagreements, and relevant paper artifacts. Distinguish what was directly observed from what was inferred. Link findings to affected Problems, Goals, candidate concepts, or Contracts where useful, preserving why they may matter to later design and code. Do not invent results in advance or assume a direct translation to code.
+## Record and Decide
 
-## Evaluate
+Note context, participants, observations, interpretations, disagreements, paper artifacts, findings, and rationale. Keep observation distinct from inference; link findings to related Problems, Goals, concepts, or Contracts where useful.
 
-Did the structured framing reveal a hidden assumption, disagreement, missing evidence, or alternative response? Was the freeform description clearer or sufficient? What remains uncertain?
-
-## Possible Outcomes
-
-Keep, revise, or reject the Problem-framing concept for this purpose, or conclude that evidence is insufficient. Record the rationale and any next question. Promote useful learning into durable design documents; retain, supersede, or discard the remaining artifacts with a reason. Preserve traceability so later implementation choices can be connected back to the evidence and intent.
+Keep, revise, reject, or defer judgment on the Problem-framing concept. Promote useful learning to durable designs; retain, supersede, or discard other artifacts with a reason. Preserve the path to later design and code; do not assume direct translation.

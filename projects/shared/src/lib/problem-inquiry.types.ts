@@ -1,4 +1,5 @@
 export type ProblemTicketId = string;
+export type ImportedNoteId = string;
 export type EvidenceId = string;
 export type FindingId = string;
 export type AIProposalId = string;
@@ -33,6 +34,7 @@ export interface ProblemTicket {
     title: string;
     report: string;
     problem: ProblemFrame;
+    sourceNoteIds?: ImportedNoteId[];
     scope: ProblemScope;
     context: WorkContext;
     reportedBy: string;
@@ -63,6 +65,7 @@ export interface NoteProposal {
 }
 
 export interface ImportedNote {
+    id: ImportedNoteId;
     proposal: NoteProposal;
     acceptedAt: string;
 }

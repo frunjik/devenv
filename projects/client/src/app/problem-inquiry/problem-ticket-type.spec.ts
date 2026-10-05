@@ -9,6 +9,7 @@ const ticket: ProblemTicket = {
         affected: 'Warehouse operator',
         impact: 'The operator cannot proceed safely without understanding the rule.',
     },
+    sourceNoteIds: ['note-1', 'note-2'],
     scope: {
         level: 'operation',
         label: 'Input validation',
@@ -29,5 +30,6 @@ describe('ProblemTicket', () => {
             affected: 'Warehouse operator',
             impact: 'The operator cannot proceed safely without understanding the rule.',
         });
+        expect(ticket.sourceNoteIds).toEqual(['note-1', 'note-2']);
     });
 });

@@ -251,9 +251,9 @@ export class SystemPlanComponent {
             id: 'SC-013',
             title: 'Add identity and provenance links',
             kind: 'Implementation',
-            status: 'In progress',
+            status: 'Validated',
             dependsOn: ['SC-011'],
-            summary: 'Give in-memory accepted notes identities so tickets can cite their sources.',
+            summary: 'Give in-memory accepted notes identities so tickets can cite one or more sources.',
         },
         {
             id: 'SC-014',

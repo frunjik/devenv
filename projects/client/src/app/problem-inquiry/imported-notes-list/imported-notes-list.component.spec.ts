@@ -75,6 +75,7 @@ describe('ImportedNotesListComponent', () => {
         acceptedAt: string;
     }): ImportedNote {
         return {
+            id: 'note-1',
             proposal: {
                 sourceText: input.sourceText,
                 sourceReference: { artifact: input.artifact, locator: input.locator },

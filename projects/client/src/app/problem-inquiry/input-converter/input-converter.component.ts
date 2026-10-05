@@ -73,6 +73,7 @@ export class InputConverterComponent {
     validationMessage = '';
     pendingProposal: NoteProposal | null = null;
     private sourceOrigin: SourceOrigin = 'unknown';
+    private nextNoteNumber = 1;
 
     createProposal(
         sourceText: string,
@@ -118,6 +119,7 @@ export class InputConverterComponent {
 
     acceptProposal(proposal: NoteProposal): void {
         this.noteAccepted.emit({
+            id: `note-${this.nextNoteNumber++}`,
             proposal,
             acceptedAt: new Date().toISOString(),
         });

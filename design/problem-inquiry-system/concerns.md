@@ -219,13 +219,13 @@ Define what a human must supply when framing a ticket from accepted notes.
 
 ### SC-013 — Add identity and provenance links
 
-**Kind:** Implementation · **Status:** In progress · **Depends on:** SC-011
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-011
 
-Give locally accepted notes identities so a ticket can cite one or more notes and the same note can be reused.
+Give locally accepted notes identities so a ticket can cite one or more notes and the same note can be reused. Ticket source-note links are optional only to preserve direct-import records that were not created by the framing workflow; tickets created through that workflow must cite one or more accepted notes.
 
 **Working boundary:** IDs need to be unique only within the current in-memory session; reload loses notes and tickets together. No persistence or cross-session identity is implied.
 **Open questions:** None for the in-memory slice.
-**Validation evidence:** Not started.
+**Validation evidence:** Accepted notes receive sequential in-memory IDs (`note-1`, `note-2`, ...); the shared `ImportedNote` and `ProblemTicket` contracts carry note identity and source-note links. Public-interface tests verify distinct identities and multiple source links. Client component coverage: 100% statements, branches, functions, and lines; shared and client builds pass; all 148 client tests pass.
 
 ### SC-014 — Build the ticket-framing component
 

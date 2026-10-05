@@ -137,8 +137,27 @@ describe('InputConverterComponent', () => {
             interpretation: 'A tentative interpretation.',
             openQuestions: [],
         });
+        expect(importedNotes[0].id).toBe('note-1');
         expect(Number.isNaN(Date.parse(importedNotes[0].acceptedAt))).toBe(false);
         expect(fixture.nativeElement.querySelector('#accept-note')).toBeNull();
+    });
+
+    it('assigns a distinct in-memory identity to each accepted note', () => {
+        const importedNotes: ImportedNote[] = [];
+        fixture.componentInstance.noteAccepted.subscribe(note => importedNotes.push(note));
+
+        enterText('#source-text', 'First report.');
+        enterText('#interpretation', 'First interpretation.');
+        submitForm();
+        fixture.nativeElement.querySelector('#accept-note').click();
+        fixture.detectChanges();
+
+        enterText('#source-text', 'Second report.');
+        enterText('#interpretation', 'Second interpretation.');
+        submitForm();
+        fixture.nativeElement.querySelector('#accept-note').click();
+
+        expect(importedNotes.map(note => note.id)).toEqual(['note-1', 'note-2']);
     });
 
     it('returns a proposal to editable input without changing its source text', () => {

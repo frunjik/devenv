@@ -1,21 +1,21 @@
-./backlog   list of open features
+./.backlog   list of open features
 
-./queued    list of queued features
-./current   active feature
+./.queued    list of queued features
+./.current   active feature
 
-./delivered list of processed features
-./history   list of closed features
-./archived  list of archived features
+./.delivered list of processed features
+./.history   list of closed features
+./.archived  list of archived features
 
-./features  id status priority domain category questions
+./.features  id status priority domain category questions
 
-./feature   id status questions
+./.feature   id status questions
 
-./success
-./failure
+./.success
+./.failure
 
-./questions 
-./glossary
+./.questions 
+./.glossary
 
 feature status: new, backlog, commited, progress, delivered, questions, review, verify, done, archived
 

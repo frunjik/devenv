@@ -1,4 +1,4 @@
-// [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] [Low] [Done] more rows by default in the client feature list; dont show the start button in the open feature list when the feature is already in progress
+// [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] [Low] [Done] more rows by default in the client feature list; dont show the start button in the open feature list when the feature is already in progress; create a mock filesystem to use in test instead of writing to the (real) filesystem. dont use spy. ask me if you need more info
 // [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] [Low] [Backlog] create workflow
 // [2026-10-04 23:34 +02:00] [946168e0-1215-4cec-980b-b461add0b2e4] [Medium] [Done] remove feature added from client feature page
 // [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] [Medium] [Done] review code changes on client
@@ -9,7 +9,7 @@
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Low] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [Done] make the current task client display longer (to cover more text)
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Low] [Backlog] tasks done indicator
-// [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [Questions] Should application features use a Delivered terminal status and move records from a current-features store to a delivered-features store, or is the existing Done status and retained completed-feature list the requested behavior? The repository currently has no .delivered file, and .current is a workflow plan log.
+// [2026-10-05 00:20 +02:00] [85dabfd0-abf4-4a5c-80f7-d0bb981b4a04] [Medium] [In progress] Should application features use a Delivered terminal status and move records from a current-features store to a delivered-features store, or is the existing Done status and retained completed-feature list the requested behavior? The repository currently has no .delivered file, and .current is a workflow plan log. A: the ./.delivered file is created move features to it when you are finished working on them adding a the date and time they were finished
 // [2026-10-05 04:12 +02:00] [94aa6582-e140-4587-96ac-248ee1c641fc] [Medium] [Done] add commited state to feature
 // [2026-10-05 03:50 +02:00] [67766a83-30b9-4e55-85e6-96891449e37e] [Medium] [Done] Merge new feature descriptions into the first existing feature with more than three case-insensitive unique word matches; preserve its ID, status, and priority and update its task marker.
 // [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Backlog] show busy indicator on client bottom toolbar
@@ -38,7 +38,7 @@
 // [2026-10-05 01:15 +02:00] [31cfbd9f-abb5-4830-8480-c1a1a8718344] [Medium] [Backlog] mark as done in open features
 // [2026-10-05 01:27 +02:00] [51ed9afa-b542-457e-8ef2-a99197b89ed3] [Medium] [Backlog] open features refresh on client
 // [2026-10-05 01:28 +02:00] [708b8d3b-dd35-469f-94de-e64a61dd0b0e] [Medium] [Backlog] authentication
-// [2026-10-05 01:30 +02:00] [4d0d4c3c-86ad-45ae-8802-b554d9eb24a4] [Medium] [In progress] create a gitundo server endpoint that undoes the latest git commit
+// [2026-10-05 01:30 +02:00] [4d0d4c3c-86ad-45ae-8802-b554d9eb24a4] [Medium] [Done] create a gitundo server endpoint that undoes the latest git commit
 // [2026-10-05 01:30 +02:00] [d7b7b5aa-e0cf-4dac-8651-c7b765f226be] [Medium] [In progress] keep a version number for the client and server code
 // [2026-10-05 01:31 +02:00] [12306c80-889f-4161-9474-93a072dcb535] [Medium] [Backlog] mark features done with the current version of client or server depending on which domain they belong in
 // [2026-10-05 01:33 +02:00] [39dd1237-56d0-445d-a485-811e8f44036f] [Medium] [Done] verify the architecture of the system and add tasks for improvements

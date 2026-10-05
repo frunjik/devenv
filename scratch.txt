@@ -1,21 +1,5 @@
 dumpers
 
-
-xx
-
-./thoughts
-./workflow
-
-./wishlist
-
-./backlog
-./history
-./features
-
-./feature
-./current
-./tasks
-
 ./success
 ./failure
 ./questions

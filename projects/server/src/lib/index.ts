@@ -8,6 +8,7 @@ import { createGitCommitHandler } from './handlers/git-commit';
 import { createGitDiffHandler } from './handlers/git-diff';
 import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
+import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createCurrentTaskHandler } from './handlers/current-task';
 import {
@@ -78,6 +79,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
         app.get('/tests/cache/status', createTestRunCacheStatusHandler(testRunCacheDirectory));
         app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
+        app.post('/git/undo', createGitUndoHandler(gitCommitCwd));
         app.get('/git/diff', createGitDiffHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));
         app.get('/git/status', createGitStatusHandler(gitCommitCwd));

@@ -12,5 +12,5 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] create a gitundo server endpoint that undoes the latest git commit <!-- feature-id:4d0d4c3c-86ad-45ae-8802-b554d9eb24a4 -->
 - [In progress] keep a version number for the client and server code <!-- feature-id:d7b7b5aa-e0cf-4dac-8651-c7b765f226be -->
+- [In progress] Should application features use a Delivered terminal status and move records from a current-features store to a delivered-features store, or is the existing Done status and retained completed-feature list the requested behavior? The repository currently has no .delivered file, and .current is a workflow plan log. A: the ./.delivered file is created move features to it when you are finished working on them adding a the date and time they were finished <!-- feature-id:85dabfd0-abf4-4a5c-80f7-d0bb981b4a04 -->

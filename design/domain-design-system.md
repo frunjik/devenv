@@ -14,6 +14,7 @@ This is a possible direction for DevEnv, not a claim about current application c
 - Start with purpose, context, and real Problems—not a predetermined schema or solution.
 - Distinguish observations, Problem framings, cause hypotheses, Goals, and proposed responses.
 - Make Terms and Types meaningful in context; structure alone does not capture meaning.
+- Explore both structure and behavior over time; use commands, events, and views as an optional modeling lens, not an implementation choice.
 - Use abstraction to reveal essentials while preserving important differences and traceability to examples.
 - Treat validation as layered: structural constraints, domain rules, and evidence-based judgments are different.
 - Keep uncertainty, disagreement, and unresolved decisions visible.

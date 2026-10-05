@@ -54,6 +54,8 @@ Describe relevant relationships, including direction, cardinality, meaning, and 
 
 For goal-oriented Domains, keep Work Item completion and progress distinct from Goal achievement. State what evidence can support an Acceptance Criterion and how assessments are made.
 
+Structure alone may not explain a Domain. Some questions are clearer when modeled as change over time: who intends an action, what happens, what becomes true, and what information is then available. Commands (intentions that may be rejected), events (accepted facts), and views or queries (ways of presenting information) are one useful modeling lens, not mandatory primitives for every Domain. This distinction describes behavior; it does not prescribe event-sourced storage.
+
 ### Contracts, change, and usefulness
 
 Describe obligations, guarantees, and failure behavior at meaningful boundaries. Consider how definitions change: identity, context, versioning, authorship, review, history, renamed or reinterpreted Terms, and the effects on related definitions and instances.

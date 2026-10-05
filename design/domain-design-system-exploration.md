@@ -94,6 +94,7 @@ These points do not require choosing technology or writing code now. Keep desire
 - Problem framing is not neutral data entry. Whose experience matters and what evidence is relevant involve perspective.
 - Problem, cause, Goal, and solution are different claims. Moving directly from a symptom to a Task can conceal unresolved disagreement.
 - Problems may be refined, split, merged, disputed, or found unsupported; preserve context and rationale as understanding evolves.
+- A Domain description may need both **structure** (concepts and relationships) and **behavior over time** (intentions, changes, and resulting information). Event Modeling's commands, events, and views are one possible lens for examining flows; they are not universal primitives and do not imply event-sourced implementation.
 - **Abstraction** can reveal reusable concepts, but is purpose-relative. Details omitted as inessential in one view may be critical in another.
 - Useful abstractions remain traceable to examples, observations, and contexts. Similar cases should not be grouped in a way that silently erases meaningful variation.
 - Meaning cannot be reduced to structure: a numeric Cost needs context such as currency, unit, time basis, and what is counted.

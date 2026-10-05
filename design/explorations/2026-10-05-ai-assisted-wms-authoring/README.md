@@ -36,6 +36,8 @@ The initial TypeScript model is in [`problem-inquiry.types.ts`](../../../project
 
 The types distinguish operation, workflow, system, and cross-system scope. People, Places, Things, and observed time are context; evidence and findings separate observations from synthesis. AI proposals remain reviewable inputs, not decisions. This is a contract sketch: it does not enforce referential integrity or implement transitions.
 
+The planned client system's initial concern register is [here](../../problem-inquiry-system/concerns.md). It orders the input-converter and converted-items-list components as separate slices, with explicit dependencies.
+
 ## Small Trial
 
 Synthetic unstructured fragments are in the [inbox](../../../input-sources/inbox/wms-ticket-fragments.txt); the corresponding structured imported sample is in [problem-domain/problem-sets](../../../problem-domain/problem-sets/wms-problem-set.sample.json). They are not verified WMS evidence.

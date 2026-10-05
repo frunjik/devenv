@@ -94,26 +94,24 @@ interface PlanConcern {
         </main>
     `,
     styles: [`
-        :host { display: block; }
-        .system-plan { --border: #37443b; --muted: #9ba99e; max-width: 76rem; margin: 0 auto; padding: clamp(1.25rem, 4vw, 3rem); }
+        .system-plan { --border: #37443b; --muted: #9ba99e; max-width: 76rem; margin: 0 auto; padding: clamp(.75rem, 4vw, 3rem); }
         .page-header, .progress-header, .section-heading { display: flex; justify-content: space-between; gap: 1rem; }
         .page-header { align-items: end; gap: 2rem; margin-bottom: 2rem; }
         .eyebrow { margin: 0 0 .5rem; color: #a8c4ae; font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
         h1 { margin: 0; font-size: clamp(2rem, 4vw, 2.75rem); letter-spacing: -.035em; }
         .page-description { max-width: 42rem; margin: .65rem 0 0; color: var(--muted); line-height: 1.6; }
         .primary-link { display: inline-flex; flex: 0 0 auto; align-items: center; gap: .6rem; border: 1px solid #66816b; border-radius: .45rem; background: #385540; color: #f0f6f0; padding: .7rem 1rem; font-weight: 600; text-decoration: none; }
-        .primary-link:hover { border-color: #8aa58e; background: #46694e; }
         .primary-link:focus-visible { outline: 2px solid #b2cfb7; outline-offset: 3px; }
-        .progress-summary { border: 1px solid var(--border); border-radius: .75rem; background: linear-gradient(125deg, #222e26, #1d2721); padding: clamp(1.25rem, 3vw, 1.75rem); }
+        .progress-summary { border: 1px solid var(--border); border-radius: .75rem; background: #202922; padding: clamp(1rem, 3vw, 1.75rem); }
         .progress-header { align-items: center; }
         .progress-header h2, .section-heading h2 { margin: 0; font-size: 1.15rem; }
         .progress-caption, .section-heading p { margin: .4rem 0 0; color: var(--muted); font-size: .9rem; line-height: 1.5; }
         .progress-count { display: flex; align-items: baseline; gap: .45rem; margin: 0; color: var(--muted); }
-        .progress-count strong { color: #e1ece3; font-size: 1.8rem; font-variant-numeric: tabular-nums; }
+        .progress-count strong { color: #e1ece3; font-size: 1.8rem; }
         progress { display: block; width: 100%; height: .55rem; margin: 1.25rem 0 1rem; accent-color: #9bb9a1; }
         .plan-stats { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; padding: 0; list-style: none; }
         .plan-stats li { display: inline-flex; align-items: center; gap: .45rem; color: var(--muted); font-size: .88rem; }
-        .plan-stats strong { color: #dce6dd; font-variant-numeric: tabular-nums; }
+        .plan-stats strong { color: #dce6dd; }
         .stat-dot { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; }
         .stat-dot.validated { background: #88b791; }
         .stat-dot.in-progress { background: #d6b66e; }
@@ -121,8 +119,7 @@ interface PlanConcern {
         .section-heading { align-items: end; flex-wrap: wrap; margin-bottom: 1rem; }
         .concern-total { flex: 0 0 auto; color: var(--muted); font-size: .85rem; }
         .concern-list { display: grid; gap: .75rem; margin: 0; padding: 0; list-style: none; }
-        .concern-card { border: 1px solid var(--border); border-left: 3px solid #b59a5b; border-radius: .65rem; background: #1e2821; padding: 1.1rem 1.25rem; }
-        .concern-card[data-status="Validated"] { border-left-color: #6e9a75; }
+        .concern-card { border: 1px solid var(--border); border-left: 3px solid #596b5d; border-radius: .65rem; background: #1e2821; padding: clamp(.9rem, 3vw, 1.1rem) clamp(.9rem, 3vw, 1.25rem); }
         .concern-card__header, .concern-card__identity { display: flex; align-items: center; gap: .6rem; }
         .concern-card__header { flex-wrap: wrap; justify-content: space-between; }
         .concern-card__identity { flex-wrap: wrap; min-width: 0; }
@@ -138,11 +135,16 @@ interface PlanConcern {
         .dependencies__value { color: #c3d3c6; font-family: Consolas, 'Courier New', monospace; }
         .data-notice { display: flex; gap: .75rem; margin-top: 1.5rem; border: 1px solid #414b3c; border-radius: .55rem; background: #242b22; padding: .9rem 1rem; }
         .data-notice p { margin: 0; color: #b7c0ae; font-size: .84rem; line-height: 1.55; }
-        .data-notice strong { color: #d9e2c9; }
-        code { overflow-wrap: anywhere; }
         @media (max-width: 42rem) {
-            .page-header { align-items: flex-start; flex-direction: column; }
-            .concerns-section { margin-top: 2rem; }
+            .page-header { align-items: flex-start; flex-direction: column; gap: 1rem; margin-bottom: 1.25rem; }
+            .primary-link { width: 100%; justify-content: center; }
+            .progress-header { align-items: flex-start; }
+            .progress-count strong { font-size: 1.5rem; }
+            .concerns-section { margin-top: 1.75rem; }
+            .section-heading { align-items: flex-start; }
+            .concern-card__header { align-items: flex-start; }
+            .concern-card h3 { margin-top: .65rem; font-size: 1rem; }
+            .dependencies { margin-top: .75rem; }
         }
     `],
 })

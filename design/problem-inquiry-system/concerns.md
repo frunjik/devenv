@@ -360,8 +360,9 @@ Explore whether an AI chatbot can live inside the meta (host) layer, so it is av
 Let the user sort the list of framed problem tickets on different properties and find tickets with a search field that matches their description.
 
 **Working boundary:** View-only: sorting and searching change visibility and order, never the underlying records, and must compose with the sample/real data filter (SC-017).
-**Open questions:** Which properties are sortable (creation time, title, scope level, reporter, number of linked notes)? Default order and direction? What does "description" match: the report text, the title, the problem frame fields, or all of them? Case and diacritic handling, and whole-word versus substring? Should the accepted-notes list get the same controls? How is an empty result presented, and are the choices kept across reloads?
-**Vocabulary candidates (P-009, not yet agreed):** "description" is not a ticket field name; tickets have a title, a report, and a problem frame. Decide which field(s) it denotes.
+**Decisions (user, 2026-10-06):** Search matches the ticket title, report, and problem-frame fields (condition, affected, impact), case-insensitive substring with diacritics ignored. Sortable on creation time, title, scope level, and reporter; default is newest first by creation time. Applies to tickets only for now (notes later if needed). Choices are not persisted and reset on reload; an empty result shows a "no matching tickets" message.
+**Open questions:** Is the sort direction togglable per property? How are tickets with missing optional values ordered? Does the "no matching tickets" message differ when the sample/real filter hides everything?
+**Vocabulary note (P-009):** In this concern, "description" means the searchable text fields above, not a separate ticket field.
 
 The dependency order does not authorize building both components together.
 

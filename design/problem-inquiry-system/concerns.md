@@ -112,7 +112,7 @@ Decide how a person reviews, edits, accepts, defers, or rejects a conversion bef
 **Type review:** Keep proposal acceptance, source verification, and ticket creation as distinct transitions. A ticket-note relationship must support many-to-many links.
 
 **Open questions:** Durable review history, roles, and authorization remain out of scope until persistence or multiple users are introduced.
-**Validation evidence:** User decisions require separate explicit note acceptance and human ticket framing. Converter tests cover proposal review; ticket framing is the next implementation slice. Synthetic inputs only.
+**Validation evidence:** User decisions require separate explicit note acceptance and human ticket framing. Public-interface tests verify that proposal review and acceptance do not create tickets, and that explicit ticket framing uses accepted-note links while collecting ticket fields without inference. The components are connected in the inquiry page but retain separate lifecycles. Synthetic inputs only.
 
 ### SC-005 — Preserve sample provenance
 

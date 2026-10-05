@@ -4,11 +4,23 @@ Term
 Domain
 - A bounded area of knowledge and activity, including its concepts, entities, relationships, and rules, as understood in a particular context.
 
+Abstraction
+- The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand.
+
+Domain Design System
+- A System that helps people define, inspect, validate, and evolve a Domain's Terms, Types, relationships, rules, and supporting evidence.
+
+Domain Definition
+- A versioned description of a Domain, including its context, Glossary, Types, relationships, and applicable Contracts.
+
 System
 - A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior.
 
 Goal
 - A desired outcome or condition that a System is intended to achieve.
+
+Problem
+- A context-bound description of an undesirable or inadequate current condition, including who or what is affected and why it matters; its framing may be uncertain or contested and should be supported by observations or evidence.
 
 Work Item
 - A bounded unit of work undertaken to contribute to a Goal or satisfy an Acceptance Criterion.

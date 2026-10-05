@@ -383,6 +383,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-021', 'SC-028'],
             summary: 'Let a user assign a framed ticket; model assignee, lifecycle step, and persistence first.',
         },
+        {
+            id: 'SC-030',
+            title: 'Define a calm, consistent color system',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-024'],
+            summary: 'Replace scattered hex values with a small palette of tokens suited to long viewing; fix light and indigo outliers.',
+        },
     ];
 
     get validatedCount(): number {

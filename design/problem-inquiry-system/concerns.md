@@ -394,6 +394,22 @@ Let a user assign a framed problem ticket to someone from the problem-solving ap
 **Working boundary:** Decide the model before building. Assignment is likely a lifecycle step (SC-021) and meaningless without persistence (SC-028).
 **Open questions:** Is an assignee a person, a team, or a role, and is that a new Type (P-002)? One assignee or several? Does assigning mean "responsible for resolving" or "asked to investigate"? Who may assign, and is real user identity needed or are names enough for now? Can tickets be reassigned, and is the history kept? Should the list (SC-026) filter or sort by assignee?
 **Vocabulary candidates (P-009, not yet agreed):** "assign", "assignee", "owner".
+
+### SC-030 — Define a calm, consistent color system
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-024
+
+This app is meant to be looked at for long periods. Define a small, deliberate palette (tokens) instead of per-component hex values, and apply it consistently, including the meta layer versus the problem-solving app.
+
+**Working boundary:** Agree the palette and token names before restyling anything. Restyling existing components is a separate slice per area (P-006 applies to surrounding code), and nothing is recolored by this concern alone.
+**Investigation (agent, 2026-10-06; measurements, not decisions):**
+- The app is dark with a muted, green-tinted base (`#171d19` body, `#1e2821` cards, `#26332b` panels, `#27352d` toolbars, text `#c3cec5`, headings `#dce6dd`, link `#a8c4ae`). About 60 distinct hex values are spread over 12 files with no shared tokens, so near-duplicates drift (e.g. borders `#37443b`, `#34443a`, `#2b3830`, `#29352e`).
+- Contrast against the base surface is healthy: body text 10.6:1, muted `#9ba99e` 7.0:1, link 9.1:1, validated `#88b791` 7.5:1, warning `#d6b66e` 8.8:1, error `#d69a90` 7.2:1 (WCAG AA needs 4.5:1). On the panel surface the muted text drops to 5.4:1, still passing but the lowest.
+- Outliers that clash with the dark scheme: the framed-ticket list and ticket-framing form use light-theme slate/white (`#fff`, `#f8fafc`, `#cbd5e1`, `#475569`); the meta toggle uses indigo `#3f51b5` with a `#555` icon that is 2.3:1 on the base, below the 3:1 non-text minimum; `styles.scss` still imports the Material `pink-bluegrey` prebuilt theme, whose pink and blue accents can leak into Material components.
+- Observation: saturated colors are rare and used only for status, which suits long sessions; the problem is mainly the lack of tokens plus the few light and indigo outliers.
+**Proposed palette (for review, not agreed):** keep the dark, low-saturation, green-tinted neutrals as the base; reduce them to five surface steps (base, raised, panel, toolbar, border) and three text steps (primary, muted, heading); one calm green accent for the problem-solving app (`#a8c4ae` link, `#4f7059` filled); one distinct but equally muted cool slate-blue accent (about `#9db4cf`, 8.0:1 on the base) reserved for the meta layer so it reads as a different layer; semantic colors limited to ok `#88b791`, warn `#d6b66e`, error `#d69a90`. Avoid pure white and pure black, avoid saturated accents, keep at least 4.5:1 for text and 3:1 for icons and borders that carry meaning.
+**Open questions:** Dark only, or also a light theme (and does the OS preference decide)? Does the meta layer get its own accent hue, or only a different surface? Where do the tokens live (CSS custom properties in `styles.scss`, mapped into the Material theme variables)? Should the Material prebuilt theme be replaced by a custom one? Should the palette be checked automatically (contrast tests) or only reviewed by eye? Do colors need to remain distinguishable for color-blind users beyond the status text labels?
+**Vocabulary candidates (P-009, not yet agreed):** "token", "surface", "accent", "palette".
 
 The dependency order does not authorize building both components together.
 

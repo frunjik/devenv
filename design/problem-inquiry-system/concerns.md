@@ -161,6 +161,16 @@ Connect converter and list while preserving the source-to-result link and review
 **Open questions:** None for this local vertical slice.
 **Validation evidence:** A public-interface integration test confirms proposals remain absent until explicit acceptance, after which the accepted note and its `unreviewed` status appear in the list. A route test confirms `/problem-inquiry` resolves to the page. All four slice tests pass; converter, list, page, and route each have 100% statement, branch, function, and line coverage. The client build passes and the TypeScript diagnostics report no errors.
 
+### SC-010 — Visualize the current system plan
+
+**Kind:** Implementation · **Status:** Validated · **Depends on:** None
+
+Provide a read-only client view of the current concern plan, including concern status, dependencies, and overall progress. Keep it separate from the note-conversion workflow.
+
+**Working boundary:** The existing Markdown concern register remains authoritative. The first UI is a manually synchronized snapshot; it does not edit concerns or infer completion. Make that limitation visible so a stale view is not mistaken for live plan data.
+**Open questions:** Should the plan later be loaded from structured data or made editable?
+**Validation evidence:** The read-only page shows all ten concerns, their types, dependencies, status, and a progress summary; it is available from navigation at `/system-plan`. Public-interface tests verify the summary, concern list, dependencies, and snapshot limitation. The page and route have 100% statement, branch, function, and line coverage; the client build passes. Snapshot data was checked against this register; no plan editing or live synchronization is claimed.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence
@@ -170,6 +180,7 @@ The dependency order does not authorize building both components together.
 3. Complete explicit acceptance in SC-006; resolve remaining list presentation questions in SC-007.
 4. Implement and validate SC-008 alone using Red-Green-Refactor.
 5. Integrate and verify SC-009.
+6. Present the concern plan as a read-only snapshot in SC-010; keep the Markdown register authoritative.
 
 For each coding slice, derive tests from the synthetic inbox inputs and known Problem Domain scenarios where possible. Test through public interfaces, use only simple boundary mocks, and meet the project's full-coverage principle.
 
@@ -177,6 +188,6 @@ Do not combine component implementation slices. Keep AI and persistence outside 
 
 ## Type Review
 
-Implemented Types: `NoteProposal`, `SourceReference`, `SourceOrigin`, `VerificationStatus`, and `ImportedNote` (accepted proposal plus acceptance time). The page holds a readonly collection of `ImportedNote`s and replaces it on acceptance; this append-only slice does not require a new collection or identity Type. No additional list Type is needed: the view consumes accepted notes. Optional identity-bearing `SourceFragment` and a review-decision record remain open. A stable `ImportedNoteId` is not yet justified for this append-only, in-memory slice; revisit if editing, deduplication, or persistence is introduced. Do not collapse proposal, accepted note, verification, and Problem Ticket lifecycles.
+Implemented Types: `NoteProposal`, `SourceReference`, `SourceOrigin`, `VerificationStatus`, and `ImportedNote` (accepted proposal plus acceptance time). The page holds a readonly collection of `ImportedNote`s and replaces it on acceptance; this append-only slice does not require a new collection or identity Type. No additional list Type is needed: the view consumes accepted notes. The plan UI uses a local `PlanConcern` view Type and `ConcernStatus` union to keep the displayed status explicit; these are projections of the Markdown register, not a new domain source of truth. Optional identity-bearing `SourceFragment` and a review-decision record remain open. A stable `ImportedNoteId` is not yet justified for this append-only, in-memory slice; revisit if editing, deduplication, or persistence is introduced. Do not collapse proposal, accepted note, verification, and Problem Ticket lifecycles.
 
 Review this register as examples reveal missing concerns. Add entries rather than silently folding distinct concerns together; record decisions and validation evidence when they become available.

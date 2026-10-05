@@ -308,7 +308,10 @@ Decide whether rejecting or deferring a note proposal is recorded, and what a de
 Decide whether a framed ticket can be edited, closed, or marked duplicate after creation, and who may do so. Tickets are currently immutable once framed.
 
 **Working boundary:** Decide the policy first; do not collapse note, verification, and ticket lifecycles.
-**Open questions:** Which states exist? Is editing allowed or are changes new tickets? Who may change state?
+**Decisions (user, 2026-10-06):** States are Open, Assigned, Resolved, Closed, and Duplicate. Flow is forward (Open → Assigned → Resolved → Closed); reopening is allowed from Resolved or Closed. A ticket marked Duplicate must reference the ticket it duplicates. Framed content (title, report, problem frame, scope) may be edited after creation, and the edit history is kept. Anyone may change state or edit for now; every change records who made it (by name) and when.
+**Settled (user, 2026-10-06):** Duplicate may be set from any state, and a Duplicate may be reopened. Assigned requires an assignee, and unassigning returns the ticket to Open. The change history is its own Type: a list of ticket change events per ticket, each with kind, actor (name), time, and before/after values.
+**Open questions (agent, to settle before building):** What does the list show for state (a badge and the assignee)? Is the ticket change event Type shared or client-only?
+**Scope note:** Assignment itself is SC-029; this concern only defines states and history. SC-020 (note review decisions) is deferred and not on the path to assignment.
 
 ### SC-024 — Integrate the problem-solving app into the host app shell
 

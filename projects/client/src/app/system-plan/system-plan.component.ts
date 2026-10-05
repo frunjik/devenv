@@ -295,6 +295,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-016'],
             summary: 'Evaluate a responsive grid-based arrangement against the current stacked page.',
         },
+        {
+            id: 'SC-019',
+            title: 'Clarify what a system concern is',
+            kind: 'Domain',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'Define how a concern differs from a Work Item and whether it belongs in the Glossary.',
+        },
     ];
 
     get validatedCount(): number {

@@ -277,6 +277,16 @@ Evaluate how the inquiry workflow can use wide displays more effectively. Compar
 **Open questions:** Which sections should share a row or column at desktop sizes? Should the grid follow workflow stages, or place inputs beside their resulting lists? What viewport widths should trigger layout changes?
 **Validation evidence:** Requested by the user on 2026-10-06. No alternative layout has been prototyped or evaluated yet.
 
+### SC-019 — Clarify what a system concern is
+
+**Kind:** Domain · **Status:** Ready · **Depends on:** None
+
+Clarify the meaning and purpose of a “concern” in the system plan, including how it differs from a `Work Item` and whether it should be defined in the project Glossary.
+
+**Working boundary:** The current register uses “concern” for domain uncertainties, behavior questions, quality constraints, and implementation slices. Do not treat these as one domain Type or assume every concern is actionable work; examine whether the register groups distinct concepts under one planning label.
+**Open questions:** Is “Concern” a project-planning term, a domain concept, or both? Should concerns be decomposed into Work Items, or are some resolved by decisions/evidence without implementation? Does it merit a Glossary entry, a narrower set of concern kinds, or a different register model?
+**Validation evidence:** The user asked for a definition and whether “Concern” is in the glossary. It is currently absent; the register describes it locally, while the project Glossary defines `Work Item` separately. No shared definition has been agreed.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence
@@ -293,6 +303,7 @@ The dependency order does not authorize building both components together.
 10. Integrate those components in SC-016.
 11. Define and implement the sample/real visibility toggle in SC-017.
 12. Explore a more effective wide-screen inquiry layout in SC-018.
+13. Clarify the “Concern” planning term and its relationship to Work Items in SC-019.
 
 For each coding slice, derive tests from the synthetic inbox inputs and known Problem Domain scenarios where possible. Test through public interfaces, use only simple boundary mocks, and meet the project's full-coverage principle.
 

@@ -1,1 +1,2 @@
 Current
+// [2026-10-05 05:24 +02:00] Implement a client-wide busy indicator in the bottom toolbar for active HTTP requests, then test request start/completion/error behavior and verify all coverage remains at 100%.

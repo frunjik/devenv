@@ -55,6 +55,14 @@
                     ? 'none'
                     : testRunCacheStatus.status?.status || 'unknown' }}
     </a>
+    @if (busyIndicator.isBusy()) {
+        <mat-progress-spinner
+            class="busy-indicator"
+            mode="indeterminate"
+            [diameter]="20"
+            aria-label="Client busy"
+        />
+    }
     <span
         class="version-info"
         role="status"

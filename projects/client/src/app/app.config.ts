@@ -2,8 +2,9 @@ import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } fr
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { busyIndicatorInterceptor } from './busy-indicator.interceptor';
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -22,7 +23,7 @@ export const appConfig: ApplicationConfig = {
         ),
 
         provideZoneChangeDetection({ eventCoalescing: true }),
-        provideHttpClient(),        
+        provideHttpClient(withInterceptors([busyIndicatorInterceptor])),
         provideRouter(routes)
     ]
 };

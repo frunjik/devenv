@@ -14,7 +14,4 @@ module.exports = {
     },
     setupFilesAfterEnv: ['<rootDir>/projects/client/setup-jest.ts'],
     testMatch: ['<rootDir>/projects/client/src/**/*.spec.ts'],
-    testPathIgnorePatterns: [
-        '<rootDir>/projects/client/src/app/system/ppt/workspaces/js/js.component.spec.ts',
-    ],
 };

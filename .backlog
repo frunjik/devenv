@@ -8,7 +8,6 @@ Backlog
 // [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Low] [Backlog] show the current ./thoughts on the client
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Low] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Low] [Backlog] tasks done indicator
-// [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [In progress] show busy indicator on client bottom toolbar
 // [2026-10-05 00:34 +02:00] [f695c05c-14da-4491-9f3e-3f78a2930602] [Medium] [In progress] identify technical debt in the devenv app and make feature tickets in the .backlog
 // [2026-10-05 00:29 +02:00] [a1cb6e1a-5e26-4c2c-870a-cabe06ba53e0] [Medium] [Committed] fix typescript errors in al code use tsc to verify if its present ?
 // [2026-10-05 00:36 +02:00] [c01bb9c0-69df-429b-b9f9-e49dfe1bfa17] [Medium] [Backlog] review changes

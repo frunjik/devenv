@@ -71,6 +71,28 @@ This is a good fit where the same concepts need multiple generic capabilities—
 
 **Assessment:** Reuse Magritte’s descriptive approach as prior art, not as a framework to copy wholesale. Its strongest match is generic, metadata-driven editing and validation of the fields and relations within Goals, Tasks, and Costs. The DevEnv model must go further in explicitly representing evidence, dependencies, decision context, lifecycle contracts, and the difference between completing work and achieving a Goal.
 
+## Other Meta-Expression Systems to Explore
+
+These systems address different parts of the problem. They are references for comparison, not proposed dependencies or a decision to adopt a particular technology.
+
+| System | Primary expression | Possible relevance to DevEnv | Important boundary |
+| --- | --- | --- | --- |
+| [Eclipse Modeling Framework (EMF)](https://eclipse.dev/emf/) | Ecore models, reflective runtime access, persistence, editors, and code generation | A broad example of one model supporting generated and reflective consumers; useful to compare with Magritte for the Type Description layer. | A substantial modeling ecosystem with Java/Eclipse origins; its scale may exceed the needs of a focused application. |
+| [JSON Schema](https://json-schema.org/overview/what-is-jsonschema) | JSON structure and declarative instance constraints | A practical candidate for describing and validating API or stored Goal, Task, and Cost instances across tools and languages. | Describes data shape and constraints, not complete domain meaning, workflow behavior, or the quality of a generated form. |
+| [CUE](https://cuelang.org/docs/) | Data, schemas, and composable constraints in a logic-based language | Useful to study for richer validation, configuration, and constraints that relate fields or combine data with rules. | A constraint and configuration language, not by itself a complete domain model, user-interface model, or workflow engine. |
+| [SHACL](https://www.w3.org/TR/shacl/) | Constraints (“shapes”) over RDF graphs | Relevant if Goals, Work Items, Acceptance Criteria, Evidence, and Costs are modeled as an explicit graph of linked concepts; SHACL also identifies possible uses in UI generation and data integration. | Assumes RDF graph concepts and tooling; adopting it would be a meaningful commitment to graph-oriented representation. |
+| [OWL 2](https://www.w3.org/TR/owl2-primer/) | Formal vocabularies, classes, properties, and logical relationships | Useful for exploring precise vocabularies and what it means to define domain concepts and relations formally. | Ontology reasoning is distinct from application validation and operational rules; it will not decide whether a Goal has been achieved. |
+| [Protocol Buffers descriptors](https://protobuf.dev/reference/cpp/api-docs/google.protobuf.descriptor/) | Runtime reflection over message and field definitions used for serialization | A focused reference for machine-readable structure and interoperable wire formats. | Optimized for messages and APIs, rather than rich semantic descriptions, editable forms, or domain lifecycle contracts. |
+
+### Suggested Exploration Order
+
+1. Compare **Magritte and EMF** for the general pattern of one description serving multiple generic consumers.
+2. Compare **JSON Schema and CUE** for practical structural descriptions and validation in a TypeScript/API-oriented system.
+3. Explore **SHACL and OWL 2** if expressing and querying a connected domain graph becomes a real requirement.
+4. Consult **Protocol Buffers descriptors** if runtime reflection and stable cross-language message formats become priorities.
+
+Do not assume these systems are alternatives at the same layer: a system could use one representation for messages, another for domain constraints, and separate domain contracts for workflow behavior. Before adopting any of them, test the smallest real slice—such as describing a Goal and its Acceptance Criteria, generating or guiding input, validating it, and preserving it through serialization—against a hand-written implementation. Compare duplication, correctness, migration cost, consumer support, and how clearly domain meaning remains visible.
+
 ## Costs and Risks
 
 A meta-type system is itself a System to design and maintain. It adds concepts and contracts before it removes complexity. Its costs include:

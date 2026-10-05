@@ -4,9 +4,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
+import type { FeaturePriority, FeatureStatus } from '@ppt';
 import type {
-    FeaturePriority,
-    FeatureStatus,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
@@ -19,9 +18,8 @@ import type {
 } from '@shared';
 import { LoggerService } from './logger.service';
 
+export type { FeaturePriority, FeatureStatus } from '@ppt';
 export type {
-    FeaturePriority,
-    FeatureStatus,
     GitCommitResult,
     GitLogEntry,
     GitStatus,

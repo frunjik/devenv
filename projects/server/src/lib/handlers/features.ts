@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { appendFile, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
-import type { FeaturePriority, FeatureStatus } from '@shared';
+import type { FeaturePriority, FeatureStatus } from '@ppt';
 
-export type { FeaturePriority, FeatureStatus } from '@shared';
+export type { FeaturePriority, FeatureStatus } from '@ppt';
 
 const featurePriorities: readonly FeaturePriority[] = ['High', 'Medium', 'Low'];
 const featureStatuses: readonly FeatureStatus[] = [

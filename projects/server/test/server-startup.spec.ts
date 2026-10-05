@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
+import request from 'supertest';
 import { createApp, startServer, type ServerListener } from '../src/public-api';
 
 describe('server startup public API', () => {
@@ -33,6 +34,13 @@ describe('server startup public API', () => {
         await new Promise<void>((resolve, reject) => {
             server.close((error) => error ? reject(error) : resolve());
         });
+    });
+
+    it('exposes the server version', async () => {
+        const response = await request(app).get('/version');
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toMatch(/^\d+\.\d+\.\d+/);
     });
 
     it('uses the default root and port when no startup arguments are supplied', async () => {

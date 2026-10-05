@@ -5,7 +5,7 @@ This repository contains an Angular 20 client, shared Angular libraries, and an 
 ## Projects
 
 - `projects/client`: Angular application. It consumes the shared and PPT libraries.
-- `projects/ppt`: all shared types (`PPTFeature`, `PPTFeatureStatus`, `FeaturePriority`, file-system, git, test-run and response types). Import them from `@ppt`.
+- `projects/ppt`: shared types, including the `PPTFeature` data type and file-system, git, test-run and response types. Import them from `@ppt`.
 - `projects/shared`: shared services; it imports its types from `@ppt`.
 - `projects/server`: Express API handlers, server startup, and server tests.
 

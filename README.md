@@ -43,9 +43,6 @@ Pass an explicit Angular project to `npm run build`; the root script does not se
 
 The Angular `server` library target currently has known TypeScript errors, including unresolved PPT `./core` imports. It is not part of the passing build sequence.
 
-## Features
-
-The Features page provides a form to create a feature and a read-only list of open features. Submit the form with `Ctrl+S` or `Ctrl+Enter`. New features are appended as JSON-lines to `.features` with status `Wished` and priority `Low`. Open features are records with status `Questions`, `Wished`, or `Backlog`. The API exposes `GET /features` and `POST /features`; the other feature lifecycle controls and endpoints have been removed.
 ## Test
 
 The repository uses Jest for client and server tests:

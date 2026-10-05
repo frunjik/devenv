@@ -15,7 +15,6 @@ module.exports = {
     collectCoverageFrom: [
         'projects/server/src/lib/index.ts',
         'projects/server/src/lib/handlers/current-entry.ts',
-        'projects/server/src/lib/handlers/features.ts',
         'projects/server/src/lib/authentication.ts',
         'projects/server/src/lib/filesystem/filesystem.ts',
         'projects/server/src/lib/handlers/**/*.ts',

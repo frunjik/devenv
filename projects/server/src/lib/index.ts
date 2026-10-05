@@ -13,10 +13,6 @@ import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createLinesHandler } from './handlers/lines';
 import {
-    createFeatureHandler,
-    createFeaturesListHandler,
-} from './handlers/features';
-import {
     createAuthenticationMiddleware,
     getDevelopmentAuthenticationService,
     type AuthenticationService,
@@ -63,9 +59,6 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/ppt/fields', (_request, response) => response.json({ data: [] }));
     app.get('/history', createLinesHandler(root, ['.history']));
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
-    app.get('/features', createFeaturesListHandler(root));
-    app.post('/features', createFeatureHandler(root));
-
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));

@@ -5,7 +5,6 @@ import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 import type {
-    PPTFeature,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
@@ -74,13 +73,6 @@ export class BackendService {
 
     commitChanges(message: string): Observable<GitCommitResult> {
         return this.post<GitCommitResult>('git/commit', { message });
-    }
-
-    addFeature(description: string): Observable<PPTFeature> {
-        return this.post<PPTFeature>('features', { description });
-    }
-    getFeatures(): Observable<PPTFeature[]> {
-        return this.get<PPTFeature[]>('features');
     }
 
     getGitLog(): Observable<GitLogEntry[]> {

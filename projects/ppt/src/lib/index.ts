@@ -4,7 +4,7 @@ import { modelField, modelModel, modelList, modelItem, modelItemInspector, model
 
 export * from './core';
 // export * from './types';
-export type { FeaturePriority, PPTFeatureStatus, PPTFeature } from './models';
+export type { PPTFeature } from './models';
 export * from './response';
 export * from './git';
 export * from './test-run';

@@ -2,7 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/glo
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { createServer } from 'node:http';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { firstValueFrom } from 'rxjs';
@@ -90,26 +90,6 @@ describe('BackendService', () => {
         await rm(join(root, '.current'), { force: true });
 
         await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
-    });
-
-    it('assigns the default Low priority when adding a feature without selecting one', async () => {
-        const entry = await service.addFeature('Feature with default priority').toPromise();
-
-        expect(entry).toMatchObject({ priority: 'Low', status: 'Wished', description: 'Feature with default priority' });
-        await rm(join(root, '.features'), { force: true });
-    });
-
-    it('loads feature records from the public API', async () => {
-        const feature = {
-            id: '123e4567-e89b-42d3-a456-426614174000',
-            priority: 'Low',
-            status: 'Wished',
-            description: 'Open feature',
-        };
-        await writeFile(join(root, '.features'), `${JSON.stringify(feature)}\n`);
-
-        await expect(service.getFeatures().toPromise()).resolves.toEqual([feature]);
-        await rm(join(root, '.features'), { force: true });
     });
 
     it('loads the cached test result status through the public API', async () => {

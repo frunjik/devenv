@@ -365,7 +365,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.componentInstance.queuedFeatures).toHaveLength(0);
         expect((fixture.nativeElement.querySelector('.open-features .feature-status-select') as HTMLSelectElement).value)
             .toBe('Aborted');
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
         expect(fixture.nativeElement.querySelector('#feature-abort-error')).toBeNull();
     });
@@ -512,7 +512,9 @@ describe('FeatureDescriptionComponent', () => {
         expect(await readFeatureFile())
             .toContain(`[${id}] [High] [Queued] Updated feature description`);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
-            .toContain(`- [In progress] Updated feature description <!-- feature-id:${id} -->`);
+            .toContain(`"id":"${id}"`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain('"description":"Updated feature description"');
         expect(featureWork.activeFeature).toEqual({
             id,
             description: 'Updated feature description',
@@ -690,13 +692,12 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
             .toBe('Add a feature');
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
-        expect(taskFile).toContain(
-            `- [In progress] Add a feature <!-- feature-id:${id} -->`,
-        );
+        expect(taskFile).toContain(`"id":"${id}"`);
+        expect(taskFile).toContain('"description":"Add a feature"');
         fixture.nativeElement.querySelector('.feature-start-button')!.click();
         await fixture.whenStable();
         expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
-        expect((await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).match(/feature-id:/g))
+        expect((await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).match(/"id":"/g))
             .toHaveLength(1);
     });
 
@@ -915,7 +916,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(0);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
         expect(featureWork.activeFeature).toBeNull();
     });
@@ -941,7 +942,7 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(await readFeatureFile())
             .toContain('[High] [Questions] Feature needing clarification');
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Questions');
         expect(featureWork.activeFeature).toBeNull();
@@ -968,7 +969,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile()).toContain('[Denied] Feature to deny');
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Denied');
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
@@ -995,7 +996,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile()).toContain('[Denied] Feature to deny by button');
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Denied');
@@ -1022,7 +1023,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile()).toContain('[Committed] Feature already committed');
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Committed');
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
@@ -1048,7 +1049,9 @@ describe('FeatureDescriptionComponent', () => {
         expect(await readFeatureFile())
             .toContain('[Medium] [Queued] Feature to promote');
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
-            .toContain(`- [In progress] Feature to promote <!-- feature-id:${id} -->`);
+            .toContain(`"id":"${id}"`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
+            .toContain('"description":"Feature to promote"');
         expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
             id,
             description: 'Feature to promote',

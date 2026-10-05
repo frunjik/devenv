@@ -96,15 +96,20 @@ function addFeatureStatus(entry: string): string {
         + ` [${status}]${statusMatch[2]}`;
 }
 
-async function addStartedFeatureToDevEnv(root: string, description: string, id: string): Promise<void> {
+function isFeatureTaskLine(line: string, id: string): boolean {
+    const lowerLine = line.toLowerCase();
+    return lowerLine.includes(`"id":"${id}"`) || lowerLine.includes(`<!-- feature-id:${id} -->`);
+}
+
+async function addStartedFeatureToDevEnv(root: string, feature: PPTFeature): Promise<void> {
     const filename = join(root, 'DEVENVOPDEV.md');
     const contents = await readFile(filename, 'utf8');
     const lines = contents.split(/\r?\n/);
-    const featureLine = `- [In progress] ${description} <!-- feature-id:${id} -->`;
-    const marker = `<!-- feature-id:${id} -->`;
+    const id = feature.id.toLowerCase();
+    const featureLine = JSON.stringify(orderedFeature(feature));
 
     for (let index = lines.length - 1; index >= 0; index--) {
-        if (lines[index].includes(marker)) {
+        if (isFeatureTaskLine(lines[index], id)) {
             lines.splice(index, 1);
         }
     }
@@ -115,7 +120,7 @@ async function addStartedFeatureToDevEnv(root: string, description: string, id: 
     if (headingIndex >= 0) {
         let lastInProgressIndex = -1;
         for (let index = headingIndex + 1; index < lines.length; index++) {
-            if (/^\s*-\s+\[In progress\]\s/.test(lines[index])) {
+            if (/^\s*(-\s+\[In progress\]\s|\{)/.test(lines[index])) {
                 lastInProgressIndex = index;
             }
         }
@@ -135,8 +140,7 @@ async function addStartedFeatureToDevEnv(root: string, description: string, id: 
 
 async function updateStartedFeatureTask(
     root: string,
-    id: string,
-    description: string,
+    feature: PPTFeature,
 ): Promise<{ filename: string; contents: string; updated: string } | null> {
     const filename = join(root, 'DEVENVOPDEV.md');
     let contents: string;
@@ -149,15 +153,15 @@ async function updateStartedFeatureTask(
         throw error;
     }
 
-    const marker = `<!-- feature-id:${id} -->`;
+    const id = feature.id.toLowerCase();
     const lines = contents.split(/\r?\n/);
-    const taskIndex = lines.findIndex(line => line.includes(marker));
+    const taskIndex = lines.findIndex(line => isFeatureTaskLine(line, id));
     if (taskIndex < 0) {
         return null;
     }
     const lineEnding = contents.includes('\r\n') ? '\r\n' : '\n';
     const updated = lines.map((line, index) =>
-        index === taskIndex ? `- [In progress] ${description} ${marker}` : line,
+        index === taskIndex ? JSON.stringify(orderedFeature(feature)) : line,
     ).join(lineEnding);
     await writeFile(filename, updated, 'utf8');
     return { filename, contents, updated };
@@ -178,9 +182,8 @@ async function removeStartedFeatureTask(
         throw error;
     }
 
-    const marker = `<!-- feature-id:${id} -->`;
     const lines = contents.split(/\r?\n/);
-    const remainingLines = lines.filter(line => !line.includes(marker));
+    const remainingLines = lines.filter(line => !isFeatureTaskLine(line, id));
     if (remainingLines.length === lines.length) {
         return null;
     }
@@ -518,7 +521,7 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
                 updatedFeatures[featureIndex] = updatedFeature;
                 await store.save(updatedFeatures);
                 try {
-                    await updateStartedFeatureTask(root, id.toLowerCase(), description);
+                    await updateStartedFeatureTask(root, updatedFeature);
                 } catch (error) {
                     await restore();
                     throw error;
@@ -547,7 +550,7 @@ export function createFeatureStartHandler(root: string): RequestHandler {
                 }
 
                 const feature = withStatus(features[featureIndex], 'Queued');
-                await addStartedFeatureToDevEnv(root, feature.description, id.toLowerCase());
+                await addStartedFeatureToDevEnv(root, feature);
                 features[featureIndex] = feature;
                 store.moveToBacklog(id);
                 await store.save(features);

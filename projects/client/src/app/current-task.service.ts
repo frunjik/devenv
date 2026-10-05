@@ -10,9 +10,21 @@ export class CurrentTaskService {
     private readonly backend = inject(BackendService);
 
     get displayEntry(): string | null {
+        if (!this.entry) {
+            return null;
+        }
+        try {
+            const feature: unknown = JSON.parse(this.entry);
+            if (typeof feature === 'object' && feature !== null
+                && typeof (feature as { description?: unknown }).description === 'string') {
+                return (feature as { description: string }).description;
+            }
+        } catch {
+            // Not a JSON feature record; fall through to the legacy task-line format.
+        }
         return this.entry
-            ?.replace(/^- \[[^\]]+\]\s*/, '')
-            .replace(/\s+<!-- feature-id:[0-9a-f-]+ -->$/, '') ?? null;
+            .replace(/^- \[[^\]]+\]\s*/, '')
+            .replace(/\s+<!-- feature-id:[0-9a-f-]+ -->$/, '');
     }
 
     refresh(): void {

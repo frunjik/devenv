@@ -22,6 +22,28 @@ These are alternatives to evaluate against real needs, not a prescribed sequence
 - **Paper or narrative prototype:** Use sketches, example documents, and walkthroughs to examine concepts and diagnostics without writing software.
 - **Prior-art study:** Compare Magritte, EMF, JSON Schema, CUE, SHACL, and OWL against concrete needs rather than assuming any one is a complete answer.
 
+## Candidate Bootstrap Inquiry
+
+Use the Domain involved in creating this System as an initial example for exploring the concepts the System may need to support. This is a possible inquiry strategy, not a chosen implementation plan or a decision that this example is the only or best starting point.
+
+Keep these layers explicitly distinct:
+
+- **System under exploration:** the possible Domain Design System whose purpose and needed concepts we are trying to understand.
+- **Modeled Domain:** the particular area of knowledge we describe as an example—in this inquiry, the domain involved in recognizing and addressing the Problems that motivate creating the System.
+- **Bootstrap activity:** our own use of notes, diagrams, examples, or other non-code artifacts to test whether the candidate concepts help describe that Modeled Domain.
+
+Do not treat the System under exploration as the Modeled Domain itself. Label claims, examples, and open questions so it is clear which layer they concern.
+
+Possible inquiry steps:
+
+1. Bound the example Domain: focus on the context and Problems relevant to why this System is being considered, rather than attempting to model all of DevEnv or all software development.
+2. Describe one concrete situation: who is affected, what was observed, what is interpretation, what causes are hypothesized, what outcome is desired, and what responses are being considered.
+3. Trace the concepts needed to make that description useful: context, Problem framing, evidence, Goal, relevant Terms and Types, constraints, and unresolved questions.
+4. Examine whether the description exposes assumptions, distinguishes evidence from interpretation, reveals missing concepts, and communicates the Problem and Goal more clearly.
+5. Compare with a contrasting Domain later to see whether the concepts transfer or merely fit the bootstrap example.
+
+The inquiry can use Domain-first, scenario-first, vertical-slice, competing-model, and paper/narrative strategies together. Its success is learning whether the concepts help people reason about a Domain—not completing a model, selecting an architecture, designing an interface, or writing application code.
+
 ## “Don't Write Features” as a Design Lens
 
 Juval Löwy's *Righting Software* includes the chapter “There Is No Feature,” alongside guidance to avoid functional decomposition and to decompose systems around volatility. The useful question for this exploration is not whether users need features—users need capabilities and outcomes—but whether a feature list is being mistaken for a definition or structure of the System.

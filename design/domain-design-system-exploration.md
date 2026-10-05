@@ -44,6 +44,10 @@ Possible inquiry steps:
 
 The inquiry can use Domain-first, scenario-first, vertical-slice, competing-model, and paper/narrative strategies together. Its success is learning whether the concepts help people reason about a Domain—not completing a model, selecting an architecture, designing an interface, or writing application code.
 
+### Exploration as a System Strategy
+
+The System may support bounded exploration as a strategy: pose a **Question** or **Hypothesis**, review Types and examples, record **Evidence**, **Findings** (including contradictions and ambiguities), then a **Decision** with rationale. These are candidate primitives, not settled Types. A topic branch is an optional tool for code-based experiments, not a universal exploration primitive. Keep the process lightweight until real inquiries show what is needed.
+
 ## “Don't Write Features” as a Design Lens
 
 Juval Löwy's *Righting Software* includes the chapter “There Is No Feature,” alongside guidance to avoid functional decomposition and to decompose systems around volatility. The useful question for this exploration is not whether users need features—users need capabilities and outcomes—but whether a feature list is being mistaken for a definition or structure of the System.

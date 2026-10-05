@@ -267,8 +267,8 @@ export class SystemPlanComponent {
             id: 'SC-015',
             title: 'Build the framed-ticket list',
             kind: 'Implementation',
-            status: 'Ready',
-            dependsOn: ['SC-012'],
+            status: 'Validated',
+            dependsOn: ['SC-012', 'SC-013'],
             summary: 'Display framed tickets and their linked accepted notes.',
         },
         {

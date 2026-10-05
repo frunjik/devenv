@@ -239,13 +239,13 @@ Build a separate component that selects accepted notes and explicitly frames one
 
 ### SC-015 — Build the framed-ticket list
 
-**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-012
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-012, SC-013
 
 Build a separate view of explicitly created Problem Tickets and their linked accepted notes.
 
 **Working boundary:** In-memory only; preserve each ticket's own frame and show its source-note references.
 **Open questions:** None for the local list.
-**Validation evidence:** Not started.
+**Validation evidence:** The standalone read-only list presents each ticket's report, problem frame, scope, work context, reporter, creation time, and source-note links. It shows available note source text and interpretation, and clearly identifies unlinked tickets and unavailable note records. Public-interface tests cover empty state, multiple tickets reusing a note, unavailable links, tickets with no references, and empty work-context categories. Component coverage is 100% statements, branches, functions, and lines; client build passes.
 
 ### SC-016 — Connect note framing to ticket review
 

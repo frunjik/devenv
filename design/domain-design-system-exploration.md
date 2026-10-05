@@ -32,6 +32,8 @@ Trace one real situation from context and observation through Problem framing, e
 
 The planned [Problem-framing Spike](./explorations/2026-10-05-problem-framing-assumption/README.md) tests whether separating observation, interpretation, cause, outcome, and response improves understanding. It has not been conducted.
 
+The [Warehouse Management System modernization inquiry](./explorations/2026-10-05-warehouse-web-modernization/README.md) applies these distinctions to a legacy-to-web replacement scenario. It is an initial hypothesis-based exploration; no legacy behavior or user needs have yet been independently verified.
+
 ### Preserving Learning Toward Code
 
 Paper artifacts are not disposable: keep the question, assumptions, examples, observations, findings, decisions, and rationale. Maintain a traceable—but not necessarily one-to-one—path:

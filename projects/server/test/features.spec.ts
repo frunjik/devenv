@@ -71,6 +71,7 @@ describe('features public API', () => {
             '// legacy feature',
             `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [dOnE] completed feature`,
             '// [123e4567-e89b-42d3-a456-426614174001] [Low] [qUeStIoNs] waiting for clarification',
+            '// [123e4567-e89b-42d3-a456-426614174002] [Low] [aBoRtEd] aborted feature',
             '',
         ].join('\n'));
 
@@ -82,6 +83,9 @@ describe('features public API', () => {
         );
         expect(response.body.data[2]).toBe(
             '// [123e4567-e89b-42d3-a456-426614174001] [Low] [Questions] waiting for clarification',
+        );
+        expect(response.body.data[3]).toBe(
+            '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Aborted] aborted feature',
         );
     });
 
@@ -138,6 +142,15 @@ describe('features public API', () => {
         expect(response.body.data).toMatch(/\[Low\] \[In progress\] Feature already underway$/);
     });
 
+    it('accepts Aborted as a feature status', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature stopped before completion', status: 'Aborted' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(/\[Low\] \[Aborted\] Feature stopped before completion$/);
+    });
+
     it('accepts Questions as a feature status', async () => {
         const response = await request(app)
             .post('/features')
@@ -157,7 +170,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Backlog, In progress, or Done.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, or Aborted.' },
         });
     });
 
@@ -504,7 +517,7 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
     });
 
-    it.each(['Questions', 'Backlog', 'In progress', 'Done'] as const)('accepts a %s status update', async status => {
+    it.each(['Questions', 'Backlog', 'In progress', 'Done', 'Aborted'] as const)('accepts a %s status update', async status => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
 
@@ -539,6 +552,31 @@ describe('features public API', () => {
         expect(taskFile).toContain(otherTask);
     });
 
+    it('aborts an in-progress feature and removes its task marker while keeping the feature record', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        const feature = `// [${id}] [High] [In progress] Stop this feature`;
+        const marker = `<!-- feature-id:${id} -->`;
+        const otherTask = '- [In progress] Keep this task <!-- feature-id:123e4567-e89b-42d3-a456-426614174001 -->';
+        await writeFile(join(root, '.features'), `${feature}\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Stop this feature ${marker}`,
+            otherTask,
+            '',
+        ].join('\n'));
+
+        const response = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'Aborted' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(feature.replace('[In progress]', '[Aborted]'));
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+        const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        expect(taskFile).not.toContain(marker);
+        expect(taskFile).toContain(otherTask);
+    });
+
     it('rolls back feature status when its task marker cannot be removed', async () => {
         const created = await request(app).post('/features').send({ description: 'Keep original status' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
@@ -565,7 +603,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Backlog, In progress, or Done.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, or Aborted.' },
         });
     });
 

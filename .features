@@ -28,7 +28,7 @@
 // [2026-10-05 00:55 +02:00] [e1a4b339-fde5-47c9-ba8e-9bccc794953f] [Medium] [In progress] list features in progress
 // [2026-10-05 00:59 +02:00] [bfb88622-58cd-4bd5-afdf-c7efcb5f1961] [Medium] [Backlog] questions form
 // [2026-10-05 01:00 +02:00] [876234ff-990a-4b61-989d-43dabbaafc15] [Medium] [In progress] add abort button on in progress features that puts the feature back in ./features with status Aborted
-// [2026-10-05 01:01 +02:00] [ac4d3847-af47-45a1-b042-81f9ebe3fc07] [Medium] [Backlog] allow prioritizing open feature list items from the client
+// [2026-10-05 01:01 +02:00] [ac4d3847-af47-45a1-b042-81f9ebe3fc07] [Medium] [In progress] allow prioritizing open feature list items from the client
 // [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress
 // [2026-10-05 01:06 +02:00] [32084c42-c61c-4133-af88-f672298c9717] [Medium] [Backlog] stable versions
 // [2026-10-05 01:10 +02:00] [48da0605-50be-4be6-988e-49e6ac880011] [Medium] [Backlog] mark current feature in progress
@@ -43,7 +43,7 @@
 // [2026-10-05 01:31 +02:00] [12306c80-889f-4161-9474-93a072dcb535] [Medium] [Backlog] mark features done with the current version of client or server depending on which domain they belong in
 // [2026-10-05 01:33 +02:00] [39dd1237-56d0-445d-a485-811e8f44036f] [Medium] [Done] verify the architecture of the system and add tasks for improvements
 // [2026-10-05 01:34 +02:00] [c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2] [Medium] [Done] verify the status of the system and leave the result as a feature to be confirmed
-// [2026-10-05 01:35 +02:00] [0e9d228a-e5e5-4657-bbe5-5ace4e522fce] [Medium] [Backlog] add feature priority as a number on top of the indication low, medium high
+// [2026-10-05 01:35 +02:00] [0e9d228a-e5e5-4657-bbe5-5ace4e522fce] [Medium] [In progress] add feature priority as a number on top of the indication low, medium high
 // [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [In progress] create a canban view
 // [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [Done] make a server endpoint to retrieve the current uncommited code
 // [2026-10-05 01:48 +02:00] [eddcde7f-775c-4e69-9579-97f07dedf83a] [Low] [Done] remove the display of the top toolbar feature status
@@ -80,15 +80,17 @@
 // [2026-10-05 02:19 +02:00] [45fa7646-916d-4e39-8649-6477254486f8] [Low] [Questions] Should a completed JSON feature record include the client or server version it was completed against?
 // [2026-10-05 02:24 +02:00] [549019fb-fea8-4735-94cd-5d23418b3cec] [Medium] [Backlog] Consolidate duplicated API response and domain types in the shared library
 // [2026-10-05 02:24 +02:00] [f05a3223-fa50-4f17-9232-e2fb2678d3fe] [Medium] [Backlog] Preserve filesystem API failures as errors instead of returning empty success values from BackendService
-// [2026-10-05 02:24 +02:00] [3776c3fd-ce89-4054-8eda-43850b0f52d1] [Low] [Backlog] Update README and WORKSPACE documentation to match the current Angular and Jest workflows
+// [2026-10-05 02:24 +02:00] [3776c3fd-ce89-4054-8eda-43850b0f52d1] [Low] [In progress] Update README and WORKSPACE documentation to match the current Angular and Jest workflows
 // [2026-10-05 02:24 +02:00] [e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1] [Low] [Backlog] Replace positional createApp configuration parameters with a typed options object
 // [2026-10-05 02:28 +02:00] [8ac59c85-c155-4442-a0e0-fa416bc5d404] [Medium] [Questions] Confirm system status: client and server tests pass at 100% coverage; client, shared, and PPT builds pass; server build fails on TypeScript errors in features.ts and test-runner.ts; root build script does not select a project
-// [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [Backlog] make a client display of the open changes on the client show the new (uncommited) full file contents
+// [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [In progress] make a client display of the open changes on the client show the new (uncommited) full file contents
 // [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [Low] [Backlog] feature verify status
-// [2026-10-05 02:21 +02:00] [9af332fe-e6a1-4926-af46-982a3c957c50] [Low] [Backlog] make a feature describing what features the open features on the client displays and add it to ./features
+// [2026-10-05 02:21 +02:00] [9af332fe-e6a1-4926-af46-982a3c957c50] [Low] [In progress] make a feature describing what features the open features on the client displays and add it to ./features
 // [2026-10-05 02:22 +02:00] [09b22dbc-721f-48cb-8202-51c6bee42b65] [Low] [Done] add the multiple feature list views in tabs
-// [2026-10-05 02:23 +02:00] [f2bf5951-6e30-4941-a799-188853c2cf6b] [Low] [In progress] remove the outer scrollbar on the features page after the lists have been moved into tabs
+// [2026-10-05 02:23 +02:00] [f2bf5951-6e30-4941-a799-188853c2cf6b] [Low] [Done] remove the outer scrollbar on the features page after the lists have been moved into tabs
 // [2026-10-05 02:25 +02:00] [29ae97af-bbc6-4dc0-9830-9a831d4cd653] [Low] [Done] create a models folder to be shared by client and server code
 // [2026-10-05 02:34 +02:00] [e3cdd907-5202-4055-ad96-abad7f3790b8] [Low] [Backlog] make a client display of the shared models in the code
 // [2026-10-05 02:35 +02:00] [dc4cb587-bdc9-453f-bbea-075a26c3e3e7] [Low] [Backlog] create a ./denied list
-// [2026-10-05 02:37 +02:00] [a6396c33-d188-4be2-820e-120bb4b35f2d] [Low] [In progress] move the items that are done from ./current to ./history if they are not already in there then remove them from ./current
+// [2026-10-05 02:42 +02:00] [95f66465-65c9-4150-bfd2-e1cc77158871] [Low] [Backlog] add playwright
+// [2026-10-05 02:44 +02:00] [fd20456a-aebf-4ed8-829a-dd9d7fe1eb03] [Low] [Backlog] disable the start feature button if the feature is already started
+// [2026-10-05 02:47 +02:00] [917d8577-ebbd-46e7-8457-32c7e4845403] [Low] [Backlog] when starting a task add it to the bottom of the in progress list in DEVENVOPDEV.md

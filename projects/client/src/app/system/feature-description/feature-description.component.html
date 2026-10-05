@@ -209,11 +209,22 @@
            class="in-progress-features"
        >
         <h2 id="in-progress-features-heading">In progress</h2>
+        <p *ngIf="abortError" id="feature-abort-error" role="alert">{{ abortError }}</p>
         <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
         <ul *ngIf="inProgressFeatures.length > 0">
             <li *ngFor="let feature of inProgressFeatures" class="in-progress-feature">
                 <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
                 <span class="in-progress-feature-description">{{ feature.description }}</span>
+                <button
+                    type="button"
+                    mat-button
+                    class="feature-abort-button"
+                    [attr.aria-label]="'Abort: ' + feature.description"
+                    [disabled]="abortingFeatureIds.has(feature.id)"
+                    (click)="abortFeature(feature)"
+                >
+                    {{ abortingFeatureIds.has(feature.id) ? 'Aborting…' : 'Abort' }}
+                </button>
             </li>
         </ul>
        </section>

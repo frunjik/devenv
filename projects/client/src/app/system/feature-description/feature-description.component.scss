@@ -1,6 +1,18 @@
+:host {
+    display: block;
+    height: calc(100vh - 7rem);
+    overflow: hidden;
+}
+
 .feature-description {
+    display: flex;
+    flex-direction: column;
     width: min(72rem, calc(100% - 2rem));
-    margin: 2rem auto;
+    height: 100%;
+    min-height: 0;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 1rem 0;
 
     form {
         max-width: 48rem;
@@ -11,8 +23,14 @@
     }
 
     .open-features {
-        margin-top: 2rem;
         overflow-wrap: anywhere;
+    }
+
+    > section[role="tabpanel"] {
+        flex: 1;
+        min-height: 0;
+        margin-top: 1rem;
+        overflow: auto;
     }
 
     .feature-list-tabs {
@@ -41,7 +59,6 @@
     }
 
     .in-progress-features {
-        margin-block: 1rem 1.5rem;
         padding: 0.75rem 1rem;
         border: 1px solid rgba(141, 197, 156, 0.35);
         border-radius: 0.5rem;
@@ -62,8 +79,6 @@
     }
 
     .done-features {
-        margin-top: 2rem;
-
         ul {
             display: grid;
             gap: 0.5rem;
@@ -93,6 +108,7 @@
     }
 
     .in-progress-feature-description {
+        flex: 1 1 auto;
         min-width: 0;
         overflow-wrap: anywhere;
     }

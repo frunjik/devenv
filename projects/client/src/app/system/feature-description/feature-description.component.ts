@@ -47,15 +47,17 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     priority: FeaturePriority = 'Low';
     status: FeatureStatus = 'Backlog';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
-    readonly statuses: FeatureStatus[] = ['Questions', 'Backlog', 'In progress', 'Done'];
+    readonly statuses: FeatureStatus[] = ['Questions', 'Backlog', 'In progress', 'Done', 'Aborted'];
     featureSearch = '';
     isSubmitting = false;
     errorMessage = '';
     priorityError = '';
     statusError = '';
+    abortError = '';
     completionError = '';
     editError = '';
     readonly completingFeatureIds = new Set<string>();
+    readonly abortingFeatureIds = new Set<string>();
     features: string[] = [];
     doneFeatures: FeatureRow[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
@@ -133,6 +135,27 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
             error: (error: Error) => {
                 this.featuresError = error.message;
                 this.isLoadingFeatures = false;
+            },
+        });
+    }
+
+    abortFeature(feature: FeatureRow): void {
+        if (!feature.id || this.abortingFeatureIds.has(feature.id)) {
+            return;
+        }
+
+        this.abortError = '';
+        this.abortingFeatureIds.add(feature.id);
+        this.backend.updateFeatureStatus(feature.id, 'Aborted').subscribe({
+            next: entry => {
+                this.featureWork.complete(feature.id);
+                this.abortingFeatureIds.delete(feature.id);
+                this.currentTask.refresh();
+                this.updateFeatureEntry(entry);
+            },
+            error: (error: Error) => {
+                this.abortError = error.message;
+                this.abortingFeatureIds.delete(feature.id);
             },
         });
     }
@@ -290,7 +313,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Done)\] (.+)$/i,
+            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Done|Aborted)\] (.+)$/i,
         );
         return match
             ? {

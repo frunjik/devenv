@@ -10,7 +10,7 @@ import { LoggerService } from './logger.service';
 
 export type TestOutputStream = 'stdout' | 'stderr';
 export type FeaturePriority = 'High' | 'Medium' | 'Low';
-export type FeatureStatus = 'Questions' | 'Backlog' | 'In progress' | 'Done';
+export type FeatureStatus = 'Questions' | 'Backlog' | 'In progress' | 'Done' | 'Aborted';
 
 export interface GitCommitResult {
     stdout: string;

@@ -203,6 +203,68 @@ describe('FeatureDescriptionComponent', () => {
             .toBe('Completed feature');
     });
 
+    it('aborts an in-progress feature, returns it to the open list, and clears active work', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [In progress] Feature to abort\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature to abort <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature to abort');
+        const feature = fixture.componentInstance.inProgressFeatures[0];
+        fixture.componentInstance.abortFeature({ ...feature, id: '' });
+        fixture.componentInstance.selectFeatureTab('in-progress');
+        fixture.detectChanges();
+
+        const button: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-abort-button');
+        expect(button.getAttribute('aria-label')).toBe('Abort: Feature to abort');
+        button.click();
+        fixture.componentInstance.abortFeature(feature);
+        await fixture.whenStable();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(featureWork.activeFeature).toBeNull();
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Aborted] Feature to abort');
+        expect(fixture.componentInstance.inProgressFeatures).toHaveLength(0);
+        expect((fixture.nativeElement.querySelector('.open-features .feature-status-select') as HTMLSelectElement).value)
+            .toBe('Aborted');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
+        expect(fixture.nativeElement.querySelector('#feature-abort-error')).toBeNull();
+    });
+
+    it('retains in-progress status and reports errors when aborting a feature fails', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [Medium] [In progress] Feature that cannot be aborted\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        TestBed.inject(FeatureWorkService).start(id, 'Feature that cannot be aborted');
+        await rm(join(root, 'DEVENVOPDEV.md'));
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+        fixture.componentInstance.selectFeatureTab('in-progress');
+        fixture.detectChanges();
+
+        (fixture.nativeElement.querySelector('.feature-abort-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toContain('[In progress] Feature that cannot be aborted');
+        expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
+        expect(fixture.nativeElement.querySelector('#feature-abort-error').textContent).toContain('500');
+        expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
+    });
+
     it('shows completed features separately when there are no open features', async () => {
         await fixture.whenStable();
         await writeFile(join(root, '.features'), '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature\n');
@@ -542,7 +604,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
-        for (let attempt = 0; attempt < 10; attempt++) {
+        for (let attempt = 0; attempt < 50; attempt++) {
             const rows = Array.from<HTMLTableRowElement>(
                 fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
             );

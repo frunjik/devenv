@@ -19,3 +19,6 @@
 
 feature status: new, backlog, commited, progress, delivered, questions, review, verify, done, archived
 
+rules
+- when you have a question make a feature for it setting the question field and setting its status to Questions, continue working on the next open feature.
+

@@ -259,7 +259,7 @@ export class SystemPlanComponent {
             id: 'SC-014',
             title: 'Build the ticket-framing component',
             kind: 'Implementation',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: ['SC-012', 'SC-013'],
             summary: 'Select accepted notes and explicitly frame a ticket with all required fields.',
         },

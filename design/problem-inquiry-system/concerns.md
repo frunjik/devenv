@@ -229,13 +229,13 @@ Give locally accepted notes identities so a ticket can cite one or more notes an
 
 ### SC-014 — Build the ticket-framing component
 
-**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-012, SC-013
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-012, SC-013
 
 Build a separate component that selects accepted notes and explicitly frames one ticket with every required field.
 
 **Working boundary:** One ticket per explicit submission. Do not edit or verify linked notes and do not infer ticket fields from them.
 **Open questions:** None for the defined in-memory form.
-**Validation evidence:** Not started.
+**Validation evidence:** The standalone component requires one or more currently accepted note links and explicitly captures title, report, problem frame, scope, work context, reporter, and creation time. It generates an in-memory ticket ID, normalizes creation time to ISO, and emits only after valid submission. Public-interface tests cover successful framing, field and note validation, unavailable notes, scope/time validation, empty-note state, and sequential IDs. Component coverage is 100% statements, branches, functions, and lines; client build passes.
 
 ### SC-015 — Build the framed-ticket list
 

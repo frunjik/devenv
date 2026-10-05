@@ -33,7 +33,6 @@ DONE:
 - feature: use ./current as default commit message
 - feature: show (and update) the ./current last entry on the client in the toolbar on the right aligned
 - feature: bottom toolbar
-- feature: history
 - feature: show client feedback on saving files
 - make an indicator on the client to show we have open changes
 - make a button to commit changes from the client
@@ -48,4 +47,3 @@ DONE:
 - fix the server test highlighting
 
 MoSCoW Method
-

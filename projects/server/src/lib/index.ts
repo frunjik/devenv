@@ -56,7 +56,6 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/folders', getFolders as RequestHandler);
     app.get('/current', createCurrentEntryHandler(root));
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
-    app.get('/history', createLinesHandler(root, ['.history']));
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));

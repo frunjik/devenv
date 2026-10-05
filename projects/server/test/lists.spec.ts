@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import request from 'supertest';
 import { createApp } from '../src/public-api';
 
-describe('history and glossary API', () => {
+describe('glossary API', () => {
     let root: string;
     let app: ReturnType<typeof createApp>;
 
@@ -17,22 +17,6 @@ describe('history and glossary API', () => {
 
     afterEach(async () => {
         await rm(root, { recursive: true, force: true });
-    });
-
-    it('returns trimmed nonempty history lines', async () => {
-        await writeFile(join(root, '.history'), '// first\r\n\r\n  // second  \n');
-
-        expect((await request(app).get('/history')).body).toEqual({ data: ['// first', '// second'] });
-    });
-
-    it('returns an empty history when .history does not exist', async () => {
-        expect((await request(app).get('/history')).body).toEqual({ data: [] });
-    });
-
-    it('forwards non-missing history read errors', async () => {
-        await mkdir(join(root, '.history'));
-
-        expect((await request(app).get('/history')).status).toBe(500);
     });
 
     it('prefers .glossary and falls back to .terms', async () => {

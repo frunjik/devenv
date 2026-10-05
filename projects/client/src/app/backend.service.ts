@@ -86,10 +86,6 @@ export class BackendService {
         return this.get<string | null>('current');
     }
 
-    getHistory(): Observable<string[]> {
-        return this.get<string[]>('history');
-    }
-
     getGlossary(): Observable<string[]> {
         return this.get<string[]>('glossary');
     }

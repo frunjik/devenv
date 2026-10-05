@@ -5,7 +5,9 @@ Before starting a feature you make sure all tests are green and code has 100% co
 Before writing any code move the feature line from DEVENVOPDEV.md to .current
 Some features are in an old format, convert it to the JSON/PPTFeature format when writing
 When you are done with a Feature set its status to Done, leave it in .current
+When there are no items here, pick a Queued item by prio, set its status to Commited and copy in here.
 The features you are writing are, take them one by one:
+- [In progress] Update the readme and changelog <!-- feature-id:e9da6317-1e61-43e9-b733-913d7cba3a1b -->
 
 
 

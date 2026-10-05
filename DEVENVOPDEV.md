@@ -14,4 +14,3 @@ After a feature is done you can pick the next feature to work on from the below 
 The features you are writing are, take them one by one:
 - [In progress] create a gitundo server endpoint that undoes the latest git commit <!-- feature-id:4d0d4c3c-86ad-45ae-8802-b554d9eb24a4 -->
 - [In progress] keep a version number for the client and server code <!-- feature-id:d7b7b5aa-e0cf-4dac-8651-c7b765f226be -->
-- [In progress] Existing priority levels map to scores 1–3 High, 4–7 Medium, and 8–9 Low. Show both the priority level and score; score 10 means do later. <!-- feature-id:a9098ae5-cfc0-477d-9c0b-b90f6afa42b0 -->

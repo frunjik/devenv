@@ -94,7 +94,6 @@
 // [2026-10-05 02:42 +02:00] [95f66465-65c9-4150-bfd2-e1cc77158871] [Low] [Backlog] add playwright
 // [2026-10-05 02:47 +02:00] [917d8577-ebbd-46e7-8457-32c7e4845403] [Low] [Done] Move newly started features to the bottom of the In progress task list in DEVENVOPDEV.md
 // [2026-10-05 02:50 +02:00] [cfdfd5c4-5ee7-46e8-9d94-739f6da20bb2] [Low] [Backlog] set prio of features with status Question to High
-// [2026-10-05 04:12 +02:00] [a9098ae5-cfc0-477d-9c0b-b90f6afa42b0] [Low] [In progress] Show both existing priority labels and numeric scores: 1–3 High, 4–7 Medium, 8–9 Low, and 10 means do later.
 // [2026-10-05 03:42 +02:00] [69240ff3-3f25-46b8-a9ca-d74b6cbe9dea] [High] [Done] Add move-up and move-down controls to reorder in-progress features persistently; retain categorical High/Medium/Low priority values.
 // [2026-10-05 03:07 +02:00] [e43883a6-823a-4a30-b442-391a07d1947e] [Low] [Done] verify that the refresh button on the client gets all new features from the server
 // [2026-10-05 03:08 +02:00] [3e07bb22-f333-4410-962b-0a5c9f2b078d] [Low] [Backlog] add a button to set the status of a feature to Denied in the open feature client list; add a delivered date when a feature is set to Done

@@ -22,7 +22,7 @@ describe('SystemPlanComponent', () => {
         expect(text).toContain('System plan');
         expect(text).toContain('16 validated');
         expect(text).toContain('3 in progress');
-        expect(text).toContain('4 ready');
+        expect(text).toContain('5 ready');
         expect(text).toContain('Distinguish input from ticket');
         expect(text).toContain('Visualize the current system plan');
         expect(text).toContain('Define note-to-ticket relationships');
@@ -35,9 +35,9 @@ describe('SystemPlanComponent', () => {
             .toEqual(['SC-001', 'SC-002', 'SC-003', 'SC-004', 'SC-005',
                 'SC-006', 'SC-007', 'SC-008', 'SC-009', 'SC-010', 'SC-011',
                 'SC-012', 'SC-013', 'SC-014', 'SC-015', 'SC-016', 'SC-017', 'SC-018',
-                'SC-019', 'SC-020', 'SC-021', 'SC-022', 'SC-023']);
+                'SC-019', 'SC-020', 'SC-021',                 'SC-022', 'SC-023', 'SC-024']);
         expect(fixture.nativeElement.querySelector('progress').value).toBe(16);
-        expect(fixture.nativeElement.querySelector('progress').max).toBe(23);
+                        expect(fixture.nativeElement.querySelector('progress').max).toBe(24);
         expect(fixture.nativeElement.querySelector('header a').getAttribute('href'))
             .toBe('/problem-inquiry');
     });
@@ -57,9 +57,9 @@ describe('SystemPlanComponent', () => {
 
         expect(list.tagName).toBe('UL');
         expect(fixture.nativeElement.querySelector('ol.concern-list')).toBeNull();
-        expect(identifiers.length).toBe(23);
+        expect(identifiers.length).toBe(24);
         expect(identifiers[0].textContent.trim()).toBe('SC-001');
-        expect(identifiers[22].textContent.trim()).toBe('SC-023');
-        expect(fixture.nativeElement.querySelectorAll('.concern-card').length).toBe(23);
+        expect(identifiers[23].textContent.trim()).toBe('SC-024');
+        expect(fixture.nativeElement.querySelectorAll('.concern-card').length).toBe(24);
     });
 });

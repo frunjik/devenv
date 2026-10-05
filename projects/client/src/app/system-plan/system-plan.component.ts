@@ -335,6 +335,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-022'],
             summary: 'Find a way to look up a glossary term quickly from any screen.',
         },
+        {
+            id: 'SC-024',
+            title: 'Integrate the problem-solving app into the host app shell',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'High priority. Make the problem-solving app look docked into or included by the host app.',
+        },
     ];
 
     get validatedCount(): number {

@@ -310,6 +310,16 @@ Decide whether a framed ticket can be edited, closed, or marked duplicate after 
 **Working boundary:** Decide the policy first; do not collapse note, verification, and ticket lifecycles.
 **Open questions:** Which states exist? Is editing allowed or are changes new tickets? Who may change state?
 
+### SC-024 — Integrate the problem-solving app into the host app shell
+
+**Kind:** Design · **Status:** Ready · **Priority:** High · **Depends on:** None
+
+The system plan and problem-inquiry pages belong to the "solving problems with AI" domain, while the existing menu and screens belong to the host (meta) application layer. Find a way for the host to visibly "dock" or include the problem-solving app so they read as one coherent product rather than two mixed-in sets of screens.
+
+**Working boundary:** Clarify the relationship before changing structure. Existing shell, menu, and routing code may only change with permission and an explanation (P-006).
+**Open questions:** Is the problem-solving app a layer above, below, or inside the host? Should it be one menu section, a separate area with its own sub-navigation, or a lazy-loaded route group? Should it share the host's theme and header? Which screens are host and which are problem-solving (e.g. glossary, system plan, inquiry)?
+**Vocabulary candidates (P-009, not yet agreed):** "meta app/layer", "host", "dock", "domain app". Decide whether any need Glossary entries.
+
 ### SC-022 — Improve glossary screen layout and styling
 
 **Kind:** Design · **Status:** Ready · **Depends on:** None

@@ -146,6 +146,18 @@ function setFeatureDescription(entry: string, description: string): string {
     return `${match![1]}${description}`;
 }
 
+function featureDescription(entry: string): string {
+    return entry.match(
+        /\[(?:High|Medium|Low)\]\s+\[(?:Questions|Backlog|In progress|Done|Aborted|Denied)\]\s*(.*)$/i,
+    )![1];
+}
+
+function sharedFeatureTermCount(first: string, second: string): number {
+    const firstTerms = new Set(first.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+    const secondTerms = new Set(second.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+    return [...firstTerms].filter(term => secondTerms.has(term)).length;
+}
+
 async function updateStartedFeatureTask(
     root: string,
     id: string,
@@ -245,15 +257,46 @@ export function createFeatureHandler(root: string): RequestHandler {
             return;
         }
 
-        const oneLineDescription = description.trim().replace(/\s+/g, ' ');
-        const id = randomUUID();
-        const entry =
-            `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}`;
         const filename = join(root, '.features');
 
         void readFeatureEntries(filename)
-            .then(() => appendFile(filename, `${entry}\n`, 'utf8'))
-            .then(() => response.status(201).json({ data: entry }))
+            .then(async entries => {
+                const oneLineDescription = description.trim().replace(/\s+/g, ' ');
+                const duplicateIndex = entries.findIndex(entry =>
+                    sharedFeatureTermCount(featureDescription(entry), oneLineDescription) > 3,
+                );
+                if (duplicateIndex >= 0) {
+                    const duplicate = entries[duplicateIndex];
+                    const duplicateId = duplicate.match(featureIdPattern)![0].slice(1, -1);
+
+                    const existingDescription = featureDescription(duplicate);
+                    const mergedDescription = existingDescription.toLowerCase() === oneLineDescription.toLowerCase()
+                        ? existingDescription
+                        : `${existingDescription}; ${oneLineDescription}`;
+                    if (mergedDescription !== existingDescription) {
+                        const previousContents = `${entries.join('\n')}\n`;
+                        const updatedEntries = [...entries];
+                        updatedEntries[duplicateIndex] = setFeatureDescription(duplicate, mergedDescription);
+                        await writeFile(filename, `${updatedEntries.join('\n')}\n`, 'utf8');
+                        try {
+                            await updateStartedFeatureTask(root, duplicateId.toLowerCase(), mergedDescription);
+                        } catch (error) {
+                            await writeFile(filename, previousContents, 'utf8');
+                            throw error;
+                        }
+                        entries[duplicateIndex] = updatedEntries[duplicateIndex];
+                    }
+
+                    response.status(200).json({ data: entries[duplicateIndex] });
+                    return;
+                }
+
+                const id = randomUUID();
+                const entry =
+                    `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}`;
+                await appendFile(filename, `${entry}\n`, 'utf8');
+                response.status(201).json({ data: entry });
+            })
             .catch(next);
     };
 }
@@ -295,6 +338,55 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
                 entries[featureIndex] = setFeaturePriority(entries[featureIndex], requestedPriority as FeaturePriority);
                 await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
                 response.json({ data: entries[featureIndex] });
+            })
+            .catch(next);
+    };
+}
+
+export function createFeatureOrderHandler(root: string): RequestHandler {
+    return (request, response, next) => {
+        const id = request.params['id'];
+        const direction: unknown = request.body?.direction;
+        if (typeof id !== 'string'
+            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+            response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
+            return;
+        }
+        if (direction !== 'up' && direction !== 'down') {
+            response.status(400).json({ error: { message: 'Feature order direction must be up or down.' } });
+            return;
+        }
+
+        const filename = join(root, '.features');
+        void readFeatureEntries(filename)
+            .then(async entries => {
+                const featureIndex = entries.findIndex(entry =>
+                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
+                );
+                if (featureIndex < 0) {
+                    response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
+                    return;
+                }
+                if (!/\[In progress\]/i.test(entries[featureIndex])) {
+                    response.status(409).json({ error: { message: `Feature '${id}' is not in progress.` } });
+                    return;
+                }
+
+                const inProgressIndexes = entries.reduce<number[]>((indexes, entry, index) => {
+                    if (/\[In progress\]/i.test(entry)) {
+                        indexes.push(index);
+                    }
+                    return indexes;
+                }, []);
+                const position = inProgressIndexes.indexOf(featureIndex);
+                const targetPosition = position + (direction === 'up' ? -1 : 1);
+                if (targetPosition >= 0 && targetPosition < inProgressIndexes.length) {
+                    const targetIndex = inProgressIndexes[targetPosition];
+                    [entries[featureIndex], entries[targetIndex]] = [entries[targetIndex], entries[featureIndex]];
+                    await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                }
+
+                response.json({ data: entries });
             })
             .catch(next);
     };

@@ -63,7 +63,7 @@ describe('authentication public API', () => {
         };
 
         try {
-            const authenticatedApp = createApp(root, undefined, process.cwd(), undefined, authenticationService);
+            const authenticatedApp = createApp(root, { authenticationService });
             const response = await request(authenticatedApp)
                 .get('/files')
                 .set('Authorization', 'Bearer valid-token')
@@ -90,7 +90,7 @@ describe('authentication public API', () => {
         };
 
         try {
-            const authenticatedApp = createApp(root, undefined, process.cwd(), undefined, authenticationService);
+            const authenticatedApp = createApp(root, { authenticationService });
             const response = await request(authenticatedApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(401);
@@ -114,7 +114,7 @@ describe('authentication public API', () => {
         };
 
         try {
-            const authenticatedApp = createApp(root, undefined, process.cwd(), undefined, authenticationService);
+            const authenticatedApp = createApp(root, { authenticationService });
             authenticatedApp.use((_error, _request, response, _next) => response.status(503).end());
             const response = await request(authenticatedApp).get('/files').query({ path: 'sample.txt' });
 

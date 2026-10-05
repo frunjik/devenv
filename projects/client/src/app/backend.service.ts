@@ -100,6 +100,13 @@ export class BackendService {
         ).pipe(map(response => response.data));
     }
 
+    moveInProgressFeature(id: string, direction: 'up' | 'down'): Observable<string[]> {
+        return this.httpservice.patch<SuccessResponseBody<string[]>>(
+            `${this.host}features/${encodeURIComponent(id)}/order`,
+            { direction },
+        ).pipe(map(response => response.data));
+    }
+
     updateFeatureStatus(id: string, status: FeatureStatus): Observable<string> {
         return this.httpservice.patch<SuccessResponseBody<string>>(
             `${this.host}features/${encodeURIComponent(id)}/status`,

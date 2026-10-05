@@ -13,6 +13,7 @@ import { createCurrentTaskHandler } from './handlers/current-task';
 import {
     createFeatureHandler,
     createFeatureDescriptionHandler,
+    createFeatureOrderHandler,
     createFeaturePriorityHandler,
     createFeatureStartHandler,
     createFeatureStatusHandler,
@@ -31,13 +32,20 @@ import {
     type TestCommandExecutor,
 } from './handlers/test-runner';
 
-export function createApp(
-    root: string,
-    testCommandExecutor?: TestCommandExecutor,
-    gitCommitCwd = process.cwd(),
-    testRunCacheDirectory?: string,
-    authenticationService?: AuthenticationService,
-): Express {
+export interface CreateAppOptions {
+    testCommandExecutor?: TestCommandExecutor;
+    gitCommitCwd?: string;
+    testRunCacheDirectory?: string;
+    authenticationService?: AuthenticationService;
+}
+
+export function createApp(root: string, options: CreateAppOptions = {}): Express {
+    const {
+        testCommandExecutor,
+        gitCommitCwd = process.cwd(),
+        testRunCacheDirectory,
+        authenticationService,
+    } = options;
     const app = express();
 
     app.use(express.json());
@@ -59,6 +67,7 @@ export function createApp(
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id/description', createFeatureDescriptionHandler(root));
+    app.patch('/features/:id/order', createFeatureOrderHandler(root));
     app.patch('/features/:id', createFeaturePriorityHandler(root));
     app.post('/features/:id/start', createFeatureStartHandler(root));
     app.patch('/features/:id/status', createFeatureStatusHandler(root));
@@ -108,5 +117,5 @@ export function startServer(
     listener: ServerListener = httpServerListener,
     authenticationService?: AuthenticationService,
 ): Promise<Server> {
-    return listener.listen(createApp(root, undefined, process.cwd(), undefined, authenticationService), port);
+    return listener.listen(createApp(root, { authenticationService }), port);
 }

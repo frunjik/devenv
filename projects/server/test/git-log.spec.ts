@@ -34,7 +34,7 @@ describe('git log public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const gitApp = createApp(root, undefined, root);
+            const gitApp = createApp(root, { gitCommitCwd: root });
             const response = await request(gitApp).get('/git/log');
             expect(response.status).toBe(500);
             expect(response.body.error.stderr).toContain('not a git repository');
@@ -95,7 +95,7 @@ describe('git log public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const gitApp = createApp(root, undefined, gitRoot);
+            const gitApp = createApp(root, { gitCommitCwd: gitRoot });
             const response = await request(gitApp).get('/git/log');
             expect(response.status).toBe(200);
             expect(response.body.data).toHaveLength(1);
@@ -122,7 +122,7 @@ describe('git log public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const gitApp = createApp(root, undefined, gitRoot);
+            const gitApp = createApp(root, { gitCommitCwd: gitRoot });
             const response = await request(gitApp).get('/git/log');
             expect(response.body).toEqual({ data: [] });
         } finally {

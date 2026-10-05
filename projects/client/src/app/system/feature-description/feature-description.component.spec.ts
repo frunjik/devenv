@@ -203,6 +203,82 @@ describe('FeatureDescriptionComponent', () => {
             .toBe('Completed feature');
     });
 
+    it('moves in-progress features up and down and persists their order', async () => {
+        await fixture.whenStable();
+        const firstId = '123e4567-e89b-42d3-a456-426614174000';
+        const backlogId = '123e4567-e89b-42d3-a456-426614174001';
+        const secondId = '123e4567-e89b-42d3-a456-426614174002';
+        await writeFile(join(root, '.features'), [
+            `// [${firstId}] [High] [In progress] First active feature`,
+            `// [${backlogId}] [Low] [Backlog] Unchanged backlog feature`,
+            `// [${secondId}] [Medium] [In progress] Second active feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('in-progress');
+        fixture.detectChanges();
+
+        let rows: NodeListOf<HTMLLIElement> = fixture.nativeElement.querySelectorAll('.in-progress-feature');
+        expect(Array.from(rows).map(row => row.querySelector('.in-progress-feature-description').textContent.trim()))
+            .toEqual(['First active feature', 'Second active feature']);
+        expect((rows[0].querySelector('.feature-move-up-button') as HTMLButtonElement).disabled).toBe(true);
+        expect((rows[1].querySelector('.feature-move-down-button') as HTMLButtonElement).disabled).toBe(true);
+        expect(rows[1].querySelector('.feature-move-up-button').getAttribute('aria-label'))
+            .toBe('Move up: Second active feature');
+        const activeFeatures = fixture.componentInstance.inProgressFeatures;
+        fixture.componentInstance.moveInProgressFeature(activeFeatures[0], 'up');
+        fixture.componentInstance.moveInProgressFeature(activeFeatures[1], 'down');
+        fixture.componentInstance.moveInProgressFeature({ ...activeFeatures[0], id: 'missing' }, 'up');
+        fixture.componentInstance.isReorderingFeatures = true;
+        fixture.componentInstance.moveInProgressFeature(activeFeatures[1], 'up');
+        fixture.componentInstance.isReorderingFeatures = false;
+
+        (rows[1].querySelector('.feature-move-up-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        rows = fixture.nativeElement.querySelectorAll('.in-progress-feature');
+        expect(Array.from(rows).map(row => row.querySelector('.in-progress-feature-description').textContent.trim()))
+            .toEqual(['Second active feature', 'First active feature']);
+        expect((await readFile(join(root, '.features'), 'utf8')).split(/\r?\n/).filter(Boolean).map(entry =>
+            entry.match(/\[([0-9a-f-]{36})\]/)?.[1],
+        )).toEqual([secondId, backlogId, firstId]);
+
+        (rows[0].querySelector('.feature-move-down-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(Array.from(fixture.nativeElement.querySelectorAll('.in-progress-feature'))
+            .map((row: HTMLLIElement) => row.querySelector('.in-progress-feature-description').textContent.trim()))
+            .toEqual(['First active feature', 'Second active feature']);
+    });
+
+    it('keeps the feature order and displays an error when reordering fails', async () => {
+        await fixture.whenStable();
+        const firstId = '123e4567-e89b-42d3-a456-426614174000';
+        const secondId = '123e4567-e89b-42d3-a456-426614174001';
+        await writeFile(join(root, '.features'), [
+            `// [${firstId}] [High] [In progress] First active feature`,
+            `// [${secondId}] [Medium] [In progress] Second active feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('in-progress');
+        fixture.detectChanges();
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
+
+        (fixture.nativeElement.querySelectorAll('.feature-move-up-button')[1] as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.inProgressFeatures.map(feature => feature.id))
+            .toEqual([firstId, secondId]);
+        expect(fixture.nativeElement.querySelector('#feature-order-error').textContent).toContain('500');
+        expect(fixture.componentInstance.isReorderingFeatures).toBe(false);
+    });
+
     it('aborts an in-progress feature, returns it to the open list, and clears active work', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';

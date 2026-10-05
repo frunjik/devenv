@@ -46,7 +46,7 @@ describe('git status public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const gitApp = createApp(root, undefined, gitRoot);
+            const gitApp = createApp(root, { gitCommitCwd: gitRoot });
             const response = await request(gitApp).get('/git/status');
 
             expect(response.status).toBe(200);
@@ -107,7 +107,7 @@ describe('git status public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, undefined, gitRoot)).get('/git/status');
+            const response = await request(createApp(root, { gitCommitCwd: gitRoot })).get('/git/status');
             expect(response.status).toBe(200);
             expect(response.body.data).toEqual({
                 branch: expect.any(String),
@@ -130,7 +130,7 @@ describe('git status public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, undefined, root)).get('/git/status');
+            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/status');
             expect(response.status).toBe(500);
             expect(response.body.error.stderr).toContain('not a git repository');
         } finally {

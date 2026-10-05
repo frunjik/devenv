@@ -55,7 +55,9 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     statusError = '';
     abortError = '';
     completionError = '';
+    featureOrderError = '';
     editError = '';
+    isReorderingFeatures = false;
     readonly completingFeatureIds = new Set<string>();
     readonly abortingFeatureIds = new Set<string>();
     features: string[] = [];
@@ -156,6 +158,30 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
             error: (error: Error) => {
                 this.abortError = error.message;
                 this.abortingFeatureIds.delete(feature.id);
+            },
+        });
+    }
+
+    moveInProgressFeature(feature: FeatureRow, direction: 'up' | 'down'): void {
+        const features = this.inProgressFeatures;
+        const position = features.findIndex(item => item.id === feature.id);
+        const targetPosition = position + (direction === 'up' ? -1 : 1);
+        if (this.isReorderingFeatures || position < 0
+            || targetPosition < 0 || targetPosition >= features.length) {
+            return;
+        }
+
+        this.featureOrderError = '';
+        this.isReorderingFeatures = true;
+        this.backend.moveInProgressFeature(feature.id, direction).subscribe({
+            next: entries => {
+                this.features = entries;
+                this.refreshFeatureLists();
+                this.isReorderingFeatures = false;
+            },
+            error: (error: Error) => {
+                this.featureOrderError = error.message;
+                this.isReorderingFeatures = false;
             },
         });
     }

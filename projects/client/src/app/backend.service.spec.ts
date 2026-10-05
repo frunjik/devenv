@@ -144,7 +144,7 @@ describe('BackendService', () => {
             error: null,
         };
         await writeFile(join(cacheDirectory, 'last-test-run.json'), JSON.stringify(cachedRun));
-        const cachedResultServer = createServer(createApp(root, undefined, process.cwd(), cacheDirectory));
+        const cachedResultServer = createServer(createApp(root, { testRunCacheDirectory: cacheDirectory }));
         await new Promise<void>(resolve => cachedResultServer.listen(0, resolve));
         const address = cachedResultServer.address();
         if (!address || typeof address === 'string') {

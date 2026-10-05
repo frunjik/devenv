@@ -44,7 +44,7 @@ describe('git commit public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const gitApp = createApp(root, undefined, gitRoot);
+            const gitApp = createApp(root, { gitCommitCwd: gitRoot });
             const response = await request(gitApp)
                 .post('/git/commit')
                 .send({ message: 'Commit all worktree changes' });
@@ -130,7 +130,7 @@ describe('git commit public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const gitApp = createApp(root, undefined, root);
+            const gitApp = createApp(root, { gitCommitCwd: root });
             const response = await request(gitApp)
                 .post('/git/commit')
                 .send({ message: 'Nothing to commit' });

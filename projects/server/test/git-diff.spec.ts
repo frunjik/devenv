@@ -43,7 +43,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, undefined, root)).get('/git/diff');
+            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/diff');
 
             expect(response.status).toBe(200);
             expect(response.body.data).toContain('diff --git a/unstaged.txt b/unstaged.txt');
@@ -73,7 +73,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, undefined, root)).get('/git/diff');
+            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/diff');
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual({ data: '' });
@@ -91,7 +91,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, undefined, root)).get('/git/diff');
+            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/diff');
 
             expect(response.status).toBe(500);
             expect(response.body.error.stderr.toLowerCase()).toContain('not a git repository');

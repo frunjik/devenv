@@ -127,6 +127,88 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
     });
 
+    it('merges descriptions with more than three matching words and preserves the existing feature', async () => {
+        const created = await request(app).post('/features').send({
+            description: 'Create reusable navigation toolbar component',
+            priority: 'High',
+            status: 'In progress',
+        });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Create reusable navigation toolbar component <!-- feature-id:${id} -->\n`);
+
+        const response = await request(app).post('/features').send({
+            description: 'Create a navigation toolbar component with reusable styles',
+            priority: 'Low',
+            status: 'Backlog',
+        });
+        const mergedDescription =
+            'Create reusable navigation toolbar component; Create a navigation toolbar component with reusable styles';
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(
+            created.body.data.replace(
+                'Create reusable navigation toolbar component',
+                mergedDescription,
+            ),
+        );
+        expect(response.body.data).toContain(`[${id}] [High] [In progress]`);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe(
+            `- [In progress] ${mergedDescription} <!-- feature-id:${id} -->\n`,
+        );
+    });
+
+    it('adds a feature when only three unique words match an existing description', async () => {
+        await request(app).post('/features').send({
+            description: 'Create reusable navigation toolbar',
+        });
+
+        const response = await request(app).post('/features').send({
+            description: 'Create reusable navigation menu',
+        });
+
+        expect(response.status).toBe(201);
+        expect((await request(app).get('/features')).body.data).toHaveLength(2);
+    });
+
+    it('does not append a duplicate when the description already matches exactly', async () => {
+        const created = await request(app).post('/features').send({
+            description: 'Build a reusable feature toolbar',
+        });
+
+        const response = await request(app).post('/features').send({
+            description: 'Build a reusable feature toolbar',
+        });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(created.body.data);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
+    });
+
+    it('does not treat punctuation-only descriptions as duplicates', async () => {
+        await request(app).post('/features').send({ description: '!!!' });
+        const response = await request(app).post('/features').send({ description: '!!!' });
+
+        expect(response.status).toBe(201);
+        expect((await request(app).get('/features')).body.data).toHaveLength(2);
+    });
+
+    it('rolls back a merged description when updating the active task marker fails', async () => {
+        const created = await request(app).post('/features').send({
+            description: 'Create reusable navigation toolbar component',
+            status: 'In progress',
+        });
+        await mkdir(join(root, 'DEVENVOPDEV.md'));
+
+        const response = await request(app).post('/features').send({
+            description: 'Create a navigation toolbar component with reusable styles',
+        });
+
+        expect(response.status).toBe(500);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
+    });
+
     it('accepts an explicit feature priority', async () => {
         const response = await request(app)
             .post('/features')
@@ -416,6 +498,101 @@ describe('features public API', () => {
         const response = await request(app)
             .patch('/features/123e4567-e89b-42d3-a456-426614174000')
             .send({ priority: 'High' });
+
+        expect(response.status).toBe(500);
+    });
+
+    it('moves an in-progress feature up or down without changing other feature positions', async () => {
+        const firstId = '123e4567-e89b-42d3-a456-426614174000';
+        const backlogId = '123e4567-e89b-42d3-a456-426614174001';
+        const secondId = '123e4567-e89b-42d3-a456-426614174002';
+        const completedId = '123e4567-e89b-42d3-a456-426614174003';
+        const originalEntries = [
+            `// [${firstId}] [High] [In progress] First active feature`,
+            `// [${backlogId}] [Low] [Backlog] Unchanged backlog feature`,
+            `// [${secondId}] [Medium] [In progress] Second active feature`,
+            `// [${completedId}] [Low] [Done] Unchanged completed feature`,
+        ];
+        await writeFile(join(root, '.features'), `${originalEntries.join('\n')}\n`);
+
+        const movedUp = await request(app)
+            .patch(`/features/${secondId}/order`)
+            .send({ direction: 'up' });
+
+        expect(movedUp.status).toBe(200);
+        expect(movedUp.body.data).toEqual([
+            originalEntries[2],
+            originalEntries[1],
+            originalEntries[0],
+            originalEntries[3],
+        ]);
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toBe(`${movedUp.body.data.join('\n')}\n`);
+
+        const movedDown = await request(app)
+            .patch(`/features/${secondId}/order`)
+            .send({ direction: 'down' });
+
+        expect(movedDown.status).toBe(200);
+        expect(movedDown.body.data).toEqual(originalEntries);
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toBe(`${originalEntries.join('\n')}\n`);
+    });
+
+    it('keeps feature order unchanged when a move reaches either boundary', async () => {
+        const firstId = '123e4567-e89b-42d3-a456-426614174000';
+        const lastId = '123e4567-e89b-42d3-a456-426614174001';
+        const entries = [
+            `// [${firstId}] [High] [In progress] First active feature`,
+            `// [${lastId}] [Low] [In progress] Last active feature`,
+        ];
+        await writeFile(join(root, '.features'), `${entries.join('\n')}\n`);
+
+        const firstMove = await request(app).patch(`/features/${firstId}/order`).send({ direction: 'up' });
+        const lastMove = await request(app).patch(`/features/${lastId}/order`).send({ direction: 'down' });
+
+        expect(firstMove.body.data).toEqual(entries);
+        expect(lastMove.body.data).toEqual(entries);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${entries.join('\n')}\n`);
+    });
+
+    it.each([
+        ['malformed ID', '/features/not-a-uuid/order', { direction: 'up' }],
+        ['invalid direction', '/features/123e4567-e89b-42d3-a456-426614174000/order', { direction: 'sideways' }],
+        ['missing direction', '/features/123e4567-e89b-42d3-a456-426614174000/order', {}],
+    ])('rejects a feature move with %s', async (_caseName, path, body) => {
+        const response = await request(app).patch(path).send(body);
+
+        expect(response.status).toBe(400);
+    });
+
+    it('returns not found when moving a missing feature', async () => {
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/order')
+            .send({ direction: 'up' });
+
+        expect(response.status).toBe(404);
+        expect(response.body.error.message).toContain('was not found');
+    });
+
+    it('rejects moving a feature that is not in progress', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'), `// [${id}] [Low] [Backlog] Backlog feature\n`);
+
+        const response = await request(app)
+            .patch(`/features/${id}/order`)
+            .send({ direction: 'up' });
+
+        expect(response.status).toBe(409);
+        expect(response.body.error.message).toContain('is not in progress');
+    });
+
+    it('forwards feature order filesystem errors to Express', async () => {
+        await mkdir(join(root, '.features'));
+
+        const response = await request(app)
+            .patch('/features/123e4567-e89b-42d3-a456-426614174000/order')
+            .send({ direction: 'up' });
 
         expect(response.status).toBe(500);
     });

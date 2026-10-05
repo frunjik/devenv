@@ -210,11 +210,30 @@
        >
         <h2 id="in-progress-features-heading">In progress</h2>
         <p *ngIf="abortError" id="feature-abort-error" role="alert">{{ abortError }}</p>
+        <p *ngIf="featureOrderError" id="feature-order-error" role="alert">{{ featureOrderError }}</p>
         <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
         <ul *ngIf="inProgressFeatures.length > 0">
-            <li *ngFor="let feature of inProgressFeatures" class="in-progress-feature">
+            <li *ngFor="let feature of inProgressFeatures; let index = index" class="in-progress-feature">
                 <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
                 <span class="in-progress-feature-description">{{ feature.description }}</span>
+                <div class="in-progress-feature-order">
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-move-up-button"
+                        [attr.aria-label]="'Move up: ' + feature.description"
+                        [disabled]="isReorderingFeatures || index === 0"
+                        (click)="moveInProgressFeature(feature, 'up')"
+                    >Move up</button>
+                    <button
+                        type="button"
+                        mat-button
+                        class="feature-move-down-button"
+                        [attr.aria-label]="'Move down: ' + feature.description"
+                        [disabled]="isReorderingFeatures || index === inProgressFeatures.length - 1"
+                        (click)="moveInProgressFeature(feature, 'down')"
+                    >Move down</button>
+                </div>
                 <button
                     type="button"
                     mat-button

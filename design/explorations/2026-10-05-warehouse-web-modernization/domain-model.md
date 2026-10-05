@@ -1,29 +1,145 @@
 # Candidate Terms, Types, and Primitives for WMS Modernization
 
 **Status:** Exploratory model; derived from the supplied scenario, not validated against the WMS.
-**Purpose:** Support iterative discovery of required warehouse behavior and trace it into a future web replacement. This is a conceptual model, not code, a target architecture, or a fixed web-component catalogue.
+**Purpose:** Discover required warehouse behavior and trace it toward a web replacement. This is exploratory, not code, architecture, or a web-component catalogue.
 
 ## Keep Two Models Distinct
 
-1. **Warehouse Domain model:** what people, goods, locations, inventory, tasks, rules, and outcomes mean in warehouse operations.
-2. **Modernization knowledge model:** what is known or hypothesized about the native system, where that knowledge came from, and how it informs the replacement.
+1. **Warehouse Domain model:** operational concepts, rules, and outcomes.
+2. **Modernization knowledge model:** evidence and hypotheses about the native system and their relevance to replacement.
 
-Native screens belong initially to the second model as **evidence artifacts**. A screen may express domain concepts, operational rules, interaction, presentation, technical behavior, or a mixture. Do not classify it prematurely as a Domain Type or web primitive.
+Treat native screens as **evidence artifacts** first. They may mix domain, interaction, presentation, and technical concerns; do not assume they map to Domain Types or web primitives.
 
 ## Candidate Terms
 
 | Term | Working meaning |
 |---|---|
-| **Operational Scenario** | A contextual example of warehouse work, from a trigger through decisions and outcome, including relevant exceptions. |
-| **Role** | A responsibility or perspective from which a person or external actor performs or observes work; not necessarily identical to a login account. |
-| **Domain Concept** | A meaningful warehouse notion, such as an item, location, inventory balance, handling unit, order, or task; actual concepts must be discovered. |
-| **Business Rule** | A condition governing a warehouse decision, allowed operation, or resulting state. |
-| **Screen Definition** | A native-system artifact describing some screen-related information; its structure, semantics, and use are not yet established. |
-| **Capability** | An outcome or responsibility the replacement must support, independent of a particular screen or control. |
-| **Replacement Slice** | A bounded set of related behavior and outcomes considered together for discovery and eventual replacement; the slicing principle remains open. |
-| **Parity Claim** | A claim that a specified operational outcome or behavior is preserved in the replacement, supported by evidence and an explicit scope. |
+| **Operational Scenario** | Contextual warehouse work, from trigger to outcome, including exceptions. |
+| **Role** | Responsibility or perspective; not necessarily a login account. |
+| **Domain Concept** | A meaningful warehouse notion, to be discovered from examples. |
+| **Business Rule** | A condition governing decisions, operations, or resulting state. |
+| **Screen Definition** | A native artifact whose structure and use remain to be established. |
+| **Capability** | An outcome the replacement must support, independent of UI. |
+| **Replacement Slice** | A bounded set of behavior and outcomes for discovery and replacement. |
+| **Parity Claim** | Evidence-backed claim that scoped behavior is preserved. |
 
-These are working Terms. Names and boundaries should change when real examples expose better distinctions.
+Terms are provisional; revise them when examples demand it.
+
+## Working Under Incomplete Knowledge and Hard Constraints
+
+Full workflow discovery and parity may be unaffordable. Instead, select a bounded subset of expectations, identify recurring patterns, and test whether they preserve important outcomes. This is risk-managed approximation, not proof that unexamined behavior is unimportant.
+
+Keep three things separate:
+
+- **Expectation:** needed outcome or safety property, independent of legacy implementation.
+- **Behavior pattern:** reusable interaction behavior, including state, decisions, feedback, and recovery.
+- **Implementation choice:** an unproven way to realize a pattern under actual constraints.
+
+### Candidate Types for the Constrained Exploration
+
+```text
+Expectation {
+    statement
+    context
+    beneficiaryOrRole
+    importance
+    consequenceIfMissed
+    evidence
+    uncertainty
+}
+
+BehaviorPattern {
+    trigger
+    preconditions
+    informationRequired
+    decisionOrRule
+    stateRead
+    stateChanged
+    successFeedback
+    rejectionOrConflict
+    recovery
+    invariants
+}
+
+StateNeed {
+    subject
+    purpose
+    authority
+    lifetime
+    scope
+    visibility
+    concurrencyExpectation
+    recoveryExpectation
+}
+
+PatternTrial {
+    expectation
+    contextAndConstraints
+    candidatePattern
+    implementationHypothesis
+    testExamples
+    observedResults
+    knownDifferences
+    decision
+    revisitConditions
+}
+
+BehavioralMatch {
+    expectation
+    comparedContexts
+    preservedOutcomes
+    preservedInvariants
+    acceptableDifferences
+    residualRisks
+    evidence
+    confidence
+    status
+}
+```
+
+Separate interaction state from authoritative warehouse state. Sessions, URLs, and caches may carry context, but must not own business facts.
+
+`BehavioralMatch` compares outcomes and invariants, not screens or mechanisms. Name acceptable differences; unresolved ones are risks, not parity.
+
+### Cross-Cutting Constraints to Make Explicit
+
+Record relevant constraints and unknowns for each selected pattern:
+
+| Constraint | Exploration question |
+|---|---|
+| **Authority and ownership** | Which system owns each fact? Can replacement read or change it? |
+| **Identity and authorization** | Who acts, and where are permissions enforced? Can direct access bypass UI checks? |
+| **State lifetime** | What survives navigation, refresh, device changes, logout, or interruption? Is it personal context or shared state? |
+| **Consistency and concurrency** | How are stale reads, concurrent changes, and partial completion handled? |
+| **Atomicity and idempotency** | What changes together? Can retries duplicate an operation? |
+| **Validity and invariants** | What must always hold, regardless of UI or access path? |
+| **Failure and recovery** | How are outages, rejection, and uncertain outcomes safely resolved? |
+| **Operational limits** | Which latency, throughput, availability, device, connectivity, audit, or regulatory limits apply? |
+| **Compatibility and migration** | Must paths coexist or share data? How are conflicts and cutover handled? |
+
+Apply only relevant constraints; mark unknowns.
+
+### Session-Oriented and Direct-Resource Patterns
+
+“Session versus stateless” conflates separate questions: where interaction context and authoritative state live, and how changes are accepted. Stateless requests can update durable state; sessions need not own warehouse truth.
+
+Compare candidate patterns:
+
+1. **Read, decide, commit:** read current state, then submit a change; test stale data and conflicts.
+2. **Explicit work context:** pass operator, assignment, or work-area identity instead of relying on hidden session context; test expiry and authorization.
+3. **Draft then confirm:** separate incomplete interaction from committed warehouse state; test expiry, resumption, and ownership.
+4. **Optimistic update:** accept only if state/version is current; test conflict recovery and retries.
+5. **Idempotent command:** assign a stable operation identity so retries do not duplicate work; test outcome lookup and retention.
+
+Test normal, stale/concurrent, repeated, interrupted, unauthorized, and uncertain-result cases. These patterns do not prescribe architecture.
+
+### A Bounded “Brute-Force” Learning Loop
+
+1. Rank expectations by failure impact, frequency, and dependencies; record rationale and confidence.
+2. Select contrasting cases across state, decisions, and failure.
+3. Separate observed legacy behavior from intended behavior; record constraints before implementation hypotheses.
+4. Trial a small end-to-end path with an exception. Mark results supported, rejected, conditional, or unknown.
+5. Retain counterexamples; reuse patterns only within tested conditions.
 
 ## Candidate Types
 
@@ -94,53 +210,39 @@ ParityClaim {
 }
 ```
 
-The shapes are prompts for inquiry, not a schema proposal. A screen may participate in many scenarios; a scenario may involve many screens. A capability may be supported by multiple scenarios and need not map to one screen, service, or component.
+These are prompts, not a schema. Screens and scenarios may relate many-to-many; capabilities need not map to one implementation unit.
 
 ## Candidate Modeling Primitives
 
-Use these as conceptual building blocks when tracing a scenario:
+Trace:
 
-1. **Actor and context** — who is doing or observing work, where, and under what conditions?
-2. **Intent** — what are they trying to accomplish or change?
-3. **Information** — what must be known, entered, selected, or made visible?
-4. **Rule and decision** — what determines allowed, rejected, or conditional outcomes?
-5. **State change / fact** — what changes, or what becomes true, if the action succeeds?
-6. **Feedback and query** — what does the actor need to know afterward?
-7. **Exception and recovery** — what can fail or differ, and how does work continue safely?
-8. **Evidence and provenance** — what supports each claim, and where did that evidence come from?
+1. Actor and context
+2. Intent
+3. Information
+4. Rule and decision
+5. State change / fact
+6. Feedback and query
+7. Exception and recovery
+8. Evidence and provenance
 
-Command, event, and view are possible labels for intent, accepted fact, and presented information. They are optional modeling vocabulary, not mandatory Domain primitives or a decision to use event-sourced storage.
+Command, event, and view are optional labels; they do not imply event-sourced storage.
 
 ## Iterative Discovery and Replacement
 
-Repeat this learning loop; do not attempt to classify all 400+ screen definitions before learning what their structure means:
-
-1. **Orient:** learn how screen definitions are authored, grouped, linked, versioned, and used. Record unknowns; do not infer corpus completeness from its size.
-2. **Choose a scenario:** select one operationally meaningful example with access to knowledgeable roles and relevant native artifacts.
-3. **Trace the work:** record context, actor, intent, information, rules, decisions, changes, feedback, exceptions, and recovery.
-4. **Correlate evidence:** connect relevant screens, configuration, data, reports, logs, code, and participant observations to specific claims. Mark contradictions and uncertain domain/system boundaries.
-5. **Abstract carefully:** identify candidate Domain Concepts and Capabilities; keep links to the concrete scenario and native evidence. Separate “must preserve,” “may improve,” “obsolete,” and “unknown.”
-6. **Bound a replacement slice:** choose a coherent outcome and its necessary behavior, not merely a screen or GUI primitive. State exclusions and evidence needed to judge the result.
-7. **Assess and revise:** compare the proposed replacement behavior with the operational need. Record parity, intentional differences, gaps, and new questions; update the model and select the next inquiry.
-
-Paper artifacts can support early steps. Later, agreed outcomes and rules can inform software, tests, and implementation decisions. Traceability should survive that transition, but no artifact is assumed to translate directly or automatically into code.
+First understand the corpus structure. Trace a scenario, bound its outcome and exclusions, then record evidence, differences, and unknowns. Revise as trials expose gaps; findings inform but do not translate automatically to code.
 
 ## Candidate Contracts
 
-- A native screen definition is evidence, not automatically a requirement or Domain concept.
-- Every important capability claim links to at least one scenario or other stated evidence; uncertainty and provenance remain visible.
-- Domain rules are not inferred solely from labels, widget types, or screen layout.
-- A replacement slice states scope, exclusions, operational outcome, exceptional behavior, and how evidence will assess it.
-- “Parity” always names what behavior and context are compared; it does not mean visual or internal-mechanism identity by default.
-- Unknown or contradictory evidence remains explicit until resolved; iteration may revise previous classifications and decisions.
-- A slice's successful implementation does not alone prove that the overall WMS replacement is complete.
+- Screens are evidence, not requirements by default.
+- Link capability claims to evidence; retain uncertainty.
+- Do not infer rules from labels or layout alone.
+- Define slice scope, outcome, exceptions, and acceptance evidence.
+- Scope parity claims; retain differences and unknowns.
+- A successful slice does not prove WMS completeness.
 
 ## Questions Before Generalizing
 
-- What is the native definition structure, and does “screen” refer to a user-visible page, a reusable form, a workflow state, or something else?
-- Which warehouse processes are most critical, frequent, risky, or poorly understood?
-- Where do business rules and state changes actually live?
-- Which role, device, location, throughput, concurrency, and connectivity conditions matter?
-- How will slice boundaries avoid breaking end-to-end warehouse flows?
-- What evidence and stakeholders are sufficient to accept preserved behavior or an intentional change?
-- How should learned concepts map to implementation responsibilities later, without equating Domain Concepts with UI or server modules?
+- What does a native screen definition represent, and where do rules/state live?
+- Which processes, roles, devices, and operating conditions matter most?
+- How can slices preserve end-to-end work, and what evidence accepts behavior?
+- How should concepts inform implementation without mapping directly to modules?

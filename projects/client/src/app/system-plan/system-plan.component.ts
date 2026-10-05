@@ -303,6 +303,22 @@ export class SystemPlanComponent {
             dependsOn: [],
             summary: 'Define how a concern differs from a Work Item and whether it belongs in the Glossary.',
         },
+        {
+            id: 'SC-020',
+            title: 'Record note review decisions',
+            kind: 'Domain',
+            status: 'Ready',
+            dependsOn: ['SC-006'],
+            summary: 'Decide whether rejecting or deferring a note proposal is recorded, and what a decision records.',
+        },
+        {
+            id: 'SC-021',
+            title: 'Define ticket lifecycle',
+            kind: 'Domain',
+            status: 'Ready',
+            dependsOn: ['SC-016'],
+            summary: 'Decide whether a framed ticket can be edited, closed, or marked duplicate, and by whom.',
+        },
     ];
 
     get validatedCount(): number {

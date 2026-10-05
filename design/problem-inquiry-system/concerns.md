@@ -292,6 +292,24 @@ Clarify the meaning and purpose of a “concern” in the system plan, including
 **Open questions:** Whether the concern register should eventually distinguish its kinds as separate planning record Types remains a future modeling question; no behavior currently depends on such a change.
 **Validation evidence:** User accepted the project-planning definition and Glossary addition on 2026-10-06. `.glossary` now defines `System Concern` separately from `Work Item`. No new domain Type was added; the plan's `PlanConcern` remains a read-only view projection.
 
+### SC-020 — Record note review decisions
+
+**Kind:** Domain · **Status:** Ready · **Depends on:** SC-006
+
+Decide whether rejecting or deferring a note proposal is recorded, and what a decision records (outcome, reason, time). Today only acceptance exists.
+
+**Working boundary:** Decide the policy first; do not add a review-decision Type until its fields are agreed.
+**Open questions:** Are rejected proposals kept or discarded? Is a reason required? Can a deferred proposal be revisited?
+
+### SC-021 — Define ticket lifecycle
+
+**Kind:** Domain · **Status:** Ready · **Depends on:** SC-016
+
+Decide whether a framed ticket can be edited, closed, or marked duplicate after creation, and who may do so. Tickets are currently immutable once framed.
+
+**Working boundary:** Decide the policy first; do not collapse note, verification, and ticket lifecycles.
+**Open questions:** Which states exist? Is editing allowed or are changes new tickets? Who may change state?
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

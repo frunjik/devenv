@@ -1,0 +1,54 @@
+<mat-toolbar color="primary">
+    PPT - {{ host }}
+    |
+
+    <nav>
+        <a mat-button routerLink="/">Main</a>
+        |
+        <a mat-button routerLink="/ppt/browse">Browse</a>
+        |
+        <a mat-button routerLink="/tests">TEST</a>
+        |
+        <a mat-button routerLink="/feature">featurs</a>
+        |
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '', file: '.workflow'}">Workflow</a>
+        |
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
+        |
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
+        |
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
+        |
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{file: '/scratch.txt'}">SCRATCH</a>
+        |
+        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/app.component.html'}">EDIT-MENU</a>
+        |
+        <a mat-button routerLink="/git/log">Git log</a>
+        |
+        <button
+            type="button"
+            mat-button
+            class="commit-button"
+            (click)="commitRequested.emit()"
+            [disabled]="isCommitting"
+        >
+            {{ isCommitting ? 'Committing…' : 'Commit changes' }}
+        </button>
+    </nav>
+    <button
+        type="button"
+        mat-button
+        class="top-current-task"
+        aria-label="Refresh current task"
+        [matTooltip]="currentTask.displayEntry || currentTask.errorMessage
+            || (currentTask.isLoading ? 'Loading current task…' : 'No active task.')"
+        matTooltipPosition="below"
+        (click)="currentTask.refresh()"
+    >
+        <span class="top-current-task-label">Task</span>
+        <span class="top-current-task-entry">
+            {{ currentTask.displayEntry || currentTask.errorMessage
+                || (currentTask.isLoading ? 'Loading…' : 'No active task') }}
+        </span>
+    </button>
+</mat-toolbar>

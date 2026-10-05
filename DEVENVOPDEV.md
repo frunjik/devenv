@@ -12,11 +12,7 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] Preserve filesystem API failures as errors instead of returning empty success values from BackendService <!-- feature-id:f05a3223-fa50-4f17-9232-e2fb2678d3fe -->
-- [In progress] Update README and WORKSPACE documentation to match the current Angular and Jest workflows <!-- feature-id:3776c3fd-ce89-4054-8eda-43850b0f52d1 -->
-- [In progress] add status verify <!-- feature-id:3a4da084-57bd-4d06-bc9c-c88edb8b23b3 -->
-- [In progress] feature verify status <!-- feature-id:70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4 -->
-- [In progress] verify that the refresh button on the client gets all new features from the server <!-- feature-id:e43883a6-823a-4a30-b442-391a07d1947e -->
-- [In progress] create a glossary for all Terms <!-- feature-id:3076fb2b-198a-49e8-bd89-475f2651ba61 -->
-- [In progress] maintain a glossary of terms in a list on the server. make features for additional questions <!-- feature-id:951c879c-a2bb-48bc-b30b-8bde89535e39 -->
+- [In progress] Define what counts as a duplicate (exact normalized description or similar wording) and whether duplicates should be rejected, warned about, or merged. A: Similar description counts as a duplicate, see if you can merge the descriptions and keep one feature <!-- feature-id:67766a83-30b9-4e55-85e6-96891449e37e -->
+- [In progress] add move up and down buttons to lower and higher the priority of items in the in progress list <!-- feature-id:69240ff3-3f25-46b8-a9ca-d74b6cbe9dea -->
+- [In progress] use the search field in the client to be always visible and filter the current viewed list <!-- feature-id:286deecd-9edd-452b-a6b5-51d2ac45b468 -->
 - [Backlog] Replace positional createApp configuration parameters with a typed options object <!-- feature-id:e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1 -->

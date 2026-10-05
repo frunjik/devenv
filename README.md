@@ -1,54 +1,61 @@
-# Devenv 
-- Bootstrap In Typescript With Angular And Express
+# DevEnv
 
-## Higly Experimental - Not Fit For Production
+An experimental Angular client and Express API workspace.
 
-## Dependencies
-- [NodeJS / npm](https://nodejs.org/)
-```
-npm install -g @angular/cli
-```
+## Requirements
 
-- [Angular CLI](https://angular.dev/tools/cli)
-```
-npm install -g @angular/cli
+- Node.js and npm
+
+Install the project dependencies from the repository root:
+
+```bash
+npm install
 ```
 
-## Run
+## Run locally
 
-### Server
-```
-start-server.bat
+Start the API and client in separate terminals:
+
+```bash
+npm run dev:server
 ```
 
-### Client
+```bash
+npm start
 ```
-start-client.bat
-```
+
+The client is served by Angular CLI. The API process uses `tsx watch` and restarts when server source files change.
 
 ## Build
 
-### All -  shared, server, client
-```
-build-all.bat
+Build the Angular libraries before the client that consumes them:
+
+```bash
+npm run build -- --project shared
+npm run build -- --project ppt
+npm run build -- --project client
 ```
 
-### Shared
-```
-build-shared.bat
-```
+Pass an explicit Angular project to `npm run build`; the root script does not select a default project.
 
-### Server
-```
-build-server.bat
-```
+The Angular `server` library target currently has known TypeScript errors, including unresolved PPT `./core` imports. It is not part of the passing build sequence.
 
-### Server tests
-```
+## Test
+
+The repository uses Jest for client and server tests:
+
+```bash
+npm run test:client
 npm run test:server
+npm run test:all
 ```
 
-### Client
+Coverage commands:
+
+```bash
+npm run test:client:coverage
+npm run test:server:coverage
+npm run test:all:coverage
 ```
-build-client.bat
-```
+
+See [WORKSPACE.md](./WORKSPACE.md) for project structure and workflow details.

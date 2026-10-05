@@ -1,12 +1,8 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { DatePipe, NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 import { CurrentEntryService } from './current-entry.service';
@@ -15,10 +11,12 @@ import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
 import { FeatureWorkService } from './feature-work.service';
 import { TestRunCacheStatusService } from './test-run-cache-status.service';
+import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
+import { StatusToolbarComponent } from './status-toolbar/status-toolbar.component';
 
 @Component({
     selector: 'app-root',
-    imports: [DatePipe, NgClass, RouterLink, RouterOutlet, MatButtonModule, MatSnackBarModule, MatToolbarModule, MatTooltipModule],
+    imports: [RouterOutlet, MatSnackBarModule, NavigationToolbarComponent, StatusToolbarComponent],
     // providers: [
 
     // ]

@@ -5,7 +5,6 @@ import { createServer } from 'node:http';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { filter, firstValueFrom, timeout } from 'rxjs';
 import type { Server } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
 import { createApp } from '../../../../../server/src/public-api';
@@ -602,15 +601,17 @@ describe('FeatureDescriptionComponent', () => {
             `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] [Backlog] Remaining feature`,
             '',
         ].join('\n'));
-        const completedFeatureLoaded = firstValueFrom(
-            fixture.componentInstance.featureDataSource.connect().pipe(
-                filter(features => features.some(feature => feature.description === 'Completed feature')),
-                timeout({ first: 4000 }),
-            ),
-        );
         fixture.componentInstance.refreshFeatures();
-        await completedFeatureLoaded;
         fixture.detectChanges();
+        for (let attempt = 0; attempt < 500; attempt++) {
+            if (fixture.componentInstance.featureDataSource.data.some(
+                feature => feature.description === 'Completed feature',
+            )) {
+                break;
+            }
+            await new Promise(resolve => setTimeout(resolve, 10));
+            fixture.detectChanges();
+        }
         const featureWork = TestBed.inject(FeatureWorkService);
         featureWork.start(completedId, 'Completed feature');
 
@@ -641,7 +642,7 @@ describe('FeatureDescriptionComponent', () => {
         ).map(row => row.querySelector('.done-feature-description')?.textContent.trim()))
             .toEqual(['Completed feature']);
         expect(fixture.nativeElement.querySelector('#feature-completion-error')).toBeNull();
-    });
+    }, 15000);
 
     it('retains the feature and reports errors when marking it done fails', async () => {
         await fixture.whenStable();

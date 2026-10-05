@@ -1,3 +1,2 @@
-export interface Model {}
 
-export interface Field {}
+export interface PPTTerm {}

@@ -1,1 +1,4 @@
 History
+// [2026-10-05 05:16 +02:00] Added an empty standalone client page at /glossary; focused route test and client build pass.
+// [2026-10-05 05:14 +02:00] Added an empty standalone client page at /terms to match the existing navigation link; route test and client build pass.
+// [2026-10-05 05:06 +02:00] Added and publicly exported an empty PPTTerm interface from @shared alongside Model and Field; the shared library build passes.

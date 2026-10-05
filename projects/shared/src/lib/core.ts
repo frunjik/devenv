@@ -17,16 +17,16 @@ export interface PPTModel extends PPTValue {
     fields: PPTField[];
 };
 
-// // --- generate after this ?
+// // // --- generate after this ?
 
-// instance
-export interface PPTItem extends PPTValue {
-    name: string;
-    title?: string;
-};
+// // instance
+// export interface PPTItem extends PPTValue {
+//     name: string;
+//     title?: string;
+// };
 
-export interface PPTList extends PPTValue {
-    name: string;
-    title?: string;
-    items: PPTItem[];
-};
+// export interface PPTList extends PPTValue {
+//     name: string;
+//     title?: string;
+//     items: PPTItem[];
+// };

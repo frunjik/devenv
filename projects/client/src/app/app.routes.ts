@@ -6,6 +6,8 @@ import { TestRunnerComponent } from './system/test-runner/test-runner.component'
 import { GitLogComponent } from './system/git-log/git-log.component';
 import { FeatureDescriptionComponent } from './system/feature-description/feature-description.component';
 import { ModelsComponent } from './system/models/models.component';
+import { TermsComponent } from './system/terms/terms.component';
+import { GlossaryComponent } from './system/glossary/glossary.component';
 
 export const routes: Routes = [
     {
@@ -39,6 +41,14 @@ export const routes: Routes = [
     {
         path: 'models',
         component: ModelsComponent
+    },
+    {
+        path: 'terms',
+        component: TermsComponent
+    },
+    {
+        path: 'glossary',
+        component: GlossaryComponent
     },
     // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

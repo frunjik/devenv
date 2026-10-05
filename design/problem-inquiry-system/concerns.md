@@ -99,20 +99,20 @@ Treat conversion as a proposal that can retain ambiguity, missing information, a
 
 ### SC-004 — Define human review
 
-**Kind:** Behavior · **Status:** In progress · **Depends on:** SC-003
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-003
 
 Decide how a person reviews, edits, accepts, defers, or rejects a conversion before it appears in the converted-items list.
 
 **Decision (user, 2026-10-05):** Require explicit review and acceptance; list accepted notes only.
 
-**Working rules:** Creating a proposal does not accept it. `Accept` emits an imported note; it does **not** certify truth or promote it to a Problem Ticket. `Revise` returns the proposal to editable input while preserving its source. Promotion to a Problem Ticket remains a distinct decision. Defer/reject are not yet supported in the local, non-persistent slice; do not imply they are durably recorded.
+**Decision (user, 2026-10-05):** Ticket creation is another explicit human action, separate from accepting a note. A person frames the ticket from one or more accepted notes; one accepted note may inform multiple tickets.
 
-**Type review:** This implies distinct proposal and accepted-note lifecycles. Avoid one ambiguous boolean such as `accepted`; keep review outcome separate from source verification and Problem Ticket status.
+**Working rules:** Creating a proposal does not accept it. `Accept` emits an imported note; it does **not** certify truth or promote it to a Problem Ticket. `Revise` returns the proposal to editable input while preserving its source. Creating a ticket requires explicit framing and does not upgrade source verification. Defer/reject are not durably recorded in the local, non-persistent slice.
 
-**Proposed working rule:** In the current local single-user slice, acceptance records only that the note is useful to keep; it is not verification, ticket promotion, or a durable review history. Revising before acceptance replaces the current proposal. Defer/reject history, revision history, roles, and promotion authorization require a separate persistence/ownership decision and remain out of scope.
+**Type review:** Keep proposal acceptance, source verification, and ticket creation as distinct transitions. A ticket-note relationship must support many-to-many links.
 
-**Open questions:** Define promotion authority and durable revision/defer/reject history when multi-user or persistence behavior is in scope. Do not imply the current local workflow answers those questions.
-**Validation evidence:** User selected explicit acceptance and an accepted-only list. Converter now previews proposals and exposes separate revise/accept actions; public tests cover both. No domain-user review yet.
+**Open questions:** Durable review history, roles, and authorization remain out of scope until persistence or multiple users are introduced.
+**Validation evidence:** User decisions require separate explicit note acceptance and human ticket framing. Converter tests cover proposal review; ticket framing is the next implementation slice. Synthetic inputs only.
 
 ### SC-005 — Preserve sample provenance
 
@@ -189,6 +189,74 @@ Provide a read-only client view of the current concern plan, including concern s
 **Open questions:** Should the plan later be loaded from structured data or made editable?
 **Validation evidence:** The read-only page shows all ten concerns, their types, dependencies, status, and a progress summary; it is available from navigation at `/system-plan`. Public-interface tests verify the summary, concern list, dependencies, and snapshot limitation. The page and route have 100% statement, branch, function, and line coverage; the client build passes. Snapshot data was checked against this register; no plan editing or live synchronization is claimed.
 
+### SC-011 — Define note-to-ticket relationships
+
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-001, SC-004
+
+Define whether note acceptance creates a ticket and how tickets retain the notes that informed them.
+
+**Decision (user, 2026-10-05):** A person explicitly frames a Problem Ticket from one or more accepted notes. One accepted note may inform multiple tickets. Note acceptance alone never creates a ticket.
+
+**Type review:** Ticket provenance needs identity-bearing accepted notes and a many-to-many note/ticket relationship. Keep source-note identity separate from ticket ID and source artifact provenance.
+
+**Open questions:** The relation is in-memory only for the first framing slice; persistence and identity across reloads remain deferred.
+**Validation evidence:** User selected explicit human framing, one or more notes per ticket, and one note reusable by multiple tickets. No automatic promotion.
+
+### SC-012 — Collect complete ticket framing
+
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-001, SC-011
+
+Define what a human must supply when framing a ticket from accepted notes.
+
+**Decision (user, 2026-10-05):** Collect all current `ProblemTicket` fields explicitly: title, report, condition, affected party/thing, impact, scope, work context, and reporter. Record the creation time at submission. Do not infer missing fields from linked notes.
+
+**Working boundary:** The initial form is local and in-memory. Scope level, scope label, context people/places/things, and reporter are entered by the human; date ranges remain optional as in `WorkContext`.
+
+**Type review:** Reuse `ProblemFrame`, `ProblemScope`, and `WorkContext`; do not add parallel representations for the form. The ticket must retain the IDs of its selected accepted notes.
+
+**Open questions:** None for a local form using the existing `ProblemTicket` contract.
+**Validation evidence:** User confirmed the complete field set for the first human ticket-framing form on 2026-10-05. No user/domain validation of the wording beyond this decision.
+
+### SC-013 — Add identity and provenance links
+
+**Kind:** Implementation · **Status:** In progress · **Depends on:** SC-011
+
+Give locally accepted notes identities so a ticket can cite one or more notes and the same note can be reused.
+
+**Working boundary:** IDs need to be unique only within the current in-memory session; reload loses notes and tickets together. No persistence or cross-session identity is implied.
+**Open questions:** None for the in-memory slice.
+**Validation evidence:** Not started.
+
+### SC-014 — Build the ticket-framing component
+
+**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-012, SC-013
+
+Build a separate component that selects accepted notes and explicitly frames one ticket with every required field.
+
+**Working boundary:** One ticket per explicit submission. Do not edit or verify linked notes and do not infer ticket fields from them.
+**Open questions:** None for the defined in-memory form.
+**Validation evidence:** Not started.
+
+### SC-015 — Build the framed-ticket list
+
+**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-012
+
+Build a separate view of explicitly created Problem Tickets and their linked accepted notes.
+
+**Working boundary:** In-memory only; preserve each ticket's own frame and show its source-note references.
+**Open questions:** None for the local list.
+**Validation evidence:** Not started.
+
+### SC-016 — Connect note framing to ticket review
+
+**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-014, SC-015
+
+Connect accepted notes, explicit ticket framing, and the framed-ticket list without collapsing their separate lifecycles.
+
+**Working boundary:** The parent page owns in-memory notes and tickets. A source note can be linked to multiple tickets; only an explicit completed form creates a ticket.
+**Open questions:** None for the in-memory vertical slice.
+**Validation evidence:** Not started.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence
@@ -199,6 +267,10 @@ The dependency order does not authorize building both components together.
 4. Implement and validate SC-008 alone using Red-Green-Refactor.
 5. Integrate and verify SC-009.
 6. Present the concern plan as a read-only snapshot in SC-010; keep the Markdown register authoritative.
+7. Define note-to-ticket provenance and explicit framing in SC-011–SC-012.
+8. Add note identity and provenance links in SC-013.
+9. Build the ticket-framing component in SC-014, then the framed-ticket list in SC-015, one component per slice.
+10. Integrate those components in SC-016.
 
 For each coding slice, derive tests from the synthetic inbox inputs and known Problem Domain scenarios where possible. Test through public interfaces, use only simple boundary mocks, and meet the project's full-coverage principle.
 

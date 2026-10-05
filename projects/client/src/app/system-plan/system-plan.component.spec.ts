@@ -19,16 +19,20 @@ describe('SystemPlanComponent', () => {
         const text = fixture.nativeElement.textContent as string;
 
         expect(text).toContain('System plan');
-        expect(text).toContain('6 validated');
+        expect(text).toContain('9 validated');
         expect(text).toContain('4 in progress');
+        expect(text).toContain('3 ready');
         expect(text).toContain('Distinguish input from ticket');
         expect(text).toContain('Visualize the current system plan');
+        expect(text).toContain('Define note-to-ticket relationships');
+        expect(text).toContain('Connect note framing to ticket review');
         const identifiers = fixture.nativeElement.querySelectorAll('.concern-id') as NodeListOf<HTMLElement>;
         expect(Array.from(identifiers).map(identifier => identifier.textContent?.trim()))
             .toEqual(['SC-001', 'SC-002', 'SC-003', 'SC-004', 'SC-005',
-                'SC-006', 'SC-007', 'SC-008', 'SC-009', 'SC-010']);
-        expect(fixture.nativeElement.querySelector('progress').value).toBe(6);
-        expect(fixture.nativeElement.querySelector('progress').max).toBe(10);
+                'SC-006', 'SC-007', 'SC-008', 'SC-009', 'SC-010', 'SC-011',
+                'SC-012', 'SC-013', 'SC-014', 'SC-015', 'SC-016']);
+        expect(fixture.nativeElement.querySelector('progress').value).toBe(9);
+        expect(fixture.nativeElement.querySelector('progress').max).toBe(16);
         expect(fixture.nativeElement.querySelector('header a').getAttribute('href'))
             .toBe('/problem-inquiry');
     });
@@ -48,9 +52,9 @@ describe('SystemPlanComponent', () => {
 
         expect(list.tagName).toBe('UL');
         expect(fixture.nativeElement.querySelector('ol.concern-list')).toBeNull();
-        expect(identifiers.length).toBe(10);
+        expect(identifiers.length).toBe(16);
         expect(identifiers[0].textContent.trim()).toBe('SC-001');
-        expect(identifiers[9].textContent.trim()).toBe('SC-010');
-        expect(fixture.nativeElement.querySelectorAll('.concern-card').length).toBe(10);
+        expect(identifiers[15].textContent.trim()).toBe('SC-016');
+        expect(fixture.nativeElement.querySelectorAll('.concern-card').length).toBe(16);
     });
 });

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-type ConcernStatus = 'In progress' | 'Validated';
+type ConcernStatus = 'In progress' | 'Ready' | 'Validated';
 
 interface PlanConcern {
     readonly id: string;
@@ -45,6 +45,7 @@ interface PlanConcern {
                 <ul class="plan-stats">
                     <li><span class="stat-dot validated" aria-hidden="true"></span><strong>{{ validatedCount }}</strong> validated</li>
                     <li><span class="stat-dot in-progress" aria-hidden="true"></span><strong>{{ inProgressCount }}</strong> in progress</li>
+                    <li><strong>{{ readyCount }}</strong> ready</li>
                 </ul>
             </section>
 
@@ -125,7 +126,7 @@ interface PlanConcern {
         .concern-card__identity { flex-wrap: wrap; min-width: 0; }
         .concern-id { border: 1px solid #46574a; border-radius: .3rem; background: #29372d; color: #b9d0bd; padding: .2rem .45rem; font: 700 .76rem/1.35 Consolas, 'Courier New', monospace; white-space: nowrap; }
         .kind { color: #a8b6aa; font-size: .78rem; }
-        .status { flex: 0 0 auto; border: 1px solid transparent; border-radius: 999px; padding: .24rem .65rem; font-size: .76rem; font-weight: 600; white-space: nowrap; }
+        .status { border: 1px solid transparent; border-radius: 999px; background: #29372d; color: #b9d0bd; padding: .24rem .65rem; font-size: .76rem; font-weight: 600; white-space: nowrap; }
         .status[data-status="Validated"] { border-color: #42634a; background: #293e2e; color: #b8d9bd; }
         .status[data-status="In progress"] { border-color: #685a35; background: #3a3322; color: #e3cf97; }
         .concern-card h3 { margin: .8rem 0 .35rem; color: #dce6dd; font-size: 1.05rem; line-height: 1.4; }
@@ -178,7 +179,7 @@ export class SystemPlanComponent {
             id: 'SC-004',
             title: 'Define human review',
             kind: 'Behavior',
-            status: 'In progress',
+            status: 'Validated',
             dependsOn: ['SC-003'],
             summary: 'Define proposal review and distinguish acceptance from truth or ticket promotion.',
         },
@@ -230,6 +231,54 @@ export class SystemPlanComponent {
             dependsOn: [],
             summary: 'Provide a read-only view of concern status, dependencies, and overall progress.',
         },
+        {
+            id: 'SC-011',
+            title: 'Define note-to-ticket relationships',
+            kind: 'Behavior',
+            status: 'Validated',
+            dependsOn: ['SC-001', 'SC-004'],
+            summary: 'Require explicit human ticket framing from accepted notes; support one-to-many and many-to-one links.',
+        },
+        {
+            id: 'SC-012',
+            title: 'Collect complete ticket framing',
+            kind: 'Behavior',
+            status: 'Validated',
+            dependsOn: ['SC-001', 'SC-011'],
+            summary: 'Collect the complete current ProblemTicket fields without inferring values from source notes.',
+        },
+        {
+            id: 'SC-013',
+            title: 'Add identity and provenance links',
+            kind: 'Implementation',
+            status: 'In progress',
+            dependsOn: ['SC-011'],
+            summary: 'Give in-memory accepted notes identities so tickets can cite their sources.',
+        },
+        {
+            id: 'SC-014',
+            title: 'Build the ticket-framing component',
+            kind: 'Implementation',
+            status: 'Ready',
+            dependsOn: ['SC-012', 'SC-013'],
+            summary: 'Select accepted notes and explicitly frame a ticket with all required fields.',
+        },
+        {
+            id: 'SC-015',
+            title: 'Build the framed-ticket list',
+            kind: 'Implementation',
+            status: 'Ready',
+            dependsOn: ['SC-012'],
+            summary: 'Display framed tickets and their linked accepted notes.',
+        },
+        {
+            id: 'SC-016',
+            title: 'Connect note framing to ticket review',
+            kind: 'Implementation',
+            status: 'Ready',
+            dependsOn: ['SC-014', 'SC-015'],
+            summary: 'Connect accepted notes, explicit ticket creation, and the framed-ticket list.',
+        },
     ];
 
     get validatedCount(): number {
@@ -238,5 +287,9 @@ export class SystemPlanComponent {
 
     get inProgressCount(): number {
         return this.concerns.filter(concern => concern.status === 'In progress').length;
+    }
+
+    get readyCount(): number {
+        return this.concerns.filter(concern => concern.status === 'Ready').length;
     }
 }

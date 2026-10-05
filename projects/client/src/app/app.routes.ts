@@ -10,6 +10,7 @@ import { TermsComponent } from './system/terms/terms.component';
 import { GlossaryComponent } from './system/glossary/glossary.component';
 import { HistoryComponent } from './system/history/history.component';
 import { BacklogComponent } from './system/backlog/backlog.component';
+import { FeatureStatesComponent } from './system/feature-states/feature-states.component';
 
 export const routes: Routes = [
     {
@@ -59,6 +60,10 @@ export const routes: Routes = [
     {
         path: 'backlog',
         component: BacklogComponent
+    },
+    {
+        path: 'states',
+        component: FeatureStatesComponent
     },
     // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

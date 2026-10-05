@@ -249,6 +249,15 @@
                 <button
                     type="button"
                     mat-button
+                    class="queued-feature-edit-button"
+                    [attr.aria-label]="'Edit: ' + feature.description"
+                    (click)="editFeature(feature)"
+                >
+                    Edit
+                </button>
+                <button
+                    type="button"
+                    mat-button
                     class="feature-abort-button"
                     [attr.aria-label]="'Abort: ' + feature.description"
                     [disabled]="abortingFeatureIds.has(feature.id)"

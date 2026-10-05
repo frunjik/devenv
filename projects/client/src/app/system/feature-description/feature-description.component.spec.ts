@@ -487,6 +487,32 @@ describe('FeatureDescriptionComponent', () => {
             .toBe('feature-status-select status-done');
     });
 
+    it('edits a Queued feature from the Queued list', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.wishlist'),
+            `{"id":"${id}","priority":"High","status":"Queued","description":"Queued feature"}\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('.queued-feature .queued-feature-edit-button')!.click();
+        fixture.detectChanges();
+        const editor: HTMLTextAreaElement = document.querySelector(
+            'app-edit-feature-dialog textarea[aria-label="Feature description"]',
+        )!;
+        expect(editor.value).toBe('Queued feature');
+        editor.value = 'Queued feature, edited';
+        editor.dispatchEvent(new Event('input'));
+        editor.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', ctrlKey: true, bubbles: true }));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFeatureFile()).toContain('[High] [Queued] Queued feature, edited');
+        expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
+            .toBe('Queued feature, edited');
+    });
+
     it('edits a feature description in a dialog and updates its active task', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';

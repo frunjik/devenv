@@ -1,1 +1,5 @@
-this is a test does it work ???
+How It Works
+• Role Specialization: Individual configuration files (like *.agent.md) inside the folder define specific expert personas—such as a testing specialist, database manager, or documentation reviewer.
+• Context Routing: Main instruction routers (like CLAUDE.md or AGENTS.md) read from this directory to load only the relevant context, tools, and constraints needed for the active task.
+• Tool & Skill Binding: It links reusable task instructions (skills) and external integrations (like Model Context Protocol or MCP servers) so the AI knows which external actions it is allowed to execute.
+• Safety Boundaries: Permissions files within the directory establish strict guardrails, dictating which system files or functions the agent can edit independently and which require human approval.

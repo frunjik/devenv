@@ -2,7 +2,6 @@ import express, { type Express, type RequestHandler } from 'express';
 import cors from 'cors';
 import type { Server } from 'node:http';
 import serverPackage from '../../package.json';
-import { pptFields } from '@shared/ppt-fields';
 import { FileSystem } from './filesystem/filesystem';
 import { getFiles, postFiles } from './handlers/files';
 import { getFolders } from './handlers/folders';
@@ -68,7 +67,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/current', createCurrentEntryHandler(root));
     app.get('/task', createCurrentTaskHandler(root));
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
-    app.get('/ppt/fields', (_request, response) => response.json({ data: pptFields }));
+    app.get('/ppt/fields', (_request, response) => response.json({ data: [] }));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id/description', createFeatureDescriptionHandler(root));

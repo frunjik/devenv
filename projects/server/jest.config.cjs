@@ -5,7 +5,6 @@ module.exports = {
     silent: true,
     testMatch: ['<rootDir>/projects/server/test/**/*.spec.ts'],
     moduleNameMapper: {
-        '^@shared/ppt-fields$': '<rootDir>/projects/shared/src/lib/models.ts',
         '^@shared$': '<rootDir>/projects/shared/src/public-api.ts',
     },
     transform: {

@@ -1,3 +1,4 @@
 {"id":"60286600-b49c-4d78-b25a-1e96151b2861","priority":"Medium","status":"Backlog","description":"Wishlist"}
 {"id":"22212e4c-aa20-4de4-b047-4218f350b012","createdAt":"2026-10-05 07:44 +02:00","priority":"Low","status":"Backlog","description":"Merge and Publish Branch"}
 {"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"Low","status":"InProgress","description":"Update the readme and changelog"}
+{"id":"c03b6097-f485-447f-975c-7b4ba53c32be","createdAt":"2026-10-05 08:04 +02:00","priority":"Low","status":"InProgress","description":"remove @shared/ppt-fields and return an empty list for the fields on the API"}

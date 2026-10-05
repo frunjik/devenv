@@ -1,1 +1,0 @@
-export { pptFields } from 'shared';

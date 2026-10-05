@@ -5,6 +5,7 @@ import { PPTJSComponent } from './system/ppt/workspaces/js/js.component';
 import { TestRunnerComponent } from './system/test-runner/test-runner.component';
 import { GitLogComponent } from './system/git-log/git-log.component';
 import { FeatureDescriptionComponent } from './system/feature-description/feature-description.component';
+import { ModelsComponent } from './system/models/models.component';
 
 export const routes: Routes = [
     {
@@ -34,6 +35,10 @@ export const routes: Routes = [
     {
         path: 'feature',
         component: FeatureDescriptionComponent
+    },
+    {
+        path: 'models',
+        component: ModelsComponent
     },
     // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

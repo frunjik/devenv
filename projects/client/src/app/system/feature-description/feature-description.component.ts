@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -31,6 +32,7 @@ type FeatureListTab = 'open' | 'in-progress' | 'done';
         MatButtonModule,
         MatDialogModule,
         MatFormFieldModule,
+        MatIconModule,
         MatInputModule,
         MatPaginatorModule,
         MatSortModule,
@@ -47,7 +49,15 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     priority: FeaturePriority = 'Low';
     status: FeatureStatus = 'Backlog';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
-    readonly statuses: FeatureStatus[] = ['Questions', 'Backlog', 'In progress', 'Done', 'Aborted', 'Denied'];
+    readonly statuses: FeatureStatus[] = [
+        'Questions',
+        'Backlog',
+        'In progress',
+        'Committed',
+        'Done',
+        'Aborted',
+        'Denied',
+    ];
     featureSearch = '';
     isSubmitting = false;
     errorMessage = '';
@@ -64,7 +74,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     doneFeatures: FeatureRow[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
-    selectedFeatureTab: FeatureListTab = 'open';
+    selectedFeatureTab: FeatureListTab = 'in-progress';
     isLoadingFeatures = false;
     private featureRefreshSubscription = Subscription.EMPTY;
     featuresError = '';
@@ -93,7 +103,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         }
 
         event.preventDefault();
-        const tabs: FeatureListTab[] = ['open', 'in-progress', 'done'];
+        const tabs: FeatureListTab[] = ['in-progress', 'open', 'done'];
         const currentIndex = tabs.indexOf(tab);
         const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
         this.selectedFeatureTab = tabs[nextIndex];
@@ -339,7 +349,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Done|Aborted|Denied)\] (.+)$/i,
+            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] (.+)$/i,
         );
         return match
             ? {

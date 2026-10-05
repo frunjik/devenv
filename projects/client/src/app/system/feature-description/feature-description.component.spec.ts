@@ -78,18 +78,18 @@ describe('FeatureDescriptionComponent', () => {
         const tabs: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('[role="tab"]');
 
         expect(Array.from(tabs).map(tab => tab.textContent.trim())).toEqual([
-            'Open (0)',
             'In progress (0)',
+            'Open (0)',
             'Done (0)',
         ]);
         expect(tabs[0].getAttribute('aria-selected')).toBe('true');
-        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
-        expect(fixture.nativeElement.querySelector('#in-progress-features-panel').hidden).toBe(true);
+        expect(fixture.nativeElement.querySelector('#in-progress-features-panel').hidden).toBe(false);
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(true);
 
         tabs[1].click();
         fixture.detectChanges();
         expect(tabs[1].getAttribute('aria-selected')).toBe('true');
-        expect(fixture.nativeElement.querySelector('#in-progress-features-panel').hidden).toBe(false);
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
 
         tabs[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
         fixture.detectChanges();
@@ -226,6 +226,8 @@ describe('FeatureDescriptionComponent', () => {
         expect((rows[1].querySelector('.feature-move-down-button') as HTMLButtonElement).disabled).toBe(true);
         expect(rows[1].querySelector('.feature-move-up-button').getAttribute('aria-label'))
             .toBe('Move up: Second active feature');
+        expect(rows[1].querySelector('.feature-move-up-button mat-icon').textContent.trim()).toBe('arrow_upward');
+        expect(rows[1].querySelector('.feature-move-down-button mat-icon').textContent.trim()).toBe('arrow_downward');
         const activeFeatures = fixture.componentInstance.inProgressFeatures;
         fixture.componentInstance.moveInProgressFeature(activeFeatures[0], 'up');
         fixture.componentInstance.moveInProgressFeature(activeFeatures[1], 'down');
@@ -678,25 +680,29 @@ describe('FeatureDescriptionComponent', () => {
             '',
         ].join('\n'));
         fixture.componentInstance.refreshFeatures();
-        fixture.detectChanges();
-        for (let attempt = 0; attempt < 500; attempt++) {
-            if (fixture.componentInstance.featureDataSource.data.some(
-                feature => feature.description === 'Completed feature',
-            )) {
+        fixture.componentInstance.selectFeatureTab('open');
+        let completedRow: HTMLTableRowElement | undefined;
+        for (let attempt = 0; attempt < 500 && !completedRow; attempt++) {
+            fixture.detectChanges();
+            completedRow = Array.from<HTMLTableRowElement>(
+                fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
+            ).find(row =>
+                row.querySelector('.mat-column-description')?.textContent.trim() === 'Completed feature',
+            );
+            if (completedRow) {
                 break;
             }
             await new Promise(resolve => setTimeout(resolve, 10));
-            fixture.detectChanges();
         }
+        await fixture.whenStable();
+        fixture.detectChanges();
         const featureWork = TestBed.inject(FeatureWorkService);
         featureWork.start(completedId, 'Completed feature');
 
-        const completedRow: HTMLTableRowElement = Array.from<HTMLTableRowElement>(
-            fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
-        ).find(row =>
-            row.querySelector('.mat-column-description')?.textContent.trim() === 'Completed feature',
-        );
         expect(completedRow).toBeDefined();
+        if (!completedRow) {
+            throw new Error('Completed feature row did not render.');
+        }
         const doneButton: HTMLButtonElement = completedRow.querySelector('.feature-done-button');
         expect(doneButton?.getAttribute('aria-label')).toBe('Mark done: Completed feature');
         doneButton.click();
@@ -908,6 +914,35 @@ describe('FeatureDescriptionComponent', () => {
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Denied');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(featureWork.activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
+    it('sets a feature to Committed from the client and keeps its feature record', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [In progress] Feature already committed\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature already committed <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature already committed');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        expect(Array.from(selector.options).map(option => option.value)).toContain('Committed');
+        selector.value = 'Committed';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Committed] Feature already committed');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Committed');
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
         expect(featureWork.activeFeature).toBeNull();
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();

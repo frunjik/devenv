@@ -1,0 +1,18 @@
+.models-page {
+    box-sizing: border-box;
+    width: min(72rem, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1rem 0;
+}
+
+pre {
+    max-height: calc(100vh - 12rem);
+    overflow: auto;
+    padding: 1rem;
+    border: 1px solid rgb(127 127 127 / 25%);
+    border-radius: 0.5rem;
+    background: rgb(127 127 127 / 6%);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre;
+}

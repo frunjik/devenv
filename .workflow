@@ -15,7 +15,7 @@
 ./failure
 
 ./questions 
-
+./glossary
 
 feature status: new, backlog, commited, progress, delivered, questions, review, verify, done, archived
 

@@ -12,11 +12,6 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] The requested lanes are Committed, In progress, and Done. Should cards be movable between lanes, and should moving a card update its feature status? A: Yes <!-- feature-id:8a0a1061-9ef3-48ec-94c8-b384d84bbabc -->
-- [In progress] move the features in the progress list on the client in the first tab and the open in the second <!-- feature-id:5323a7c0-42da-4dd7-b044-16aac43a0051 -->
-- [In progress] Should the numeric 1-10 score replace High/Medium/Low or rank features independently, and what score/default should each existing priority receive? <!-- feature-id:a9098ae5-cfc0-477d-9c0b-b90f6afa42b0 -->
-- [In progress] replace the up down buttons in the in progress view with icons <!-- feature-id:c46bd579-4216-46ec-aa1c-51d8753e27d7 -->
-- [In progress] make a client display of the shared models in the code <!-- feature-id:e3cdd907-5202-4055-ad96-abad7f3790b8 -->
-- [In progress] How should the client enumerate models from @shared (runtime registry, authored metadata, or source scan), and where should the view live? TypeScript model types are erased at runtime. A: this is where the existing PPT models come into play, can we for start show the textual representation of the models on the client ? <!-- feature-id:57db25d7-bf49-4f35-85ac-6f7e362c694b -->
-- [In progress] add commited state to feature <!-- feature-id:94aa6582-e140-4587-96ac-248ee1c641fc -->
-- [In progress] disable the start feature button if the feature is already started <!-- feature-id:fd20456a-aebf-4ed8-829a-dd9d7fe1eb03 -->
+- [In progress] create a gitundo server endpoint that undoes the latest git commit <!-- feature-id:4d0d4c3c-86ad-45ae-8802-b554d9eb24a4 -->
+- [In progress] keep a version number for the client and server code <!-- feature-id:d7b7b5aa-e0cf-4dac-8651-c7b765f226be -->
+- [In progress] Existing priority levels map to scores 1–3 High, 4–7 Medium, and 8–9 Low. Show both the priority level and score; score 10 means do later. <!-- feature-id:a9098ae5-cfc0-477d-9c0b-b90f6afa42b0 -->

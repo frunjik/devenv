@@ -105,11 +105,14 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.gitStatus.refresh();
                 const activeFeature = this.featureWork.activeFeature;
                 if (activeFeature) {
-                    this.bs.removeFeature(activeFeature.id).subscribe({
-                        next: () => this.featureWork.complete(activeFeature.id),
+                    this.bs.updateFeatureStatus(activeFeature.id, 'Committed').subscribe({
+                        next: () => {
+                            this.featureWork.complete(activeFeature.id);
+                            this.currentTask.refresh();
+                        },
                         error: (error: Error) => this.showCommitMessage(
-                            `Changes committed, but feature '${activeFeature.id}' could not be removed: `
-                                + this.getApiErrorMessage(error, 'Feature could not be removed.'),
+                            `Changes committed, but feature '${activeFeature.id}' could not be marked committed: `
+                                + this.getApiErrorMessage(error, 'Feature could not be marked committed.'),
                             true,
                         ),
                     });

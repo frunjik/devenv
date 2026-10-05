@@ -7,7 +7,15 @@ import type { FeaturePriority, FeatureStatus } from '@shared';
 export type { FeaturePriority, FeatureStatus } from '@shared';
 
 const featurePriorities: readonly FeaturePriority[] = ['High', 'Medium', 'Low'];
-const featureStatuses: readonly FeatureStatus[] = ['Questions', 'Backlog', 'In progress', 'Done', 'Aborted', 'Denied'];
+const featureStatuses: readonly FeatureStatus[] = [
+    'Questions',
+    'Backlog',
+    'In progress',
+    'Committed',
+    'Done',
+    'Aborted',
+    'Denied',
+];
 const canonicalPriorities: Record<string, FeaturePriority> = {
     high: 'High',
     medium: 'Medium',
@@ -17,6 +25,7 @@ const canonicalStatuses: Record<string, FeatureStatus> = {
     questions: 'Questions',
     backlog: 'Backlog',
     'in progress': 'In progress',
+    committed: 'Committed',
     done: 'Done',
     aborted: 'Aborted',
     denied: 'Denied',
@@ -77,7 +86,7 @@ function addFeatureStatus(entry: string): string {
     const suffix = entry.slice(idEnd);
     const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
     const remaining = priorityMatch[2];
-    const statusMatch = remaining.match(/^\s+\[(Questions|Backlog|In progress|Done|Aborted|Denied)\](.*)$/i);
+    const statusMatch = remaining.match(/^\s+\[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\](.*)$/i);
     if (!statusMatch) {
         return `${entry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}] [Backlog]${remaining}`;
     }
@@ -93,7 +102,8 @@ function setFeatureStatus(entry: string, status: FeatureStatus): string {
     const idEnd = idMatch.index + idMatch[0].length;
     const suffix = normalizedEntry.slice(idEnd);
     const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
-    const statusMatch = priorityMatch[2].match(/^\s+\[(Questions|Backlog|In progress|Done|Aborted|Denied)\](.*)$/i)!;
+    const statusMatch = priorityMatch[2]
+        .match(/^\s+\[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\](.*)$/i)!;
     return `${normalizedEntry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}]`
         + ` [${status}]${statusMatch[2]}`;
 }
@@ -141,14 +151,14 @@ async function addStartedFeatureToDevEnv(root: string, entry: string, id: string
 
 function setFeatureDescription(entry: string, description: string): string {
     const match = entry.match(
-        /^(\/\/ (?:\[[^\]]+\] )?\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\] \[(?:High|Medium|Low)\] \[(?:Questions|Backlog|In progress|Done|Aborted|Denied)\] ).*$/i,
+        /^(\/\/ (?:\[[^\]]+\] )?\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\] \[(?:High|Medium|Low)\] \[(?:Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] ).*$/i,
     );
     return `${match![1]}${description}`;
 }
 
 function featureDescription(entry: string): string {
     return entry.match(
-        /\[(?:High|Medium|Low)\]\s+\[(?:Questions|Backlog|In progress|Done|Aborted|Denied)\]\s*(.*)$/i,
+        /\[(?:High|Medium|Low)\]\s+\[(?:Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\]\s*(.*)$/i,
     )![1];
 }
 
@@ -253,7 +263,7 @@ export function createFeatureHandler(root: string): RequestHandler {
         const requestedStatus: unknown = request.body?.status ?? 'Backlog';
         if (typeof requestedStatus !== 'string'
             || !featureStatuses.includes(requestedStatus as FeatureStatus)) {
-            response.status(400).json({ error: { message: 'Feature status must be Questions, Backlog, In progress, Done, Aborted, or Denied.' } });
+            response.status(400).json({ error: { message: 'Feature status must be Questions, Backlog, In progress, Committed, Done, Aborted, or Denied.' } });
             return;
         }
 
@@ -403,7 +413,7 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
         }
         if (typeof requestedStatus !== 'string'
             || !featureStatuses.includes(requestedStatus as FeatureStatus)) {
-            response.status(400).json({ error: { message: 'Feature status must be Questions, Backlog, In progress, Done, Aborted, or Denied.' } });
+            response.status(400).json({ error: { message: 'Feature status must be Questions, Backlog, In progress, Committed, Done, Aborted, or Denied.' } });
             return;
         }
 

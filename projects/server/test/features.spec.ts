@@ -246,6 +246,15 @@ describe('features public API', () => {
         expect(response.body.data).toMatch(/\[Low\] \[Denied\] Feature not accepted$/);
     });
 
+    it('accepts Committed as a feature status', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature already committed', status: 'Committed' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(/\[Low\] \[Committed\] Feature already committed$/);
+    });
+
     it('accepts Questions as a feature status', async () => {
         const response = await request(app)
             .post('/features')
@@ -265,7 +274,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, Aborted, or Denied.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, Committed, Done, Aborted, or Denied.' },
         });
     });
 
@@ -747,7 +756,9 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
     });
 
-    it.each(['Questions', 'Backlog', 'In progress', 'Done', 'Aborted', 'Denied'] as const)('accepts a %s status update', async status => {
+    it.each(['Questions', 'Backlog', 'In progress', 'Committed', 'Done', 'Aborted', 'Denied'] as const)(
+        'accepts a %s status update',
+        async status => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
 
@@ -756,6 +767,24 @@ describe('features public API', () => {
             .send({ status });
 
         expect(response.body.data).toContain(`[${status}] Complete this feature`);
+        },
+    );
+
+    it('marks a feature committed and removes its in-progress task marker', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        const feature = `// [${id}] [High] [In progress] Commit this feature`;
+        const marker = `<!-- feature-id:${id} -->`;
+        await writeFile(join(root, '.features'), `${feature}\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Commit this feature ${marker}\n`);
+
+        const response = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'Committed' });
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toBe(feature.replace('[In progress]', '[Committed]'));
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(marker);
     });
 
     it('removes the task marker when marking a feature done but keeps the feature record', async () => {
@@ -833,7 +862,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, Aborted, or Denied.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, Committed, Done, Aborted, or Denied.' },
         });
     });
 

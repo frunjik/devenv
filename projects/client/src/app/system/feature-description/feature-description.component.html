@@ -34,6 +34,17 @@
         <button
             type="button"
             mat-button
+        id="in-progress-features-tab"
+        role="tab"
+        aria-controls="in-progress-features-panel"
+        [attr.aria-selected]="selectedFeatureTab === 'in-progress'"
+        [attr.tabindex]="selectedFeatureTab === 'in-progress' ? 0 : -1"
+        (click)="selectFeatureTab('in-progress')"
+        (keydown)="onFeatureTabKeydown($event, 'in-progress')"
+    >In progress ({{ inProgressFeatures.length }})</button>
+    <button
+        type="button"
+        mat-button
             id="open-features-tab"
             role="tab"
             aria-controls="open-features-panel"
@@ -42,17 +53,6 @@
             (click)="selectFeatureTab('open')"
             (keydown)="onFeatureTabKeydown($event, 'open')"
         >Open ({{ featureDataSource.data.length }})</button>
-        <button
-            type="button"
-            mat-button
-            id="in-progress-features-tab"
-            role="tab"
-            aria-controls="in-progress-features-panel"
-            [attr.aria-selected]="selectedFeatureTab === 'in-progress'"
-            [attr.tabindex]="selectedFeatureTab === 'in-progress' ? 0 : -1"
-            (click)="selectFeatureTab('in-progress')"
-            (keydown)="onFeatureTabKeydown($event, 'in-progress')"
-        >In progress ({{ inProgressFeatures.length }})</button>
         <button
             type="button"
             mat-button
@@ -224,7 +224,7 @@
                         [attr.aria-label]="'Move up: ' + feature.description"
                         [disabled]="isReorderingFeatures || index === 0"
                         (click)="moveInProgressFeature(feature, 'up')"
-                    >Move up</button>
+                    ><mat-icon aria-hidden="true">arrow_upward</mat-icon></button>
                     <button
                         type="button"
                         mat-button
@@ -232,7 +232,7 @@
                         [attr.aria-label]="'Move down: ' + feature.description"
                         [disabled]="isReorderingFeatures || index === inProgressFeatures.length - 1"
                         (click)="moveInProgressFeature(feature, 'down')"
-                    >Move down</button>
+                    ><mat-icon aria-hidden="true">arrow_downward</mat-icon></button>
                 </div>
                 <button
                     type="button"

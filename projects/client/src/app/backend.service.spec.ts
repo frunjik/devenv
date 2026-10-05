@@ -120,6 +120,16 @@ describe('BackendService', () => {
         await rm(join(root, '.features'), { force: true });
     });
 
+    it('removes a feature through the public API', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        const entry = `// [${id}] [High] [Backlog] Remove this feature`;
+        await writeFile(join(root, '.features'), `${entry}\n`);
+
+        await expect(service.removeFeature(id).toPromise()).resolves.toBe(entry);
+        expect(await readFile(join(root, '.features'), 'utf8')).not.toContain(id);
+        await rm(join(root, '.features'), { force: true });
+    });
+
     it('loads the cached test result status through the public API', async () => {
         const status = await service.getTestRunCacheStatus().toPromise();
 

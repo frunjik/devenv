@@ -12,6 +12,7 @@ export interface PPTFeature {
     description: string;
     status: PPTFeatureStatus;
     priority: FeaturePriority;
+    createdAt?: string;
     deliveredDate?: string;
 }
 

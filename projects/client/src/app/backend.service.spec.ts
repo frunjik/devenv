@@ -125,7 +125,7 @@ describe('BackendService', () => {
     it('assigns the default Low priority when adding a feature without selecting one', async () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 
-        expect(entry).toMatch(/\[Low\] \[Backlog\] Feature with default priority$/);
+        expect(entry).toMatchObject({ priority: 'Low', status: 'Backlog', description: 'Feature with default priority' });
         await rm(join(root, '.wishlist'), { force: true });
     });
 
@@ -135,7 +135,7 @@ describe('BackendService', () => {
             `// [${id}] [High] [Backlog] Original description\n`);
 
         await expect(service.updateFeatureDescription(id, ' Updated description ').toPromise())
-            .resolves.toMatch(/\[High\] \[Backlog\] Updated description$/);
+            .resolves.toMatchObject({ id, priority: 'High', status: 'Backlog', description: 'Updated description' });
         expect(await readFeatureFile())
             .toContain(`[${id}] [High] [Backlog] Updated description`);
         await rm(join(root, '.wishlist'), { force: true });
@@ -146,7 +146,9 @@ describe('BackendService', () => {
         const entry = `// [${id}] [High] [Backlog] Remove this feature`;
         await writeFile(join(root, '.wishlist'), `${entry}\n`);
 
-        await expect(service.removeFeature(id).toPromise()).resolves.toBe(entry);
+        await expect(service.removeFeature(id).toPromise()).resolves.toEqual({
+            id, priority: 'High', status: 'Backlog', description: 'Remove this feature',
+        });
         expect(await readFeatureFile()).not.toContain(id);
         await rm(join(root, '.wishlist'), { force: true });
     });

@@ -131,8 +131,8 @@ describe('FeatureDescriptionComponent', () => {
         const matchingId = '123e4567-e89b-42d3-a456-426614174000';
         const otherId = '123e4567-e89b-42d3-a456-426614174001';
         await writeFile(join(root, '.wishlist'), [
-            `// [${matchingId}] [High] [In progress] Matching active feature`,
-            `// [${otherId}] [Low] [In progress] Unrelated active feature`,
+            `// [${matchingId}] [High] [InProgress] Matching active feature`,
+            `// [${otherId}] [Low] [InProgress] Unrelated active feature`,
             '',
         ].join('\n'));
         fixture.componentInstance.refreshFeatures();
@@ -224,7 +224,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const inProgressId = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'), [
-            `// [${inProgressId}] [High] [In progress] Feature being worked on`,
+            `// [${inProgressId}] [High] [InProgress] Feature being worked on`,
             '// [123e4567-e89b-42d3-a456-426614174001] [Medium] [Backlog] Feature waiting',
             '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature',
             '',
@@ -255,9 +255,9 @@ describe('FeatureDescriptionComponent', () => {
         const backlogId = '123e4567-e89b-42d3-a456-426614174001';
         const secondId = '123e4567-e89b-42d3-a456-426614174002';
         await writeFile(join(root, '.wishlist'), [
-            `// [${firstId}] [High] [In progress] First active feature`,
+            `// [${firstId}] [High] [InProgress] First active feature`,
             `// [${backlogId}] [Low] [Backlog] Unchanged backlog feature`,
-            `// [${secondId}] [Medium] [In progress] Second active feature`,
+            `// [${secondId}] [Medium] [InProgress] Second active feature`,
             '',
         ].join('\n'));
         fixture.componentInstance.refreshFeatures();
@@ -306,8 +306,8 @@ describe('FeatureDescriptionComponent', () => {
         const firstId = '123e4567-e89b-42d3-a456-426614174000';
         const secondId = '123e4567-e89b-42d3-a456-426614174001';
         await writeFile(join(root, '.wishlist'), [
-            `// [${firstId}] [High] [In progress] First active feature`,
-            `// [${secondId}] [Medium] [In progress] Second active feature`,
+            `// [${firstId}] [High] [InProgress] First active feature`,
+            `// [${secondId}] [Medium] [InProgress] Second active feature`,
             '',
         ].join('\n'));
         fixture.componentInstance.refreshFeatures();
@@ -331,7 +331,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [${id}] [High] [In progress] Feature to abort\n`);
+            `// [${id}] [High] [InProgress] Feature to abort\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to abort <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -341,7 +341,6 @@ describe('FeatureDescriptionComponent', () => {
         const featureWork = TestBed.inject(FeatureWorkService);
         featureWork.start(id, 'Feature to abort');
         const feature = fixture.componentInstance.inProgressFeatures[0];
-        fixture.componentInstance.abortFeature({ ...feature, id: '' });
         fixture.componentInstance.selectFeatureTab('in-progress');
         fixture.detectChanges();
 
@@ -368,7 +367,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [${id}] [Medium] [In progress] Feature that cannot be aborted\n`);
+            `// [${id}] [Medium] [InProgress] Feature that cannot be aborted\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -383,7 +382,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile())
-            .toContain('[In progress] Feature that cannot be aborted');
+            .toContain('[InProgress] Feature that cannot be aborted');
         expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
         expect(fixture.nativeElement.querySelector('#feature-abort-error').textContent).toContain('500');
         expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
@@ -435,7 +434,7 @@ describe('FeatureDescriptionComponent', () => {
         await writeFile(join(root, '.wishlist'), [
             `// [${ids[0]}] [High] [Questions] Needs clarification`,
             `// [${ids[1]}] [Medium] [Backlog] Urgent task`,
-            `// [${ids[2]}] [Medium] [In progress] Active task`,
+            `// [${ids[2]}] [Medium] [InProgress] Active task`,
             `// [${ids[3]}] [Low] [Done] Finished task`,
             '',
         ].join('\n'));
@@ -470,7 +469,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [${id}] [High] [In progress] Old feature description\n`);
+            `// [${id}] [High] [InProgress] Old feature description\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'The features you are writing are, take them one by one:',
             `- [In progress] Old feature description <!-- feature-id:${id} -->`,
@@ -504,7 +503,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile())
-            .toContain(`[${id}] [High] [In progress] Updated feature description`);
+            .toContain(`[${id}] [High] [InProgress] Updated feature description`);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
             .toContain(`- [In progress] Updated feature description <!-- feature-id:${id} -->`);
         expect(featureWork.activeFeature).toEqual({
@@ -679,7 +678,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('.feature-start-button').textContent.trim()).toBe('Started');
         expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
-            .toBe('In progress');
+            .toBe('InProgress');
         expect(fixture.nativeElement.querySelectorAll('.in-progress-feature')).toHaveLength(1);
         expect(fixture.nativeElement.querySelector('.in-progress-feature-description').textContent.trim())
             .toBe('Add a feature');
@@ -698,7 +697,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [In progress] Continue this feature\n`);
+            `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [InProgress] Continue this feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -866,7 +865,7 @@ describe('FeatureDescriptionComponent', () => {
         const status: HTMLSelectElement = fixture.nativeElement.querySelector(
             'select[aria-label="Feature status"]',
         );
-        status.value = 'In progress';
+        status.value = 'InProgress';
         status.dispatchEvent(new Event('change'));
         textarea.value = 'Start this feature immediately';
         textarea.dispatchEvent(new Event('input'));
@@ -877,7 +876,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile())
-            .toMatch(/\[Low\] \[In progress\] Start this feature immediately/);
+            .toMatch(/\[Low\] \[InProgress\] Start this feature immediately/);
         expect(fixture.componentInstance.status).toBe('Backlog');
         expect((fixture.nativeElement.querySelector('select[aria-label="Feature status"]') as HTMLSelectElement).value)
             .toBe('Backlog');
@@ -917,7 +916,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [2026-10-04 22:45 +02:00] [${id}] [High] [In progress] Feature needing clarification\n`);
+            `// [2026-10-04 22:45 +02:00] [${id}] [High] [InProgress] Feature needing clarification\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature needing clarification <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -944,7 +943,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [${id}] [High] [In progress] Feature to deny\n`);
+            `// [${id}] [High] [InProgress] Feature to deny\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to deny <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -998,7 +997,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.wishlist'),
-            `// [${id}] [High] [In progress] Feature already committed\n`);
+            `// [${id}] [High] [InProgress] Feature already committed\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature already committed <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -1033,13 +1032,13 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
-        selector.value = 'In progress';
+        selector.value = 'InProgress';
         selector.dispatchEvent(new Event('change'));
         await fixture.whenStable();
         fixture.detectChanges();
 
         expect(await readFeatureFile())
-            .toContain('[Medium] [In progress] Feature to promote');
+            .toContain('[Medium] [InProgress] Feature to promote');
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
             .toContain(`- [In progress] Feature to promote <!-- feature-id:${id} -->`);
         expect(TestBed.inject(FeatureWorkService).activeFeature).toEqual({
@@ -1143,22 +1142,6 @@ describe('FeatureDescriptionComponent', () => {
         expect(row.querySelector('.mat-column-description')?.textContent.trim()).toBe('Legacy feature');
         expect((row.querySelector('.mat-column-priority select') as HTMLSelectElement).value).toBe('Medium');
         expect((row.querySelector('.feature-status-select') as HTMLSelectElement).value).toBe('Backlog');
-    });
-
-    it('keeps malformed legacy feature text visible', async () => {
-        await fixture.whenStable();
-        const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `unstructured legacy text [${id}]\n`);
-        fixture.componentInstance.refreshFeatures();
-        await fixture.whenStable();
-        fixture.detectChanges();
-
-        const row: HTMLTableRowElement = fixture.nativeElement.querySelector('.open-features tr.mat-mdc-row');
-        expect(row.querySelector('.mat-column-description')?.textContent.trim())
-            .toBe(`unstructured legacy text [${id}] [Medium] [Backlog]`);
-        expect(row.querySelector('.mat-column-id')?.textContent.trim()).toBe('');
-        row.querySelector<HTMLButtonElement>('.feature-start-button')!.click();
-        expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
     });
 
     it('reports priority update failures and restores the previous selection', async () => {

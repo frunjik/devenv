@@ -46,7 +46,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     readonly statuses: PPTFeatureStatus[] = [
         'Questions',
         'Backlog',
-        'In progress',
+        'InProgress',
         'Committed',
         'Done',
         'Aborted',
@@ -64,7 +64,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     isReorderingFeatures = false;
     readonly completingFeatureIds = new Set<string>();
     readonly abortingFeatureIds = new Set<string>();
-    features: string[] = [];
+    features: PPTFeature[] = [];
     doneFeatures: PPTFeature[] = [];
     readonly featureDataSource = new MatTableDataSource<PPTFeature>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
@@ -78,7 +78,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     }
 
     get inProgressFeatures(): PPTFeature[] {
-        return this.featureDataSource.data.filter(feature => feature.status === 'In progress');
+        return this.featureDataSource.data.filter(feature => feature.status === 'InProgress');
     }
 
     get matchingInProgressFeatures(): PPTFeature[] {
@@ -153,7 +153,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     }
 
     abortFeature(feature: PPTFeature): void {
-        if (!feature.id || this.abortingFeatureIds.has(feature.id)) {
+        if (this.abortingFeatureIds.has(feature.id)) {
             return;
         }
 
@@ -211,9 +211,6 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     }
 
     startFeature(feature: PPTFeature): void {
-        if (!feature.id) {
-            return;
-        }
         this.statusError = '';
         this.backend.startFeature(feature.id).subscribe({
             next: entry => {
@@ -228,7 +225,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     }
 
     markFeatureDone(feature: PPTFeature): void {
-        if (!feature.id || this.completingFeatureIds.has(feature.id)) {
+        if (this.completingFeatureIds.has(feature.id)) {
             return;
         }
 
@@ -268,11 +265,11 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
             this.editError = '';
             this.backend.updateFeatureDescription(featureId, description).subscribe({
                 next: entry => {
-                    const updatedFeature = this.parseFeature(entry);
+
                     if (this.featureWork.activeFeature?.id === featureId) {
-                        this.featureWork.start(featureId, updatedFeature.description);
+                        this.featureWork.start(featureId, entry.description);
                     }
-                    if (feature.status === 'In progress') {
+                    if (feature.status === 'InProgress') {
                         this.currentTask.refresh();
                     }
                     this.updateFeatureEntry(entry);
@@ -322,20 +319,20 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         target?: HTMLSelectElement,
     ): void {
         if (feature.status === status) {
-            if (status === 'In progress') {
+            if (status === 'InProgress') {
                 this.featureWork.start(feature.id, feature.description);
             }
             return;
         }
 
         this.statusError = '';
-        const update = status === 'In progress'
+        const update = status === 'InProgress'
             ? this.backend.startFeature(feature.id)
             : this.backend.updateFeatureStatus(feature.id, status);
         update.subscribe({
             next: entry => {
-                if (status === 'In progress') {
-                    this.featureWork.start(feature.id, this.parseFeature(entry).description);
+                if (status === 'InProgress') {
+                    this.featureWork.start(feature.id, entry.description);
                     this.currentTask.refresh();
                 } else {
                     this.featureWork.complete(feature.id);
@@ -352,31 +349,13 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    private parseFeature(feature: string): PPTFeature {
-        const match = feature.match(
-            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] (.+?)(?: \[Delivered: (\d{4}-\d{2}-\d{2})\])?$/i,
-        );
-        return match
-            ? {
-                id: match[1],
-                priority: match[2] as FeaturePriority,
-                status: match[3] as PPTFeatureStatus,
-                description: match[4],
-                deliveredDate: match[5],
-            }
-            : { id: '', priority: 'Medium', status: 'Backlog', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
-    }
-
-    private updateFeatureEntry(entry: string): void {
-        const updatedFeature = this.parseFeature(entry);
-        this.features = this.features.map(feature =>
-            this.parseFeature(feature).id === updatedFeature.id ? entry : feature,
-        );
+    private updateFeatureEntry(updatedFeature: PPTFeature): void {
+        this.features = this.features.map(feature => feature.id === updatedFeature.id ? updatedFeature : feature);
         this.refreshFeatureLists();
     }
 
     private refreshFeatureLists(): void {
-        const features = this.features.map(feature => this.parseFeature(feature));
+        const features = this.features;
         this.doneFeatures = features.filter(feature => feature.status === 'Done');
         this.featureDataSource.data = features.filter(feature => feature.status !== 'Done');
         this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();

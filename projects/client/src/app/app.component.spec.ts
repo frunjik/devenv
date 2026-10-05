@@ -137,7 +137,7 @@ describe('AppComponent', () => {
 
         const taskControl = fixture.nativeElement.querySelector('.top-current-task');
         expect(taskControl.textContent).toContain('Implement current task toolbar');
-        expect(taskControl.textContent).not.toContain('[In progress]');
+        expect(taskControl.textContent).not.toContain('[InProgress]');
         expect(taskControl.textContent).not.toContain('feature-id:');
         expect(taskControl.getAttribute('aria-label')).toBe('Refresh current task');
         expect(taskControl.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))

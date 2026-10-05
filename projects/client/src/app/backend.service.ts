@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
-import type { FeaturePriority, PPTFeatureStatus } from '@ppt';
+import type { FeaturePriority, PPTFeature, PPTFeatureStatus } from '@ppt';
 import type {
     GitCommitResult,
     GitLogEntry,
@@ -81,51 +81,51 @@ export class BackendService {
         description: string,
         priority: FeaturePriority = 'Low',
         status: PPTFeatureStatus = 'Backlog',
-    ): Observable<string> {
-        return this.post<string>('features', { description, priority, status });
+    ): Observable<PPTFeature> {
+        return this.post<PPTFeature>('features', { description, priority, status });
     }
 
-    updateFeatureDescription(id: string, description: string): Observable<string> {
-        return this.httpservice.patch<SuccessResponseBody<string>>(
+    updateFeatureDescription(id: string, description: string): Observable<PPTFeature> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
             `${this.host}features/${encodeURIComponent(id)}/description`,
             { description },
         ).pipe(map(response => response.data));
     }
 
-    updateFeaturePriority(id: string, priority: FeaturePriority): Observable<string> {
-        return this.httpservice.patch<SuccessResponseBody<string>>(
+    updateFeaturePriority(id: string, priority: FeaturePriority): Observable<PPTFeature> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
             `${this.host}features/${encodeURIComponent(id)}`,
             { priority },
         ).pipe(map(response => response.data));
     }
 
-    moveInProgressFeature(id: string, direction: 'up' | 'down'): Observable<string[]> {
-        return this.httpservice.patch<SuccessResponseBody<string[]>>(
+    moveInProgressFeature(id: string, direction: 'up' | 'down'): Observable<PPTFeature[]> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature[]>>(
             `${this.host}features/${encodeURIComponent(id)}/order`,
             { direction },
         ).pipe(map(response => response.data));
     }
 
-    updateFeatureStatus(id: string, status: PPTFeatureStatus): Observable<string> {
-        return this.httpservice.patch<SuccessResponseBody<string>>(
+    updateFeatureStatus(id: string, status: PPTFeatureStatus): Observable<PPTFeature> {
+        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
             `${this.host}features/${encodeURIComponent(id)}/status`,
             { status },
         ).pipe(map(response => response.data));
     }
 
-    startFeature(id: string): Observable<string> {
-        return this.httpservice.post<SuccessResponseBody<string>>(
+    startFeature(id: string): Observable<PPTFeature> {
+        return this.httpservice.post<SuccessResponseBody<PPTFeature>>(
             `${this.host}features/${encodeURIComponent(id)}/start`,
             {},
         ).pipe(map(response => response.data));
     }
 
-    getFeatures(): Observable<string[]> {
-        return this.get<string[]>('features');
+    getFeatures(): Observable<PPTFeature[]> {
+        return this.get<PPTFeature[]>('features');
     }
 
-    removeFeature(id: string): Observable<string> {
-        return this.httpservice.delete<SuccessResponseBody<string>>(
+    removeFeature(id: string): Observable<PPTFeature> {
+        return this.httpservice.delete<SuccessResponseBody<PPTFeature>>(
             `${this.host}features/${encodeURIComponent(id)}`,
         ).pipe(map(response => response.data));
     }

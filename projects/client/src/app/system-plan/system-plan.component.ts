@@ -399,6 +399,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-024'],
             summary: 'Make the current Red, Green, or Refactor phase visible in the meta layer; decide whether it is derived or recorded.',
         },
+        {
+            id: 'SC-032',
+            title: 'Show the current task in the meta toolbar',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-024'],
+            summary: 'Decide whether and how the current task appears in the top meta toolbar, and how it gets set.',
+        },
     ];
 
     get validatedCount(): number {

@@ -425,6 +425,16 @@ Make the current Red-Green-Refactor phase (P-001) visible in the meta (host) lay
 **Working boundary:** Exploration and decision first; no new behavior until the source of the phase is agreed. The meta layer already shows the last test run result (passed, failed, error) and the current task in the status toolbar; this concern decides whether the phase is derived from that or recorded explicitly.
 **Open questions:** Is the phase derived from test results (failing means Red, passing after Red means Green) or set explicitly by whoever is working? How is Refactor detected, since a passing run looks the same as Green? Does it show per task or per concern (SC-NN)? Where does it appear (status toolbar, a small indicator next to the current task, or a history of cycles)? Is a history of phase changes kept (and where, see SC-028)? Does it also show P-004 coverage and the other principle gates?
 **Vocabulary candidates (P-009, not yet agreed):** "phase", "cycle", "Red", "Green", "Refactor".
+
+### SC-032 — Show the current task in the meta toolbar
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-024
+
+Show the current task in the meta toolbar (the host layer's top bar), so it is visible alongside the host menu and not only in the status toolbar at the bottom.
+
+**Working boundary:** Decide placement and source before building. Today the bottom status toolbar already shows a "Current task" button that reads the last non-empty line of the `.current` file through the server (`current-entry` handler) and shows it in a tooltip; there is no UI for setting it. This concern must not duplicate that display without a reason.
+**Open questions:** Move the display to the top toolbar, show it in both, or show a short form on top and the full text in the status bar? How does the task get set (editing `.current` by hand, a control in the meta app, or tied to a concern SC-NN or ticket)? Should it link to the concern or ticket it names? What is shown when no task is set? How does it behave on narrow screens, where the top toolbar is one scrollable row? Does it relate to the Red-Green-Refactor phase display (SC-031)?
+**Vocabulary candidates (P-009, not yet agreed):** "current task" versus "Work Item" (see the Glossary) and "System Concern".
 
 The dependency order does not authorize building both components together.
 

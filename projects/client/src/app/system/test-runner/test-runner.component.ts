@@ -10,11 +10,7 @@ import {
 } from '../../backend.service';
 import { TestRunCacheStatusService } from '../../test-run-cache-status.service';
 
-interface TestRunResult {
-    exitCode: number | null;
-    stdout: string;
-    stderr: string;
-}
+type TestRunResult = Pick<LastTestRun, 'exitCode' | 'stdout' | 'stderr'>;
 
 @Component({
     selector: 'app-test-runner',

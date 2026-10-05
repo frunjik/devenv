@@ -30,14 +30,12 @@ export type {
 })
 export class BackendService {
 
-    private defaultHost = 'http://localhost:3000/';
-    private httpservice = inject(HttpClient);
-    private logger = inject(LoggerService);
-
-    constructor() { }
+    private readonly defaultHost = 'http://localhost:3000/';
+    private readonly httpService = inject(HttpClient);
+    private readonly logger = inject(LoggerService);
 
     get host(): string {
-        return (((window as unknown) as any).host) ?? this.defaultHost
+        return (window as Window & { host?: string }).host ?? this.defaultHost;
     }
 
     loadFile(pathname: string): Observable<string> {
@@ -51,7 +49,7 @@ export class BackendService {
     }
 
     saveFile(pathname: string, contents: string): Observable<string> {
-        return this.post<any>(`files?path=${pathname}`, {data: contents})
+        return this.post<string, { data: string }>(`files?path=${pathname}`, { data: contents })
             .pipe(
                 catchError(err => {
                     this.logError(`saveFile("${pathname}")`, err);
@@ -71,7 +69,7 @@ export class BackendService {
     }
 
     commitChanges(message: string): Observable<GitCommitResult> {
-        return this.post<GitCommitResult>('git/commit', { message });
+        return this.post<GitCommitResult, { message: string }>('git/commit', { message });
     }
 
     getGitLog(): Observable<GitLogEntry[]> {
@@ -182,14 +180,14 @@ export class BackendService {
 
 
     private get<T>(resource: string): Observable<T> {
-        return this.httpservice.get<SuccessResponseBody<T>>(this.host + resource)
+        return this.httpService.get<SuccessResponseBody<T>>(this.host + resource)
             .pipe(
                 map(data => data.data),
             );
     }
 
-    private post<T>(resource: string, data: any): Observable<T> {
-        return this.httpservice.post<SuccessResponseBody<T>>(this.host + resource, data)
+    private post<TResponse, TRequest>(resource: string, data: TRequest): Observable<TResponse> {
+        return this.httpService.post<SuccessResponseBody<TResponse>>(this.host + resource, data)
             .pipe(
                 map(data => data.data),
             );

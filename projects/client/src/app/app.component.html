@@ -8,6 +8,10 @@
     <p class="meta-layer-label">Meta layer · hosts the problem-solving app</p>
 }
 <div class="inner-app" [class.framed]="meta.enabled()">
+    <nav class="inner-nav" aria-label="Problem solving">
+        <a routerLink="/problem-inquiry" routerLinkActive="active">Problem inquiry</a>
+        <a routerLink="/system-plan" routerLinkActive="active">System plan</a>
+    </nav>
     <router-outlet />
 </div>
 @if (meta.enabled()) {

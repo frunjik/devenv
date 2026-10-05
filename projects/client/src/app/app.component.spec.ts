@@ -97,6 +97,19 @@ describe('AppComponent', () => {
         expect(fixture.nativeElement.querySelector('.inner-app').classList).toContain('framed');
     });
 
+    it('keeps only problem-domain navigation visible when the meta layer is hidden', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        fixture.nativeElement.querySelector('app-meta-layer-toggle button').click();
+        fixture.detectChanges();
+
+        const links = Array.from(fixture.nativeElement.querySelectorAll('.inner-app nav a') as NodeListOf<HTMLAnchorElement>);
+
+        expect(links.map(link => link.textContent?.trim())).toEqual(['Problem inquiry', 'System plan']);
+        expect(links.map(link => link.getAttribute('href'))).toEqual(['/problem-inquiry', '/system-plan']);
+        expect(fixture.nativeElement.querySelector('app-navigation-toolbar')).toBeNull();
+    });
+
     it('hides the meta layer chrome when it is switched off, keeping the routed app', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();

@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MetaLayerToggleComponent } from './meta-layer/meta-layer-toggle.component';
 import { MetaLayerService } from './meta-layer/meta-layer.service';
 import { BackendService } from './backend.service';
@@ -16,7 +16,7 @@ import { StatusToolbarComponent } from './status-toolbar/status-toolbar.componen
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, MatSnackBarModule, NavigationToolbarComponent, StatusToolbarComponent, MetaLayerToggleComponent],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, MatSnackBarModule, NavigationToolbarComponent, StatusToolbarComponent, MetaLayerToggleComponent],
     // providers: [
 
     // ]

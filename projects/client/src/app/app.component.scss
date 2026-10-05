@@ -14,6 +14,29 @@
     text-transform: uppercase;
 }
 
+.inner-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding: 0.4rem 1rem;
+    border-bottom: 1px solid rgb(128 128 128 / 35%);
+
+    a {
+        color: inherit;
+        font-size: 0.85rem;
+        text-decoration: none;
+
+        &:hover,
+        &.active {
+            text-decoration: underline;
+        }
+
+        &.active {
+            font-weight: 700;
+        }
+    }
+}
+
 .inner-app.framed {
     margin: 0.5rem;
     border: 2px solid #3f51b5;

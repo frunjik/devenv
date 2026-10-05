@@ -45,7 +45,7 @@ The Angular `server` library target currently has known TypeScript errors, inclu
 
 ## Features
 
-The Features page provides a form to create a feature and a read-only list of open features. New features are appended as JSON-lines to `.features` with status `Wished` and priority `Low`. Open features are records with status `Questions`, `Wished`, or `Backlog`. The API exposes `GET /features` and `POST /features`; the other feature lifecycle controls and endpoints have been removed.
+The Features page provides a form to create a feature and a read-only list of open features. Submit the form with `Ctrl+S` or `Ctrl+Enter`. New features are appended as JSON-lines to `.features` with status `Wished` and priority `Low`. Open features are records with status `Questions`, `Wished`, or `Backlog`. The API exposes `GET /features` and `POST /features`; the other feature lifecycle controls and endpoints have been removed.
 ## Test
 
 The repository uses Jest for client and server tests:

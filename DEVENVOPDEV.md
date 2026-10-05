@@ -8,5 +8,6 @@ When you are done with a Feature set its status to Done.
 When there are no items here, find a suitable feature in ./features based on high priority set its status to InProgress.
 
 The features you are writing are, take them one by one:
-{"id":"b7dffa70-3879-4217-8b25-205c6843f5d5","createdAt":"2026-10-05 15:40 +02:00","priority":"Low","status":"Done","description":"remove all logic related to features including storage and buttons, forget everything you know about the current way of working, we will reset it. The ONLY thing that should keep working is that the route of creating a feature keeps working (by adding to ./features) and it should show up in the Open features tab"}
-{"id":"b7dffa70-3879-4217-8b25-205c6843f5d5","createdAt":"2026-10-05 15:40 +02:00","priority":"Low","status":"Queued","description":"remove all logic related to features including storage and buttons, forget everything you know about the current way of working, we will reset it. The ONLY thing that should keep working is that the route of creating a feature keeps working (by adding to ./features) and it should show up in the Open features tab"}
+
+
+{"id":"5f08924e-65a4-4a51-beae-e9099f7ec00e","createdAt":"2026-10-05T14:14:21.495Z","priority":"Low","status":"Wished","description":"demlish remove everything related to PPTFeature except the type itself. Remove all code / components that reference PPTFeature"}

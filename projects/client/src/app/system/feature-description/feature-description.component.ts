@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,19 @@ export class FeatureDescriptionComponent implements OnInit {
 
     ngOnInit(): void {
         this.refreshFeatures();
+    }
+
+    @HostListener('document:keydown', ['$event'])
+    handleKeyboardShortcut(event: KeyboardEvent): void {
+        if (!event.ctrlKey) {
+            return;
+        }
+
+        const key = event.key.toLowerCase();
+        if (key === 's' || key === 'enter') {
+            event.preventDefault();
+            this.submit();
+        }
     }
 
     refreshFeatures(): void {

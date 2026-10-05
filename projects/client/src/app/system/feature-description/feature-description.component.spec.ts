@@ -41,6 +41,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('textarea[aria-label="Feature description"]')).not.toBeNull();
         expect(fixture.nativeElement.querySelector('#open-features-heading').textContent).toContain('Open features');
         expect(fixture.nativeElement.querySelectorAll('.open-features li')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelector('.keyboard-shortcuts')).toBeNull();
         expect(fixture.nativeElement.querySelector('app-backlog')).toBeNull();
         expect(fixture.nativeElement.querySelector('[role="tablist"]')).toBeNull();
         flushInitialFeatures();
@@ -80,6 +81,40 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.componentInstance.description).toBe('');
         expect(fixture.nativeElement.textContent).toContain('New feature');
         expect(fixture.componentInstance.isSubmitting).toBe(false);
+    });
+
+    it.each(['s', 'Enter'])('submits with Ctrl+%s and prevents the browser default', key => {
+        flushInitialFeatures();
+        fixture.componentInstance.description = 'Keyboard feature';
+        const event = new KeyboardEvent('keydown', { key, ctrlKey: true, cancelable: true });
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(true);
+        const request = http.expectOne(`${host}features`);
+        expect(request.request.method).toBe('POST');
+        expect(request.request.body).toEqual({ description: 'Keyboard feature' });
+        request.flush({ data: { ...openFeature, description: 'Keyboard feature' } });
+    });
+
+    it('prevents the browser save dialog when Ctrl+S is pressed with an empty description', () => {
+        flushInitialFeatures();
+        const event = new KeyboardEvent('keydown', { key: 's', ctrlKey: true, cancelable: true });
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(fixture.componentInstance.isSubmitting).toBe(false);
+        http.expectNone(`${host}features`);
+    });
+
+    it('does not intercept shortcuts without Ctrl', () => {
+        flushInitialFeatures();
+        fixture.componentInstance.description = 'Feature';
+        const event = new KeyboardEvent('keydown', { key: 's', cancelable: true });
+        document.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(false);
+        expect(fixture.componentInstance.isSubmitting).toBe(false);
+        http.expectNone(`${host}features`);
     });
 
     it('reports submission errors and allows retrying', () => {

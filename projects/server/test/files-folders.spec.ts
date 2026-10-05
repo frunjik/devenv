@@ -51,29 +51,25 @@ describe('files folders public API', () => {
         expect(response.body).toEqual({ error: { message: "ERROR: invalid path ''" } });
     });
 
-    it('writes the provided file contents', async () => {
-        const response = await request(app)
+    it('writes provided contents and confirms the successful response', async () => {
+        const writeResponse = await request(app)
             .post('/files')
             .query({ path: 'sample.txt' })
             .send({ data: 'updated' });
-        expect(response.body).toEqual({ data: 'OK' });
+        const readResponse = await request(app).get('/files').query({ path: 'sample.txt' });
+        expect({ write: writeResponse.body, read: readResponse.body }).toEqual({
+            write: { data: 'OK' },
+            read: { data: 'updated' },
+        });
     });
 
-    it('persists written file contents', async () => {
-        await request(app).post('/files').query({ path: 'sample.txt' }).send({ data: 'updated' });
-        const response = await request(app).get('/files').query({ path: 'sample.txt' });
-        expect(response.body).toEqual({ data: 'updated' });
-    });
-
-    it('defaults omitted write contents to an empty string', async () => {
-        const response = await request(app).post('/files').query({ path: 'empty.txt' }).send({});
-        expect(response.body).toEqual({ data: 'OK' });
-    });
-
-    it('persists omitted write contents as an empty file', async () => {
-        await request(app).post('/files').query({ path: 'empty.txt' }).send({});
-        const response = await request(app).get('/files').query({ path: 'empty.txt' });
-        expect(response.body).toEqual({ data: '' });
+    it('defaults omitted contents to an empty file and confirms success', async () => {
+        const writeResponse = await request(app).post('/files').query({ path: 'empty.txt' }).send({});
+        const readResponse = await request(app).get('/files').query({ path: 'empty.txt' });
+        expect({ write: writeResponse.body, read: readResponse.body }).toEqual({
+            write: { data: 'OK' },
+            read: { data: '' },
+        });
     });
 
     it('reports asynchronous write errors for missing directories', async () => {

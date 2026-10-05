@@ -372,7 +372,7 @@ export class SystemPlanComponent {
             title: 'Persist notes and tickets across reloads',
             kind: 'Design',
             status: 'Ready',
-            dependsOn: ['SC-020', 'SC-021'],
+            dependsOn: ['SC-021'],
             summary: 'Decide how accepted notes, decisions, and framed tickets are stored.',
         },
         {

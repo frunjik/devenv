@@ -381,12 +381,13 @@ Terms in the glossary may come from different domains (the WMS problem domain, t
 
 ### SC-028 — Persist notes and tickets across reloads
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-020, SC-021
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-021
 
 Accepted notes, review decisions, and framed tickets currently live in memory and are lost on reload. Decide how they are stored.
 
 **Working boundary:** Decide the storage approach before building. Options to compare: browser storage behind a small service (as in SC-024), the existing server with a database, or exported/imported files.
-**Open questions:** Single user or shared? Which records (notes, decisions, tickets, assignments)? How are sample and real data kept apart (SC-017)? How are real-world reports protected? Is there a versioning or migration need for stored records?
+**Decisions (user, 2026-10-06):** Storage lives on the server, with a database. The specific database is not chosen yet: first define a storage interface (port) that the server and tests use, and pick the engine later. Data is shared by several users from the start. Only framed tickets and their change history (SC-021) are stored first; notes later. Each ticket carries a data-kind flag (sample or real) and the existing toggle (SC-017) filters on it. Concurrent changes use a per-ticket version number: a stale change is rejected and the current version is shown.
+**Open questions (agent, to settle before building):** Does the client talk to the server over the existing Express API, and what are the minimal operations (list, create, change)? How are users identified when several share data (names only, as SC-021 decided, or something stronger)? Is the stored ticket shape the shared `ProblemTicket` Type plus state, assignee, version, and data kind? Who creates ticket ids (server)? Until the engine is chosen, does a simple in-memory implementation of the interface serve as the first one?
 
 ### SC-029 — Assign problem tickets
 

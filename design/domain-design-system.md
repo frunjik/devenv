@@ -1,7 +1,20 @@
 # Goal: A System for Designing Domains
 
 **Status:** Exploratory product and architecture proposal  
-**Purpose:** Identify what must be defined and built if DevEnv's Goal is to help people design Domain systems.
+**Purpose:** Explore what a Domain Design System should mean and what it needs to express. This document does not prescribe implementation.
+
+## Current Exploration Boundary
+
+The current phase is about **what** the System should help people do and **what knowledge** it must express. It is not yet about how to build it.
+
+In this phase:
+
+- Explore needs, concepts, meanings, relationships, rules, constraints, Contracts, examples, evidence, risks, and open questions.
+- Record candidate Terms, Types, and models as design artifacts. Any structured notation below is illustrative, not source code or a committed schema.
+- Keep alternatives visible where the right choice is not yet known; mark candidate Acceptance Criteria as candidates until they are agreed and observable.
+- Do not write application code, select a technology, or turn a possible strategy into an implementation plan.
+
+Later, in a separate phase, decide how to realize the agreed needs. TDD, code structure, storage formats, frameworks, and implementation sequencing belong to that later discussion.
 
 ## Proposed Goal
 
@@ -14,16 +27,18 @@ This is a proposed goal, not a claim that the current application already provid
 The Goal should be evaluated by observable outcomes, not by the number of modeling features shipped. Candidate Acceptance Criteria:
 
 1. A user can create a Domain Definition with a stated purpose, scope, and context.
-2. A user can define Terms and Types and explain their meanings, properties, relationships, and rules.
-3. The System identifies unresolved references, duplicate identifiers, missing required information, and invalid Type or relationship constraints, and presents actionable diagnostics.
-4. A user can create representative Type Instances and see which declared rules they satisfy or violate.
-5. A user can understand how the Domain's concepts and rules connect to its stated purpose and Goals.
-6. A saved Domain Definition can be reopened without losing its identity, meaning, or supported version.
-7. Changes to a Domain Definition are distinguishable from changes to its instances, and unsupported or incompatible changes are reported rather than silently misinterpreted.
+2. A user can describe a Problem in context, including who or what is affected, why it matters, and the observations or evidence supporting the description.
+3. A user can distinguish observations from interpretations, suspected causes, and proposed solutions, and can record uncertainty or differing perspectives.
+4. A user can define Terms and Types and explain their meanings, properties, relationships, and rules.
+5. The System identifies unresolved references, duplicate identifiers, missing required information, and invalid Type or relationship constraints, and presents actionable diagnostics.
+6. A user can create representative Type Instances and see which declared rules they satisfy or violate.
+7. A user can understand how Problems, Goals, and the Domain's concepts and rules relate to its stated purpose.
+8. A saved Domain Definition can be reopened without losing its identity, meaning, or supported version.
+9. Changes to a Domain Definition are distinguishable from changes to its instances, and unsupported or incompatible changes are reported rather than silently misinterpreted.
 
 These criteria need refinement with intended users and a concrete Domain. In particular, define what makes a Domain Definition "clear" or "internally consistent" through testable conditions and examples.
 
-## Things to Define Before Broad Implementation
+## Things to Define About the Domain
 
 ### 1. Purpose, boundary, and context
 
@@ -35,11 +50,25 @@ Do not confuse:
 - a **Domain Definition**, the maintained description of that Domain;
 - the **Domain Design System**, the software used to create and inspect that description.
 
-### 2. The Domain vocabulary
+### 2. Problems, Goals, and proposed responses
+
+Describe the current condition before deciding what work or solution to propose. A Problem framing should make clear its context, the affected people or entities, what is undesirable or inadequate, why that matters, and what observations or Evidence support the claim.
+
+Keep distinct:
+
+- **Observation:** what was directly seen, measured, or reported;
+- **Problem framing:** the interpretation that a current condition is undesirable or inadequate, for whom, and in what context;
+- **Cause or explanation:** a possible account of why the condition exists, which may be evidenced, uncertain, or contested;
+- **Goal:** the desired future condition or outcome;
+- **Proposed response:** a possible intervention, solution, or Work Item intended to change the condition.
+
+Do not assume that a named symptom proves a cause, that agreement on a Problem framing is universal, or that a proposed solution is itself the Problem. Preserve context, evidence, confidence, and differing perspectives where they matter. A Goal may respond to one or more Problems, and a Problem may remain relevant to several Goals; these relationships should be stated rather than inferred.
+
+### 3. The Domain vocabulary
 
 Define each Term once in a Glossary with a stable identity, meaning, and applicable context. Identify synonyms, ambiguous terms, and terms whose meaning differs between contexts. The tool should make unclear or conflicting vocabulary visible rather than silently choosing a definition.
 
-### 3. Domain Types and instances
+### 4. Domain Types and instances
 
 For each Type, define:
 
@@ -51,23 +80,23 @@ For each Type, define:
 
 Keep a Domain Type distinct from its Type Description, a Type Instance, and presentation configuration. See the exploratory [Type Description Model](./type-description-model.md).
 
-### 4. Relationships, rules, and behavior
+### 5. Relationships, rules, and behavior
 
 Define relationships and their direction, cardinality, ownership, and referential rules. State cross-field invariants, lifecycle states and legal transitions, derived values, and decision rules. Distinguish structural constraints from behavioral Contracts and from assessments that depend on evidence or human judgment.
 
 For goal-oriented Domains, distinguish Work Item completion and progress from Goal achievement. State what evidence can support an Acceptance Criterion and how assessments are made.
 
-### 5. Contracts and observable outcomes
+### 6. Contracts and observable outcomes
 
 For each boundary between a producer and consumer, specify preconditions, inputs, successful postconditions, and failure behavior. Define how to diagnose invalid definitions and instances, and how consumers behave when they encounter unsupported description features.
 
 Use Contracts for generic capabilities too: editing, validation, hydration, serialization, querying, import/export, and version migration must have explicit guarantees.
 
-### 6. Evolution and governance
+### 7. Evolution and governance
 
 Decide how stable identifiers, versions, revisions, authorship, review, and change history work. Specify how renamed, removed, or reinterpreted Terms and fields affect references and saved instances. A field rename may preserve meaning; a changed definition may not. Migration must therefore be explicit and report lossy or ambiguous changes.
 
-### 7. Evidence of usefulness
+### 8. Evidence of usefulness
 
 Choose a real Domain and representative examples. Measure whether people can define it more consistently, find contradictions earlier, explain its concepts to others, and safely evolve it. A feature's completion is not evidence that the product Goal has been achieved.
 
@@ -82,6 +111,7 @@ DomainDefinition {
     name
     purpose
     contexts: DomainContext[]
+    problemFramings: ProblemFraming[]
     glossary: Term[]
     types: TypeDescription[]
     relationships: Relationship[]
@@ -96,6 +126,31 @@ DomainContext {
     scope
     assumptions
     stakeholders
+}
+
+ProblemFraming {
+    id
+    contextId
+    statement
+    affectedParties
+    observations: Evidence[]
+    impact
+    suspectedCauses: CauseHypothesis[]
+    perspectives: Perspective[]
+    relatedGoalIds
+    status
+}
+
+CauseHypothesis {
+    statement
+    supportingEvidence: Evidence[]
+    confidence
+}
+
+Perspective {
+    stakeholder
+    framing
+    rationale
 }
 
 Term {
@@ -150,6 +205,9 @@ Avoid implementing a meta-model for every imaginable modeling construct. Add Typ
 - **Definition identity Contract:** A Domain Definition and each Term, Type, field, relationship, and rule have stable identities independent of their display names.
 - **Reference integrity Contract:** Every reference resolves to an existing compatible definition, or validation returns a precise diagnostic.
 - **Context Contract:** A Term's meaning is interpreted within its declared context; conflicting meanings are not merged without an explicit decision.
+- **Problem framing Contract:** A Problem framing distinguishes observed conditions from interpretations, cause hypotheses, Goals, and proposed responses; material uncertainty and context are not presented as established fact.
+- **Problem evidence Contract:** Evidence for a Problem identifies what it supports (for example, an observation, impact claim, or cause hypothesis); evidence for one claim is not treated as proof of another without an explicit rationale.
+- **Problem-to-Goal Contract:** A Goal may be linked to the Problem framing(s) it intends to address, but that link alone does not establish that the proposed Goal or response will resolve the Problem.
 - **Definition validity Contract:** A Domain Definition that violates a declared structural invariant cannot be reported as valid.
 - **Instance validation Contract:** A Type Instance is checked against the exact Type Description identity and version that governs it; unsupported rules produce explicit unsupported diagnostics, not a success-shaped partial validation.
 - **Generic consumer Contract:** A consumer declares which description features it supports and reports features it cannot interpret.
@@ -157,66 +215,70 @@ Avoid implementing a meta-model for every imaginable modeling construct. Add Typ
 - **Evolution Contract:** An incompatible change to a Type Description or Domain Definition is detected; migration is explicit and reports ambiguous or lost information.
 - **Goal achievement Contract:** A Domain Definition is not considered useful or successful merely because it is complete or valid. Its stated product Acceptance Criteria must be assessed using relevant evidence.
 
-## Implementation Path
+## Possible Strategies to Evaluate Later
 
-Build the smallest useful end-to-end capability first; do not begin with a general-purpose ontology workbench or automatic code generator.
+These are candidate ways to learn whether and how the System should support Domain design. They are not decisions, a sequence, or permission to begin implementation during the current exploration phase.
 
-### Slice 1: Define and validate a small Domain
+### Domain-first inquiry
 
-Implement versioned persistence for a Domain Definition containing a purpose, context, Terms, a small number of Types, and references between them. Provide validation diagnostics for duplicate IDs, missing references, and basic required fields.
+Work with representative users to define a real Domain's purpose, boundary, stakeholders, Terms, examples, disagreements, and current pain points before proposing a general model. This guards against designing a meta-model around hypothetical needs.
 
-### Slice 2: Describe and test instances
+### Scenario- and example-first modeling
 
-Support a deliberately small set of field types, cardinalities, enumerations, and safe declarative constraints. Create Type Instances and validate them against the selected Type Description. Include valid and invalid examples.
+Collect concrete scenarios and examples, including ambiguous and invalid cases. Derive candidate Terms, Types, rules, and Contracts from what people need to explain or decide. This can reveal missing concepts earlier than starting with abstract schemas.
 
-### Slice 3: Generic authoring and inspection
+### Vertical-slice evaluation
 
-Use the Type Description to guide a generic editor and inspector. Keep presentation hints separate from domain constraints. The generic layer must not need hard-coded knowledge of each modeled Type for basic editing.
+Choose one narrow but meaningful scenario—potentially a Domain Definition containing a Goal and Acceptance Criterion—and trace what a person needs to express, understand, check, and preserve. Evaluate the full conceptual journey before building anything. This can test whether the proposed concepts hang together, but it should not prematurely dictate software architecture or implementation order.
 
-### Slice 4: Goal and evidence connections
+### Competing-model comparison
 
-Allow a Domain Definition to state the Goals it serves and connect Types, rules, Work Items, and evidence to those Goals. Report contribution and evidence separately from work completion.
+Represent the same example Domain using two or more candidate approaches, such as Magritte-like descriptors, a schema-and-constraints model, or an explicit linked-concept model. Compare clarity, expressiveness, ambiguity, and the assumptions each introduces. The purpose is to discover tradeoffs, not pick a framework by familiarity.
 
-### Slice 5: Safe evolution
+### Paper or narrative prototype
 
-Add revisions, change comparison, compatibility checks, and explicit migrations only when persistence and real definition changes make their requirements concrete.
+Use sketches, sample documents, or walkthroughs to explore how a person would define a Term, relate a Type, inspect a constraint, and understand a diagnostic. This can evaluate concepts and language without committing to a user interface or writing software.
 
-Import/export, collaboration, permissions, graphical diagramming, arbitrary executable rules, cross-domain transformation, and code generation are later candidates. Each needs its own Goal, Acceptance Criteria, and prioritization rather than being assumed part of the first release.
+### Prior-art study
 
-## TDD and Verification Approach
+Compare systems such as Magritte, EMF, JSON Schema, CUE, SHACL, and OWL against specific needs and examples. Identify transferable ideas, mismatches, costs, and unanswered questions; avoid treating any one system as a complete answer.
 
-For each vertical slice, write an observable Acceptance Criterion first, then test the behavior before implementing it:
+## Possible Later Verification Approach
 
-1. **Acceptance test:** From the user's perspective, describe the action and visible result—for example, an unresolved Type reference is shown with its source and repairable target.
-2. **Contract test:** Exercise a boundary such as saving/loading a definition or validating an instance; assert success shape and explicit failure behavior.
-3. **Type-invariant tests:** Test valid and invalid instances and definitions, including boundaries, missing values, invalid cardinalities, broken references, and unsupported constraints.
-4. **Integration test:** Verify persistence, API, and consumer behavior agree on identifiers and versions.
-5. **End-to-end test:** Verify a representative user can define, validate, save, reopen, and inspect a small Domain.
-6. **Refactor:** Simplify implementation while preserving the tests and explicit Contracts.
+When the work moves from **what** to **how**, TDD and other engineering practices can be evaluated as implementation strategies. Candidate verification practices include:
 
-Keep coverage reports scoped and honest. Coverage percentages measure execution of selected code units; they do not establish that the Domain Design System's Goals or Acceptance Criteria are satisfied.
+- derive acceptance tests from agreed, observable product Acceptance Criteria;
+- use Contract tests at defined boundaries and invariant tests for valid and invalid definitions or instances;
+- test persistence, interoperability, and evolution behavior where those are agreed requirements;
+- use integration and end-to-end tests to verify complete user-visible outcomes;
+- treat coverage as a scoped measure of executed code, not proof that the product Goal has been achieved.
 
-## First TDD Vertical Slice
+These practices are recorded as future considerations, not current tasks. The exact test strategy depends on the agreed system boundary, behaviors, and risks.
 
-Use a small example Domain with one `Goal` Type and one `AcceptanceCriterion` Type:
+## Observations and Design Tensions
 
-1. Write a failing acceptance test that defines the Domain, adds the two Types, and links the criterion to the Goal.
-2. Add tests that reject a duplicate Type ID and an unresolved criterion reference with actionable diagnostics.
-3. Add one valid and one invalid Type Instance and verify rule-specific validation results.
-4. Save and reload the Domain Definition and assert stable IDs, meanings, references, and version are preserved.
-5. Add a generic editor only after the definition, validation, and persistence Contracts pass.
+- **A Domain Definition is both a model and an argument.** It does not only list concepts; it makes claims about what exists, what matters, and how things relate. The System may need to help expose assumptions and disagreements, not only store well-formed records.
+- **Problem framing is not neutral data entry.** Selecting what counts as a Problem, whose experience matters, and which evidence is relevant involves perspective and judgment. The System should help make those choices visible rather than imply that a single framing is objective.
+- **Problem, cause, Goal, and solution are different claims.** Moving directly from a reported symptom to a Task can conceal disagreement about the underlying Problem or whether the proposed response is likely to help.
+- **Problems can persist or change as understanding evolves.** A Problem framing may be refined, split, merged, disputed, or found unsupported. Preserve its context and rationale so that changing the framing does not silently rewrite the history of related decisions.
+- **Meaning cannot be reduced to structure.** A field called `cost` with a numeric value is not meaningful without currency, unit, time basis, and the context of what is counted. Semantic explanation and examples may be as important as field schemas.
+- **Different users may hold legitimate perspectives.** Contexts, viewpoints, and competing definitions may need to coexist rather than be flattened into one supposedly universal glossary.
+- **Validation has levels.** Structural checks can be mechanical; domain-rule checks may need richer context; judgments such as whether evidence is sufficient may remain human decisions. The System should distinguish these outcomes and their evidence.
+- **A model can be internally consistent and still be wrong or useless.** Consistency checks cannot establish that a Domain Definition matches reality or helps users achieve their purpose. Examples, stakeholder review, and outcome evidence matter.
+- **The meta-model can constrain discovery.** If the System only allows concepts its own Type Description can express, it may force users to distort the Domain. Early exploration should allow concepts and questions that do not yet fit the candidate model.
+- **Notation itself affects understanding.** Terms such as Domain, System, Goal, Type, and Model are overloaded. The System's own Glossary and the vocabulary of a modeled Domain must be distinguishable.
+- **Completeness is not the same as usefulness.** Modeling every Term or rule is not necessarily valuable; the relevant question is whether the description supports the decisions, communication, or outcomes for which the Domain is being designed.
 
-This slice tests the central claim—that explicit descriptions help people define and check a Domain—without prematurely settling the meta-description format or building multiple consumers at once.
+## Exit Conditions for This Exploration Phase
 
-## Decision Gate
+The exploration is ready to inform a separate implementation discussion when:
 
-Proceed beyond the initial slice only if it demonstrates all of the following:
+- intended users, purpose, and system boundary are sufficiently understood;
+- candidate outcomes and evidence for success are explicit enough to discuss;
+- core Terms have stable working meanings, with ambiguity and context recorded;
+- representative examples expose the important Types, relationships, rules, and exceptions;
+- key Contracts, constraints, risks, and unresolved decisions are documented;
+- alternative strategies have been compared against the same concrete needs;
+- there is agreement on what to learn or decide next, without assuming that code must be written.
 
-- users can express real Domain meaning without relying on undocumented conventions;
-- errors are specific enough to repair;
-- generic capabilities reuse the descriptions instead of duplicating definitions;
-- domain-specific rules remain explicit and are not approximated by structural validation;
-- the approach is simpler and safer for the use case than ordinary code Types and hand-written forms;
-- versioning and persistence requirements are understood for the data being saved.
-
-If these conditions are not met, narrow the model or keep the relevant behavior explicit in code rather than generalizing prematurely.
+These conditions are a guide, not a demand for exhaustive specification. The aim is enough shared understanding to make the next decision deliberately.

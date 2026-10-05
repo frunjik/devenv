@@ -49,6 +49,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
 - **Exception:** Do not commit past an explicit user review; pause for that review instead. Keep the commit scoped to the completed work and follow the repository's commit-message conventions.
 
+### P-006 — Ask Before Changing Surrounding Code
+
+- **Recorded:** 2026-10-05
+- **Source:** User instruction revising the surrounding-code restriction
+- **Applies to:** Changes where existing code outside the immediate feature scope blocks a sound solution, especially styling and layout work.
+- **Rule:** Existing surrounding code may be relied upon when reasonably stable, but must not be changed or removed without the user's permission. If a specific, non-generic part of surrounding code is a real blocker, explain the constraint, why a narrowly scoped change is needed, and its likely impact; ask permission before changing it.
+- **Boundary:** Do not make broad or application-wide changes on this basis. If the blocker is generic or the impact is uncertain, keep it unchanged and offer a safer scoped alternative or ask for further direction.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

@@ -8,11 +8,6 @@
         "declarationMap": true,
         "inlineSources": true,
         "types": ["node"],
-        "paths": {
-            "@ppt": [
-                "../../dist/ppt/"
-            ]
-        },
     },
     "exclude": [
         "**/*.spec.ts"

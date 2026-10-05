@@ -9,12 +9,11 @@ import type {
     GitLogEntry,
     GitStatus,
     LastTestRun,
-    PPTField,
-    PPTFolderEntry,
+    FolderEntry,
     SuccessResponseBody,
     TestOutputStream,
     TestRunCacheStatus,
-} from '@ppt';
+} from '@shared';
 import { LoggerService } from './logger.service';
 
 export type {
@@ -24,7 +23,7 @@ export type {
     LastTestRun,
     TestOutputStream,
     TestRunCacheStatus,
-} from '@ppt';
+} from '@shared';
 
 @Injectable({
     providedIn: 'root',
@@ -61,8 +60,8 @@ export class BackendService {
             );
     }
 
-    loadFolder(pathname: string): Observable<PPTFolderEntry[]> {
-        return this.get<PPTFolderEntry[]>(`folders?path=${pathname}`)
+    loadFolder(pathname: string): Observable<FolderEntry[]> {
+        return this.get<FolderEntry[]>(`folders?path=${pathname}`)
             .pipe(
                 catchError(err => {
                     this.logError(`loadFolder("${pathname}")`, err);
@@ -97,10 +96,6 @@ export class BackendService {
 
     getServerVersion(): Observable<string> {
         return this.get<string>('version');
-    }
-
-    getPPTFields(): Observable<PPTField[]> {
-        return this.get<PPTField[]>('ppt/fields');
     }
 
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {

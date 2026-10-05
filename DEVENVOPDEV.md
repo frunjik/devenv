@@ -10,4 +10,4 @@ When there are no items here, find a suitable feature in ./features based on hig
 The features you are writing are, take them one by one:
 
 
-{"id":"5f08924e-65a4-4a51-beae-e9099f7ec00e","createdAt":"2026-10-05T14:14:21.495Z","priority":"Low","status":"Done","description":"demlish remove everything related to PPTFeature except the type itself. Remove all code / components that reference PPTFeature"}
+{"id":"5f08924e-65a4-4a51-beae-e9099f7ec00e","createdAt":"2026-10-05T14:14:21.495Z","priority":"Low","status":"Done","description":"remove the retired feature model type and all application code that depends on it"}

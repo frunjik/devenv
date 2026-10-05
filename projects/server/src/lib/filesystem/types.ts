@@ -1,1 +1,1 @@
-export type { PPTFolderEntry as FolderEntry } from '@ppt';
+export type { FolderEntry } from '@shared';

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import type { FailureResponseBody, SuccessResponseBody } from '@ppt';
+import type { FailureResponseBody, SuccessResponseBody } from '@shared';
 import { FileSystem } from '../filesystem/filesystem.js';
 
 export function getFiles(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {

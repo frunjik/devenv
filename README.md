@@ -31,17 +31,16 @@ The status toolbar displays both versions, and the API exposes the server versio
 
 ## Build
 
-Build the Angular libraries before the client that consumes them. `ppt` comes first because `shared` and the client import its types:
+Build the shared library before the client that consumes its API contracts:
 
 ```bash
-npm run build -- --project ppt
 npm run build -- --project shared
 npm run build -- --project client
 ```
 
 Pass an explicit Angular project to `npm run build`; the root script does not select a default project.
 
-The Angular `server` library target currently has known TypeScript errors, including unresolved PPT `./core` imports. It is not part of the passing build sequence.
+The Angular `server` library target has known TypeScript errors and is not part of the supported build sequence.
 
 ## Test
 

@@ -1,8 +1,8 @@
 import { execFile, type ExecFileException } from 'node:child_process';
 import type { RequestHandler } from 'express';
-import type { GitStatus, GitStatusFile } from '@ppt';
+import type { GitStatus, GitStatusFile } from '@shared';
 
-export type { GitStatus, GitStatusFile } from '@ppt';
+export type { GitStatus, GitStatusFile } from '@shared';
 
 interface GitStatusResult {
     stdout: string;

@@ -4,9 +4,8 @@ This repository contains an Angular 20 client, shared Angular libraries, and an 
 
 ## Projects
 
-- `projects/client`: Angular application. It consumes the shared and PPT libraries.
-- `projects/ppt`: shared types, including the `PPTFeature` data type and file-system, git, test-run and response types. Import them from `@ppt`.
-- `projects/shared`: shared services; it imports its types from `@ppt`.
+- `projects/client`: Angular application. It consumes shared API contracts from `projects/shared`.
+- `projects/shared`: shared API contracts and Angular services, imported from `@shared`.
 - `projects/server`: Express API handlers, server startup, and server tests.
 
 ## Development
@@ -22,17 +21,16 @@ npm start
 
 ## Build
 
-Build dependencies in order (`ppt` first, since `shared` depends on it), then build the client:
+Build the shared library before the client:
 
 ```bash
-npm run build -- --project ppt
 npm run build -- --project shared
 npm run build -- --project client
 ```
 
 The root `build` script forwards arguments to `ng build`; specify the project explicitly instead of running bare `npm run build`.
 
-The workspace defines an Angular build target for `server`, but it currently fails on existing TypeScript issues, including unresolved `./core` imports under the server PPT sources. The shared, PPT, and client builds are the supported passing sequence.
+The workspace defines an Angular build target for `server`, but it is not part of the supported build sequence due to existing TypeScript issues.
 
 ## Tests
 

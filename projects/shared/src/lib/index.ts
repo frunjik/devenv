@@ -1,7 +1,3 @@
-export {
-    PPTFileSystem,
-    readFile,
-    writeFile,
-    readFoldernames,
-    readFileStats,
-} from './services/file-system/file-system';
+export * from './types';
+export * from './shared.service';
+export * from './shared.component';

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BackendService } from '../../../backend.service';
-import { PPTFolderEntry } from '@ppt';
+import type { FolderEntry } from '@shared';
 import { FormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -46,13 +46,13 @@ export class FileBrowserComponent implements OnInit {
     fileLoadError = '';
     folderLoadError = '';
 
-    folderEntries: PPTFolderEntry[] = [];
+    folderEntries: FolderEntry[] = [];
 
     get folderNames(): string[] {
         return this.pathname().split('/');
     }
 
-    get filteredEntries(): PPTFolderEntry[] {
+    get filteredEntries(): FolderEntry[] {
         const filterText = this.filterText.trim();
         return !filterText
             ? this.folderEntries
@@ -83,7 +83,7 @@ export class FileBrowserComponent implements OnInit {
         });
     }
 
-    clickFileOrFolder(entry: PPTFolderEntry) {
+    clickFileOrFolder(entry: FolderEntry) {
         const name = this.pathname() + '/' + entry.filename;
         if (entry.isFolder) {
             this.navigateTo(name);

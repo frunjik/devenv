@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import type { PPTFolderEntry } from '@ppt';
+import type { FolderEntry } from '@shared';
 import { FolderEntriesComponent } from './folder-entries.component';
 
 describe('FolderEntriesComponent', () => {
@@ -31,10 +31,10 @@ describe('FolderEntriesComponent', () => {
     });
 
     it('emits the selected folder entry', () => {
-        const folder: PPTFolderEntry = { filename: 'src', isFolder: true };
-        let selected: PPTFolderEntry | undefined;
+        const folder: FolderEntry = { filename: 'src', isFolder: true };
+        let selected: FolderEntry | undefined;
         component.entries = [folder];
-        component.clickFileOrFolder.subscribe((entry: PPTFolderEntry) => selected = entry);
+        component.clickFileOrFolder.subscribe((entry: FolderEntry) => selected = entry);
         fixture.detectChanges();
         fixture.nativeElement.querySelector('.row').click();
 
@@ -42,10 +42,10 @@ describe('FolderEntriesComponent', () => {
     });
 
     it('emits the selected file entry', () => {
-        const file: PPTFolderEntry = { filename: 'app.ts', isFolder: false };
-        let selected: PPTFolderEntry | undefined;
+        const file: FolderEntry = { filename: 'app.ts', isFolder: false };
+        let selected: FolderEntry | undefined;
         component.entries = [file];
-        component.clickFileOrFolder.subscribe((entry: PPTFolderEntry) => selected = entry);
+        component.clickFileOrFolder.subscribe((entry: FolderEntry) => selected = entry);
         fixture.detectChanges();
         fixture.nativeElement.querySelector('.row').click();
 

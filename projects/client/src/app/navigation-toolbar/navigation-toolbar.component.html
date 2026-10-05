@@ -1,9 +1,9 @@
 <mat-toolbar color="primary">
-    PPT - {{ host }}
+    DevEnv - {{ host }}
     |
 
     <nav>
-        <a mat-button routerLink="/ppt/browse">Browse</a>
+        <a mat-button routerLink="/browse">Browse</a>
         |
         <a mat-button routerLink="/tests">TEST</a>
         |
@@ -13,13 +13,13 @@
         |
         <a mat-button routerLink="/history">history</a>
         |
-        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
+        <a mat-button routerLink="/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
         |
-        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
+        <a mat-button routerLink="/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
         |
-        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
+        <a mat-button routerLink="/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
         |
-        <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html'}">EDIT-MENU</a>
+        <a mat-button routerLink="/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html'}">EDIT-MENU</a>
         |
         <a mat-button routerLink="/git/log">Git log</a>
         |

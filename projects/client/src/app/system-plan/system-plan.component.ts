@@ -319,6 +319,22 @@ export class SystemPlanComponent {
             dependsOn: ['SC-016'],
             summary: 'Decide whether a framed ticket can be edited, closed, or marked duplicate, and by whom.',
         },
+        {
+            id: 'SC-022',
+            title: 'Improve glossary screen layout and styling',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'Evaluate readability and responsive layout of the existing glossary screen.',
+        },
+        {
+            id: 'SC-023',
+            title: 'Quick glossary search from anywhere',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: ['SC-022'],
+            summary: 'Find a way to look up a glossary term quickly from any screen.',
+        },
     ];
 
     get validatedCount(): number {

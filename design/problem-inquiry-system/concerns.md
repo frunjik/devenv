@@ -310,6 +310,24 @@ Decide whether a framed ticket can be edited, closed, or marked duplicate after 
 **Working boundary:** Decide the policy first; do not collapse note, verification, and ticket lifecycles.
 **Open questions:** Which states exist? Is editing allowed or are changes new tickets? Who may change state?
 
+### SC-022 — Improve glossary screen layout and styling
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+Evaluate the existing glossary screen's layout and styling for readability: term/definition hierarchy, spacing, long definitions, and behavior from 320 px to wide screens.
+
+**Working boundary:** Presentation only; do not change glossary content or its data source. Surrounding styles may only change with permission (P-006).
+**Open questions:** Should terms be a list, cards, or a definition grid? Should related terms be linked? Is grouping or alphabetical navigation needed?
+
+### SC-023 — Quick glossary search from anywhere
+
+**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-022
+
+Find a way to look up a glossary term quickly from any screen without leaving the current work.
+
+**Working boundary:** Decide the interaction before building; it must not disrupt the underlying page state. Options to compare: global keyboard shortcut opening a search overlay, a persistent header search field, or a floating button with a popover.
+**Open questions:** Which shortcut or trigger? Does it match term names only, or definitions too? Should selecting a result open the glossary screen or show the definition inline? How does it work on touch devices?
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

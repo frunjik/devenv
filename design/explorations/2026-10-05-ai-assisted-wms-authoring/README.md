@@ -91,4 +91,4 @@ Assess traceability, correctness, gaps found, review effort, and continuity. Cla
 
 Preserve rationale and links to code/tests; retain or discard artifacts with reasons. This blueprint is untested.
 
-Related context: [WMS modernization inquiry](../2026-10-05-warehouse-web-modernization/README.md) and [candidate WMS model](../2026-10-05-warehouse-web-modernization/domain-model.md).
+Related context: [WMS modernization inquiry](../2026-10-05-warehouse-web-modernization/README.md) and [Candidate WMS model](../2026-10-05-warehouse-web-modernization/domain-model.md).

@@ -108,6 +108,7 @@
                 <td mat-cell *matCellDef="let feature">
                     <select
                         class="feature-status-select"
+                        [class.status-questions]="feature.status === 'Questions'"
                         [class.status-backlog]="feature.status === 'Backlog'"
                         [class.status-in-progress]="feature.status === 'In progress'"
                         [class.status-done]="feature.status === 'Done'"
@@ -200,6 +201,7 @@
                     </select>
                     <select
                         class="feature-status-select"
+                        [class.status-questions]="feature.status === 'Questions'"
                         [class.status-backlog]="feature.status === 'Backlog'"
                         [class.status-in-progress]="feature.status === 'In progress'"
                         [class.status-done]="feature.status === 'Done'"

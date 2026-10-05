@@ -45,7 +45,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     priority: FeaturePriority = 'Low';
     status: FeatureStatus = 'Backlog';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
-    readonly statuses: FeatureStatus[] = ['Backlog', 'In progress', 'Done'];
+    readonly statuses: FeatureStatus[] = ['Questions', 'Backlog', 'In progress', 'Done'];
     featureSearch = '';
     isSubmitting = false;
     errorMessage = '';
@@ -266,7 +266,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Backlog|In progress|Done)\] (.+)$/i,
+            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Done)\] (.+)$/i,
         );
         return match
             ? {

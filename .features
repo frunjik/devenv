@@ -5,7 +5,7 @@
 // [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] [Medium] [Backlog] extract subcomponents from client main form
 // [2026-10-04 23:51 +02:00] [1566328a-ff5c-442f-8576-4e1f7aedcb10] [Medium] [Done] make low the default for a feature
 // [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Medium] [Backlog] show the current ./thoughts on the client
-// [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [In progress] a feature category describes which domain the feature is for
+// [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [Questions] a feature category describes which domain the feature is for
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [Done] make the current task client display longer (to cover more text)
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator
@@ -51,27 +51,28 @@
 // [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Low] [Backlog] add status verify
 // [2026-10-05 01:53 +02:00] [57db25d7-bf49-4f35-85ac-6f7e362c694b] [Low] [Backlog] show models
 // [2026-10-05 01:53 +02:00] [05af9d39-4847-4a07-9544-646eddef9d09] [Low] [Done] we want to create Typescript interfaces for our models create tasks with status Questions for each potential model we have already have and for the ones you discover when examining the code
-// [2026-10-05 01:55 +02:00] [1a61a983-122f-419e-92d4-647354a18744] [Low] [Backlog] Define the shared PPTValue model interface
-// [2026-10-05 01:55 +02:00] [3b0101b5-4272-4a65-a1fb-ce477686bef7] [Low] [Backlog] Define the shared PPTField model interface
-// [2026-10-05 01:55 +02:00] [9cef3a41-c2dc-464b-90dd-d300a3bbf09b] [Low] [Backlog] Define the shared PPTModel model interface
-// [2026-10-05 01:55 +02:00] [dde43d1c-2fb8-458c-b9c8-13128b41572d] [Low] [Backlog] Define the shared PPTItem model interface
-// [2026-10-05 01:55 +02:00] [c740dc00-3b2e-4035-ab8a-d168f752bb23] [Low] [Backlog] Define the shared PPTList model interface
-// [2026-10-05 01:55 +02:00] [be028999-5aac-4f75-a137-c724fbe1605d] [Low] [Backlog] Define the shared PPTTextModel model interface
-// [2026-10-05 01:55 +02:00] [e9822df5-b322-4d46-bf58-02179a2b8107] [Low] [Backlog] Define the shared PPTTextComponentModel model interface
-// [2026-10-05 01:55 +02:00] [c870ba7a-bfdb-4ca2-afbe-2e4571fc0c9c] [Low] [Backlog] Define a typed feature record model for FeatureRow
-// [2026-10-05 01:55 +02:00] [50392b03-57e8-4a39-936b-eb5387488922] [Low] [Backlog] Define shared feature-priority and feature-status model types
-// [2026-10-05 01:55 +02:00] [237363db-c581-4b79-8158-9333a67fee2c] [Low] [Backlog] Define the ActiveFeature model interface
-// [2026-10-05 01:55 +02:00] [4bc0c832-29b7-4f07-a43d-dd70ba983d91] [Low] [Backlog] Define the GitCommitResult model interface
-// [2026-10-05 01:55 +02:00] [b983e52d-d925-460e-8ea1-18e22aa46498] [Low] [Backlog] Define the GitLogEntry model interface
-// [2026-10-05 01:55 +02:00] [860966cd-47a6-4b2a-ac9d-9096247728c8] [Low] [Backlog] Define the GitStatusFile model interface
-// [2026-10-05 01:55 +02:00] [3d1e723a-f5ec-4a17-89c9-56d9bc66b0c8] [Low] [Backlog] Define the GitStatus model interface
-// [2026-10-05 01:55 +02:00] [69958df2-ba40-442a-a4ad-88934910e0db] [Low] [Backlog] Define the LastTestRun model interface
-// [2026-10-05 01:55 +02:00] [64928354-6e57-412a-9935-c26dd6eb1a22] [Low] [Backlog] Define the TestRunCacheStatus model interface
-// [2026-10-05 01:55 +02:00] [206fdb0b-8a04-4b3f-ac53-b3599ef8da05] [Low] [Backlog] Define the current TestRunResult model interface
-// [2026-10-05 01:55 +02:00] [6e3cbd5b-5446-4e0f-9a4e-b7e17d56d6e7] [Low] [Backlog] Define a typed TestCommandEvent model
-// [2026-10-05 01:55 +02:00] [a02aaf39-c72b-4e4c-9dd8-469c89efe57e] [Low] [Backlog] Unify FolderEntry and PPTFolderEntry models
-// [2026-10-05 01:55 +02:00] [8ab4b101-3f90-4685-b661-72b0498da5cb] [Low] [Backlog] Define the shared SuccessResponseBody model interface
-// [2026-10-05 01:55 +02:00] [aa72b943-3e95-4ad3-946b-7bb94e8380ee] [Low] [Backlog] Define the shared FailureResponseBody model interface
-// [2026-10-05 01:55 +02:00] [6c78b785-cb3d-446b-9189-34f4046a1056] [Low] [Backlog] Define the AuthenticatedPrincipal model interface
-// [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Backlog] Define the PPTFileStats model interface
-// [2026-10-05 02:00 +02:00] [250329d6-57f9-4e5d-ac72-a39f3626bed4] [Low] [In progress] move questions with features from the ./DEVENVOPDEV.md file to the ./features file converting them to the correct format
+// [2026-10-05 01:55 +02:00] [1a61a983-122f-419e-92d4-647354a18744] [Low] [Questions] Define the shared PPTValue model interface
+// [2026-10-05 01:55 +02:00] [3b0101b5-4272-4a65-a1fb-ce477686bef7] [Low] [Questions] Define the shared PPTField model interface
+// [2026-10-05 01:55 +02:00] [9cef3a41-c2dc-464b-90dd-d300a3bbf09b] [Low] [Questions] Define the shared PPTModel model interface
+// [2026-10-05 01:55 +02:00] [dde43d1c-2fb8-458c-b9c8-13128b41572d] [Low] [Questions] Define the shared PPTItem model interface
+// [2026-10-05 01:55 +02:00] [c740dc00-3b2e-4035-ab8a-d168f752bb23] [Low] [Questions] Define the shared PPTList model interface
+// [2026-10-05 01:55 +02:00] [be028999-5aac-4f75-a137-c724fbe1605d] [Low] [Questions] Define the shared PPTTextModel model interface
+// [2026-10-05 01:55 +02:00] [e9822df5-b322-4d46-bf58-02179a2b8107] [Low] [Questions] Define the shared PPTTextComponentModel model interface
+// [2026-10-05 01:55 +02:00] [c870ba7a-bfdb-4ca2-afbe-2e4571fc0c9c] [Low] [Questions] Define a typed feature record model for FeatureRow
+// [2026-10-05 01:55 +02:00] [50392b03-57e8-4a39-936b-eb5387488922] [Low] [Questions] Define shared feature-priority and feature-status model types
+// [2026-10-05 01:55 +02:00] [237363db-c581-4b79-8158-9333a67fee2c] [Low] [Questions] Define the ActiveFeature model interface
+// [2026-10-05 01:55 +02:00] [4bc0c832-29b7-4f07-a43d-dd70ba983d91] [Low] [Questions] Define the GitCommitResult model interface
+// [2026-10-05 01:55 +02:00] [b983e52d-d925-460e-8ea1-18e22aa46498] [Low] [Questions] Define the GitLogEntry model interface
+// [2026-10-05 01:55 +02:00] [860966cd-47a6-4b2a-ac9d-9096247728c8] [Low] [Questions] Define the GitStatusFile model interface
+// [2026-10-05 01:55 +02:00] [3d1e723a-f5ec-4a17-89c9-56d9bc66b0c8] [Low] [Questions] Define the GitStatus model interface
+// [2026-10-05 01:55 +02:00] [69958df2-ba40-442a-a4ad-88934910e0db] [Low] [Questions] Define the LastTestRun model interface
+// [2026-10-05 01:55 +02:00] [64928354-6e57-412a-9935-c26dd6eb1a22] [Low] [Questions] Define the TestRunCacheStatus model interface
+// [2026-10-05 01:55 +02:00] [206fdb0b-8a04-4b3f-ac53-b3599ef8da05] [Low] [Questions] Define the current TestRunResult model interface
+// [2026-10-05 01:55 +02:00] [6e3cbd5b-5446-4e0f-9a4e-b7e17d56d6e7] [Low] [Questions] Define a typed TestCommandEvent model
+// [2026-10-05 01:55 +02:00] [a02aaf39-c72b-4e4c-9dd8-469c89efe57e] [Low] [Questions] Unify FolderEntry and PPTFolderEntry models
+// [2026-10-05 01:55 +02:00] [8ab4b101-3f90-4685-b661-72b0498da5cb] [Low] [Questions] Define the shared SuccessResponseBody model interface
+// [2026-10-05 01:55 +02:00] [aa72b943-3e95-4ad3-946b-7bb94e8380ee] [Low] [Questions] Define the shared FailureResponseBody model interface
+// [2026-10-05 01:55 +02:00] [6c78b785-cb3d-446b-9189-34f4046a1056] [Low] [Questions] Define the AuthenticatedPrincipal model interface
+// [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Questions] Define the PPTFileStats model interface
+// [2026-10-05 02:00 +02:00] [250329d6-57f9-4e5d-ac72-a39f3626bed4] [Low] [Done] move questions with features from the ./DEVENVOPDEV.md file to the ./features file converting them to the correct format
+// [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [In progress] we need to display the current task in a better way then in the toolbar

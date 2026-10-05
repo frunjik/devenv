@@ -1,6 +1,8 @@
-./backlog
-./history
-./features  id status questions
+./backlog   list of open features
+./history   list of closed features
+./archived  list of archived features
+
+./features  id status priority domain category questions
 
 ./feature   id status questions
 ./current   active feature

@@ -70,6 +70,7 @@ describe('features public API', () => {
         await writeFile(join(root, '.features'), [
             '// legacy feature',
             `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [dOnE] completed feature`,
+            '// [123e4567-e89b-42d3-a456-426614174001] [Low] [qUeStIoNs] waiting for clarification',
             '',
         ].join('\n'));
 
@@ -78,6 +79,9 @@ describe('features public API', () => {
         expect(response.body.data[0]).toMatch(/\[Medium\] \[Backlog\] legacy feature$/);
         expect(response.body.data[1]).toBe(
             `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [Done] completed feature`,
+        );
+        expect(response.body.data[2]).toBe(
+            '// [123e4567-e89b-42d3-a456-426614174001] [Low] [Questions] waiting for clarification',
         );
     });
 
@@ -134,6 +138,15 @@ describe('features public API', () => {
         expect(response.body.data).toMatch(/\[Low\] \[In progress\] Feature already underway$/);
     });
 
+    it('accepts Questions as a feature status', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature waiting for clarification', status: 'Questions' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(/\[Low\] \[Questions\] Feature waiting for clarification$/);
+    });
+
     it.each([
         ['unsupported status', { status: 'Blocked' }],
         ['non-string status', { status: 42 }],
@@ -144,7 +157,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Backlog, In progress, or Done.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, or Done.' },
         });
     });
 
@@ -491,7 +504,7 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
     });
 
-    it.each(['Backlog', 'In progress', 'Done'] as const)('accepts a %s status update', async status => {
+    it.each(['Questions', 'Backlog', 'In progress', 'Done'] as const)('accepts a %s status update', async status => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
 
@@ -552,7 +565,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Backlog, In progress, or Done.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, or Done.' },
         });
     });
 

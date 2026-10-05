@@ -207,11 +207,13 @@ describe('FeatureDescriptionComponent', () => {
             '123e4567-e89b-42d3-a456-426614174000',
             '123e4567-e89b-42d3-a456-426614174001',
             '123e4567-e89b-42d3-a456-426614174002',
+            '123e4567-e89b-42d3-a456-426614174003',
         ];
         await writeFile(join(root, '.features'), [
-            `// [${ids[0]}] [High] [Backlog] Urgent task`,
-            `// [${ids[1]}] [Medium] [In progress] Active task`,
-            `// [${ids[2]}] [Low] [Done] Finished task`,
+            `// [${ids[0]}] [High] [Questions] Needs clarification`,
+            `// [${ids[1]}] [Medium] [Backlog] Urgent task`,
+            `// [${ids[2]}] [Medium] [In progress] Active task`,
+            `// [${ids[3]}] [Low] [Done] Finished task`,
             '',
         ].join('\n'));
         fixture.componentInstance.refreshFeatures();
@@ -221,15 +223,17 @@ describe('FeatureDescriptionComponent', () => {
         const rows: HTMLTableRowElement[] = Array.from(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
         );
-        expect(rows).toHaveLength(2);
+        expect(rows).toHaveLength(3);
         expect(rows.every(row => row.classList.contains('feature-card-row'))).toBe(true);
         expect(rows.map(row => row.querySelector('.feature-priority-select')?.className))
             .toEqual([
                 'feature-priority-select priority-high',
                 'feature-priority-select priority-medium',
+                'feature-priority-select priority-medium',
             ]);
         expect(rows.map(row => row.querySelector('.feature-status-select')?.className))
             .toEqual([
+                'feature-status-select status-questions',
                 'feature-status-select status-backlog',
                 'feature-status-select status-in-progress',
             ]);
@@ -679,6 +683,33 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+        expect(featureWork.activeFeature).toBeNull();
+    });
+
+    it('keeps a feature in Questions status and removes it from the active task list', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [2026-10-04 22:45 +02:00] [${id}] [High] [In progress] Feature needing clarification\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature needing clarification <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature needing clarification');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        selector.value = 'Questions';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8'))
+            .toContain('[High] [Questions] Feature needing clarification');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Questions');
         expect(featureWork.activeFeature).toBeNull();
     });
 

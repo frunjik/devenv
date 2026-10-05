@@ -13,6 +13,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { of, throwError } from 'rxjs';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 import { GitLogRefreshService } from './git-log-refresh.service';
+import { META_LAYER_STORAGE } from './meta-layer/meta-layer.service';
 
 describe('AppComponent', () => {
     let http: HttpTestingController;
@@ -38,7 +39,8 @@ describe('AppComponent', () => {
             providers: [
                 provideHttpClient(),
                 provideHttpClientTesting(),
-                provideRouter([])
+                provideRouter([]),
+                { provide: META_LAYER_STORAGE, useValue: { getItem: () => 'true', setItem: () => undefined } },
             ]
         })
             .overrideComponent(AppComponent, {
@@ -82,6 +84,31 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
         expect(app.title).toEqual('DevEnv');
+    });
+
+    it('surrounds the routed app with the meta layer when it is enabled', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('app-navigation-toolbar')).not.toBeNull();
+        expect(fixture.nativeElement.querySelector('app-status-toolbar')).not.toBeNull();
+        expect(fixture.nativeElement.querySelector('.meta-layer-label').textContent)
+            .toContain('Meta layer');
+        expect(fixture.nativeElement.querySelector('.inner-app').classList).toContain('framed');
+    });
+
+    it('hides the meta layer chrome when it is switched off, keeping the routed app', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        fixture.nativeElement.querySelector('app-meta-layer-toggle button').click();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('app-navigation-toolbar')).toBeNull();
+        expect(fixture.nativeElement.querySelector('app-status-toolbar')).toBeNull();
+        expect(fixture.nativeElement.querySelector('.meta-layer-label')).toBeNull();
+        expect(fixture.nativeElement.querySelector('.inner-app').classList).not.toContain('framed');
+        expect(fixture.nativeElement.querySelector('router-outlet')).not.toBeNull();
     });
 
     it('renders the backend host in the toolbar', () => {

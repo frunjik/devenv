@@ -1,10 +1,32 @@
-:host {
+﻿:host {
     display: block;
     padding-bottom: 48px;
+}
+
+.meta-layer-label {
+    margin: 0;
+    padding: 0.2rem 1rem;
+    background: #e8eaf6;
+    color: #3f51b5;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.inner-app.framed {
+    margin: 0.5rem;
+    border: 2px solid #3f51b5;
+    border-radius: 0.35rem;
 }
 
 @media (max-width: 42rem) {
     :host {
         padding-bottom: 88px;
+    }
+
+    .inner-app.framed {
+        margin: 0.25rem;
+        border-width: 1px;
     }
 }

@@ -3,6 +3,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterOutlet } from '@angular/router';
+import { MetaLayerToggleComponent } from './meta-layer/meta-layer-toggle.component';
+import { MetaLayerService } from './meta-layer/meta-layer.service';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 import { CurrentEntryService } from './current-entry.service';
@@ -14,7 +16,7 @@ import { StatusToolbarComponent } from './status-toolbar/status-toolbar.componen
 
 @Component({
     selector: 'app-root',
-    imports: [RouterOutlet, MatSnackBarModule, NavigationToolbarComponent, StatusToolbarComponent],
+    imports: [RouterOutlet, MatSnackBarModule, NavigationToolbarComponent, StatusToolbarComponent, MetaLayerToggleComponent],
     // providers: [
 
     // ]
@@ -26,6 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitting = false;
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
+    readonly meta = inject(MetaLayerService);
     readonly currentEntry = inject(CurrentEntryService);
     readonly testRunCacheStatus = inject(TestRunCacheStatusService);
     private gitLogRefresh = inject(GitLogRefreshService);

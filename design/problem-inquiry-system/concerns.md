@@ -312,14 +312,16 @@ Decide whether a framed ticket can be edited, closed, or marked duplicate after 
 
 ### SC-024 — Integrate the problem-solving app into the host app shell
 
-**Kind:** Design · **Status:** Ready · **Priority:** High · **Depends on:** None
+**Kind:** Design · **Status:** In progress · **Priority:** High · **Depends on:** None
 
 The system plan and problem-inquiry pages belong to the "solving problems with AI" domain, while the existing menu and screens belong to the host (meta) application layer. Find a way for the host to visibly "dock" or include the problem-solving app so they read as one coherent product rather than two mixed-in sets of screens.
 
 **Working boundary:** Clarify the relationship before changing structure. Existing shell, menu, and routing code may only change with permission and an explanation (P-006).
 **Direction (user, 2026-10-06):** The meta (host) layer is hidden by default, with the problem-solving app shown on its own. A small switch enables the meta layer, which then visually surrounds the inner app to show that it governs it. Switching off hides the layer again.
 **Decisions (user, 2026-10-06):** The switch is a small fixed corner toggle, always visible but unobtrusive. The on/off state persists across reloads. When enabled, the frame shows the existing host menu plus a header labeling the layer. Enabling is presentation only; routes are unchanged. The problem-solving app comprises the inquiry and system-plan screens; everything else in the host menu is host.
-**Open questions:** None for the shell design. Implementation requires permission to change the existing shell, menu, and routing code (P-006).
+**Open questions:** Should the frame surround only the problem-solving screens (inquiry, system plan) rather than every routed screen? Should the compact narrow-screen menu replace the wrapping toolbar?
+**Permission (user, 2026-10-06):** Approved changes to the app component, its template, styles, and spec (P-006).
+**Validation evidence (first slice):** A `MetaLayerService` (localStorage behind an injectable storage, hidden by default) and a fixed corner `MetaLayerToggleComponent` were added. The app shell shows the navigation toolbar, a "Meta layer" label, and the status toolbar only when enabled, and frames the routed outlet; routes are unchanged and status polling continues while hidden. The choice persists across reloads. New and touched files have 100% statements, branches, functions, and lines; full client suite (173 tests) and build pass. DOM checks at 320, 768, and 1440 px show no horizontal overflow and the toggle does not overlap the status bar. The frame currently wraps every routed screen, and the toolbar is not yet a compact bar on narrow screens.
 **Settled (user, 2026-10-06):** State is stored in browser localStorage behind a small service; tests use a simple fake storage. On narrow screens the menu collapses to a compact bar above the inner app and the frame stays thin. The glossary is host (a general tool) but is searchable from inside the problem-solving app (SC-023).
 **Vocabulary candidates (P-009, not yet agreed):** "meta app/layer", "host", "dock", "domain app". Decide whether any need Glossary entries.
 

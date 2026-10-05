@@ -1,11 +1,19 @@
-<app-navigation-toolbar
-    [host]="host"
-    [isCommitting]="isCommitting"
-    (commitRequested)="commitChanges()"
-/>
-<router-outlet />
-<app-status-toolbar
-    [gitStatus]="gitStatus"
-    [currentEntry]="currentEntry"
-    [testRunCacheStatus]="testRunCacheStatus"
-/>
+﻿<app-meta-layer-toggle />
+@if (meta.enabled()) {
+    <app-navigation-toolbar
+        [host]="host"
+        [isCommitting]="isCommitting"
+        (commitRequested)="commitChanges()"
+    />
+    <p class="meta-layer-label">Meta layer · hosts the problem-solving app</p>
+}
+<div class="inner-app" [class.framed]="meta.enabled()">
+    <router-outlet />
+</div>
+@if (meta.enabled()) {
+    <app-status-toolbar
+        [gitStatus]="gitStatus"
+        [currentEntry]="currentEntry"
+        [testRunCacheStatus]="testRunCacheStatus"
+    />
+}

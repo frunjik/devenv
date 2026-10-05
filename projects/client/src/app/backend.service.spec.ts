@@ -125,7 +125,7 @@ describe('BackendService', () => {
     it('assigns the default Low priority when adding a feature without selecting one', async () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 
-        expect(entry).toMatchObject({ priority: 'Low', status: 'Backlog', description: 'Feature with default priority' });
+        expect(entry).toMatchObject({ priority: 'Low', status: 'Wished', description: 'Feature with default priority' });
         await rm(join(root, '.wishlist'), { force: true });
     });
 

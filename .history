@@ -1,3 +1,4 @@
+// [2026-10-05 09:20 +02:00] New features put on .wishlist now default to status Wished (server and client BackendService). Client 220 and server 193 tests at 100% coverage.
 // [2026-10-05 09:05 +02:00] Starting a feature now removes it from .wishlist and stores it in .backlog with status Queued; the features API reads and updates both files. Client 220 and server 193 tests at 100% coverage.
 // [2026-10-05 08:50 +02:00] Moved the Open tab first in the client feature list (tab order and keyboard navigation updated). Client 220 and server 192 tests at 100% coverage.
 // [2026-10-05 08:35 +02:00] Added the Queued feature status; starting a feature now moves it from Backlog to Queued (server, client list/reorder and specs updated). Client 220 and server 192 tests at 100% coverage; ppt, shared and client builds pass.

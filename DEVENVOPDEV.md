@@ -7,8 +7,10 @@ Some features are in an old format, convert it to the JSON/PPTFeature format whe
 When you are done with a Feature set its status to Done, leave it in .current
 The features you are writing are, take them one by one:
 
-{"id":"1bacb871-9a38-4ac2-b35b-5ed8ce2e05ee","createdAt":"2026-10-05 08:35 +02:00","priority":"Low","status":"Queued","description":"when an item is put on .wishlist set its status to Wished"}
-- [In progress] when an item is put on .wishlist set its status to Wished <!-- feature-id:1bacb871-9a38-4ac2-b35b-5ed8ce2e05ee -->
+- [In progress] Update the readme and changelog <!-- feature-id:e9da6317-1e61-43e9-b733-913d7cba3a1b -->
+- [In progress] change all usage of features to use PPTField instead of the text representation; use the converter to copy all archived items back to wishlist in the new format <!-- feature-id:d7d045b5-4d5c-40f5-a022-d91924b34e9b -->
+- [In progress] before copying the commit message to the commit name dialog, strip the id and show the description <!-- feature-id:e20a5102-f811-4c51-a85e-9cd6be104d6b -->
+- [In progress] make the client feature show page wide <!-- feature-id:38e2fe23-e1f4-4882-91f4-a769dff8e042 -->
 
 
 

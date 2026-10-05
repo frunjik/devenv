@@ -336,7 +336,7 @@ export function createFeatureHandler(root: string): RequestHandler {
             return;
         }
 
-        const requestedStatus: unknown = request.body?.status ?? 'Backlog';
+        const requestedStatus: unknown = request.body?.status ?? 'Wished';
         if (typeof requestedStatus !== 'string'
             || !featureStatuses.includes(requestedStatus as PPTFeatureStatus)) {
             response.status(400).json({ error: { message: statusMessage } });

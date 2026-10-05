@@ -83,7 +83,7 @@ export class BackendService {
     addFeature(
         description: string,
         priority: FeaturePriority = 'Low',
-        status: PPTFeatureStatus = 'Backlog',
+        status: PPTFeatureStatus = 'Wished',
     ): Observable<PPTFeature> {
         return this.post<PPTFeature>('features', { description, priority, status });
     }

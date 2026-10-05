@@ -71,7 +71,7 @@ describe('features public API', () => {
             id: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
             createdAt: expect.stringMatching(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}$/),
             priority: 'High',
-            status: 'Backlog',
+            status: 'Wished',
             description: 'First persisted feature',
         });
         expect(features[1]).toMatchObject({
@@ -152,7 +152,7 @@ describe('features public API', () => {
             id: expect.stringMatching(/^[0-9a-f-]{36}$/),
             createdAt: expect.any(String),
             priority: 'High',
-            status: 'Backlog',
+            status: 'Wished',
             description: 'Object api feature',
         });
         expect(listed.body.data).toEqual([created.body.data]);
@@ -264,7 +264,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(201);
         expect(entryData(response.body)).toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Backlog\] Add a feature with multiline details$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Wished\] Add a feature with multiline details$/,
         );
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
     });
@@ -368,7 +368,7 @@ describe('features public API', () => {
             .send({ description: 'Urgent feature', priority: 'High' });
 
         expect(response.status).toBe(201);
-        expect(entryData(response.body)).toMatch(/\[High\] \[Backlog\] Urgent feature$/);
+        expect(entryData(response.body)).toMatch(/\[High\] \[Wished\] Urgent feature$/);
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
     });
 
@@ -771,7 +771,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(200);
         expect(entryData(response.body)).toBe(
-            entryData(created.body).replace('[Backlog]', '[Queued]'),
+            entryData(created.body).replace('[Wished]', '[Queued]'),
         );
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
     });

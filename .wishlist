@@ -1,7 +1,4 @@
-{"id":"60286600-b49c-4d78-b25a-1e96151b2861","priority":"Medium","status":"Backlog","description":"Wishlist"}
+{"id":"60286600-b49c-4d78-b25a-1e96151b2861","priority":"Medium","status":"Done","description":"Wishlist","deliveredDate":"2026-10-05"}
 {"id":"22212e4c-aa20-4de4-b047-4218f350b012","createdAt":"2026-10-05 07:44 +02:00","priority":"Low","status":"Backlog","description":"Merge and Publish Branch"}
-{"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"Low","status":"InProgress","description":"Update the readme and changelog"}
-{"id":"d7d045b5-4d5c-40f5-a022-d91924b34e9b","createdAt":"2026-10-05 08:12 +02:00","priority":"Low","status":"InProgress","description":"change all usage of features to use PPTField instead of the text representation; use the converter to copy all archived items back to wishlist in the new format"}
-{"id":"1a620995-e4d5-45d8-af68-6d6d3e2ade78","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Queued","description":"move the order of the tabs put open first in the feature list on client"}
-{"id":"e20a5102-f811-4c51-a85e-9cd6be104d6b","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Backlog","description":"on commit make the message clean"}
+{"id":"1a620995-e4d5-45d8-af68-6d6d3e2ade78","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Done","description":"move the order of the tabs put open first in the feature list on client","deliveredDate":"2026-10-05"}
 {"id":"a2024ac4-6b66-4130-8e86-c9e12a60cdb4","createdAt":"2026-10-05 08:34 +02:00","priority":"Low","status":"Queued","description":"remove Feature from .wishlist when started; When an item is started from client put on .wishlist with status Wished. When an item is wanted from client put on .backlog with status Commited"}

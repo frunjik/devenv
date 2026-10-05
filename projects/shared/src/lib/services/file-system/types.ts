@@ -1,1 +1,1 @@
-export type { PPTFolderEntry } from '../../models/file-system';
+export type { PPTFolderEntry } from '@ppt';

@@ -1,8 +1,8 @@
 import { execFile, type ExecFileException } from 'node:child_process';
 import type { RequestHandler } from 'express';
-import type { GitLogEntry } from '@shared';
+import type { GitLogEntry } from '@ppt';
 
-export type { GitLogEntry } from '@shared';
+export type { GitLogEntry } from '@ppt';
 
 interface GitLogResult {
     stdout: string;

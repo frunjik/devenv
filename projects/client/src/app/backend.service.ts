@@ -4,8 +4,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
-import type { FeaturePriority, PPTFeature, PPTFeatureStatus } from '@ppt';
 import type {
+    FeaturePriority,
+    PPTFeature,
+    PPTFeatureStatus,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
@@ -15,18 +17,19 @@ import type {
     SuccessResponseBody,
     TestOutputStream,
     TestRunCacheStatus,
-} from '@shared';
+} from '@ppt';
 import { LoggerService } from './logger.service';
 
-export type { FeaturePriority, PPTFeatureStatus } from '@ppt';
 export type {
+    FeaturePriority,
+    PPTFeatureStatus,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
     LastTestRun,
     TestOutputStream,
     TestRunCacheStatus,
-} from '@shared';
+} from '@ppt';
 
 @Injectable({
     providedIn: 'root',

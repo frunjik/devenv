@@ -10,7 +10,7 @@
         "types": ["node"],
         "paths": {
             "@ppt": [
-                "../dist/ppt/"
+                "../../dist/ppt/"
             ]
         },
     },

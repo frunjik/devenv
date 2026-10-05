@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import type { PPTField } from '@shared';
+import type { PPTField } from '@ppt';
 
 @Component({
     selector: 'ppt-field-editor',

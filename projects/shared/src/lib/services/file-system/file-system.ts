@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import type { PPTFileStats, PPTFolderEntry, PPTFS } from '../../models/file-system';
+import type { PPTFileStats, PPTFolderEntry, PPTFS } from '@ppt';
 
-export type { PPTFileStats, PPTFS } from '../../models/file-system';
+export type { PPTFileStats, PPTFS } from '@ppt';
 
 export function readFile(filename: string): Promise<string> {
     return fs.promises.readFile(filename, 'utf-8');

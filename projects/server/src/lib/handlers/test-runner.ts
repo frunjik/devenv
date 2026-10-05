@@ -4,9 +4,9 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
-import type { LastTestRun, TestCommandEvent, TestRunCacheStatus } from '@shared';
+import type { LastTestRun, TestCommandEvent, TestRunCacheStatus } from '@ppt';
 
-export type { LastTestRun, TestCommandEvent, TestRunCacheStatus } from '@shared';
+export type { LastTestRun, TestCommandEvent, TestRunCacheStatus } from '@ppt';
 
 export type TestCommandExecutor = (
     command: string,

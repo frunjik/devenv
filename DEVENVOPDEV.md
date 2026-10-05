@@ -4,6 +4,5 @@ You always have 100% coverage on all your code when the code is stable.
 Before starting a feature you make sure all tests are green and code has 100% coverage.
 Before writing any code move the feature line from DEVENVOPDEV.md to .current
 The features you are writing are, take them one by one:
-
-
+- [In progress] Update the readme and changelog <!-- feature-id:e9da6317-1e61-43e9-b733-913d7cba3a1b -->
 

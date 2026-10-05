@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ppt } from '@ppt';
-import type { PPTField } from '@shared';
+import type { PPTField } from '@ppt';
 import { LoggerService } from '../../logger.service';
 import { PPTFieldEditorComponent } from '../ppt/form/ppt-field-editor/ppt-field-editor.component';
 import { ModelsComponent } from './models.component';

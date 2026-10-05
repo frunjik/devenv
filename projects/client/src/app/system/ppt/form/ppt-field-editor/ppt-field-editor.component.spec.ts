@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import type { PPTField, PPTModel } from '@shared';
+import type { PPTField, PPTModel } from '@ppt';
 import { PPTFieldEditorComponent } from './ppt-field-editor.component';
 
 describe('PPTFieldEditorComponent', () => {

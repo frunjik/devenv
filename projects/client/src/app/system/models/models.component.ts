@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ppt } from '@ppt';
-import type { PPTField, PPTModel, PPTValue } from '@shared';
+import { ppt, type PPTField, type PPTModel, type PPTValue } from '@ppt';
 import { BackendService } from '../../backend.service';
 import { PPTFieldEditorComponent } from '../ppt/form/ppt-field-editor/ppt-field-editor.component';
 

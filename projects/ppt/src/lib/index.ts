@@ -1,12 +1,15 @@
 import { version } from './ppt';
-import type { PPTValue } from '@shared';
+import type { PPTValue } from './core';
 import { modelField, modelModel, modelList, modelItem, modelItemInspector, modelText } from './ppt-models';
 
 export * from './core';
 // export * from './types';
 export type { FeaturePriority, PPTFeatureStatus, PPTFeature } from './models';
 export * from './response';
-export * from './services';
+export * from './git';
+export * from './test-run';
+export * from './file-system';
+export * from './model-field';
 
 // --- generate after this ?
 

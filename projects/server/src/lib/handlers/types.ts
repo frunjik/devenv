@@ -1,1 +1,1 @@
-export type { FailureResponseBody, SuccessResponseBody } from '@shared';
+export type { FailureResponseBody, SuccessResponseBody } from '@ppt';

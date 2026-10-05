@@ -359,6 +359,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-015', 'SC-017'],
             summary: 'Sort framed tickets by different properties and search them by description.',
         },
+        {
+            id: 'SC-027',
+            title: 'Scope glossary terms by domain level',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-019', 'SC-022'],
+            summary: 'Decide between separate glossaries or a level marking on a global glossary.',
+        },
     ];
 
     get validatedCount(): number {

@@ -366,6 +366,16 @@ Let the user sort the list of framed problem tickets on different properties and
 **Validation evidence:** The framed-ticket list has a search field and a sort selector with a direction toggle. Public-interface tests cover default order, each property, direction, missing values, case/accent-insensitive search over title, report, and problem-frame fields, non-searched fields, the no-match message, and sort-plus-search. The list component and page have 100% statements, branches, functions, and lines; full client suite (191 tests) and build pass. Verified in the browser with two tickets: search filters, "No matching tickets." shows, and there is no horizontal overflow at 320, 768, and 1440 px. Records are never modified.
 **Vocabulary note (P-009):** In this concern, "description" means the searchable text fields above, not a separate ticket field.
 
+### SC-027 — Scope glossary terms by domain level
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-019, SC-022
+
+Terms in the glossary may come from different domains (the WMS problem domain, the problem-solving app, the meta/host layer, general engineering), and the same word may mean different things in each. Decide how the glossary represents that.
+
+**Working boundary:** Decide the model before changing `.glossary` or the glossary screen. Options to compare: (a) separate glossaries per domain; (b) one global glossary where each term carries a level/domain marking; (c) one global glossary where a term can have a distinct definition per domain.
+**Open questions:** Which levels exist (e.g. meta, problem-solving app, WMS domain)? Can one term appear in several levels with different meanings? Does the marking become a filter in the glossary screen (SC-022) and quick search (SC-023)? How does this relate to the host vs problem-solving split (SC-024) and to P-009 vocabulary review? Is the marking a Type (a Domain/Level value) rather than free text (P-002)?
+**Leaning (agent, not decided):** Option (b) first: one searchable global glossary with a level marking, since quick search from anywhere (SC-023) works best over one set; split later only if collisions appear.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

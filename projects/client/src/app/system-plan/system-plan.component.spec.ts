@@ -23,8 +23,8 @@ describe('SystemPlanComponent', () => {
         expect(text).toContain('5 in progress');
         expect(text).toContain('Distinguish input from ticket');
         expect(text).toContain('Visualize the current system plan');
-        expect(Array.from(fixture.nativeElement.querySelectorAll('.concern-list h3'))
-            .map((heading: Element) => heading.textContent?.trim().slice(0, 6)))
+        expect(Array.from(fixture.nativeElement.querySelectorAll('.concern-id'))
+            .map((identifier: Element) => identifier.textContent?.trim()))
             .toEqual(['SC-001', 'SC-002', 'SC-003', 'SC-004', 'SC-005',
                 'SC-006', 'SC-007', 'SC-008', 'SC-009', 'SC-010']);
         expect(fixture.nativeElement.querySelector('progress').value).toBe(5);
@@ -36,8 +36,21 @@ describe('SystemPlanComponent', () => {
     it('shows dependencies and makes the snapshot limitation clear', () => {
         const text = fixture.nativeElement.textContent as string;
 
-        expect(text).toContain('Depends on: SC-001, SC-002');
-        expect(text).toContain('manually synchronized snapshot');
-        expect(text).toContain('not live plan data');
+        expect(text).toContain('Prerequisites');
+        expect(text).toContain('SC-001, SC-002');
+        expect(text).toContain('Snapshot, not live data.');
+        expect(text).toContain('manually synchronized');
+    });
+
+    it('presents each concern id as the single ticket identifier, not an ordered-list number', () => {
+        const list = fixture.nativeElement.querySelector('.concern-list') as HTMLElement;
+        const identifiers = fixture.nativeElement.querySelectorAll('.concern-id');
+
+        expect(list.tagName).toBe('UL');
+        expect(fixture.nativeElement.querySelector('ol.concern-list')).toBeNull();
+        expect(identifiers).toHaveLength(10);
+        expect(identifiers[0].textContent.trim()).toBe('SC-001');
+        expect(identifiers[9].textContent.trim()).toBe('SC-010');
+        expect(fixture.nativeElement.querySelectorAll('.concern-card')).toHaveLength(10);
     });
 });

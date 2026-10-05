@@ -407,6 +407,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-024'],
             summary: 'Decide whether and how the current task appears in the top meta toolbar, and how it gets set.',
         },
+        {
+            id: 'SC-033',
+            title: 'Fix the meta toolbar scrollbar and oversized text',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: ['SC-024'],
+            summary: 'Make the host toolbar a compact bar without scrollbars; measured overflow and button size are recorded.',
+        },
     ];
 
     get validatedCount(): number {

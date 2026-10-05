@@ -435,6 +435,19 @@ Show the current task in the meta toolbar (the host layer's top bar), so it is v
 **Working boundary:** Decide placement and source before building. Today the bottom status toolbar already shows a "Current task" button that reads the last non-empty line of the `.current` file through the server (`current-entry` handler) and shows it in a tooltip; there is no UI for setting it. This concern must not duplicate that display without a reason.
 **Open questions:** Move the display to the top toolbar, show it in both, or show a short form on top and the full text in the status bar? How does the task get set (editing `.current` by hand, a control in the meta app, or tied to a concern SC-NN or ticket)? Should it link to the concern or ticket it names? What is shown when no task is set? How does it behave on narrow screens, where the top toolbar is one scrollable row? Does it relate to the Red-Green-Refactor phase display (SC-031)?
 **Vocabulary candidates (P-009, not yet agreed):** "current task" versus "Work Item" (see the Glossary) and "System Concern".
+
+### SC-033 — Fix the meta toolbar scrollbar and oversized text
+
+**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-024
+
+The host (meta) toolbar shows a scrollbar and its text looks far too big. Make it a compact bar without scrollbars at normal widths.
+
+**Working boundary:** Presentation only; the host menu items and routes stay unchanged. The change touches the navigation toolbar component (P-006 permission was given for compacting it on 2026-10-06, but confirm before changing anything else around it).
+**Evidence (agent, 2026-10-06; measured at 1440, 768, and 320 px after the earlier compacting in commit `d0d7c5c`):**
+- A vertical scrollbar is present at every width: the `nav` has `overflow-x: auto`, which also makes it scroll vertically, and its Material buttons (about 42 px tall with their own padding) do not fit its 36 px content box inside the 48 px toolbar.
+- A horizontal scrollbar appears at 768 px and below (content 800 px in a 481 px area; 266 px at 320 px).
+- Fonts measure 12.8 px for the menu buttons and 13.6 px for the brand text, against a 14 px body, so the perceived size comes mostly from the Material button height, padding, and the "|" separators between items rather than the font size alone.
+**Open questions:** Should the menu wrap onto two rows, collapse into an overflow ("more") menu on narrow screens, or keep a scrollable row with the scrollbar hidden (hidden scrollbars hurt discoverability)? Should buttons be replaced with plain links styled like the inner nav so both bars match? Should the "|" separators go away in favor of spacing? What is the target text size (for example the 0.8–0.85 rem used in the inner nav)? Does the commit button stay in the bar? This relates to the colors work in SC-030 and the toolbar content in SC-031 and SC-032.
 
 The dependency order does not authorize building both components together.
 

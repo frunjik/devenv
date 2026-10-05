@@ -584,6 +584,26 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.componentInstance.hasArchivableFeatures).toBe(true);
         await rm(join(root, '.archived'), { recursive: true });
     });
+    it('sets the status of a queued feature from the Queued tab', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-42661417400c';
+        await writeFile(join(root, '.features'),
+            `{"id":"${id}","priority":"Low","status":"Queued","description":"Change me"}\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('queued');
+        fixture.detectChanges();
+        const select: HTMLSelectElement = fixture.nativeElement.querySelector('.queued-feature-status-select');
+        expect(select.value).toBe('Queued');
+
+        select.value = 'Questions';
+        select.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(0);
+        expect(await readFeatureFile()).toContain('[Questions] Change me');
+    });
     it('filters the completed list with the shared feature search', async () => {
         await fixture.whenStable();
         await writeFile(join(root, '.features'), [

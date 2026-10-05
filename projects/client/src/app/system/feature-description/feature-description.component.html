@@ -239,6 +239,17 @@
             <li *ngFor="let feature of matchingQueuedFeatures" class="queued-feature">
                 <span class="queued-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
                 <span class="queued-feature-description">{{ feature.description }}</span>
+                <select
+                    class="queued-feature-status-select"
+                    [attr.aria-label]="'Status for ' + feature.description"
+                    (change)="onStatusChange(feature, $event)"
+                >
+                    <option
+                        *ngFor="let value of statuses"
+                        [value]="value"
+                        [selected]="value === feature.status"
+                    >{{ value }}</option>
+                </select>
                 <div class="queued-feature-order">
                     <button
                         type="button"

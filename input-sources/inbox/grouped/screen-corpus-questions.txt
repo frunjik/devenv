@@ -1,0 +1,11 @@
+Synthetic grouped source — invented examples; not a real support transcript.
+
+Questions collected while looking through screen definitions:
+
+"This one refers to a code list I can't find. Is the list missing, or does it come from somewhere else?"
+
+"I found a screen with fields but no title or navigation link. Maybe it is opened from another screen, maybe the definition is incomplete."
+
+"The same field name appears on several screens. Do they mean the same thing each time? We don't know."
+
+"One screen fails only for one operator account. Could be permissions, bad setup, or a defect. No one has checked yet."

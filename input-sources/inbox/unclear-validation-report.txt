@@ -1,0 +1,3 @@
+Synthetic standalone sample — invented for workflow exploration; not a real incident.
+
+On the quantity page I can type 0 and it says "invalid". I don't know if zero is forbidden by the warehouse rule or if this particular screen is using the wrong check. The message doesn't say what value it expected.

@@ -1,0 +1,3 @@
+Synthetic standalone sample — invented for workflow exploration; not a real incident.
+
+Found definition INVX-44 while searching the old files. No one remembers seeing it in daily work. It has a link to another definition, but that one is missing from this export. Don't know whether to rebuild it, find the missing file, or leave it alone.

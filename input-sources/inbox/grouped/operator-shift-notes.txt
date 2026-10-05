@@ -1,0 +1,9 @@
+Synthetic grouped source — invented for workflow exploration; not a real report.
+
+Notes passed to the replacement team after the late shift:
+
+The screen after the pallet scan has three codes on it. We don't know if those are locations, stock statuses, or just something the old client needs. The old screen doesn't open consistently, so I can't compare.
+
+Someone mentioned that two different buttons used to print different labels, but nobody here can say which one is still used. The definitions have almost the same name.
+
+When the wireless drops near the loading area, people wait and then try again. We don't know which actions are safe to repeat and which might already have gone through.

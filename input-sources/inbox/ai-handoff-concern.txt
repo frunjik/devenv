@@ -1,0 +1,3 @@
+Synthetic standalone sample — invented for workflow exploration; not a real report.
+
+The AI suggested a rule for this page and wrote a test for it. The code looks plausible, but the explanation doesn't point to a screen, a person, or any other source. The person who knows this workflow is leaving soon. How do we decide whether the rule is real?

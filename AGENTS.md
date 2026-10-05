@@ -45,3 +45,12 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 - When changing API behavior, check both its server implementation and related client/shared callers and tests.
 - Preserve existing feature-store formats and workflows documented in `README.md`.
 - Avoid unrelated edits; run the smallest relevant tests and builds, and report any known or newly encountered failures.
+
+## System task principles
+
+Follow the maintained [system task principles](.agents/system-task-principles.md) for work that designs or implements this system. The register is additive: preserve existing principles when adding new ones, and surface conflicts for resolution rather than silently overriding them.
+
+- For production code, use Red-Green-Refactor as defined in `.agents/test-driven-developer.agent.md`.
+- At the defined checkpoints, review the domain and implementation for missing or refinable Types using `.agents/type-reviewer.agent.md`; report justified Type convictions and unresolved candidates to the user.
+- Before completing a TypeScript coding task, run an appropriate TypeScript-aware type-check or build for the changed code and resolve type errors; report any check that could not run.
+- For in-scope production code, require 100% line, statement, branch, and function coverage using domain-derived tests through public interfaces; allow simple mocks only at boundaries. Do not change production code for testability except after proving code is unreachable and cannot otherwise be covered, as detailed in the principle register.

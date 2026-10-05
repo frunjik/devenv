@@ -1,6 +1,6 @@
 # Spike Blueprint: AI-Assisted WMS Authoring
 
-**Status:** Planned, not conducted · **Mode:** Conceptual; no AI trial or code
+**Status:** Type model drafted; no AI trial or workflow implementation
 
 ## Question and Context
 
@@ -30,54 +30,11 @@ Terms are provisional.
 
 ## Candidate Types
 
-```text
-WorkSlice {
-    outcome
-    context
-    scopeAndExclusions
-    acceptanceChecks
-    openQuestions
-}
+The initial TypeScript model is in [`problem-inquiry.types.ts`](../../../projects/shared/src/lib/problem-inquiry.types.ts). Its vertical slice is:
 
-EvidenceItem {
-    source
-    supportsOrChallenges
-    provenance
-    confidence
-}
+**Problem set (mixed scopes) → inquiry → evidence and findings → insight or target change → human decision.**
 
-AIProposal {
-    kind: interpretation | design | code | test | question
-    content
-    basedOn: EvidenceItem[]
-    assumptions
-    uncertainty
-    suggestedChecks
-}
-
-Review {
-    proposal
-    checksAndResults
-    reviewer
-    uncoveredRisks
-}
-
-Decision {
-    proposal
-    outcome: accept | revise | reject | defer
-    rationale
-    owner
-    targetChanges
-}
-
-ContinuityRecord {
-    workSlice
-    evidence
-    decisions
-    knowledgeGaps
-    nextSteps
-}
-```
+The types distinguish operation, workflow, system, and cross-system scope. People, Places, Things, and observed time are context; evidence and findings separate observations from synthesis. AI proposals remain reviewable inputs, not decisions. This is a contract sketch: it does not enforce referential integrity or implement transitions.
 
 ## Small Trial
 

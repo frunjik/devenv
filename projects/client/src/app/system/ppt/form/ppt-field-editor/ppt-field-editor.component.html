@@ -1,0 +1,27 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field>
+        <mat-label>ID</mat-label>
+        <input matInput formControlName="id">
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Type</mat-label>
+        <textarea matInput formControlName="type" rows="4"></textarea>
+    </mat-form-field>
+    @if (typeError) {
+        <p role="alert">{{ typeError }}</p>
+    }
+
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title">
+    </mat-form-field>
+
+    <button mat-button type="submit" [disabled]="form.invalid">Save</button>
+    <button mat-button type="button" (click)="requestCancel()">Cancel</button>
+</form>

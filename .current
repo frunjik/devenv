@@ -1,1 +1,2 @@
 Current
+// [2026-10-05 06:03 +02:00] Implemented a standalone client PPTField editor for id, type, name, and title, with validated save and cancel outputs; focused and full client/server suites pass at 100% coverage, and the client build passes. Pending Git commit.

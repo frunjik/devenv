@@ -257,6 +257,16 @@ Connect accepted notes, explicit ticket framing, and the framed-ticket list with
 **Open questions:** None for the in-memory vertical slice.
 **Validation evidence:** The inquiry page passes accepted notes to the framing form and ticket list, and adds emitted tickets to a separate in-memory collection. Public-interface tests verify that accepting a note alone creates no ticket and that explicit framing creates a ticket linked to the accepted source. Page coverage is 100% statements, branches, functions, and lines; client build passes. At a 320 px viewport, the integrated page has no horizontal overflow and converter controls remain within the component width.
 
+### SC-017 — Toggle sample and real data
+
+**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-005, SC-016
+
+Add a toggle to the inquiry data views. In the combined mode, show sample and real data together; when switched, show only real data. Switching back restores the combined view. Filtering changes visibility only and must not modify or delete records.
+
+**Working boundary:** Apply the visibility choice consistently to accepted notes and framed tickets.
+**Open questions:** Decide how records with unknown origin and tickets linked to both sample and real notes behave in real-only mode; clarify the concrete source-origin categories that count as real.
+**Validation evidence:** Requested by the user on 2026-10-06. The current model distinguishes `synthetic` from external reports, direct observations, system artifacts, and unknown origin; exact inclusion rules and mixed-provenance ticket behavior remain to be resolved before implementation.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence
@@ -271,6 +281,7 @@ The dependency order does not authorize building both components together.
 8. Add note identity and provenance links in SC-013.
 9. Build the ticket-framing component in SC-014, then the framed-ticket list in SC-015, one component per slice.
 10. Integrate those components in SC-016.
+11. Define and implement the sample/real visibility toggle in SC-017.
 
 For each coding slice, derive tests from the synthetic inbox inputs and known Problem Domain scenarios where possible. Test through public interfaces, use only simple boundary mocks, and meet the project's full-coverage principle.
 

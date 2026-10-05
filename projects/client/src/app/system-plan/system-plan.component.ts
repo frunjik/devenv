@@ -279,6 +279,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-014', 'SC-015'],
             summary: 'Connect accepted notes, explicit ticket creation, and the framed-ticket list.',
         },
+        {
+            id: 'SC-017',
+            title: 'Toggle sample and real data',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: ['SC-005', 'SC-016'],
+            summary: 'Switch between showing sample and real data together and showing only real data.',
+        },
     ];
 
     get validatedCount(): number {

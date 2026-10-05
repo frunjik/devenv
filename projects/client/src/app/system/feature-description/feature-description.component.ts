@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import type { PPTFeature } from '@ppt';
 import { BackendService, type FeaturePriority, type PPTFeatureStatus } from '../../backend.service';
 import { CurrentTaskService } from '../../current-task.service';
@@ -67,6 +67,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     readonly completingFeatureIds = new Set<string>();
     readonly abortingFeatureIds = new Set<string>();
     features: PPTFeature[] = [];
+    archivedFeatures: PPTFeature[] = [];
     doneFeatures: PPTFeature[] = [];
     readonly featureDataSource = new MatTableDataSource<PPTFeature>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
@@ -141,9 +142,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         this.featureRefreshSubscription.unsubscribe();
         this.isLoadingFeatures = true;
         this.featuresError = '';
-        this.featureRefreshSubscription = this.backend.getFeatures().subscribe({
-            next: features => {
+        this.featureRefreshSubscription = forkJoin([this.backend.getFeatures(), this.backend.getArchived()]).subscribe({
+            next: ([features, archivedFeatures]) => {
                 this.features = features;
+                this.archivedFeatures = archivedFeatures;
                 this.refreshFeatureLists();
                 this.isLoadingFeatures = false;
             },
@@ -358,7 +360,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private refreshFeatureLists(): void {
         const features = this.features;
-        this.doneFeatures = features.filter(feature => feature.status === 'Done');
+        this.doneFeatures = [...features.filter(feature => feature.status === 'Done'), ...this.archivedFeatures];
         this.featureDataSource.data = features.filter(feature => feature.status !== 'Done');
         this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();
     }

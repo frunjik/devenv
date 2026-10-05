@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { access, appendFile, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
@@ -370,6 +370,39 @@ export function createFeaturesListHandler(root: string): RequestHandler {
 export function createBacklogListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
         void readFeatures(join(root, '.backlog'))
+            .then(features => response.json({ data: features }))
+            .catch(next);
+    };
+}
+
+async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
+    let contents: string;
+    try {
+        contents = await readFile(join(root, '.archived'), 'utf8');
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return [];
+        }
+        throw error;
+    }
+
+    return contents.split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line && line.toLowerCase() !== 'archived')
+        .map(line => {
+            const parsed = parsePPTFeatureLine(line);
+            if (parsed) {
+                return withStatus(parsed, 'Done');
+            }
+            const hash = createHash('sha1').update(line).digest('hex');
+            const id = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-${hash.slice(12, 16)}-${hash.slice(16, 20)}-${hash.slice(20, 32)}`;
+            return withStatus({ ...legacyLineToFeature(line), id }, 'Done');
+        });
+}
+
+export function createArchivedListHandler(root: string): RequestHandler {
+    return (_request, response, next) => {
+        void readArchivedFeatures(root)
             .then(features => response.json({ data: features }))
             .catch(next);
     };

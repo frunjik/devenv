@@ -10,3 +10,4 @@
 {"id":"6e43a1fb-f632-4757-ae86-34181308a95b","createdAt":"2026-10-04 23:23 +02:00","priority":"Low","status":"InProgress","description":"bundle of ~17 older items; check each and implement the missing ones"}
 {"id":"e193b69c-d69e-4124-8df7-7bd118117232","createdAt":"2026-10-05 09:09 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"fix typescript errors"}
 {"id":"1faaf839-491d-4248-b55c-e9aa67c01508","createdAt":"2026-10-05 09:19 +02:00","priority":"High","status":"Done","deliveredDate":"2026-10-05","description":"always save feature as JSON"}
+{"id":"1a620995-e4d5-45d8-af68-6d6d3e2ade78","createdAt":"2026-10-05 08:32 +02:00","priority":"High","status":"Done","description":"The client's Done tab reads from `.wishlist` this is wrong the wishlist should show as open","deliveredDate":"2026-10-05"}

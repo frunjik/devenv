@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import request from 'supertest';
@@ -83,5 +83,36 @@ describe('history, glossary and backlog API', () => {
 
         await mkdir(join(root, '.backlog'));
         expect((await request(app).get('/backlog')).status).toBe(500);
+    });
+
+    it('returns .archived entries as Done features with stable ids without rewriting the file', async () => {
+        const contents = [
+            'Archived',
+            '// [2026-10-04 21:00 +02:00] Extracted the service.',
+            '{"id":"123e4567-e89b-42d3-a456-426614174002","priority":"High","status":"Archived","description":"JSON entry"}',
+            '',
+        ].join('\n');
+        await writeFile(join(root, '.archived'), contents);
+
+        const first = (await request(app).get('/archived')).body.data;
+        const second = (await request(app).get('/archived')).body.data;
+
+        expect(first).toHaveLength(2);
+        expect(first[0]).toMatchObject({
+            createdAt: '2026-10-04 21:00 +02:00',
+            status: 'Done',
+            description: 'Extracted the service.',
+        });
+        expect(first[0].id).toMatch(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/);
+        expect(second).toEqual(first);
+        expect(first[1]).toMatchObject({ id: '123e4567-e89b-42d3-a456-426614174002', status: 'Done', description: 'JSON entry' });
+        expect(await readFile(join(root, '.archived'), 'utf8')).toBe(contents);
+    });
+
+    it('returns no archived features when .archived is missing and forwards other read errors', async () => {
+        expect((await request(app).get('/archived')).body).toEqual({ data: [] });
+
+        await mkdir(join(root, '.archived'));
+        expect((await request(app).get('/archived')).status).toBe(500);
     });
 });

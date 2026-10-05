@@ -56,6 +56,7 @@ describe('FeatureDescriptionComponent', () => {
     beforeEach(async () => {
         await rm(join(root, '.wishlist'), { recursive: true, force: true });
         await rm(join(root, '.backlog'), { recursive: true, force: true });
+        await rm(join(root, '.archived'), { recursive: true, force: true });
         await rm(join(root, 'DEVENVOPDEV.md'), { recursive: true, force: true });
         await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions\n\n'
             + 'The features you are writing are, take them one by one:\n');
@@ -407,6 +408,20 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
         expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
             .toBe('Completed feature');
+    });
+
+    it('lists .archived entries on the Done tab after the features with status Done', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.wishlist'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174004","priority":"Low","status":"Done","description":"Wishlist entry"}\n');
+        await writeFile(join(root, '.archived'), 'Archived\n// [2026-10-04 21:00 +02:00] Archived entry\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
+            .map(element => element.textContent!.trim());
+        expect(done).toEqual(['Wishlist entry', 'Archived entry']);
     });
 
     it('filters the completed list with the shared feature search', async () => {

@@ -7,13 +7,8 @@ Some features are in an old format, convert it to the JSON/PPTFeature format whe
 When you are done with a Feature set its status to Done, leave it in .current
 When there are no items here, pick a Queued item by prio, set its status to Commited and copy in here.
 The features you are writing are, take them one by one:
-
-
-{"id":"1a620995-e4d5-45d8-af68-6d6d3e2ade78","createdAt":"2026-10-05 08:32 +02:00","priority":"High","status":"Queued","description":"move the order of the tabs put open first in the feature list on client; improve the arrow layout in the client queued list; show the backlog list on the client; in the done list on the ciient make the Prio and Status labels readonly, Remove the Edit button and replace the start by Archive; add the tab choice on client feature page urlstate; move the feature entry form into a new tab (and make it the last one); The client's Done tab reads from `.wishlist` this is wrong the wishlist should show as open"}
-
-
-- [In progress] move the order of the tabs put open first in the feature list on client; improve the arrow layout in the client queued list; show the backlog list on the client; in the done list on the ciient make the Prio and Status labels readonly, Remove the Edit button and replace the start by Archive; add the tab choice on client feature page urlstate; move the feature entry form into a new tab (and make it the last one); The client's Done tab reads from `.wishlist` this is wrong the wishlist should show as open <!-- feature-id:1a620995-e4d5-45d8-af68-6d6d3e2ade78 -->
-{"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"High","status":"Queued","description":"Update the readme and changelog with a summary of the changes in this branch"}
-
+{"id":"825bc58a-0608-4921-abef-34142a62faa6","createdAt":"2026-10-05 10:46 +02:00","priority":"Low","status":"Queued","description":"add a new feature that shows all used Feature states and what they are currently used for"}
+{"id":"b15e112f-557e-44e7-a223-ce77abf8ea0b","createdAt":"2026-10-05 10:48 +02:00","priority":"Low","status":"Queued","description":"allow editing a Queued Feature on the client"}
+{"id":"5ae26490-ed48-4c60-9d64-e7f98095da74","createdAt":"2026-10-05 10:53 +02:00","priority":"Low","status":"Queued","description":"A feature marked done should never be on .wishlist lets make this more consistent if you have questions make a Feature marked with [AI Question] and put it in .backlog with status Question"}
 
 

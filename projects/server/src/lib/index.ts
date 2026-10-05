@@ -22,6 +22,7 @@ import {
     createFeatureStatusHandler,
     createFeaturesListHandler,
     createFeatureRemovalHandler,
+    createArchivedListHandler,
     createBacklogListHandler,
 } from './handlers/features';
 import {
@@ -73,6 +74,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/history', createLinesHandler(root, ['.history']));
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
     app.get('/backlog', createBacklogListHandler(root));
+    app.get('/archived', createArchivedListHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id/description', createFeatureDescriptionHandler(root));

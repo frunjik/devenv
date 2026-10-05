@@ -81,6 +81,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** When encountering a concept or wording in a note or Problem description, evaluate whether it warrants a Glossary entry, a new or refined Type, or another general system concern.
 - **Practice:** Do not automatically add definitions or Types. Record justified candidates and distinguish them from agreed domain meaning; raise unresolved or consequential interpretations for user review.
 
+### P-010 — Reflect on Meta-Level Knowledge
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction
+- **Applies to:** Ongoing work, after it has been under way for a while (at the same stable points as the P-008 gate).
+- **Rule:** Consider whether the work has produced knowledge worth recording at the outer (meta) level, such as improvements to the SC-NN numbering and concern conventions, or the realization that the same thing has been done repeatedly in different shapes. If so, make a note on the meta level.
+- **Practice:** Record the note in `design/problem-inquiry-system/concerns.md` under "Meta Notes". Notes are observations and proposals, not decisions; raise consequential ones with the user.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

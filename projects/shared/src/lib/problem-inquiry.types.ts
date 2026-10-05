@@ -32,6 +32,34 @@ export interface ProblemTicket {
     reportedAt: string;
 }
 
+export type SourceOrigin =
+    | 'synthetic'
+    | 'external-report'
+    | 'direct-observation'
+    | 'system-artifact'
+    | 'unknown';
+
+export type VerificationStatus = 'unreviewed' | 'corroborated' | 'disputed' | 'unknown';
+
+export interface SourceReference {
+    artifact: string | null;
+    locator: string | null;
+}
+
+export interface NoteProposal {
+    sourceText: string;
+    sourceReference: SourceReference;
+    sourceOrigin: SourceOrigin;
+    verificationStatus: VerificationStatus;
+    interpretation: string;
+    openQuestions: string[];
+}
+
+export interface ImportedNote {
+    proposal: NoteProposal;
+    acceptedAt: string;
+}
+
 export interface ProblemSet {
     id: string;
     title: string;

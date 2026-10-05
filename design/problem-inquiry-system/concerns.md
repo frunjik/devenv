@@ -353,6 +353,16 @@ Explore whether an AI chatbot can live inside the meta (host) layer, so it is av
 **Open questions:** What is the chatbot for (answering questions, drafting note proposals, explaining glossary terms, helping frame tickets)? Does it see the current screen or only what the user pastes? May it create or change notes and tickets, or only suggest? Where does it appear (panel, drawer, floating button) and does it show only with the meta layer on? Which model or service, and where do credentials and conversation history live? How are real-world reports kept from leaving the sandbox (privacy)?
 **Vocabulary candidates (P-009, not yet agreed):** "chatbot", "assistant", "AI", "proposal". Decide whether any need Glossary entries and whether AI output relates to `NoteProposal`.
 
+### SC-026 — Sort and search the problem ticket list
+
+**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-015, SC-017
+
+Let the user sort the list of framed problem tickets on different properties and find tickets with a search field that matches their description.
+
+**Working boundary:** View-only: sorting and searching change visibility and order, never the underlying records, and must compose with the sample/real data filter (SC-017).
+**Open questions:** Which properties are sortable (creation time, title, scope level, reporter, number of linked notes)? Default order and direction? What does "description" match: the report text, the title, the problem frame fields, or all of them? Case and diacritic handling, and whole-word versus substring? Should the accepted-notes list get the same controls? How is an empty result presented, and are the choices kept across reloads?
+**Vocabulary candidates (P-009, not yet agreed):** "description" is not a ticket field name; tickets have a title, a report, and a problem frame. Decide which field(s) it denotes.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

@@ -351,6 +351,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-024'],
             summary: 'Explore purpose, data exposure, and placement of an AI chatbot in the meta layer.',
         },
+        {
+            id: 'SC-026',
+            title: 'Sort and search the problem ticket list',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: ['SC-015', 'SC-017'],
+            summary: 'Sort framed tickets by different properties and search them by description.',
+        },
     ];
 
     get validatedCount(): number {

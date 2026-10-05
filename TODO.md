@@ -47,3 +47,5 @@ DONE:
 - make server restart on changes
 - fix the server test highlighting
 
+MoSCoW Method
+

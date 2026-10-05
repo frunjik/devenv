@@ -319,7 +319,8 @@ The system plan and problem-inquiry pages belong to the "solving problems with A
 **Working boundary:** Clarify the relationship before changing structure. Existing shell, menu, and routing code may only change with permission and an explanation (P-006).
 **Direction (user, 2026-10-06):** The meta (host) layer is hidden by default, with the problem-solving app shown on its own. A small switch enables the meta layer, which then visually surrounds the inner app to show that it governs it. Switching off hides the layer again.
 **Decisions (user, 2026-10-06):** The switch is a small fixed corner toggle, always visible but unobtrusive. The on/off state persists across reloads. When enabled, the frame shows the existing host menu plus a header labeling the layer. Enabling is presentation only; routes are unchanged. The problem-solving app comprises the inquiry and system-plan screens; everything else in the host menu is host.
-**Open questions:** Where is the state stored, and is storage a boundary mock in tests? How is the frame sized on narrow screens? Where does the glossary (SC-022/SC-023) sit given it is currently outside the problem-solving screens?
+**Open questions:** None for the shell design. Implementation requires permission to change the existing shell, menu, and routing code (P-006).
+**Settled (user, 2026-10-06):** State is stored in browser localStorage behind a small service; tests use a simple fake storage. On narrow screens the menu collapses to a compact bar above the inner app and the frame stays thin. The glossary is host (a general tool) but is searchable from inside the problem-solving app (SC-023).
 **Vocabulary candidates (P-009, not yet agreed):** "meta app/layer", "host", "dock", "domain app". Decide whether any need Glossary entries.
 
 ### SC-022 — Improve glossary screen layout and styling

@@ -4,6 +4,10 @@ module.exports = {
     testEnvironment: 'node',
     silent: true,
     testMatch: ['<rootDir>/projects/server/test/**/*.spec.ts'],
+    moduleNameMapper: {
+        '^@shared/ppt-fields$': '<rootDir>/projects/shared/src/lib/models.ts',
+        '^@shared$': '<rootDir>/projects/shared/src/public-api.ts',
+    },
     transform: {
         '^.+\\.tsx?$': ['ts-jest', {
             tsconfig: '<rootDir>/projects/server/tsconfig.jest.json',

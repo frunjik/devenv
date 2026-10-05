@@ -22,6 +22,9 @@
       "@shared": [
         "./dist/shared/"
       ],
+      "@shared/ppt-fields": [
+        "./projects/shared/src/lib/models.ts"
+      ],
       "@ppt": [
         "./dist/ppt/"
       ]

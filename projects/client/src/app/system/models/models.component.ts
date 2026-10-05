@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ppt } from '@ppt';
 import type { PPTField, PPTModel, PPTValue } from '@shared';
+import { BackendService } from '../../backend.service';
 import { PPTFieldEditorComponent } from '../ppt/form/ppt-field-editor/ppt-field-editor.component';
 
 interface FieldOption {
@@ -22,7 +23,8 @@ function isPPTModel(value: PPTValue): value is PPTModel {
     templateUrl: './models.component.html',
     styleUrl: './models.component.scss',
 })
-export class ModelsComponent {
+export class ModelsComponent implements OnInit {
+    private readonly backend = inject(BackendService);
     private readonly models: Record<string, PPTValue> = Object.fromEntries(
         Object.entries(ppt.models).map(([key, value]) => [
             key,
@@ -44,12 +46,32 @@ export class ModelsComponent {
     selectedField: PPTField | null = null;
     selectedFieldKey = '';
     modelText = JSON.stringify(this.models, null, 2);
+    knownPPTFields: PPTField[] = [];
+    isLoadingKnownPPTFields = true;
+    knownPPTFieldsError = '';
 
     constructor() {
         const firstField = this.fieldOptions[0];
         if (firstField) {
             this.selectField(firstField.key);
         }
+    }
+
+    ngOnInit(): void {
+        this.backend.getPPTFields().subscribe({
+            next: fields => {
+                this.knownPPTFields = fields;
+                this.isLoadingKnownPPTFields = false;
+            },
+            error: (error: Error) => {
+                this.knownPPTFieldsError = error.message;
+                this.isLoadingKnownPPTFields = false;
+            },
+        });
+    }
+
+    fieldTypeLabel(field: PPTField): string {
+        return typeof field.type === 'string' ? field.type : field.type.name;
     }
 
     selectField(key: string): void {

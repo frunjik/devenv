@@ -28,5 +28,28 @@
             />
         }
     </section>
+    <section aria-label="Known PPT fields">
+        <h2>Known PPT fields</h2>
+        @if (isLoadingKnownPPTFields) {
+            <p role="status">Loading known PPT fields…</p>
+        } @else if (knownPPTFieldsError) {
+            <p role="alert">Could not load known PPT fields: {{ knownPPTFieldsError }}</p>
+        } @else if (knownPPTFields.length === 0) {
+            <p>No known PPT fields.</p>
+        } @else {
+            <ul class="known-fields-list">
+                @for (field of knownPPTFields; track field.id) {
+                    <li>
+                        <strong>{{ field.name }}</strong>
+                        <span class="known-field-id">{{ field.id }}</span>
+                        <span class="known-field-type">{{ fieldTypeLabel(field) }}</span>
+                        @if (field.title) {
+                            <span class="known-field-title">{{ field.title }}</span>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </section>
     <pre aria-label="PPT model definitions">{{ modelText }}</pre>
 </main>

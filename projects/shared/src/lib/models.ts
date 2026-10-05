@@ -101,3 +101,13 @@ export const modelItemInspector: PPTModel = {
         tileField,
     ]
 }
+
+const allModels = [
+    modelModel,
+    modelField,
+    modelList,
+    modelItem,
+    modelItemInspector,
+];
+
+export const pptFields: PPTField[] = [...new Set(allModels.flatMap(model => model.fields))];

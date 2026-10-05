@@ -11,6 +11,7 @@ import type {
     GitLogEntry,
     GitStatus,
     LastTestRun,
+    PPTField,
     PPTFolderEntry,
     SuccessResponseBody,
     TestOutputStream,
@@ -145,6 +146,10 @@ export class BackendService {
 
     getServerVersion(): Observable<string> {
         return this.get<string>('version');
+    }
+
+    getPPTFields(): Observable<PPTField[]> {
+        return this.get<PPTField[]>('ppt/fields');
     }
 
     getCurrentTask(): Observable<string | null> {

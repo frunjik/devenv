@@ -10,18 +10,11 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Subscription } from 'rxjs';
+import type { PPTFeature } from '@ppt';
 import { BackendService, type FeaturePriority, type FeatureStatus } from '../../backend.service';
 import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
-
-interface FeatureRow {
-    id: string;
-    description: string;
-    priority: FeaturePriority;
-    status: FeatureStatus;
-    deliveredDate?: string;
-}
 
 type FeatureListTab = 'open' | 'in-progress' | 'done';
 
@@ -72,8 +65,8 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     readonly completingFeatureIds = new Set<string>();
     readonly abortingFeatureIds = new Set<string>();
     features: string[] = [];
-    doneFeatures: FeatureRow[] = [];
-    readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
+    doneFeatures: PPTFeature[] = [];
+    readonly featureDataSource = new MatTableDataSource<PPTFeature>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
     selectedFeatureTab: FeatureListTab = 'in-progress';
     isLoadingFeatures = false;
@@ -84,18 +77,18 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         this.featureDataSource.sort = sort;
     }
 
-    get inProgressFeatures(): FeatureRow[] {
+    get inProgressFeatures(): PPTFeature[] {
         return this.featureDataSource.data.filter(feature => feature.status === 'In progress');
     }
 
-    get matchingInProgressFeatures(): FeatureRow[] {
+    get matchingInProgressFeatures(): PPTFeature[] {
         const filter = this.featureSearch.trim().toLocaleLowerCase();
         return filter
             ? this.inProgressFeatures.filter(feature => this.matchesFeature(feature, filter))
             : this.inProgressFeatures;
     }
 
-    get matchingDoneFeatures(): FeatureRow[] {
+    get matchingDoneFeatures(): PPTFeature[] {
         const filter = this.featureSearch.trim().toLocaleLowerCase();
         return filter ? this.doneFeatures.filter(feature => this.matchesFeature(feature, filter)) : this.doneFeatures;
     }
@@ -159,7 +152,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    abortFeature(feature: FeatureRow): void {
+    abortFeature(feature: PPTFeature): void {
         if (!feature.id || this.abortingFeatureIds.has(feature.id)) {
             return;
         }
@@ -180,7 +173,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    moveInProgressFeature(feature: FeatureRow, direction: 'up' | 'down'): void {
+    moveInProgressFeature(feature: PPTFeature, direction: 'up' | 'down'): void {
         const features = this.inProgressFeatures;
         const position = features.findIndex(item => item.id === feature.id);
         const targetPosition = position + (direction === 'up' ? -1 : 1);
@@ -217,7 +210,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         }
     }
 
-    startFeature(feature: FeatureRow): void {
+    startFeature(feature: PPTFeature): void {
         if (!feature.id) {
             return;
         }
@@ -234,7 +227,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    markFeatureDone(feature: FeatureRow): void {
+    markFeatureDone(feature: PPTFeature): void {
         if (!feature.id || this.completingFeatureIds.has(feature.id)) {
             return;
         }
@@ -255,11 +248,11 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    denyFeature(feature: FeatureRow): void {
+    denyFeature(feature: PPTFeature): void {
         this.updateFeatureStatus(feature, 'Denied');
     }
 
-    editFeature(feature: FeatureRow): void {
+    editFeature(feature: PPTFeature): void {
         const featureId = feature.id;
 
         this.dialog.open(EditFeatureDialogComponent, {
@@ -291,7 +284,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    onPriorityChange(feature: FeatureRow, event: Event): void {
+    onPriorityChange(feature: PPTFeature, event: Event): void {
         const target = event.target;
         if (!(target instanceof HTMLSelectElement) || !this.priorities.includes(target.value as FeaturePriority)) {
             return;
@@ -314,7 +307,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    onStatusChange(feature: FeatureRow, event: Event): void {
+    onStatusChange(feature: PPTFeature, event: Event): void {
         const target = event.target;
         if (!(target instanceof HTMLSelectElement) || !this.statuses.includes(target.value as FeatureStatus)) {
             return;
@@ -324,7 +317,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     }
 
     private updateFeatureStatus(
-        feature: FeatureRow,
+        feature: PPTFeature,
         status: FeatureStatus,
         target?: HTMLSelectElement,
     ): void {
@@ -359,7 +352,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    private parseFeature(feature: string): FeatureRow {
+    private parseFeature(feature: string): PPTFeature {
         const match = feature.match(
             /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] (.+?)(?: \[Delivered: (\d{4}-\d{2}-\d{2})\])?$/i,
         );
@@ -389,7 +382,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();
     }
 
-    private matchesFeature(feature: FeatureRow, filter: string): boolean {
+    private matchesFeature(feature: PPTFeature, filter: string): boolean {
         return `${feature.id} ${feature.priority} ${feature.description}`.toLocaleLowerCase().includes(filter);
     }
 

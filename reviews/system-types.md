@@ -49,16 +49,8 @@ Consider naming the supported formats with a union and making the compatibility 
 These are conceptual Types for describing the testing domain identified in this review, not proposed runtime application DTOs.
 
 ```text
-Goal {
-    desiredOutcome
-    acceptanceCriteria: AcceptanceCriterion[]
-}
-
-AcceptanceCriterion {
-    observableCondition
-}
-
 Evidence {
+    id
     source: TestResult | Artifact | SystemObservation
     observation
 }
@@ -103,12 +95,104 @@ CoverageReport {
 }
 ```
 
+## Types Needed to Express and Track Work Toward Goals
+
+These are conceptual Types for describing goal-oriented work, not proposed runtime application DTOs. IDs are stable references so goals, criteria, and work can be updated independently.
+
+```text
+Identifier = string
+GoalId = Identifier
+AcceptanceCriterionId = Identifier
+WorkItemId = Identifier
+BlockerId = Identifier
+DeliverableId = Identifier
+ArtifactId = Identifier
+
+WorkStatus = ready | inProgress | blocked | completed | cancelled
+
+CriterionAssessment = unverified | satisfied | notSatisfied
+
+Goal {
+    id
+    desiredOutcome
+    acceptanceCriteria: AcceptanceCriterionId[]
+}
+
+AcceptanceCriterion {
+    id
+    goalId
+    observableCondition
+    assessment: CriterionAssessment
+    evidence: Evidence[]
+}
+
+WorkItem {
+    id
+    title
+    description
+    contributesTo: (GoalId | AcceptanceCriterionId)[]
+    status: WorkStatus
+    dependencies: Dependency[]
+    blockers: BlockerId[]
+    deliverables: DeliverableId[]
+}
+
+Dependency {
+    prerequisiteId: WorkItemId
+    condition
+}
+
+Blocker {
+    id
+    workItemId
+    description
+    resolved: boolean
+}
+
+Deliverable {
+    id
+    workItemId
+    description
+    artifactId: ArtifactId
+}
+
+WorkProgress {
+    goalId
+    countsByStatus: Map<WorkStatus, number>
+    readyWorkItemIds: WorkItemId[]
+    blockedWorkItemIds: WorkItemId[]
+}
+
+GoalAssessment {
+    goalId
+    achieved: boolean
+    unsatisfiedCriterionIds: AcceptanceCriterionId[]
+}
+```
+
+### Relationships and rules for goal progress
+
+- Every WorkItem should contribute to at least one Goal or AcceptanceCriterion; otherwise its purpose in the goal-oriented work model is unclear.
+- Each Dependency on a WorkItem identifies a prerequisite WorkItem and the condition that must be met. Dependency cycles are invalid because they leave no valid next item to progress.
+- A WorkItem may be marked `ready` only if it has no unresolved blockers and all prerequisites are completed. A blocked item is not equivalent to a ready item and must not count as completed.
+- Completing a WorkItem records its Deliverables, but does not automatically satisfy an AcceptanceCriterion. The criterion assessment changes only when its observable condition is supported by Evidence.
+- WorkProgress reports work state and actionable next/blocked items; it is not a percentage of Goal achievement. Avoid deriving Goal completion from a ratio of completed tasks: WorkItems can differ in importance, and completed tasks may not prove the outcome.
+- CriterionAssessment is derived from the criterion's Evidence, not independently set to `satisfied`. GoalAssessment is derived from its linked criteria: the Goal is achieved only when every linked criterion is satisfied and supported by appropriate Evidence. Keep this assessment distinct from WorkProgress.
+- WorkItem lifecycle transitions should be constrained: `ready` may become `inProgress` or `cancelled`; `inProgress` may become `blocked`, `completed`, or `cancelled`; `blocked` may return to `ready` or `inProgress` when blockers are resolved. Completed and cancelled items are terminal unless the system explicitly supports reopening.
+- Test Cases should verify these invariants: contribution links refer to existing Goals or criteria; dependencies refer to existing WorkItems and are acyclic; blocked items identify unresolved Blockers; readiness respects dependencies; completion records Deliverables without falsely satisfying criteria; and GoalAssessment requires evidence for every linked criterion.
+
 ## Contracts Needed
 
 - **Goal achievement Contract:** A Goal is considered achieved only when evidence demonstrates that every one of its Acceptance Criteria holds. A test passing is evidence only for the behavior it actually observes.
 - **System boundary Contract:** For each client/server interaction, specify the producer, consumer, input, preconditions, successful postconditions, and failure behavior. Test the interaction at that boundary rather than relying only on internal implementation tests.
 - **Test Case Contract:** A Test Case names the Acceptance Criterion, Contract, or Type Invariant it evaluates, the stimulus, and the expected observable result. Its result records the actual observation so a pass/fail decision is traceable.
 - **Coverage reporting Contract:** Every CoverageReport declares its CoverageScope and reports statement, branch, function, and line measurements against their thresholds. A 100% result applies only to the included source files and measured code units; excluded or uncollected files must not be implied as covered.
+- **Work contribution Contract:** Every active WorkItem has an explicit contribution to a Goal or AcceptanceCriterion and reports its current WorkStatus.
+- **Dependency Contract:** A WorkItem is not ready to proceed while any required prerequisite remains unresolved; dependency cycles are rejected.
+- **Blocker Contract:** A blocked WorkItem records at least one current Blocker and cannot be reported as completed until the blocker is resolved and the work's completion condition is met.
+- **Progress Contract:** WorkProgress summarizes WorkItem states and identifies ready and blocked work. It must not be presented as Goal achievement or criterion satisfaction.
+- **Completion and evidence Contract:** Completing a WorkItem records its Deliverables. An AcceptanceCriterion is satisfied only when its observable condition is met and supported by Evidence; task completion alone is insufficient.
+- **Goal assessment Contract:** GoalAssessment is derived from linked AcceptanceCriteria and evidence, not from WorkItem status counts.
 
 ## Overall Assessment
 

@@ -10,6 +10,27 @@ System
 Goal
 - A desired outcome or condition that a System is intended to achieve.
 
+Work Item
+- A bounded unit of work undertaken to contribute to a Goal or satisfy an Acceptance Criterion.
+
+Work Status
+- The current lifecycle state of a Work Item: ready, in progress, blocked, completed, or cancelled.
+
+Dependency
+- A relationship in which one Work Item must be completed or otherwise resolved before another can proceed.
+
+Blocker
+- An unresolved condition preventing a Work Item from making progress.
+
+Deliverable
+- An Artifact produced or changed by completing a Work Item.
+
+Progress
+- A summary of advancement in Work Items or Acceptance Criteria; Work Item progress is not itself proof that a Goal has been achieved.
+
+Goal Assessment
+- A determination of whether a Goal's Acceptance Criteria are satisfied by evidence.
+
 Type
 - A definition that groups things by their shared meaning, properties, relationships, and rules.
 
@@ -51,3 +72,45 @@ Coverage Report
 
 Type Invariant
 - A rule that every valid instance of a Type must satisfy.
+
+Prioritization Candidate
+- A proposed feature, initiative, or Work Item being considered for investment.
+
+Estimate
+- A stated value for an uncertain quantity, accompanied by its rationale and supporting evidence.
+
+Impact Scale
+- A declared set of Impact levels used consistently to estimate and compare candidate outcomes.
+
+RICE Model
+- A prioritization method that divides Reach multiplied by Impact and Confidence by Effort.
+
+RICE Assessment
+- A contextualized set of Reach, Impact, Confidence, and Effort estimates for one Prioritization Candidate, with its calculated score and supporting rationale.
+
+Prioritization Decision
+- A recorded selection, deferral, or rejection of a Prioritization Candidate, linked to the assessment and rationale used.
+
+Reach
+- The estimated number of people or occurrences affected by a Prioritization Candidate within a defined time period and population.
+
+Impact
+- The estimated magnitude of a Prioritization Candidate's effect on a stated user or System outcome, measured with a declared scale.
+
+Confidence
+- The estimated degree of certainty that the Reach, Impact, and Effort estimates are reasonable, represented from 0 to 1.
+
+Effort
+- The estimated team work required to deliver a Prioritization Candidate, measured in a declared unit such as person-months.
+
+Scoring Context
+- The time period, target population, outcome, impact scale, and effort unit that make RICE Assessments interpretable and comparable.
+
+RICE Score
+- The calculated value (Reach × Impact × Confidence) ÷ Effort for one RICE Assessment; it ranks relative expected impact per effort within a comparable Scoring Context.
+
+Monetary Cost
+- An estimated financial expenditure expressed as an amount and currency; it is distinct from Effort.
+
+Monetary Comparison
+- A comparison of estimated financial benefit and cost for the same candidate, currency, and time period, separate from a RICE Score.

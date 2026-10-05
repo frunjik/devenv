@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -6,8 +7,14 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, Router } from '@angular/router';
 import { FeatureWorkService } from './feature-work.service';
-import { MainComponent } from './system/main/main.component';
 import { AppComponent } from './app.component';
+
+@Component({
+    selector: 'app-test-git-log-route',
+    standalone: true,
+    template: '',
+})
+class TestGitLogRouteComponent {}
 
 describe('AppComponent commit navigation', () => {
     let http: HttpTestingController;
@@ -25,7 +32,7 @@ describe('AppComponent commit navigation', () => {
                 provideHttpClientTesting(),
                 provideRouter([{
                     path: 'git/log',
-                    component: MainComponent,
+                    component: TestGitLogRouteComponent,
                     canActivate: [() => {
                         if (failGitLogNavigation) {
                             throw new Error('Git log navigation failed');

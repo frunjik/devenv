@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { MainComponent } from './system/main/main.component';
 import { FileBrowserComponent } from './system/file-browser/file-browser/file-browser.component';
 import { PPTJSComponent } from './system/ppt/workspaces/js/js.component';
 import { TestRunnerComponent } from './system/test-runner/test-runner.component';
@@ -15,7 +14,8 @@ import { FeatureStatesComponent } from './system/feature-states/feature-states.c
 export const routes: Routes = [
     {
         path: '',
-        component: MainComponent
+        redirectTo: '/ppt/browse',
+        pathMatch: 'full',
     },
     // {
     //     path: 'ppt/metaii',
@@ -65,5 +65,4 @@ export const routes: Routes = [
         path: 'states',
         component: FeatureStatesComponent
     },
-    // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

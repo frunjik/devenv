@@ -276,9 +276,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     get hasArchivableFeatures(): boolean {
         return this.features.some(feature => feature.status === 'Done');
     }
-    isArchivedEntry(feature: PPTFeature): boolean {
-        return this.archivedFeatures.includes(feature);
-    }
+
     markFeatureDone(feature: PPTFeature): void {
         if (this.completingFeatureIds.has(feature.id)) {
             return;
@@ -408,13 +406,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private refreshFeatureLists(): void {
         const features = this.features;
-        this.doneFeatures = [
-            ...features.filter(feature => feature.status === 'Done'),
-            ...this.archivedFeatures.filter(feature => feature.status !== 'Archived'),
-        ];
+        this.doneFeatures = features.filter(feature => feature.status === 'Done');
         this.archivedStatusFeatures = [
             ...features.filter(feature => feature.status === 'Archived'),
-            ...this.archivedFeatures.filter(feature => feature.status === 'Archived'),
+            ...this.archivedFeatures,
         ];
         this.featureDataSource.data = features.filter(feature =>
             !['Done', 'Queued', 'Committed', 'Archived'].includes(feature.status));

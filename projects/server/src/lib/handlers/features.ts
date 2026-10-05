@@ -376,9 +376,10 @@ export function createBacklogListHandler(root: string): RequestHandler {
 }
 
 async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
+    const filename = join(root, '.archived');
     let contents: string;
     try {
-        contents = await readFile(join(root, '.archived'), 'utf8');
+        contents = await readFile(filename, 'utf8');
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             return [];
@@ -386,20 +387,24 @@ async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
         throw error;
     }
 
-    return contents.split(/\r?\n/)
+    const features = contents.split(/\r?\n/)
         .map(line => line.trim())
         .filter(line => line && line.toLowerCase() !== 'archived')
         .map(line => {
             const parsed = parsePPTFeatureLine(line);
             if (parsed) {
-                return withStatus(parsed, parsed.status === 'Archived' ? 'Archived' : 'Done');
+                return withStatus(parsed, 'Archived');
             }
             const hash = createHash('sha1').update(line).digest('hex');
             const id = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-${hash.slice(12, 16)}-${hash.slice(16, 20)}-${hash.slice(20, 32)}`;
-            return withStatus({ ...legacyLineToFeature(line), id }, 'Done');
+            return withStatus({ ...legacyLineToFeature(line), id }, 'Archived');
         });
+    const normalizedContents = serializeFeatures(features);
+    if (contents !== normalizedContents) {
+        await writeFile(filename, normalizedContents, 'utf8');
+    }
+    return features;
 }
-
 export async function deliverDoneFeatures(root: string): Promise<PPTFeature[]> {
     const currentFilename = join(root, '.current');
     let contents: string;

@@ -477,7 +477,7 @@ describe('FeatureDescriptionComponent', () => {
             .toBe('Completed feature');
     });
 
-    it('lists .archived entries on the Done tab after the features with status Done', async () => {
+    it('lists .archived entries on the Archived tab, not on the Done tab', async () => {
         await fixture.whenStable();
         await writeFile(join(root, '.features'),
             '{"id":"123e4567-e89b-42d3-a456-426614174004","priority":"Low","status":"Done","description":"Wishlist entry"}\n');
@@ -488,7 +488,8 @@ describe('FeatureDescriptionComponent', () => {
 
         const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
             .map(element => element.textContent!.trim());
-        expect(done).toEqual(['Wishlist entry', 'Archived entry']);
+        expect(done).toEqual(['Wishlist entry']);
+        expect(fixture.nativeElement.querySelector('.archived-feature-description').textContent.trim()).toBe('Archived entry');
     });
 
     it('lists features with status Done from .features on the Done tab', async () => {
@@ -522,9 +523,9 @@ describe('FeatureDescriptionComponent', () => {
 
         const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
             .map(element => element.textContent!.trim());
-        expect(done).toEqual(['Legacy entry']);
-        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (1)');
-        expect(fixture.nativeElement.querySelector('.archived-feature-description').textContent.trim()).toBe('To archive');
+        expect(done).toEqual([]);
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (2)');
+        expect(fixture.nativeElement.textContent).toContain('To archive');
         expect(await readFeatureFile()).toBe('');
         expect(await readFile(join(root, '.archived'), 'utf8')).toContain('"status":"Archived"');
     });

@@ -7,4 +7,3 @@ Some features are in an old format, convert it to the JSON/PPTFeature format whe
 When you are done with a Feature set its status to Done, leave it in .current
 When there are no items here, pick a Queued item ranked by priority, set its status to Commited and copy in here.
 The features you are writing are, take them one by one:
-{"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"Low","status":"Queued","description":"Update the README.md and CHANGELOG.md using the relevant commits from the git log"}

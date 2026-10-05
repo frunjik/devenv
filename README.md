@@ -45,15 +45,15 @@ The Angular `server` library target currently has known TypeScript errors, inclu
 
 ## Features workflow
 
-Features are tracked as one JSON object per line (the `PPTFeature` type from `@ppt`):
+Features are tracked as one JSON object per line (the PPTFeature type from @ppt) in three stores at the repository root:
 
-- `.wishlist`: new features, which default to the `Wished` status.
-- `.backlog`: features that were started from the client; they get the `Queued` status and a task line in `DEVENVOPDEV.md`.
-- `.current`: the feature being worked on; set to `Done` when delivered.
-- `.history`: a one-line entry per delivered feature.
+- .features: all features that are not being worked on or archived (Questions, Wished, Backlog, Queued, Committed, Done). Features added from the client default to Wished. Legacy .wishlist, .backlog and .delivered files are merged into .features on first read and removed.
+- .current: the features being worked on; set to Done when delivered. On commit, Done records move from .current into .features.
+- .archived: archived features, with status Archived. Legacy text lines are converted to JSON on first read.
+- DEVENVOPDEV.md: the task list of features actively being worked on (written when a feature is started from the client).
+- .history: a one-line entry per delivered feature.
 
-The features API (`/features`) reads `.wishlist` and `.backlog` together. Legacy comment-style lines are converted to JSON when read.
-
+The client Features page lists them in four tabs, filtered by status: Open, Queued (Queued and Committed), Done and Archived. The selected tab is kept in the URL (?tab=). The Done tab can archive a feature or all Done features at once (POST /features/:id/archive, POST /features/archive-done). Legacy comment-style lines are converted to JSON when read.
 ## Test
 
 The repository uses Jest for client and server tests:

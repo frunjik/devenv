@@ -105,7 +105,7 @@ describe('history, glossary and backlog API', () => {
         }
     });
 
-    it('returns .archived entries (legacy ones as Done) with stable ids without rewriting the file', async () => {
+    it('converts legacy .archived lines once into JSON records with status Archived and stable ids', async () => {
         const contents = [
             'Archived',
             '// [2026-10-04 21:00 +02:00] Extracted the service.',
@@ -120,20 +120,22 @@ describe('history, glossary and backlog API', () => {
         expect(first).toHaveLength(2);
         expect(first[0]).toMatchObject({
             createdAt: '2026-10-04 21:00 +02:00',
-            status: 'Done',
+            status: 'Archived',
             description: 'Extracted the service.',
         });
         expect(first[0].id).toMatch(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/);
         expect(second).toEqual(first);
         expect(first[1]).toMatchObject({ id: '123e4567-e89b-42d3-a456-426614174002', status: 'Archived', description: 'JSON entry' });
-        expect(await readFile(join(root, '.archived'), 'utf8')).toBe(contents);
+        const rewritten = await readFile(join(root, '.archived'), 'utf8');
+        expect(rewritten.trim().split('\n').map(line => JSON.parse(line).status)).toEqual(['Archived', 'Archived']);
+        expect(rewritten).not.toBe(contents);
     });
 
-    it('returns JSON .archived entries that are not marked Archived as Done', async () => {
+    it('marks JSON .archived entries that are not marked Archived as Archived', async () => {
         await writeFile(join(root, '.archived'),
             '{"id":"123e4567-e89b-42d3-a456-426614174003","priority":"Low","status":"Wished","description":"Old JSON"}\n');
 
-        expect((await request(app).get('/archived')).body.data).toMatchObject([{ status: 'Done', description: 'Old JSON' }]);
+        expect((await request(app).get('/archived')).body.data).toMatchObject([{ status: 'Archived', description: 'Old JSON' }]);
     });
     it('returns no archived features when .archived is missing and forwards other read errors', async () => {
         expect((await request(app).get('/archived')).body).toEqual({ data: [] });

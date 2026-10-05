@@ -75,6 +75,11 @@
     }
 
     .done-features {
+        .archive-all-button {
+            display: flex;
+            margin: 0 0 0.5rem auto;
+        }
+
         ul {
             display: grid;
             gap: 0.5rem;

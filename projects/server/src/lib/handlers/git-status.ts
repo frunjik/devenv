@@ -1,24 +1,8 @@
 import { execFile, type ExecFileException } from 'node:child_process';
 import type { RequestHandler } from 'express';
+import type { GitStatus, GitStatusFile } from '@shared';
 
-export interface GitStatusFile {
-    path: string;
-    originalPath?: string;
-    indexStatus: string;
-    workTreeStatus: string;
-    staged: boolean;
-    unstaged: boolean;
-    untracked: boolean;
-    conflicted: boolean;
-}
-
-export interface GitStatus {
-    branch: string | null;
-    ahead: number;
-    behind: number;
-    clean: boolean;
-    files: GitStatusFile[];
-}
+export type { GitStatus, GitStatusFile } from '@shared';
 
 interface GitStatusResult {
     stdout: string;

@@ -4,11 +4,9 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
+import type { LastTestRun, TestCommandEvent, TestRunCacheStatus } from '@shared';
 
-export type TestCommandEvent =
-    | { type: 'stdout' | 'stderr'; data: string }
-    | { type: 'complete'; exitCode: number }
-    | { type: 'error'; message: string };
+export type { LastTestRun, TestCommandEvent, TestRunCacheStatus } from '@shared';
 
 export type TestCommandExecutor = (
     command: string,
@@ -16,23 +14,6 @@ export type TestCommandExecutor = (
     options: ExecFileOptions,
     emit: (event: TestCommandEvent) => void,
 ) => void;
-
-export interface LastTestRun {
-    startedAt: string;
-    finishedAt: string;
-    exitCode: number | null;
-    stdout: string;
-    stderr: string;
-    error: string | null;
-}
-
-export interface TestRunCacheStatus {
-    available: boolean;
-    status: 'empty' | 'passed' | 'failed' | 'error';
-    startedAt: string | null;
-    finishedAt: string | null;
-    exitCode: number | null;
-}
 
 const defaultTestDataDirectory = join(process.cwd(), 'test-run-cache');
 

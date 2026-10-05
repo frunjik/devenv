@@ -77,3 +77,5 @@ History
 // [2026-10-05 02:58 +02:00] Reviewed the client changes in the active commit, including feature-tab scrolling and the Aborted action; found no correctness issues.
 // [2026-10-05 03:02 +02:00] Added Denied as a valid persisted feature status and exposed it in the client selector. Updating to Denied retains the record, removes its active task marker, and clears matching active work. Client feature tests (48) and server feature API tests (71) pass with 100% focused coverage; client build succeeds.
 // [2026-10-05 03:04 +02:00] Moved duplicate-feature prevention to Questions because the duplicate matching rule and whether to reject, warn, or merge are unspecified.
+// [2026-10-05 03:07 +02:00] Consolidated duplicated feature, Git status/log/commit, test-run, and filesystem types into shared model modules while preserving consumer exports. Shared, PPT, and client builds pass; all 179 client tests and 159 server tests pass at 100% coverage.
+// [2026-10-05 03:08 +02:00] Moved the main-form extraction task to Questions: MainComponent is empty, the actual shell is AppComponent, and the requested extraction boundaries are unspecified.

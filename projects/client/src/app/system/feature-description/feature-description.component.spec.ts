@@ -5,6 +5,7 @@ import { createServer } from 'node:http';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { filter, firstValueFrom, timeout } from 'rxjs';
 import type { Server } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
 import { createApp } from '../../../../../server/src/public-api';
@@ -601,21 +602,15 @@ describe('FeatureDescriptionComponent', () => {
             `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] [Backlog] Remaining feature`,
             '',
         ].join('\n'));
+        const completedFeatureLoaded = firstValueFrom(
+            fixture.componentInstance.featureDataSource.connect().pipe(
+                filter(features => features.some(feature => feature.description === 'Completed feature')),
+                timeout({ first: 4000 }),
+            ),
+        );
         fixture.componentInstance.refreshFeatures();
-        await fixture.whenStable();
+        await completedFeatureLoaded;
         fixture.detectChanges();
-        for (let attempt = 0; attempt < 50; attempt++) {
-            const rows = Array.from<HTMLTableRowElement>(
-                fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
-            );
-            if (rows.some(row =>
-                row.querySelector('.mat-column-description')?.textContent.trim() === 'Completed feature',
-            )) {
-                break;
-            }
-            await new Promise(resolve => setTimeout(resolve, 10));
-            fixture.detectChanges();
-        }
         const featureWork = TestBed.inject(FeatureWorkService);
         featureWork.start(completedId, 'Completed feature');
 

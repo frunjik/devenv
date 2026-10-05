@@ -459,8 +459,37 @@ describe('features public API', () => {
         );
     });
 
-    it('updates the existing task marker instead of duplicating a started feature', async () => {
+    it('adds a newly started feature after the existing in-progress tasks', async () => {
+        const created = await request(app).post('/features').send({ description: 'Last active feature' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        await writeFile(join(root, 'DEVENVOPDEV.md'), [
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            '- [In progress] Existing active one',
+            '- [In progress] Existing active two',
+            '- [Backlog] Deferred feature',
+            '',
+        ].join('\n'));
+
+        const response = await request(app).post(`/features/${id}/start`).send({});
+
+        expect(response.status).toBe(200);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            '- [In progress] Existing active one',
+            '- [In progress] Existing active two',
+            `- [In progress] Last active feature <!-- feature-id:${id} -->`,
+            '- [Backlog] Deferred feature',
+            '',
+        ].join('\n'));
+    });
+
+    it('moves an existing task marker to the bottom without creating a duplicate', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
+        const otherId = '123e4567-e89b-42d3-a456-426614174001';
         await writeFile(join(root, '.features'),
             `// [${id}] [High] [In progress] Keep task listed\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
@@ -468,6 +497,8 @@ describe('features public API', () => {
             '',
             'The features you are writing are, take them one by one:',
             `- [In progress] Keep task listed <!-- feature-id:${id} -->`,
+            `- [In progress] Another task <!-- feature-id:${otherId} -->`,
+            '- [Backlog] Deferred feature',
             '',
         ].join('\n'));
 
@@ -476,6 +507,15 @@ describe('features public API', () => {
         expect(response.status).toBe(200);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile.match(new RegExp(`feature-id:${id}`, 'g'))).toHaveLength(1);
+        expect(taskFile).toBe([
+            'Instructions',
+            '',
+            'The features you are writing are, take them one by one:',
+            `- [In progress] Another task <!-- feature-id:${otherId} -->`,
+            `- [In progress] Keep task listed <!-- feature-id:${id} -->`,
+            '- [Backlog] Deferred feature',
+            '',
+        ].join('\n'));
     });
 
     it('adds the feature section when DEVENVOPDEV.md has no task heading', async () => {

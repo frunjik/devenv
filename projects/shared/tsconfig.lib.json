@@ -7,7 +7,7 @@
         "declaration": true,
         "declarationMap": true,
         "inlineSources": true,
-        "types": [],
+        "types": ["node"],
         "paths": {
             "@ppt": [
                 "../dist/ppt/"

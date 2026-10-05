@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { appendFile, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
+import type { FeaturePriority, FeatureStatus } from '@shared';
 
-export type FeaturePriority = 'High' | 'Medium' | 'Low';
-export type FeatureStatus = 'Questions' | 'Backlog' | 'In progress' | 'Done' | 'Aborted' | 'Denied';
+export type { FeaturePriority, FeatureStatus } from '@shared';
 
 const featurePriorities: readonly FeaturePriority[] = ['High', 'Medium', 'Low'];
 const featureStatuses: readonly FeatureStatus[] = ['Questions', 'Backlog', 'In progress', 'Done', 'Aborted', 'Denied'];
@@ -107,24 +107,32 @@ async function addStartedFeatureToDevEnv(root: string, entry: string, id: string
         '',
     );
     const featureLine = `- [In progress] ${description} <!-- feature-id:${id} -->`;
-    const existingIndex = lines.findIndex(line => line.includes(`<!-- feature-id:${id} -->`));
+    const marker = `<!-- feature-id:${id} -->`;
 
-    if (existingIndex >= 0) {
-        lines[existingIndex] = featureLine;
-    } else {
-        const headingIndex = lines.findIndex(line =>
-            /^\s*The features you are writing are, take them one by one:\s*$/i.test(line),
-        );
-        if (headingIndex >= 0) {
-            lines.splice(headingIndex + 1, 0, featureLine);
-        } else {
-            if (lines.every(line => !line)) {
-                lines.length = 0;
-            } else if (lines[lines.length - 1] !== '') {
-                lines.push('');
-            }
-            lines.push('The features you are writing are, take them one by one:', featureLine);
+    for (let index = lines.length - 1; index >= 0; index--) {
+        if (lines[index].includes(marker)) {
+            lines.splice(index, 1);
         }
+    }
+
+    const headingIndex = lines.findIndex(line =>
+        /^\s*The features you are writing are, take them one by one:\s*$/i.test(line),
+    );
+    if (headingIndex >= 0) {
+        let lastInProgressIndex = -1;
+        for (let index = headingIndex + 1; index < lines.length; index++) {
+            if (/^\s*-\s+\[In progress\]\s/.test(lines[index])) {
+                lastInProgressIndex = index;
+            }
+        }
+        lines.splice(lastInProgressIndex >= 0 ? lastInProgressIndex + 1 : headingIndex + 1, 0, featureLine);
+    } else {
+        if (lines.every(line => !line)) {
+            lines.length = 0;
+        } else if (lines[lines.length - 1] !== '') {
+            lines.push('');
+        }
+        lines.push('The features you are writing are, take them one by one:', featureLine);
     }
 
     const lineEnding = contents.includes('\r\n') ? '\r\n' : '\n';

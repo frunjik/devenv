@@ -1,4 +1,1 @@
-export interface PPTFolderEntry {
-    filename: string;
-    isFolder: boolean;
-}
+export type { PPTFolderEntry } from '../../models/file-system';

@@ -1,10 +1,8 @@
 import { execFile, type ExecFileException } from 'node:child_process';
 import type { RequestHandler } from 'express';
+import type { GitCommandResult } from '@shared';
 
-export interface GitCommandResult {
-    stdout: string;
-    stderr: string;
-}
+export type { GitCommandResult } from '@shared';
 
 export type GitCommandExecutor = (args: string[], cwd: string) => Promise<GitCommandResult>;
 

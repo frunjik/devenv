@@ -23,6 +23,8 @@ These are alternatives to evaluate against real needs, not a prescribed sequence
 - **Prior-art study:** Compare Magritte, EMF, JSON Schema, CUE, SHACL, and OWL against concrete needs rather than assuming any one is a complete answer.
 - **Spike:** Run a bounded, time-limited inquiry to answer a specific question. It may be paper-based; code is not implied. Keep artifacts under `design/explorations/<date>-<topic>/` using a brief, lightweight convention that preserves the question, assumptions, artifacts, observations, findings, and decision. Afterwards, promote useful knowledge into durable designs, retain context, mark superseded conclusions, or discard material with a reason. Evaluate the convention after use; do not build tooling for it in advance.
 
+The planned [Problem-framing Spike blueprint](./explorations/2026-10-05-problem-framing-assumption/README.md) is an example of this strategy, not a record of completed research.
+
 ## Candidate Bootstrap Inquiry
 
 Use the Domain involved in creating this System as an initial example for exploring the concepts the System may need to support. This is a possible inquiry strategy, not a chosen implementation plan or a decision that this example is the only or best starting point.

@@ -41,6 +41,14 @@ These principles are active from their recorded date and apply to future work in
 - **Production-change restriction:** Do not change production code merely to make tests easier or coverage rise. If code cannot be covered, first demonstrate that it is unreachable and cannot be tested through the public interface; only then may production code be changed to improve or remove the unreachable behavior.
 - **Verification:** Run coverage for all metrics on the in-scope production code. If 100% cannot be reached, explain the uncovered code and blocker; do not claim the rule is satisfied.
 
+### P-005 — Commit at Stable Checkpoints
+
+- **Recorded:** 2026-10-05
+- **Source:** User instruction
+- **Applies to:** Coding tasks that reach a validated, stable state.
+- **Rule:** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
+- **Exception:** Do not commit past an explicit user review; pause for that review instead. Keep the commit scoped to the completed work and follow the repository's commit-message conventions.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

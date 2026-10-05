@@ -123,7 +123,7 @@ First slice: manually entered source text becomes a local, reviewable proposal. 
 
 ### SC-007 — Define the converted-items list
 
-**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-004, SC-005
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-004, SC-005
 
 Decide which converted items appear and how review status, source, and unresolved fields are shown.
 
@@ -140,26 +140,26 @@ Decide which converted items appear and how review status, source, and unresolve
 **Working scope:** Simple in-memory list; no filtering, grouping, history, or detail view in the first slice.
 
 **Open questions:** Review field usefulness after the first view is tried.
-**Validation evidence:** Derived from the requested converted-notes list and synthetic examples; no user review. The non-inclusion of deferred/rejected items is provisional.
+**Validation evidence:** User decided accepted-only; implementation tests cover populated and empty states, provenance, verification, and open questions. Synthetic examples only; defer/reject history remains out of scope.
 
 ### SC-008 — Build the converted-items list
 
-**Kind:** Implementation · **Status:** In progress · **Depends on:** SC-007
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-007
 
 Build and test one list component against the agreed display behavior. Treat it as a separate slice from the converter.
 
 **Open questions:** None for the local in-memory view.
-**Validation evidence:** Not started.
+**Validation evidence:** Three public-input tests pass. Combined converter/list coverage is 100% statements, branches, functions, and lines. Shared and client builds pass.
 
 ### SC-009 — Connect the vertical slice
 
-**Kind:** Implementation · **Status:** Blocked · **Depends on:** SC-006, SC-008
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-006, SC-008
 
 Connect converter and list while preserving the source-to-result link and review outcome.
 
-**Working boundary:** Parent page owns an in-memory collection of `ImportedNote`s; acceptance appends to it and the list receives it as input. No persistence.
-**Open questions:** Which route/page should host the slice?
-**Validation evidence:** Not started.
+**Working boundary:** Parent page owns an in-memory collection of `ImportedNote`s; acceptance appends to it and the list receives it as input. No persistence. The page is available at `/problem-inquiry`.
+**Open questions:** None for this local vertical slice.
+**Validation evidence:** A public-interface integration test confirms proposals remain absent until explicit acceptance, after which the accepted note and its `unreviewed` status appear in the list. A route test confirms `/problem-inquiry` resolves to the page. All four slice tests pass; converter, list, page, and route each have 100% statement, branch, function, and line coverage. The client build passes and the TypeScript diagnostics report no errors.
 
 The dependency order does not authorize building both components together.
 
@@ -177,6 +177,6 @@ Do not combine component implementation slices. Keep AI and persistence outside 
 
 ## Type Review
 
-Implemented Types: `NoteProposal`, `SourceReference`, `SourceOrigin`, `VerificationStatus`, and `ImportedNote` (accepted proposal plus acceptance time). No additional list Type is needed: the view consumes accepted notes. Optional identity-bearing `SourceFragment` and a review-decision record remain open. A stable `ImportedNoteId` is not yet justified for this append-only, in-memory slice; revisit if editing, deduplication, or persistence is introduced. Do not collapse proposal, accepted note, verification, and Problem Ticket lifecycles.
+Implemented Types: `NoteProposal`, `SourceReference`, `SourceOrigin`, `VerificationStatus`, and `ImportedNote` (accepted proposal plus acceptance time). The page holds a readonly collection of `ImportedNote`s and replaces it on acceptance; this append-only slice does not require a new collection or identity Type. No additional list Type is needed: the view consumes accepted notes. Optional identity-bearing `SourceFragment` and a review-decision record remain open. A stable `ImportedNoteId` is not yet justified for this append-only, in-memory slice; revisit if editing, deduplication, or persistence is introduced. Do not collapse proposal, accepted note, verification, and Problem Ticket lifecycles.
 
 Review this register as examples reveal missing concerns. Add entries rather than silently folding distinct concerns together; record decisions and validation evidence when they become available.

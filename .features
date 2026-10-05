@@ -5,7 +5,7 @@
 // [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] [Medium] [Questions] Which parts of the application shell should be extracted into subcomponents? The named MainComponent is empty; the actual shell is AppComponent, and no extraction boundaries are specified.
 // [2026-10-04 23:51 +02:00] [1566328a-ff5c-442f-8576-4e1f7aedcb10] [Medium] [Done] make low the default for a feature
 // [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Medium] [Backlog] show the current ./thoughts on the client
-// [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [In progress] Clarify the complete allowed category values and whether every feature must have a category; client and server were named as examples. The category is optional when it is not specified set it to system.
+// [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [Questions] Which category values are allowed beyond system, client, and server? The category is optional and defaults to system, but client and server were described as examples rather than a complete set.
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [Done] make the current task client display longer (to cover more text)
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator
@@ -47,7 +47,7 @@
 // [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [Questions] Define the Kanban lanes, which feature statuses belong on the board, and whether cards can be moved between lanes.
 // [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [Done] make a server endpoint to retrieve the current uncommited code
 // [2026-10-05 01:48 +02:00] [eddcde7f-775c-4e69-9579-97f07dedf83a] [Low] [Done] remove the display of the top toolbar feature status
-// [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Low] [Backlog] add status verify
+// [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Medium] [In progress] add status verify
 // [2026-10-05 01:53 +02:00] [57db25d7-bf49-4f35-85ac-6f7e362c694b] [High] [Backlog] show models
 // [2026-10-05 01:53 +02:00] [05af9d39-4847-4a07-9544-646eddef9d09] [Low] [Done] we want to create Typescript interfaces for our models create tasks with status Questions for each potential model we have already have and for the ones you discover when examining the code
 // [2026-10-05 01:55 +02:00] [1a61a983-122f-419e-92d4-647354a18744] [Low] [Questions] Define the shared PPTValue model interface
@@ -79,12 +79,12 @@
 // [2026-10-05 02:19 +02:00] [9c8a43de-f7bb-425a-b148-8e0dbd909c35] [High] [Questions] Should a JSON feature record include commit-state metadata, and should that be a committed flag, a commit hash, or both?
 // [2026-10-05 02:19 +02:00] [45fa7646-916d-4e39-8649-6477254486f8] [High] [Questions] Should a completed JSON feature record include the client or server version it was completed against?
 // [2026-10-05 02:24 +02:00] [549019fb-fea8-4735-94cd-5d23418b3cec] [Medium] [Done] Consolidate duplicated API response and domain types in the shared library
-// [2026-10-05 02:24 +02:00] [f05a3223-fa50-4f17-9232-e2fb2678d3fe] [Medium] [Backlog] Preserve filesystem API failures as errors instead of returning empty success values from BackendService
+// [2026-10-05 02:24 +02:00] [f05a3223-fa50-4f17-9232-e2fb2678d3fe] [Medium] [In progress] Preserve filesystem API failures as errors instead of returning empty success values from BackendService
 // [2026-10-05 02:24 +02:00] [3776c3fd-ce89-4054-8eda-43850b0f52d1] [Low] [In progress] Update README and WORKSPACE documentation to match the current Angular and Jest workflows
 // [2026-10-05 02:24 +02:00] [e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1] [Low] [Backlog] Replace positional createApp configuration parameters with a typed options object
 // [2026-10-05 02:28 +02:00] [8ac59c85-c155-4442-a0e0-fa416bc5d404] [Medium] [Questions] Confirm system status: client and server tests pass at 100% coverage; client, shared, and PPT builds pass; server build fails on TypeScript errors in features.ts and test-runner.ts; root build script does not select a project
 // [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [Questions] Clarify where uncommitted file contents should appear and whether full working-tree contents are needed for all changed files, including deleted, binary, and renamed files, rather than diffs in Git log.
-// [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [Low] [Backlog] feature verify status
+// [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [High] [In progress] feature verify status
 // [2026-10-05 02:21 +02:00] [9af332fe-e6a1-4926-af46-982a3c957c50] [Low] [Questions] Clarify whether this should document the Open tab's ID, priority, status, description, and actions, or change the UI; specify where the description should appear.
 // [2026-10-05 02:22 +02:00] [09b22dbc-721f-48cb-8202-51c6bee42b65] [Low] [Done] add the multiple feature list views in tabs
 // [2026-10-05 02:23 +02:00] [f2bf5951-6e30-4941-a799-188853c2cf6b] [Low] [Done] remove the outer scrollbar on the features page after the lists have been moved into tabs
@@ -93,8 +93,12 @@
 // [2026-10-05 02:35 +02:00] [dc4cb587-bdc9-453f-bbea-075a26c3e3e7] [Low] [Backlog] create a ./denied list
 // [2026-10-05 02:42 +02:00] [95f66465-65c9-4150-bfd2-e1cc77158871] [Low] [Backlog] add playwright
 // [2026-10-05 02:44 +02:00] [fd20456a-aebf-4ed8-829a-dd9d7fe1eb03] [Low] [Backlog] disable the start feature button if the feature is already started
-// [2026-10-05 02:47 +02:00] [917d8577-ebbd-46e7-8457-32c7e4845403] [Low] [In progress] when starting a task add it to the bottom of the in progress list in DEVENVOPDEV.md
+// [2026-10-05 02:47 +02:00] [917d8577-ebbd-46e7-8457-32c7e4845403] [Low] [Done] Move newly started features to the bottom of the In progress task list in DEVENVOPDEV.md
 // [2026-10-05 02:50 +02:00] [cfdfd5c4-5ee7-46e8-9d94-739f6da20bb2] [Low] [Backlog] set prio of features with status Question to High
-// [2026-10-05 02:52 +02:00] [a9098ae5-cfc0-477d-9c0b-b90f6afa42b0] [Low] [In progress] create a priority scale mapping to number from 1 to 10 where the lower the number the higher the priority
+// [2026-10-05 02:52 +02:00] [a9098ae5-cfc0-477d-9c0b-b90f6afa42b0] [Low] [Questions] Should the numeric 1-10 score replace High/Medium/Low or rank features independently, and what score/default should each existing priority receive?
 // [2026-10-05 02:53 +02:00] [69240ff3-3f25-46b8-a9ca-d74b6cbe9dea] [Low] [In progress] add move up and down buttons to lower and higher the priority of items in the in progress list
-// [2026-10-05 03:03 +02:00] [99306525-c2c1-42a4-9729-67ef122c257b] [Low] [In progress] move features with status Backlog in DEVENVOPDEV.md back to ./features
+// [2026-10-05 03:07 +02:00] [e43883a6-823a-4a30-b442-391a07d1947e] [Low] [In progress] verify that the refresh button on the client gets all new features from the server
+// [2026-10-05 03:08 +02:00] [3e07bb22-f333-4410-962b-0a5c9f2b078d] [Low] [Backlog] add a button to set the status of a feature to Denied in the open feature client list
+// [2026-10-05 03:08 +02:00] [3076fb2b-198a-49e8-bd89-475f2651ba61] [Low] [In progress] create a glossary for all Terms
+// [2026-10-05 03:09 +02:00] [951c879c-a2bb-48bc-b30b-8bde89535e39] [Low] [In progress] maintain a glossary of terms in a list on the server. make features for additional questions
+// [2026-10-05 03:10 +02:00] [3aae2c05-ff03-49cc-8c96-a35ad2aa89c7] [Low] [Backlog] keep a list of closed features so we can commit them one by one

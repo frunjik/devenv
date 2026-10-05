@@ -43,6 +43,8 @@ export class FileBrowserComponent implements OnInit {
     filterText: string = '';
     fileContent: string = '';
     editorOptions = { theme: 'vs-dark', language: 'typescript' };
+    fileLoadError = '';
+    folderLoadError = '';
 
     folderEntries: PPTFolderEntry[] = [];
 
@@ -76,6 +78,7 @@ export class FileBrowserComponent implements OnInit {
             } else {
                 this.filename.set('');
                 this.fileContent = '';
+                this.fileLoadError = '';
             }
         });
     }
@@ -101,9 +104,13 @@ export class FileBrowserComponent implements OnInit {
     private showFile(filename: string) {
         this.filename.set(filename);
         this.fileContent = '';
+        this.fileLoadError = '';
         this.backend
             .loadFile(filename)
-            .subscribe((fileContent) => (this.fileContent = fileContent));
+            .subscribe({
+                next: fileContent => (this.fileContent = fileContent),
+                error: error => (this.fileLoadError = String(error)),
+            });
     }
 
     private navigateTo(pathname: string, filename = '') {
@@ -119,8 +126,13 @@ export class FileBrowserComponent implements OnInit {
 
     private showFolder(pathname: string) {
         this.pathname.set(pathname);
+        this.folderEntries = [];
+        this.folderLoadError = '';
         this.backend
             .loadFolder(pathname)
-            .subscribe((folderEntries) => (this.folderEntries = folderEntries));
+            .subscribe({
+                next: folderEntries => (this.folderEntries = folderEntries),
+                error: error => (this.folderLoadError = String(error)),
+            });
     }
 }

@@ -1,10 +1,11 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { createServer } from 'node:http';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { firstValueFrom } from 'rxjs';
 import type { Server } from 'node:http';
 
 import { BackendService } from './backend.service';
@@ -166,16 +167,18 @@ describe('BackendService', () => {
         await expect(service.loadFile('sample.txt').toPromise()).resolves.toBe('initial');
     });
 
-    it('returns empty contents when file loading fails', async () => {
-        await expect(service.loadFile('missing.txt').toPromise()).resolves.toBe('');
+    it('preserves file loading errors', async () => {
+        await expect(firstValueFrom(service.loadFile('missing.txt')))
+            .rejects.toBeInstanceOf(HttpErrorResponse);
     });
 
     it('saves file contents through the API', async () => {
         await expect(service.saveFile('sample.txt', 'updated').toPromise()).resolves.toBe('OK');
     });
 
-    it('returns an empty result when file saving fails', async () => {
-        await expect(service.saveFile('missing/file.txt', 'updated').toPromise()).resolves.toBe('');
+    it('preserves file saving errors', async () => {
+        await expect(firstValueFrom(service.saveFile('missing/file.txt', 'updated')))
+            .rejects.toBeInstanceOf(HttpErrorResponse);
     });
 
     it('loads folder entries from the API', async () => {
@@ -185,7 +188,8 @@ describe('BackendService', () => {
         ]));
     });
 
-    it('returns an empty list when folder loading fails', async () => {
-        await expect(service.loadFolder('missing').toPromise()).resolves.toEqual([]);
+    it('preserves folder loading errors', async () => {
+        await expect(firstValueFrom(service.loadFolder('missing')))
+            .rejects.toBeInstanceOf(HttpErrorResponse);
     });
 });

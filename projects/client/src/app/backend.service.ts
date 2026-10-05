@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { catchError, map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 
 import type {
     FeaturePriority,
@@ -49,7 +49,7 @@ export class BackendService {
             .pipe(
                 catchError(err => {
                     this.logError(`loadFile("${pathname}")`, err);
-                    return of('');
+                    return throwError(() => err);
                 })
             );
     }
@@ -59,7 +59,7 @@ export class BackendService {
             .pipe(
                 catchError(err => {
                     this.logError(`saveFile("${pathname}")`, err);
-                    return of('');
+                    return throwError(() => err);
                 })
             );
     }
@@ -69,7 +69,7 @@ export class BackendService {
             .pipe(
                 catchError(err => {
                     this.logError(`loadFolder("${pathname}")`, err);
-                    return of([]);
+                    return throwError(() => err);
                 })
             );
     }

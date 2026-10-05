@@ -7,6 +7,7 @@
             </span>
         </nav>
 
+        <p *ngIf="folderLoadError" role="alert">Could not load folder: {{ folderLoadError }}</p>
         <div class="folders">
             <app-folder-entries [entries]="filteredEntries"
                 (clickFileOrFolder)="clickFileOrFolder($event)"></app-folder-entries>
@@ -14,6 +15,7 @@
     </div>
 
     <div class="files" *ngIf="!!filename()">
+        <p *ngIf="fileLoadError" role="alert">Could not load file: {{ fileLoadError }}</p>
         <div class="editor-content">
             <app-file-editor [filename]="filename()" [fileContent]="fileContent"></app-file-editor>
         </div>

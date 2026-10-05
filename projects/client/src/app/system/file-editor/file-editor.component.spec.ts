@@ -109,6 +109,18 @@ describe('FileEditorComponent', () => {
         expect(component.fileContent).toBe('initial');
     });
 
+    it('shows a failure snackbar when loading fails', async () => {
+        component.filename = 'missing.txt';
+
+        component.loadFile();
+        await fixture.whenStable();
+
+        expect(snackbarOpen).toHaveBeenCalledWith('Unable to load file.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'save-snackbar-error',
+        });
+    });
+
     it('shows a success snackbar when the save button succeeds', () => {
         component.filename = 'sample.txt';
         component.fileContent = 'saved from editor';
@@ -127,6 +139,19 @@ describe('FileEditorComponent', () => {
         jest.spyOn(TestBed.inject(BackendService), 'saveFile').mockReturnValue(of(''));
 
         component.saveFile();
+
+        expect(snackbarOpen).toHaveBeenCalledWith('Unable to save file.', 'Dismiss', {
+            duration: 5000,
+            panelClass: 'save-snackbar-error',
+        });
+    });
+
+    it('shows a failure snackbar when the save request errors', async () => {
+        component.filename = 'missing/file.txt';
+        component.fileContent = 'unsaved';
+
+        component.saveFile();
+        await fixture.whenStable();
 
         expect(snackbarOpen).toHaveBeenCalledWith('Unable to save file.', 'Dismiss', {
             duration: 5000,

@@ -44,7 +44,13 @@ export class FileEditorComponent implements OnDestroy {
         this._backendService
             .loadFile(this.filename)
             .subscribe({
-                next: (data) => { this.fileContent = data }
+                next: (data) => { this.fileContent = data },
+                error: () => {
+                    this._snackBar.open('Unable to load file.', 'Dismiss', {
+                        duration: 5000,
+                        panelClass: 'save-snackbar-error',
+                    });
+                },
             });
     }
 
@@ -62,6 +68,12 @@ export class FileEditorComponent implements OnDestroy {
                             panelClass: succeeded ? 'save-snackbar-success' : 'save-snackbar-error',
                         },
                     );
+                },
+                error: () => {
+                    this._snackBar.open('Unable to save file.', 'Dismiss', {
+                        duration: 5000,
+                        panelClass: 'save-snackbar-error',
+                    });
                 },
             });
     }

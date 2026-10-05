@@ -9,6 +9,12 @@ export class CurrentTaskService {
 
     private readonly backend = inject(BackendService);
 
+    get displayEntry(): string | null {
+        return this.entry
+            ?.replace(/^- \[[^\]]+\]\s*/, '')
+            .replace(/\s+<!-- feature-id:[0-9a-f-]+ -->$/, '') ?? null;
+    }
+
     refresh(): void {
         this.isLoading = true;
         this.errorMessage = '';

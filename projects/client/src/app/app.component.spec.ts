@@ -98,23 +98,28 @@ describe('AppComponent', () => {
 
         const initialRequest = http.expectOne('http://localhost:3000/task');
         expect(initialRequest.request.method).toBe('GET');
-        initialRequest.flush({ data: '- [In progress] Implement current task toolbar' });
+        initialRequest.flush({
+            data: '- [In progress] Implement current task toolbar <!-- feature-id:123e4567-e89b-42d3-a456-426614174000 -->',
+        });
         fixture.detectChanges();
 
         const taskControl = fixture.nativeElement.querySelector('.top-current-task');
-        expect(taskControl.textContent).toContain('- [In progress] Implement current task toolbar');
+        expect(taskControl.textContent).toContain('Implement current task toolbar');
+        expect(taskControl.textContent).not.toContain('[In progress]');
+        expect(taskControl.textContent).not.toContain('feature-id:');
         expect(taskControl.getAttribute('aria-label')).toBe('Refresh current task');
         expect(taskControl.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
             & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
         expect(fixture.debugElement.query(By.css('.top-current-task')).injector.get(MatTooltip).message)
-            .toBe('- [In progress] Implement current task toolbar');
+            .toBe('Implement current task toolbar');
 
         taskControl.click();
         const refreshRequest = http.expectOne('http://localhost:3000/task');
-        refreshRequest.flush({ data: '- Next task' });
+        refreshRequest.flush({ data: '- [Questions] Next task <!-- feature-id:123e4567-e89b-42d3-a456-426614174001 -->' });
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('- Next task');
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('Next task');
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).not.toContain('[Questions]');
         fixture.destroy();
     });
 

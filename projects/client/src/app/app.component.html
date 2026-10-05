@@ -9,7 +9,7 @@
         |
         <a mat-button routerLink="/tests">TEST</a>
         |
-        <a mat-button routerLink="/feature">features</a>
+        <a mat-button routerLink="/feature">featurs</a>
         |
         <a mat-button routerLink="/ppt/browse" [queryParams]="{path: '', file: '.workflow'}">Workflow</a>
         |
@@ -39,14 +39,14 @@
         mat-button
         class="top-current-task"
         aria-label="Refresh current task"
-        [matTooltip]="currentTask.entry || currentTask.errorMessage
+        [matTooltip]="currentTask.displayEntry || currentTask.errorMessage
             || (currentTask.isLoading ? 'Loading current task…' : 'No active task.')"
         matTooltipPosition="below"
         (click)="currentTask.refresh()"
     >
         <span class="top-current-task-label">Task</span>
         <span class="top-current-task-entry">
-            {{ currentTask.entry || currentTask.errorMessage
+            {{ currentTask.displayEntry || currentTask.errorMessage
                 || (currentTask.isLoading ? 'Loading…' : 'No active task') }}
         </span>
     </button>

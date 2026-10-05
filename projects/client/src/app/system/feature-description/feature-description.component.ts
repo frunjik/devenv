@@ -21,6 +21,8 @@ interface FeatureRow {
     status: FeatureStatus;
 }
 
+type FeatureListTab = 'open' | 'in-progress' | 'done';
+
 @Component({
     selector: 'app-feature-description',
     standalone: true,
@@ -58,6 +60,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     doneFeatures: FeatureRow[] = [];
     readonly featureDataSource = new MatTableDataSource<FeatureRow>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
+    selectedFeatureTab: FeatureListTab = 'open';
     isLoadingFeatures = false;
     private featureRefreshSubscription = Subscription.EMPTY;
     featuresError = '';
@@ -73,6 +76,27 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     get matchingDoneFeatures(): FeatureRow[] {
         const filter = this.featureSearch.trim().toLocaleLowerCase();
         return filter ? this.doneFeatures.filter(feature => this.matchesFeature(feature, filter)) : this.doneFeatures;
+    }
+
+    selectFeatureTab(tab: FeatureListTab): void {
+        this.selectedFeatureTab = tab;
+    }
+
+    onFeatureTabKeydown(event: KeyboardEvent, tab: FeatureListTab): void {
+        const direction = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+        if (direction === 0) {
+            return;
+        }
+
+        event.preventDefault();
+        const tabs: FeatureListTab[] = ['open', 'in-progress', 'done'];
+        const currentIndex = tabs.indexOf(tab);
+        const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
+        this.selectedFeatureTab = tabs[nextIndex];
+        const target = event.currentTarget;
+        if (target instanceof HTMLButtonElement) {
+            target.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex]?.focus();
+        }
     }
 
     constructor(

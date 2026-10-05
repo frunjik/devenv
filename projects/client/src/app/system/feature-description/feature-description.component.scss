@@ -15,6 +15,20 @@
         overflow-wrap: anywhere;
     }
 
+    .feature-list-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-top: 1.5rem;
+        border-bottom: 1px solid rgba(127, 127, 127, 0.25);
+
+        [role="tab"][aria-selected="true"] {
+            border-bottom: 2px solid #8bc6d1;
+            border-radius: 0;
+            font-weight: 700;
+        }
+    }
+
     .feature-list-controls {
         display: flex;
         align-items: center;

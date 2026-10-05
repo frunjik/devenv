@@ -72,6 +72,43 @@ describe('FeatureDescriptionComponent', () => {
             .toContain('No completed features.');
     });
 
+    it('organizes feature lists in accessible tabs with keyboard navigation', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const tabs: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('[role="tab"]');
+
+        expect(Array.from(tabs).map(tab => tab.textContent.trim())).toEqual([
+            'Open (0)',
+            'In progress (0)',
+            'Done (0)',
+        ]);
+        expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
+        expect(fixture.nativeElement.querySelector('#in-progress-features-panel').hidden).toBe(true);
+
+        tabs[1].click();
+        fixture.detectChanges();
+        expect(tabs[1].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#in-progress-features-panel').hidden).toBe(false);
+
+        tabs[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+        expect(document.activeElement).toBe(tabs[2]);
+
+        tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+
+        tabs[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+
+        tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+        expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+    });
+
     it('refreshes the feature list from the client and shows newly added features', async () => {
         await fixture.whenStable();
         fixture.detectChanges();

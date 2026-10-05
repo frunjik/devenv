@@ -42,7 +42,7 @@
 // [2026-10-05 01:30 +02:00] [d7b7b5aa-e0cf-4dac-8651-c7b765f226be] [Medium] [Backlog] keep a version number for the client and server code
 // [2026-10-05 01:31 +02:00] [12306c80-889f-4161-9474-93a072dcb535] [Medium] [Backlog] mark features done with the current version of client or server depending on which domain they belong in
 // [2026-10-05 01:33 +02:00] [39dd1237-56d0-445d-a485-811e8f44036f] [Medium] [Done] verify the architecture of the system and add tasks for improvements
-// [2026-10-05 01:34 +02:00] [c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2] [Medium] [In progress] verify the status of the system and leave the result as a feature to be confirmed
+// [2026-10-05 01:34 +02:00] [c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2] [Medium] [Done] verify the status of the system and leave the result as a feature to be confirmed
 // [2026-10-05 01:35 +02:00] [0e9d228a-e5e5-4657-bbe5-5ace4e522fce] [Medium] [Backlog] add feature priority as a number on top of the indication low, medium high
 // [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [In progress] create a canban view
 // [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [Done] make a server endpoint to retrieve the current uncommited code
@@ -69,7 +69,6 @@
 // [2026-10-05 01:55 +02:00] [206fdb0b-8a04-4b3f-ac53-b3599ef8da05] [Low] [Questions] Define the current TestRunResult model interface
 // [2026-10-05 01:55 +02:00] [6e3cbd5b-5446-4e0f-9a4e-b7e17d56d6e7] [Low] [Questions] Define a typed TestCommandEvent model
 // [2026-10-05 01:55 +02:00] [a02aaf39-c72b-4e4c-9dd8-469c89efe57e] [Low] [Questions] Unify FolderEntry and PPTFolderEntry models
-// [2026-10-05 01:55 +02:00] [8ab4b101-3f90-4685-b661-72b0498da5cb] [Low] [In progress] Define the shared SuccessResponseBody model interface
 // [2026-10-05 01:55 +02:00] [aa72b943-3e95-4ad3-946b-7bb94e8380ee] [Low] [Questions] Define the shared FailureResponseBody model interface
 // [2026-10-05 01:55 +02:00] [6c78b785-cb3d-446b-9189-34f4046a1056] [Low] [Questions] Define the AuthenticatedPrincipal model interface
 // [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Questions] Define the PPTFileStats model interface
@@ -83,9 +82,13 @@
 // [2026-10-05 02:24 +02:00] [f05a3223-fa50-4f17-9232-e2fb2678d3fe] [Medium] [Backlog] Preserve filesystem API failures as errors instead of returning empty success values from BackendService
 // [2026-10-05 02:24 +02:00] [3776c3fd-ce89-4054-8eda-43850b0f52d1] [Low] [Backlog] Update README and WORKSPACE documentation to match the current Angular and Jest workflows
 // [2026-10-05 02:24 +02:00] [e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1] [Low] [Backlog] Replace positional createApp configuration parameters with a typed options object
+// [2026-10-05 02:28 +02:00] [8ac59c85-c155-4442-a0e0-fa416bc5d404] [Medium] [Questions] Confirm system status: client and server tests pass at 100% coverage; client, shared, and PPT builds pass; server build fails on TypeScript errors in features.ts and test-runner.ts; root build script does not select a project
 // [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [Backlog] make a client display of the open changes on the client show the new (uncommited) full file contents
 // [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [Low] [Backlog] feature verify status
 // [2026-10-05 02:21 +02:00] [9af332fe-e6a1-4926-af46-982a3c957c50] [Low] [Backlog] make a feature describing what features the open features on the client displays and add it to ./features
-// [2026-10-05 02:22 +02:00] [09b22dbc-721f-48cb-8202-51c6bee42b65] [Low] [In progress] add the multiple feature list views in tabs
+// [2026-10-05 02:22 +02:00] [09b22dbc-721f-48cb-8202-51c6bee42b65] [Low] [Done] add the multiple feature list views in tabs
 // [2026-10-05 02:23 +02:00] [f2bf5951-6e30-4941-a799-188853c2cf6b] [Low] [In progress] remove the outer scrollbar on the features page after the lists have been moved into tabs
-// [2026-10-05 02:25 +02:00] [29ae97af-bbc6-4dc0-9830-9a831d4cd653] [Low] [In progress] create a models folder to be shared by client and server code
+// [2026-10-05 02:25 +02:00] [29ae97af-bbc6-4dc0-9830-9a831d4cd653] [Low] [Done] create a models folder to be shared by client and server code
+// [2026-10-05 02:34 +02:00] [e3cdd907-5202-4055-ad96-abad7f3790b8] [Low] [Backlog] make a client display of the shared models in the code
+// [2026-10-05 02:35 +02:00] [dc4cb587-bdc9-453f-bbea-075a26c3e3e7] [Low] [Backlog] create a ./denied list
+// [2026-10-05 02:37 +02:00] [a6396c33-d188-4be2-820e-120bb4b35f2d] [Low] [In progress] move the items that are done from ./current to ./history if they are not already in there then remove them from ./current

@@ -12,11 +12,8 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] Define the shared SuccessResponseBody model interface <!-- feature-id:8ab4b101-3f90-4685-b661-72b0498da5cb -->
-- [In progress] create a models folder to be shared by client and server code <!-- feature-id:29ae97af-bbc6-4dc0-9830-9a831d4cd653 -->
-- [In progress] verify the status of the system and leave the result as a feature to be confirmed <!-- feature-id:c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2 -->
+- [In progress] move the items that are done from ./current to ./history if they are not already in there then remove them from ./current <!-- feature-id:a6396c33-d188-4be2-820e-120bb4b35f2d -->
 - [In progress] remove the outer scrollbar on the features page after the lists have been moved into tabs <!-- feature-id:f2bf5951-6e30-4941-a799-188853c2cf6b -->
-- [In progress] add the multiple feature list views in tabs <!-- feature-id:09b22dbc-721f-48cb-8202-51c6bee42b65 -->
 - [In progress] add abort button on in progress features that puts the feature back in ./features with status Aborted <!-- feature-id:876234ff-990a-4b61-989d-43dabbaafc15 -->
 - [In progress] a feature category describes which domain the feature is for possible domains include: client and server <!-- feature-id:ef3b9d44-3a01-4e24-b28c-befe465095ee -->
 - [In progress] create a canban view <!-- feature-id:8a0a1061-9ef3-48ec-94c8-b384d84bbabc -->

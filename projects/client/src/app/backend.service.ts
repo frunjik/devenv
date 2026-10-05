@@ -4,7 +4,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 
-import { SuccessResponseBody, PPTFolderEntry } from '@ppt';
+import type { SuccessResponseBody } from '@shared';
+import { PPTFolderEntry } from '@ppt';
 import { LoggerService } from './logger.service';
 
 export type TestOutputStream = 'stdout' | 'stderr';

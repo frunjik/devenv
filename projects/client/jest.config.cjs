@@ -10,6 +10,7 @@ module.exports = {
     coveragePathIgnorePatterns: ['[/\\\\]projects[/\\\\]server[/\\\\]src[/\\\\]'],
     moduleNameMapper: {
         '^@ppt$': '<rootDir>/projects/ppt/src/public-api.ts',
+        '^@shared$': '<rootDir>/projects/shared/src/public-api.ts',
     },
     setupFilesAfterEnv: ['<rootDir>/projects/client/setup-jest.ts'],
     testMatch: ['<rootDir>/projects/client/src/**/*.spec.ts'],

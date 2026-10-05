@@ -30,7 +30,48 @@
         </button>
     </form>
     <p *ngIf="errorMessage" id="feature-submit-error" role="alert">{{ errorMessage }}</p>
-    <section class="open-features" aria-labelledby="open-features-heading">
+    <div class="feature-list-tabs" role="tablist" aria-label="Feature lists">
+        <button
+            type="button"
+            mat-button
+            id="open-features-tab"
+            role="tab"
+            aria-controls="open-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'open'"
+            [attr.tabindex]="selectedFeatureTab === 'open' ? 0 : -1"
+            (click)="selectFeatureTab('open')"
+            (keydown)="onFeatureTabKeydown($event, 'open')"
+        >Open ({{ featureDataSource.data.length }})</button>
+        <button
+            type="button"
+            mat-button
+            id="in-progress-features-tab"
+            role="tab"
+            aria-controls="in-progress-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'in-progress'"
+            [attr.tabindex]="selectedFeatureTab === 'in-progress' ? 0 : -1"
+            (click)="selectFeatureTab('in-progress')"
+            (keydown)="onFeatureTabKeydown($event, 'in-progress')"
+        >In progress ({{ inProgressFeatures.length }})</button>
+        <button
+            type="button"
+            mat-button
+            id="done-features-tab"
+            role="tab"
+            aria-controls="done-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'done'"
+            [attr.tabindex]="selectedFeatureTab === 'done' ? 0 : -1"
+            (click)="selectFeatureTab('done')"
+            (keydown)="onFeatureTabKeydown($event, 'done')"
+        >Done ({{ doneFeatures.length }})</button>
+    </div>
+       <section
+           id="open-features-panel"
+           role="tabpanel"
+           aria-labelledby="open-features-tab"
+           [hidden]="selectedFeatureTab !== 'open'"
+           class="open-features"
+       >
         <h2 id="open-features-heading">Open features</h2>
         <p *ngIf="isLoadingFeatures" role="status">Loading features…</p>
         <p *ngIf="featuresError" id="feature-list-error" role="alert">{{ featuresError }}</p>
@@ -38,18 +79,6 @@
         <p *ngIf="statusError" id="feature-status-error" role="alert">{{ statusError }}</p>
         <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
         <p *ngIf="editError" id="feature-edit-error" role="alert">{{ editError }}</p>
-        <section class="in-progress-features" aria-labelledby="in-progress-features-heading">
-            <h3 id="in-progress-features-heading">
-                In progress <span class="feature-count">({{ inProgressFeatures.length }})</span>
-            </h3>
-            <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
-            <ul *ngIf="inProgressFeatures.length > 0">
-                <li *ngFor="let feature of inProgressFeatures" class="in-progress-feature">
-                    <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
-                    <span class="in-progress-feature-description">{{ feature.description }}</span>
-                </li>
-            </ul>
-        </section>
         <div class="feature-list-controls">
             <mat-form-field appearance="outline" *ngIf="features.length > 0">
                 <mat-label>Search features</mat-label>
@@ -171,8 +200,30 @@
             showFirstLastButtons
             aria-label="Open feature pages"
         ></mat-paginator>
-    </section>
-    <section class="done-features" aria-labelledby="done-features-heading">
+       </section>
+       <section
+           id="in-progress-features-panel"
+           role="tabpanel"
+           aria-labelledby="in-progress-features-tab"
+           [hidden]="selectedFeatureTab !== 'in-progress'"
+           class="in-progress-features"
+       >
+        <h2 id="in-progress-features-heading">In progress</h2>
+        <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
+        <ul *ngIf="inProgressFeatures.length > 0">
+            <li *ngFor="let feature of inProgressFeatures" class="in-progress-feature">
+                <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="in-progress-feature-description">{{ feature.description }}</span>
+            </li>
+        </ul>
+       </section>
+       <section
+           id="done-features-panel"
+           role="tabpanel"
+           aria-labelledby="done-features-tab"
+           [hidden]="selectedFeatureTab !== 'done'"
+           class="done-features"
+       >
         <h2 id="done-features-heading">
             Done <span class="feature-count">({{ doneFeatures.length }})</span>
         </h2>
@@ -234,5 +285,5 @@
                 </div>
             </li>
         </ul>
-    </section>
+       </section>
 </main>

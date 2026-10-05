@@ -24,6 +24,8 @@ import {
     createFeatureRemovalHandler,
     createArchivedListHandler,
     createBacklogListHandler,
+    createDeliveredListHandler,
+    deliverDoneFeatures,
 } from './handlers/features';
 import {
     createAuthenticationMiddleware,
@@ -75,6 +77,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
     app.get('/backlog', createBacklogListHandler(root));
     app.get('/archived', createArchivedListHandler(root));
+    app.get('/delivered', createDeliveredListHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id/description', createFeatureDescriptionHandler(root));
@@ -88,7 +91,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
         app.get('/tests/cache/status', createTestRunCacheStatusHandler(testRunCacheDirectory));
-        app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
+        app.post('/git/commit', createGitCommitHandler(gitCommitCwd, undefined, () => deliverDoneFeatures(root)));
         app.post('/git/undo', createGitUndoHandler(gitCommitCwd));
         app.get('/git/diff', createGitDiffHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));

@@ -29,6 +29,7 @@ const runGit: GitCommandExecutor = (args, cwd) => {
 export function createGitCommitHandler(
     cwd = process.cwd(),
     execute: GitCommandExecutor = runGit,
+    beforeCommit: () => Promise<unknown> = () => Promise.resolve(),
 ): RequestHandler {
     let isRunning = false;
 
@@ -46,7 +47,8 @@ export function createGitCommitHandler(
         }
 
         isRunning = true;
-        void execute(['add', '--all'], cwd)
+        void beforeCommit()
+            .then(() => execute(['add', '--all'], cwd))
             .then(() => execute(['commit', '-m', message], cwd))
             .then(({ stdout, stderr }) => {
                 response.json({ data: { stdout, stderr } });

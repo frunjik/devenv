@@ -400,6 +400,68 @@ async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
         });
 }
 
+async function removeFeatureLines(filename: string, ids: string[]): Promise<void> {
+    let contents: string;
+    try {
+        contents = await readFile(filename, 'utf8');
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return;
+        }
+        throw error;
+    }
+    const lines = contents.split(/\r?\n/);
+    const remaining = lines.filter(line => !ids.some(id => line.toLowerCase().includes(id.toLowerCase())));
+    if (remaining.length !== lines.length) {
+        await writeFile(filename, remaining.join(contents.includes('\r\n') ? '\r\n' : '\n'), 'utf8');
+    }
+}
+
+export async function deliverDoneFeatures(root: string): Promise<PPTFeature[]> {
+    const currentFilename = join(root, '.current');
+    let contents: string;
+    try {
+        contents = await readFile(currentFilename, 'utf8');
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return [];
+        }
+        throw error;
+    }
+
+    const lines = contents.split(/\r?\n/);
+    const delivered: PPTFeature[] = [];
+    const remaining = lines.filter(line => {
+        const feature = parsePPTFeatureLine(line.trim());
+        if (feature?.status === 'Done') {
+            delivered.push(withStatus(feature, 'Done'));
+            return false;
+        }
+        return true;
+    });
+    if (delivered.length === 0) {
+        return [];
+    }
+
+    await appendFile(join(root, '.delivered'), serializeFeatures(delivered), 'utf8');
+    await writeFile(currentFilename, remaining.join(contents.includes('\r\n') ? '\r\n' : '\n'), 'utf8');
+    const ids = delivered.map(feature => feature.id);
+    await removeFeatureLines(join(root, '.backlog'), ids);
+    await removeFeatureLines(join(root, '.wishlist'), ids);
+    for (const id of ids) {
+        await removeStartedFeatureTask(root, id);
+    }
+    return delivered;
+}
+
+export function createDeliveredListHandler(root: string): RequestHandler {
+    return (_request, response, next) => {
+        void readFeatures(join(root, '.delivered'))
+            .then(features => response.json({ data: features.map(feature => withStatus(feature, 'Done')) }))
+            .catch(next);
+    };
+}
+
 export function createArchivedListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
         void readArchivedFeatures(root)

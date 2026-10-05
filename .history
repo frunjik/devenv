@@ -1,3 +1,5 @@
+// [2026-10-05 11:50 +02:00] On commit, Done records in .current move to .delivered (and are removed from .backlog, .wishlist and the DEVENVOPDEV.md task line); the Done tab lists /delivered.
+// [2026-10-05 11:30 +02:00] Top toolbar current-task button (rightmost) is now smaller: fixed width min(22vw,18rem), smaller font, label made shrinkable so the text ellipsizes instead of overflowing into the nav buttons. Verified in the running client.
 // [2026-10-05 11:20 +02:00] Queued features can be edited from the Queued list (new Edit button reusing the edit dialog; description and DEVENVOPDEV.md task line update). 235 client + 199 server tests at 100%.
 // [2026-10-05 11:10 +02:00] New client page /states (nav link 'states') lists every feature state and what it is used for; typed as Record<PPTFeatureStatus,?> so new states must be described. 234 client + 199 server tests at 100%.
 // [2026-10-05 11:00 +02:00] Client Done tab now also reads .archived via new GET /archived (legacy lines converted on read as Done with stable ids, file untouched); features with status Done still appear there. 233 client + 199 server tests at 100%.

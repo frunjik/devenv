@@ -38,6 +38,8 @@ The types distinguish operation, workflow, system, and cross-system scope. Peopl
 
 ## Small Trial
 
+An external sample input is available at [`wms-problem-set.sample.json`](../../../input-sources/problem-tickets/wms-problem-set.sample.json); its tickets are synthetic, not verified WMS evidence.
+
 Choose one representative behavior and accessible sources. Before AI use, record expectation, context, evidence, uncertainty, and acceptance checks. Request a bounded interpretation/change and tests, with sources, assumptions, and questions exposed. Have a builder and knowledgeable reviewer independently check it. Record omissions, corrections, effort, decision, and successor needs; test normal and important failure cases. Compare with a similar non-AI task if practical.
 
 Before a live trial, define data/tool access; exclude sensitive production data and unreviewed production changes.

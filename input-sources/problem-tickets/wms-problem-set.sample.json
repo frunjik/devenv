@@ -1,0 +1,134 @@
+{
+  "id": "wms-problem-set-sample-2026-10-05",
+  "title": "Synthetic WMS problem tickets for inquiry workflow",
+  "tickets": [
+    {
+      "id": "WMS-004",
+      "title": "Scan retry may apply an operation twice",
+      "report": "A scan request times out. After the worker retries, it is unclear whether the first request changed inventory, so the operation may be applied twice.",
+      "scope": {
+        "level": "cross-system",
+        "label": "Warehouse client and inventory service"
+      },
+      "context": {
+        "people": ["warehouse operator", "support staff"],
+        "places": ["warehouse", "system boundary"],
+        "things": ["scan", "inventory record", "transaction"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-009",
+      "title": "Similar screen definitions have unclear differences",
+      "report": "Two screen definitions look similar. It is unknown whether one is obsolete or whether they represent different warehouse cases.",
+      "scope": {
+        "level": "system",
+        "label": "Screen-definition corpus"
+      },
+      "context": {
+        "people": ["replacement builder", "warehouse expert"],
+        "places": ["screen-definition repository"],
+        "things": ["screen definition A", "screen definition B", "configuration"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-001",
+      "title": "Screen fails before it appears",
+      "report": "Opening screen S-127 produces an error. Its intended purpose and expected content are unknown.",
+      "scope": {
+        "level": "system",
+        "label": "Screen S-127"
+      },
+      "context": {
+        "people": ["replacement builder", "possible screen user"],
+        "places": ["native WMS"],
+        "things": ["screen S-127", "screen definition", "runtime error"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-006",
+      "title": "Screen fields render but their meaning is unclear",
+      "report": "The replacement screen renders, but the meaning and requiredness of several fields are unknown.",
+      "scope": {
+        "level": "operation",
+        "label": "Screen field interpretation"
+      },
+      "context": {
+        "people": ["replacement builder", "possible screen user"],
+        "places": ["replacement screen"],
+        "things": ["screen fields", "screen definition", "data"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-011",
+      "title": "Validation error has an unknown cause",
+      "report": "Entering a value produces a validation error. It is unclear whether the value violates a warehouse rule or the screen is misconfigured.",
+      "scope": {
+        "level": "operation",
+        "label": "Input validation"
+      },
+      "context": {
+        "people": ["warehouse operator", "replacement builder", "warehouse expert"],
+        "places": ["screen with validation"],
+        "things": ["entered value", "validation rule", "error message"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-002",
+      "title": "Screen has no agreed success condition",
+      "report": "The screen can be made to render, but the outcome that would make it correct is unknown.",
+      "scope": {
+        "level": "workflow",
+        "label": "Screen purpose and acceptance"
+      },
+      "context": {
+        "people": ["replacement builder", "possible screen user"],
+        "places": ["native WMS", "replacement"],
+        "things": ["screen", "expected outcome", "acceptance check"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-012",
+      "title": "Screen has no known place in the workflow",
+      "report": "A screen definition exists, but what leads to it, what it depends on, and what should happen afterward are unknown.",
+      "scope": {
+        "level": "workflow",
+        "label": "Screen workflow relationships"
+      },
+      "context": {
+        "people": ["replacement builder", "possible warehouse user"],
+        "places": ["screen-definition repository", "native WMS"],
+        "things": ["screen definition", "navigation link", "workflow step"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    },
+    {
+      "id": "WMS-010",
+      "title": "Interrupted replenishment is difficult to resume",
+      "report": "After a device change or shift handoff, the next worker cannot tell whether replenishment was started, partly completed, or not recorded.",
+      "scope": {
+        "level": "workflow",
+        "label": "Replenishment handoff and recovery"
+      },
+      "context": {
+        "people": ["replenisher", "next-shift worker"],
+        "places": ["source bin", "destination bin"],
+        "things": ["replenishment task", "handling unit", "device"]
+      },
+      "reportedBy": "synthetic-sample",
+      "reportedAt": "2026-10-05T00:00:00.000Z"
+    }
+  ]
+}

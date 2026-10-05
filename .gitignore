@@ -9,9 +9,6 @@ coverage
 .angular
 /test-run-cache/
 
-.current
-.delivered
-
 # Private Scratch Files
 scratch
 

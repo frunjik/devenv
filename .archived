@@ -117,3 +117,5 @@ Archived
 // [2026-10-05 04:45 +02:00] Added public empty Model and Field meta-model interfaces to the shared library and exported them through the models barrel; shared package build passes.
 // [2026-10-05 04:45 +02:00] Merged the all-system-terms clarification into the Glossary feature and recorded the unanswered client-access behavior as Questions.
 // [2026-10-05 04:45 +02:00] Merged the waiting-for-input status into Questions and the verification request into the Workflow feature.
+// [2026-10-05 05:24 +02:00] Implement a client-wide busy indicator in the bottom toolbar for active HTTP requests, then test request start/completion/error behavior and verify all coverage remains at 100%.
+// [2026-10-05 00:26 +02:00] [ac1be3e3-811a-41a6-9df1-8ec72c1f101e] [Medium] [Archived] show busy indicator on client bottom toolbar

@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { access, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, appendFile, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
 import type { FeaturePriority, PPTFeature, PPTFeatureStatus } from '@ppt';
@@ -392,7 +392,7 @@ async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
         .map(line => {
             const parsed = parsePPTFeatureLine(line);
             if (parsed) {
-                return withStatus(parsed, 'Done');
+                return withStatus(parsed, parsed.status === 'Archived' ? 'Archived' : 'Done');
             }
             const hash = createHash('sha1').update(line).digest('hex');
             const id = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-${hash.slice(12, 16)}-${hash.slice(16, 20)}-${hash.slice(20, 32)}`;
@@ -658,6 +658,51 @@ export function createFeatureRemovalHandler(root: string): RequestHandler {
                     throw error;
                 }
                 response.json({ data: removedFeature });
+            })
+            .catch(next);
+    };
+}
+
+export function createFeatureArchiveHandler(root: string): RequestHandler {
+    return (request, response, next) => {
+        const id = request.params['id'];
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
+            response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
+            return;
+        }
+
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
+                const featureIndex = findFeatureIndex(features, id);
+                if (featureIndex < 0) {
+                    response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
+                    return;
+                }
+
+                const archivedFeature = withStatus(features[featureIndex], 'Archived');
+                await appendFile(join(root, '.archived'), serializeFeatures([archivedFeature]), 'utf8');
+                features.splice(featureIndex, 1);
+                await store.save(features);
+                response.json({ data: archivedFeature });
+            })
+            .catch(next);
+    };
+}
+
+export function createArchiveDoneHandler(root: string): RequestHandler {
+    return (_request, response, next) => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const done = store.features.filter(feature => feature.status === 'Done');
+                if (done.length > 0) {
+                    const archived = done.map(feature => withStatus(feature, 'Archived'));
+                    await appendFile(join(root, '.archived'), serializeFeatures(archived), 'utf8');
+                    await store.save(store.features.filter(feature => feature.status !== 'Done'));
+                    response.json({ data: archived });
+                    return;
+                }
+                response.json({ data: [] });
             })
             .catch(next);
     };

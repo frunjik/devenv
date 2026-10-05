@@ -158,3 +158,5 @@ Archived
 // [2026-10-05 03:08 +02:00] [3e07bb22-f333-4410-962b-0a5c9f2b078d] [Low] [Archived] add a button to set the status of a feature to Denied in the open feature client list; add a delivered date when a feature is set to Done [Delivered: 2026-10-05]
 // [2026-10-05 03:55 +02:00] [5323a7c0-42da-4dd7-b044-16aac43a0051] [Low] [Archived] Display the In progress feature list first and the Open list second in the client tabs; default to In progress and align keyboard navigation order.
 // [2026-10-05 03:57 +02:00] [c46bd579-4216-46ec-aa1c-51d8753e27d7] [Low] [Archived] Replace move-up/move-down text with accessible Material arrow icons in the in-progress view.
+{"id":"47c55c73-1c65-4b96-bc97-92ba4a222eea","createdAt":"2026-10-05 09:05 +02:00","priority":"Low","status":"Archived","description":"XXX"}
+{"id":"debe8df3-271a-4ab4-8020-79acdbb0c962","createdAt":"2026-10-05 08:16 +02:00","priority":"Low","status":"Archived","description":"When starting a Feature move it from Backlog to Queued"}

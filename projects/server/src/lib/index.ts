@@ -23,6 +23,8 @@ import {
     createFeaturesListHandler,
     createFeatureRemovalHandler,
     createArchivedListHandler,
+    createFeatureArchiveHandler,
+    createArchiveDoneHandler,
     createBacklogListHandler,
     deliverDoneFeatures,
 } from './handlers/features';
@@ -82,6 +84,8 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.patch('/features/:id/order', createFeatureOrderHandler(root));
     app.patch('/features/:id', createFeaturePriorityHandler(root));
     app.post('/features/:id/start', createFeatureStartHandler(root));
+    app.post('/features/archive-done', createArchiveDoneHandler(root));
+    app.post('/features/:id/archive', createFeatureArchiveHandler(root));
     app.patch('/features/:id/status', createFeatureStatusHandler(root));
     app.delete('/features/:id', createFeatureRemovalHandler(root));
 

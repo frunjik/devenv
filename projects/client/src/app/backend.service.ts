@@ -123,6 +123,18 @@ export class BackendService {
         ).pipe(map(response => response.data));
     }
 
+    archiveFeature(id: string): Observable<PPTFeature> {
+        return this.httpservice.post<SuccessResponseBody<PPTFeature>>(
+            `${this.host}features/${encodeURIComponent(id)}/archive`,
+            {},
+        ).pipe(map(response => response.data));
+    }
+    archiveDoneFeatures(): Observable<PPTFeature[]> {
+        return this.httpservice.post<SuccessResponseBody<PPTFeature[]>>(
+            `${this.host}features/archive-done`,
+            {},
+        ).pipe(map(response => response.data));
+    }
     getFeatures(): Observable<PPTFeature[]> {
         return this.get<PPTFeature[]>('features');
     }

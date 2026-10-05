@@ -289,6 +289,15 @@
         <h2 id="done-features-heading">
             Done <span class="feature-count">({{ doneFeatures.length }})</span>
         </h2>
+        <button
+            *ngIf="hasArchivableFeatures"
+            type="button"
+            mat-button
+            class="archive-all-button"
+            (click)="archiveAllDone()"
+        >
+            Archive all
+        </button>
         <p *ngIf="!isLoadingFeatures && doneFeatures.length === 0">No completed features.</p>
         <p *ngIf="doneFeatures.length > 0 && matchingDoneFeatures.length === 0">
             No completed features match your search.
@@ -346,6 +355,16 @@
                         (click)="startFeature(feature)"
                     >
                         Start
+                    </button>
+                    <button
+                        *ngIf="!isArchivedEntry(feature)"
+                        type="button"
+                        mat-button
+                        class="feature-archive-button"
+                        [attr.aria-label]="'Archive: ' + feature.description"
+                        (click)="archiveFeature(feature)"
+                    >
+                        Archive
                     </button>
                 </div>
             </li>

@@ -504,6 +504,85 @@ describe('FeatureDescriptionComponent', () => {
         expect(done).toEqual(['Delivered entry']);
     });
 
+    it('archives a Done feature, moving it to the Archived tab and .archived', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174006';
+        await writeFile(join(root, '.features'),
+            `{"id":"${id}","priority":"Low","status":"Done","description":"To archive"}\n`);
+        await writeFile(join(root, '.archived'), 'Archived\n// [2026-10-04 21:00 +02:00] Legacy entry\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const archiveButtons = fixture.nativeElement.querySelectorAll('.feature-archive-button');
+        expect(archiveButtons).toHaveLength(1);
+
+        (archiveButtons[0] as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const done = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.done-feature-description'))
+            .map(element => element.textContent!.trim());
+        expect(done).toEqual(['Legacy entry']);
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (1)');
+        expect(fixture.nativeElement.querySelector('.archived-feature-description').textContent.trim()).toBe('To archive');
+        expect(await readFeatureFile()).toBe('');
+        expect(await readFile(join(root, '.archived'), 'utf8')).toContain('"status":"Archived"');
+    });
+
+    it('reports an error when archiving fails', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174007","priority":"Low","status":"Done","description":"Cannot archive"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        await rm(join(root, '.archived'), { force: true });
+        await mkdir(join(root, '.archived'));
+
+        fixture.componentInstance.archiveFeature(fixture.componentInstance.features[0]);
+        await fixture.whenStable();
+
+        expect(fixture.componentInstance.statusError).toContain('500');
+        expect(fixture.componentInstance.features).toHaveLength(1);
+        await rm(join(root, '.archived'), { recursive: true });
+    });
+    it('archives all Done features with the Archive all button', async () => {
+        await fixture.whenStable();
+        expect(fixture.nativeElement.querySelector('.archive-all-button')).toBeNull();
+        await writeFile(join(root, '.features'), [
+            '{"id":"123e4567-e89b-42d3-a456-426614174009","priority":"Low","status":"Done","description":"First done"}',
+            '{"id":"123e4567-e89b-42d3-a456-42661417400a","priority":"Low","status":"Done","description":"Second done"}',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        (fixture.nativeElement.querySelector('.archive-all-button') as HTMLButtonElement).click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelector('.archive-all-button')).toBeNull();
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (2)');
+        expect(await readFeatureFile()).toBe('');
+    });
+
+    it('reports an error when archiving all fails', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-42661417400b","priority":"Low","status":"Done","description":"Stuck"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        await rm(join(root, '.archived'), { force: true });
+        await mkdir(join(root, '.archived'));
+
+        fixture.componentInstance.archiveAllDone();
+        await fixture.whenStable();
+
+        expect(fixture.componentInstance.statusError).toContain('500');
+        expect(fixture.componentInstance.hasArchivableFeatures).toBe(true);
+        await rm(join(root, '.archived'), { recursive: true });
+    });
     it('filters the completed list with the shared feature search', async () => {
         await fixture.whenStable();
         await writeFile(join(root, '.features'), [
@@ -525,6 +604,21 @@ describe('FeatureDescriptionComponent', () => {
             .toBe('Finished feature');
     });
 
+    it('shows features with status Questions on the Open tab', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174008","priority":"Medium","status":"Questions","description":"[AI Question] Which way?"}\n');
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.componentInstance.selectFeatureTab('open');
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
+        const rows = fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row');
+        expect(rows).toHaveLength(1);
+        expect(rows[0].textContent).toContain('[AI Question] Which way?');
+        expect(rows[0].querySelector('.feature-status-select').value).toBe('Questions');
+    });
     it('displays priority and status as distinct badges within card-like rows', async () => {
         await fixture.whenStable();
         const ids = [

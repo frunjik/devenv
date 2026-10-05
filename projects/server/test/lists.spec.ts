@@ -105,7 +105,7 @@ describe('history, glossary and backlog API', () => {
         }
     });
 
-    it('returns .archived entries as Done features with stable ids without rewriting the file', async () => {
+    it('returns .archived entries (legacy ones as Done) with stable ids without rewriting the file', async () => {
         const contents = [
             'Archived',
             '// [2026-10-04 21:00 +02:00] Extracted the service.',
@@ -125,10 +125,16 @@ describe('history, glossary and backlog API', () => {
         });
         expect(first[0].id).toMatch(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/);
         expect(second).toEqual(first);
-        expect(first[1]).toMatchObject({ id: '123e4567-e89b-42d3-a456-426614174002', status: 'Done', description: 'JSON entry' });
+        expect(first[1]).toMatchObject({ id: '123e4567-e89b-42d3-a456-426614174002', status: 'Archived', description: 'JSON entry' });
         expect(await readFile(join(root, '.archived'), 'utf8')).toBe(contents);
     });
 
+    it('returns JSON .archived entries that are not marked Archived as Done', async () => {
+        await writeFile(join(root, '.archived'),
+            '{"id":"123e4567-e89b-42d3-a456-426614174003","priority":"Low","status":"Wished","description":"Old JSON"}\n');
+
+        expect((await request(app).get('/archived')).body.data).toMatchObject([{ status: 'Done', description: 'Old JSON' }]);
+    });
     it('returns no archived features when .archived is missing and forwards other read errors', async () => {
         expect((await request(app).get('/archived')).body).toEqual({ data: [] });
 
@@ -136,6 +142,77 @@ describe('history, glossary and backlog API', () => {
         expect((await request(app).get('/archived')).status).toBe(500);
     });
 
+    describe('archiving a feature', () => {
+        const id = '123e4567-e89b-42d3-a456-426614174001';
+        const otherId = '123e4567-e89b-42d3-a456-426614174002';
+        const record = (featureId: string, status: string): string =>
+            `{"id":"${featureId}","priority":"Low","status":"${status}","description":"Item"}`;
+
+        it('moves the feature from .features to .archived with status Archived', async () => {
+            await writeFile(join(root, '.features'), [record(id, 'Done'), record(otherId, 'Wished'), ''].join('\n'));
+            await writeFile(join(root, '.archived'), 'Archived\n');
+
+            const response = await request(app).post(`/features/${id}/archive`).send({});
+
+            expect(response.status).toBe(200);
+            expect(response.body.data).toMatchObject({ id, status: 'Archived' });
+            expect(await readFile(join(root, '.features'), 'utf8')).toBe(record(otherId, 'Wished') + '\n');
+            expect(await readFile(join(root, '.archived'), 'utf8')).toBe(`Archived\n${record(id, 'Archived')}\n`);
+            expect((await request(app).get('/archived')).body.data).toMatchObject([{ id, status: 'Archived' }]);
+        });
+
+        it('creates .archived when it does not exist', async () => {
+            await writeFile(join(root, '.features'), record(id, 'Done') + '\n');
+
+            await request(app).post(`/features/${id}/archive`).send({});
+
+            expect(await readFile(join(root, '.archived'), 'utf8')).toBe(record(id, 'Archived') + '\n');
+        });
+
+        it('rejects malformed ids and reports unknown features', async () => {
+            expect((await request(app).post('/features/nope/archive').send({})).status).toBe(400);
+            const missing = await request(app).post(`/features/${id}/archive`).send({});
+            expect(missing.status).toBe(404);
+        });
+
+        it('forwards filesystem errors', async () => {
+            await writeFile(join(root, '.features'), record(id, 'Done') + '\n');
+            await mkdir(join(root, '.archived'));
+
+            expect((await request(app).post(`/features/${id}/archive`).send({})).status).toBe(500);
+        });
+    });
+    describe('archiving all Done features', () => {
+        const record = (id: string, status: string): string =>
+            `{"id":"${id}","priority":"Low","status":"${status}","description":"Item"}`;
+        const a = '123e4567-e89b-42d3-a456-426614174001';
+        const b = '123e4567-e89b-42d3-a456-426614174002';
+        const c = '123e4567-e89b-42d3-a456-426614174003';
+
+        it('moves every Done feature to .archived and keeps the others', async () => {
+            await writeFile(join(root, '.features'), [record(a, 'Done'), record(b, 'Wished'), record(c, 'Done'), ''].join('\n'));
+
+            const response = await request(app).post('/features/archive-done').send({});
+
+            expect(response.body.data.map((feature: { id: string }) => feature.id)).toEqual([a, c]);
+            expect(await readFile(join(root, '.features'), 'utf8')).toBe(record(b, 'Wished') + '\n');
+            expect(await readFile(join(root, '.archived'), 'utf8')).toBe(record(a, 'Archived') + '\n' + record(c, 'Archived') + '\n');
+        });
+
+        it('returns an empty list and writes nothing when no feature is Done', async () => {
+            await writeFile(join(root, '.features'), record(b, 'Wished') + '\n');
+
+            expect((await request(app).post('/features/archive-done').send({})).body).toEqual({ data: [] });
+            await expect(readFile(join(root, '.archived'), 'utf8')).rejects.toThrow();
+        });
+
+        it('forwards filesystem errors', async () => {
+            await writeFile(join(root, '.features'), record(a, 'Done') + '\n');
+            await mkdir(join(root, '.archived'));
+
+            expect((await request(app).post('/features/archive-done').send({})).status).toBe(500);
+        });
+    });
     describe('delivering Done features on commit', () => {
         const doneId = '123e4567-e89b-42d3-a456-426614174001';
         const openId = '123e4567-e89b-42d3-a456-426614174002';

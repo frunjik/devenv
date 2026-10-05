@@ -244,6 +244,41 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
+    archiveFeature(feature: PPTFeature): void {
+        this.statusError = '';
+        this.backend.archiveFeature(feature.id).subscribe({
+            next: archived => {
+                this.features = this.features.filter(entry => entry.id !== archived.id);
+                this.archivedFeatures = [...this.archivedFeatures, archived];
+                this.refreshFeatureLists();
+            },
+            error: (error: Error) => {
+                this.statusError = error.message;
+            },
+        });
+    }
+
+    archiveAllDone(): void {
+        this.statusError = '';
+        this.backend.archiveDoneFeatures().subscribe({
+            next: archived => {
+                const archivedIds = new Set(archived.map(feature => feature.id));
+                this.features = this.features.filter(feature => !archivedIds.has(feature.id));
+                this.archivedFeatures = [...this.archivedFeatures, ...archived];
+                this.refreshFeatureLists();
+            },
+            error: (error: Error) => {
+                this.statusError = error.message;
+            },
+        });
+    }
+
+    get hasArchivableFeatures(): boolean {
+        return this.features.some(feature => feature.status === 'Done');
+    }
+    isArchivedEntry(feature: PPTFeature): boolean {
+        return this.archivedFeatures.includes(feature);
+    }
     markFeatureDone(feature: PPTFeature): void {
         if (this.completingFeatureIds.has(feature.id)) {
             return;
@@ -373,8 +408,14 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private refreshFeatureLists(): void {
         const features = this.features;
-        this.doneFeatures = [...features.filter(feature => feature.status === 'Done'), ...this.archivedFeatures];
-        this.archivedStatusFeatures = features.filter(feature => feature.status === 'Archived');
+        this.doneFeatures = [
+            ...features.filter(feature => feature.status === 'Done'),
+            ...this.archivedFeatures.filter(feature => feature.status !== 'Archived'),
+        ];
+        this.archivedStatusFeatures = [
+            ...features.filter(feature => feature.status === 'Archived'),
+            ...this.archivedFeatures.filter(feature => feature.status === 'Archived'),
+        ];
         this.featureDataSource.data = features.filter(feature =>
             !['Done', 'Queued', 'Committed', 'Archived'].includes(feature.status));
         this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();

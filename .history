@@ -1,3 +1,6 @@
+// [2026-10-05 12:55 +02:00] Added an Archive all button on the Done tab (POST /features/archive-done) that moves every Done feature to .archived with status Archived.
+// [2026-10-05 12:45 +02:00] Verified features with status Questions show on the Open tab (they were already included); added a spec.
+// [2026-10-05 12:35 +02:00] Done tab rows have an Archive button (POST /features/:id/archive) that moves the feature from .features to .archived with status Archived; the Archived tab lists them. The question about archiving on commit was answered: no, archive manually and keep Done features in .features.
 // [2026-10-05 12:20 +02:00] The selected Features page tab is kept in the URL (?tab=open|queued|done|archived) and restored on load.
 // [2026-10-05 12:10 +02:00] Queued list rows use a fixed-column grid (id, description, order, edit, abort) so columns align and the description gets the remaining width.
 // [2026-10-05 13:10 +02:00] Added an Archived tab as the last tab on the Features page, listing features with status Archived (excluded from Open).

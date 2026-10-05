@@ -1249,6 +1249,8 @@ describe('FeatureDescriptionComponent', () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
         await writeFile(join(root, '.features'),
             `// [${id}] [High] [Backlog] Feature to deny\n`);
+        await writeFile(join(root, '.archived'),
+            `${JSON.stringify({ id, priority: 'Low', status: 'Archived', description: 'Old copy' })}\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to deny <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
@@ -1265,7 +1267,8 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(await readFeatureFile()).not.toContain(id);
-        expect(await readFile(join(root, '.archived'), 'utf8')).toContain('"status":"Denied"');
+        expect((await readFile(join(root, '.archived'), 'utf8')).trim().split('\n').map(JSON.parse))
+            .toEqual([{ id, priority: 'High', status: 'Denied', description: 'Feature to deny' }]);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
         expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(1);

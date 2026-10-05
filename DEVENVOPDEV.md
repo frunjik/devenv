@@ -8,6 +8,7 @@ Before writing any code set the status of the feature to InProgress.
 When you are done with a Feature set its status to Done, leave it in .current
 When there are no items here, pick a Queued item ranked by priority, set its status to Commited and copy in here.
 The features you are writing are, take them one by one:
-{"id":"6246c126-45ba-4808-936b-2ecb2b615608","createdAt":"2026-10-05 15:09 +02:00","priority":"Low","status":"Queued","description":"maybe unify the states Queued and Commited ? my thought was that Queued would mean it is in .current, while Commited means it is ready to be picked up as a next target"}
-{"id":"a252b546-552f-4596-83e9-6d1013ec5f32","createdAt":"2026-10-05 15:07 +02:00","priority":"Low","status":"Queued","description":"Deny a feature does nothing (from the open list)"}
-{"id":"6033c317-b31a-4fd1-8d7b-c33b08bddc07","createdAt":"2026-10-05 15:21 +02:00","priority":"High","status":"Queued","description":"demolish the whole storage of features except the .archive the only thing that should happen is the user can add a feature from the client that ends up in the ./features list you can remove the code for all buttons related to features, we will build them up later."}
+{"id":"3c2984cd-9135-449d-9e59-5465848389c2","priority":"Medium","status":"Done","description":"{\"id\":\"ae7c637a-822e-48d0-905e-ab78431b02f5\",\"createdAt\":\"2026-10-05 14:37 +02:00\",\"priority\":\"Low\",\"status\":\"Done\",\"description\":\"demolish the workspace main menu link and the underlying components\"}"}
+{"id":"ae7c637a-822e-48d0-905e-ab78431b02f5","createdAt":"2026-10-05 14:37 +02:00","priority":"Low","status":"Done","description":"demolish the workspace main menu link and the underlying components","deliveredDate":"2026-10-05"}
+
+

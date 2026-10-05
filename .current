@@ -1,3 +1,3 @@
 
-{"id":"c02d63b4-896c-48b1-a3ab-b7d8c30c9b1d","createdAt":"2026-10-05 15:00 +02:00","priority":"Low","status":"Commited","description":"denied features should be moved to .archive with Status Denied (remove all other copies if present)"}
-{"id":"c02d63b4-896c-48b1-a3ab-b7d8c30c9b1d","createdAt":"2026-10-05 15:00 +02:00","priority":"Low","status":"Commited","description":"denied features should be moved to .archive with Status Denied (remove all other copies if present)"}
+{"id":"6246c126-45ba-4808-936b-2ecb2b615608","createdAt":"2026-10-05 15:09 +02:00","priority":"Low","status":"InProgress","description":"maybe unify the states Queued and Commited ? my thought was that Queued would mean it is in .current, while Commited means it is ready to be picked up as a next target"}
+{"id":"6246c126-45ba-4808-936b-2ecb2b615608","createdAt":"2026-10-05 15:09 +02:00","priority":"Low","status":"InProgress","description":"maybe unify the states Queued and Commited ? my thought was that Queued would mean it is in .current, while Commited means it is ready to be picked up as a next target"}

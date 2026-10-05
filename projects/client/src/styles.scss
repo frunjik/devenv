@@ -1,13 +1,3 @@
-@use 'sass:meta';
-/* You can add global styles to this file, and also import other style files */
-//@use './assets/mixins';
-// @use '@angular/material/prebuilt-themes/indigo-pink.css';
-// @use '@angular/material/prebuilt-themes/azure-blue.css';
-// @use '@angular/material/prebuilt-themes/cyan-orange.css';
-// @use '@angular/material/prebuilt-themes/deeppurple-amber.css';
-// @use '@angular/material/prebuilt-themes/magenta-violet.css';
-// @use '@angular/material/prebuilt-themes/purple-green.css';
-// @use '@angular/material/prebuilt-themes/rose-red.css';
 @use '@angular/material/prebuilt-themes/pink-bluegrey.css';
 
 html,
@@ -78,24 +68,14 @@ nav button[mat-button] {
     --mat-progress-bar-track-color: #34453a;
 }
 
-.mat-mdc-snack-bar-container.commit-snackbar-success {
-    --mat-snack-bar-container-color: #a3b9a7;
-    --mat-snack-bar-supporting-text-color: #24372a;
-    --mat-snack-bar-button-color: #24372a;
-}
-
+.mat-mdc-snack-bar-container.commit-snackbar-success,
 .mat-mdc-snack-bar-container.save-snackbar-success {
     --mat-snack-bar-container-color: #a3b9a7;
     --mat-snack-bar-supporting-text-color: #24372a;
     --mat-snack-bar-button-color: #24372a;
 }
 
-.mat-mdc-snack-bar-container.commit-snackbar-error {
-    --mat-snack-bar-container-color: #c8a09a;
-    --mat-snack-bar-supporting-text-color: #462b27;
-    --mat-snack-bar-button-color: #462b27;
-}
-
+.mat-mdc-snack-bar-container.commit-snackbar-error,
 .mat-mdc-snack-bar-container.save-snackbar-error {
     --mat-snack-bar-container-color: #c8a09a;
     --mat-snack-bar-supporting-text-color: #462b27;

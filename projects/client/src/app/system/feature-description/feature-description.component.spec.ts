@@ -106,6 +106,17 @@ describe('FeatureDescriptionComponent', () => {
             .toContain('No completed features.');
     });
 
+    it('renders the backlog below the feature tabs', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const featureTabs = fixture.nativeElement.querySelector('.feature-list-tabs');
+        const backlog = fixture.nativeElement.querySelector('app-backlog .backlog');
+        expect(backlog).not.toBeNull();
+        expect(featureTabs.compareDocumentPosition(backlog) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(backlog.querySelector('h1').textContent.trim()).toBe('Backlog');
+    });
+
     it('organizes feature lists in accessible tabs with keyboard navigation', async () => {
         await fixture.whenStable();
         fixture.detectChanges();

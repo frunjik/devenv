@@ -15,6 +15,7 @@ import type { PPTFeature } from '@ppt';
 import { BackendService, type FeaturePriority, type PPTFeatureStatus } from '../../backend.service';
 import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
+import { BacklogComponent } from '../backlog/backlog.component';
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
 
 type FeatureListTab = 'open' | 'queued' | 'done' | 'archived';
@@ -32,6 +33,7 @@ type FeatureListTab = 'open' | 'queued' | 'done' | 'archived';
         MatPaginatorModule,
         MatSortModule,
         MatTableModule,
+        BacklogComponent,
         NgFor,
         NgIf,
         SlicePipe,

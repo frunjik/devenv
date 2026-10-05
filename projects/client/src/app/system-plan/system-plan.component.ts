@@ -299,7 +299,7 @@ export class SystemPlanComponent {
             id: 'SC-019',
             title: 'Clarify what a system concern is',
             kind: 'Domain',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: [],
             summary: 'Define how a concern differs from a Work Item and whether it belongs in the Glossary.',
         },

@@ -281,13 +281,14 @@ Evaluate how the inquiry workflow can use wide displays more effectively. Compar
 
 ### SC-019 — Clarify what a system concern is
 
-**Kind:** Domain · **Status:** Ready · **Depends on:** None
+**Kind:** Domain · **Status:** Validated · **Depends on:** None
 
 Clarify the meaning and purpose of a “concern” in the system plan, including how it differs from a `Work Item` and whether it should be defined in the project Glossary.
 
-**Working boundary:** The current register uses “concern” for domain uncertainties, behavior questions, quality constraints, and implementation slices. Do not treat these as one domain Type or assume every concern is actionable work; examine whether the register groups distinct concepts under one planning label.
-**Open questions:** Is “Concern” a project-planning term, a domain concept, or both? Should concerns be decomposed into Work Items, or are some resolved by decisions/evidence without implementation? Does it merit a Glossary entry, a narrower set of concern kinds, or a different register model?
-**Validation evidence:** The user asked for a definition and whether “Concern” is in the glossary. It is currently absent; the register describes it locally, while the project Glossary defines `Work Item` separately. No shared definition has been agreed.
+**Decision (user, 2026-10-06):** Use **System Concern** as a project-planning term: a topic or uncertainty needing attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items. It is not itself necessarily a Work Item.
+**Working boundary:** A concern is a planning category, not a new domain Type. Register entries may need different statuses and evidence because they represent different kinds of attention; do not collapse their underlying concepts into one domain model.
+**Open questions:** Whether the concern register should eventually distinguish its kinds as separate planning record Types remains a future modeling question; no behavior currently depends on such a change.
+**Validation evidence:** User accepted the project-planning definition and Glossary addition on 2026-10-06. `.glossary` now defines `System Concern` separately from `Work Item`. No new domain Type was added; the plan's `PlanConcern` remains a read-only view projection.
 
 The dependency order does not authorize building both components together.
 

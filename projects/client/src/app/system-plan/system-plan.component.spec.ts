@@ -20,9 +20,9 @@ describe('SystemPlanComponent', () => {
         const text = fixture.nativeElement.textContent as string;
 
         expect(text).toContain('System plan');
-        expect(text).toContain('15 validated');
+        expect(text).toContain('16 validated');
         expect(text).toContain('3 in progress');
-        expect(text).toContain('1 ready');
+        expect(text).toContain('0 ready');
         expect(text).toContain('Distinguish input from ticket');
         expect(text).toContain('Visualize the current system plan');
         expect(text).toContain('Define note-to-ticket relationships');
@@ -36,7 +36,7 @@ describe('SystemPlanComponent', () => {
                 'SC-006', 'SC-007', 'SC-008', 'SC-009', 'SC-010', 'SC-011',
                 'SC-012', 'SC-013', 'SC-014', 'SC-015', 'SC-016', 'SC-017', 'SC-018',
                 'SC-019']);
-        expect(fixture.nativeElement.querySelector('progress').value).toBe(15);
+        expect(fixture.nativeElement.querySelector('progress').value).toBe(16);
         expect(fixture.nativeElement.querySelector('progress').max).toBe(19);
         expect(fixture.nativeElement.querySelector('header a').getAttribute('href'))
             .toBe('/problem-inquiry');

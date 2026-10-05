@@ -16,6 +16,9 @@ Domain Definition
 System
 - A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior.
 
+System Concern
+- A topic or uncertainty that needs attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items. It is not itself necessarily a Work Item.
+
 Goal
 - A desired outcome or condition that a System is intended to achieve.
 

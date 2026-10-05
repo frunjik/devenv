@@ -19,7 +19,9 @@ describe('FeatureDescriptionComponent', () => {
     const browserWindow = window as Window & { host?: string };
 
     async function readFeatureFile(): Promise<string> {
-        const contents = await readFile(join(root, '.wishlist'), 'utf8');
+        const wishlist = await readFile(join(root, '.wishlist'), 'utf8');
+        const backlog = await readFile(join(root, '.backlog'), 'utf8').catch(() => '');
+        const contents = `${wishlist}${backlog}`;
         return contents.split('\n').filter(Boolean).map(line => {
             const feature = JSON.parse(line) as {
                 id: string;
@@ -53,6 +55,7 @@ describe('FeatureDescriptionComponent', () => {
 
     beforeEach(async () => {
         await rm(join(root, '.wishlist'), { recursive: true, force: true });
+        await rm(join(root, '.backlog'), { recursive: true, force: true });
         await rm(join(root, 'DEVENVOPDEV.md'), { recursive: true, force: true });
         await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions\n\n'
             + 'The features you are writing are, take them one by one:\n');
@@ -95,23 +98,27 @@ describe('FeatureDescriptionComponent', () => {
         const tabs: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('[role="tab"]');
 
         expect(Array.from(tabs).map(tab => tab.textContent.trim())).toEqual([
-            'Queued (0)',
             'Open (0)',
+            'Queued (0)',
             'Done (0)',
         ]);
-        expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+        expect(tabs[1].getAttribute('aria-selected')).toBe('true');
         expect(fixture.nativeElement.querySelector('#queued-features-panel').hidden).toBe(false);
         expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(true);
 
-        tabs[1].click();
+        tabs[0].click();
+        fixture.detectChanges();
+        expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
+
+        tabs[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
         fixture.detectChanges();
         expect(tabs[1].getAttribute('aria-selected')).toBe('true');
-        expect(fixture.nativeElement.querySelector('#open-features-panel').hidden).toBe(false);
+        expect(document.activeElement).toBe(tabs[1]);
 
         tabs[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
         fixture.detectChanges();
         expect(tabs[2].getAttribute('aria-selected')).toBe('true');
-        expect(document.activeElement).toBe(tabs[2]);
 
         tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
         fixture.detectChanges();

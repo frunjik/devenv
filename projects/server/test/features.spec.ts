@@ -791,11 +791,35 @@ describe('features public API', () => {
 
         expect(response.status).toBe(200);
         expect(entryData(response.body)).toContain('[Queued] Implement feature tracking');
-        expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
+        expect(await readFile(join(root, '.wishlist'), 'utf8')).toBe('');
+        const backlog = (await readFile(join(root, '.backlog'), 'utf8')).split('\n').filter(Boolean);
+        expect(backlog.map(line => JSON.parse(line))).toEqual([response.body.data]);
+        const listed = await request(app).get('/features');
+        expect(listed.body.data).toEqual([response.body.data]);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).toContain(
             `The features you are writing are, take them one by one:\r\n- [In progress] Implement feature tracking <!-- feature-id:${id} -->\r\nExisting feature`,
         );
+    });
+
+    it('keeps started features in .backlog and others in .wishlist across later changes', async () => {
+        const first = await request(app).post('/features').send({ description: 'Stay on the wishlist' });
+        const second = await request(app).post('/features').send({ description: 'Move to the backlog' });
+        await writeFile(join(root, 'DEVENVOPDEV.md'), 'The features you are writing are, take them one by one:\n');
+        await request(app).post(`/features/${second.body.data.id}/start`).send({});
+
+        const priority = await request(app)
+            .patch(`/features/${second.body.data.id}`)
+            .send({ priority: 'High' });
+
+        expect(priority.status).toBe(200);
+        const wishlist = (await readFile(join(root, '.wishlist'), 'utf8')).split('\n').filter(Boolean);
+        const backlog = (await readFile(join(root, '.backlog'), 'utf8')).split('\n').filter(Boolean);
+        expect(wishlist.map(line => JSON.parse(line).id)).toEqual([first.body.data.id]);
+        expect(backlog.map(line => JSON.parse(line).id)).toEqual([second.body.data.id]);
+
+        await request(app).delete(`/features/${second.body.data.id}`);
+        expect(await readFile(join(root, '.backlog'), 'utf8')).toBe('');
     });
 
     it('adds a newly started feature after the existing in-progress tasks', async () => {

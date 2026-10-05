@@ -7,5 +7,8 @@ Some features are in an old format, convert it to the JSON/PPTFeature format whe
 When you are done with a Feature set its status to Done, leave it in .current
 The features you are writing are, take them one by one:
 
+{"id":"1bacb871-9a38-4ac2-b35b-5ed8ce2e05ee","createdAt":"2026-10-05 08:35 +02:00","priority":"Low","status":"Queued","description":"when an item is put on .wishlist set its status to Wished"}
+- [In progress] when an item is put on .wishlist set its status to Wished <!-- feature-id:1bacb871-9a38-4ac2-b35b-5ed8ce2e05ee -->
+
 
 

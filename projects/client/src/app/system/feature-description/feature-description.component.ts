@@ -105,7 +105,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         }
 
         event.preventDefault();
-        const tabs: FeatureListTab[] = ['queued', 'open', 'done'];
+        const tabs: FeatureListTab[] = ['open', 'queued', 'done'];
         const currentIndex = tabs.indexOf(tab);
         const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
         this.selectedFeatureTab = tabs[nextIndex];

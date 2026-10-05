@@ -31,17 +31,6 @@
     </form>
     <p *ngIf="errorMessage" id="feature-submit-error" role="alert">{{ errorMessage }}</p>
     <div class="feature-list-tabs" role="tablist" aria-label="Feature lists">
-        <button
-            type="button"
-            mat-button
-        id="queued-features-tab"
-        role="tab"
-        aria-controls="queued-features-panel"
-        [attr.aria-selected]="selectedFeatureTab === 'queued'"
-        [attr.tabindex]="selectedFeatureTab === 'queued' ? 0 : -1"
-        (click)="selectFeatureTab('queued')"
-        (keydown)="onFeatureTabKeydown($event, 'queued')"
-    >Queued ({{ queuedFeatures.length }})</button>
     <button
         type="button"
         mat-button
@@ -53,6 +42,17 @@
             (click)="selectFeatureTab('open')"
             (keydown)="onFeatureTabKeydown($event, 'open')"
         >Open ({{ featureDataSource.data.length }})</button>
+        <button
+            type="button"
+            mat-button
+        id="queued-features-tab"
+        role="tab"
+        aria-controls="queued-features-panel"
+        [attr.aria-selected]="selectedFeatureTab === 'queued'"
+        [attr.tabindex]="selectedFeatureTab === 'queued' ? 0 : -1"
+        (click)="selectFeatureTab('queued')"
+        (keydown)="onFeatureTabKeydown($event, 'queued')"
+    >Queued ({{ queuedFeatures.length }})</button>
         <button
             type="button"
             mat-button

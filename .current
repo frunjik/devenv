@@ -1,2 +1,4 @@
 {"id":"debe8df3-271a-4ab4-8020-79acdbb0c962","createdAt":"2026-10-05 08:16 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"When starting a Feature move it from Backlog to Queued"}
 {"id":"c03b6097-f485-447f-975c-7b4ba53c32be","createdAt":"2026-10-05 08:04 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"remove @shared/ppt-fields and return an empty list for the fields on the API"}
+{"id":"1a620995-e4d5-45d8-af68-6d6d3e2ade78","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"move the order of the tabs put open first in the feature list on client"}
+{"id":"a2024ac4-6b66-4130-8e86-c9e12a60cdb4","createdAt":"2026-10-05 08:34 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"remove Feature from .wishlist when started; started features are written to .backlog with status Queued"}

@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { appendFile, readFile, writeFile } from 'node:fs/promises';
+import { access, appendFile, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
 import type { FeaturePriority, PPTFeature, PPTFeatureStatus } from '@ppt';
@@ -279,6 +279,44 @@ async function readFeatures(filename: string): Promise<PPTFeature[]> {
     return features;
 }
 
+interface FeatureStore {
+    features: PPTFeature[];
+    save(features: PPTFeature[]): Promise<void>;
+    snapshot(): () => Promise<void>;
+    moveToBacklog(id: string): void;
+}
+
+async function readFeatureStore(root: string): Promise<FeatureStore> {
+    const wishlistFilename = join(root, '.wishlist');
+    const backlogFilename = join(root, '.backlog');
+    const wishlist = await readFeatures(wishlistFilename);
+    const backlog = await readFeatures(backlogFilename);
+    const backlogIds = new Set(backlog.map(feature => feature.id.toLowerCase()));
+    const isInBacklog = (feature: PPTFeature): boolean => backlogIds.has(feature.id.toLowerCase());
+    const splitContents = (features: PPTFeature[]) => ({
+        wishlist: serializeFeatures(features.filter(feature => !isInBacklog(feature))),
+        backlog: serializeFeatures(features.filter(isInBacklog)),
+    });
+    const writeContents = async (contents: { wishlist: string; backlog: string }): Promise<void> => {
+        await writeFile(wishlistFilename, contents.wishlist, 'utf8');
+        const backlogExists = await access(backlogFilename).then(() => true, () => false);
+        if (contents.backlog || backlogExists) {
+            await writeFile(backlogFilename, contents.backlog, 'utf8');
+        }
+    };
+    const store: FeatureStore = {
+        features: [...wishlist, ...backlog],
+        save: features => writeContents(splitContents(features)),
+        snapshot: () => {
+            const contents = splitContents(store.features);
+            return () => writeContents(contents);
+        },
+        moveToBacklog: id => {
+            backlogIds.add(id.toLowerCase());
+        },
+    };
+    return store;
+}
 
 const featureIdFormat = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const statusMessage = 'Feature status must be Questions, Wished, Backlog, Queued, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.';
@@ -307,8 +345,9 @@ export function createFeatureHandler(root: string): RequestHandler {
 
         const filename = join(root, '.wishlist');
 
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const oneLineDescription = description.trim().replace(/\s+/g, ' ');
                 const duplicateIndex = features.findIndex(feature =>
                     sharedFeatureTermCount(feature.description, oneLineDescription) > 3,
@@ -319,14 +358,14 @@ export function createFeatureHandler(root: string): RequestHandler {
                         ? duplicate.description
                         : `${duplicate.description}; ${oneLineDescription}`;
                     if (mergedDescription !== duplicate.description) {
-                        const previousContents = serializeFeatures(features);
+                        const restore = store.snapshot();
                         const updatedFeatures = [...features];
                         updatedFeatures[duplicateIndex] = { ...duplicate, description: mergedDescription };
-                        await writeFile(filename, serializeFeatures(updatedFeatures), 'utf8');
+                        await store.save(updatedFeatures);
                         try {
                             await updateStartedFeatureTask(root, duplicate.id.toLowerCase(), mergedDescription);
                         } catch (error) {
-                            await writeFile(filename, previousContents, 'utf8');
+                            await restore();
                             throw error;
                         }
                         features[duplicateIndex] = updatedFeatures[duplicateIndex];
@@ -352,8 +391,8 @@ export function createFeatureHandler(root: string): RequestHandler {
 
 export function createFeaturesListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
-        void readFeatures(join(root, '.wishlist'))
-            .then(features => response.json({ data: features }))
+        void readFeatureStore(root)
+            .then(store => response.json({ data: store.features }))
             .catch(next);
     };
 }
@@ -372,9 +411,9 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.wishlist');
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
@@ -382,7 +421,7 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
                 }
 
                 features[featureIndex] = { ...features[featureIndex], priority: requestedPriority as FeaturePriority };
-                await writeFile(filename, serializeFeatures(features), 'utf8');
+                await store.save(features);
                 response.json({ data: features[featureIndex] });
             })
             .catch(next);
@@ -402,9 +441,9 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.wishlist');
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
@@ -426,7 +465,7 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
                 if (targetPosition >= 0 && targetPosition < queuedIndexes.length) {
                     const targetIndex = queuedIndexes[targetPosition];
                     [features[featureIndex], features[targetIndex]] = [features[targetIndex], features[featureIndex]];
-                    await writeFile(filename, serializeFeatures(features), 'utf8');
+                    await store.save(features);
                 }
 
                 response.json({ data: features });
@@ -449,23 +488,23 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.wishlist');
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const previousContents = serializeFeatures(features);
+                const restore = store.snapshot();
                 features[featureIndex] = withStatus(features[featureIndex], requestedStatus as PPTFeatureStatus);
-                await writeFile(filename, serializeFeatures(features), 'utf8');
+                await store.save(features);
                 if (requestedStatus !== 'Queued') {
                     try {
                         await removeStartedFeatureTask(root, id.toLowerCase());
                     } catch (error) {
-                        await writeFile(filename, previousContents, 'utf8');
+                        await restore();
                         throw error;
                     }
                 }
@@ -489,24 +528,24 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
         }
 
         const description = requestedDescription.trim().replace(/\s+/g, ' ');
-        const filename = join(root, '.wishlist');
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const previousContents = serializeFeatures(features);
+                const restore = store.snapshot();
                 const updatedFeature = { ...features[featureIndex], description };
                 const updatedFeatures = [...features];
                 updatedFeatures[featureIndex] = updatedFeature;
-                await writeFile(filename, serializeFeatures(updatedFeatures), 'utf8');
+                await store.save(updatedFeatures);
                 try {
                     await updateStartedFeatureTask(root, id.toLowerCase(), description);
                 } catch (error) {
-                    await writeFile(filename, previousContents, 'utf8');
+                    await restore();
                     throw error;
                 }
                 response.json({ data: updatedFeature });
@@ -523,9 +562,9 @@ export function createFeatureStartHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.wishlist');
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
@@ -535,7 +574,8 @@ export function createFeatureStartHandler(root: string): RequestHandler {
                 const feature = withStatus(features[featureIndex], 'Queued');
                 await addStartedFeatureToDevEnv(root, feature.description, id.toLowerCase());
                 features[featureIndex] = feature;
-                await writeFile(filename, serializeFeatures(features), 'utf8');
+                store.moveToBacklog(id);
+                await store.save(features);
                 response.json({ data: feature });
             })
             .catch(next);
@@ -550,22 +590,22 @@ export function createFeatureRemovalHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.wishlist');
-        void readFeatures(filename)
-            .then(async features => {
+        void readFeatureStore(root)
+            .then(async store => {
+                const features = store.features;
                 const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const previousContents = serializeFeatures(features);
+                const restore = store.snapshot();
                 const [removedFeature] = features.splice(featureIndex, 1);
                 try {
-                    await writeFile(filename, features.length ? serializeFeatures(features) : '', 'utf8');
+                    await store.save(features);
                     await removeStartedFeatureTask(root, id.toLowerCase());
                 } catch (error) {
-                    await writeFile(filename, previousContents, 'utf8');
+                    await restore();
                     throw error;
                 }
                 response.json({ data: removedFeature });

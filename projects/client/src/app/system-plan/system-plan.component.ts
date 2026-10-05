@@ -391,6 +391,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-024'],
             summary: 'Replace scattered hex values with a small palette of tokens suited to long viewing; fix light and indigo outliers.',
         },
+        {
+            id: 'SC-031',
+            title: 'Show the Red-Green-Refactor cycle in the meta app',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-024'],
+            summary: 'Make the current Red, Green, or Refactor phase visible in the meta layer; decide whether it is derived or recorded.',
+        },
     ];
 
     get validatedCount(): number {

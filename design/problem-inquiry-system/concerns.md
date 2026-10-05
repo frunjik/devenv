@@ -415,6 +415,16 @@ This app is meant to be looked at for long periods. Define a small, deliberate p
 **Proposed palette (for review, not agreed):** keep the dark, low-saturation, green-tinted neutrals as the base; reduce them to five surface steps (base, raised, panel, toolbar, border) and three text steps (primary, muted, heading); one calm green accent for the problem-solving app (`#a8c4ae` link, `#4f7059` filled); one distinct but equally muted cool slate-blue accent (about `#9db4cf`, 8.0:1 on the base) reserved for the meta layer so it reads as a different layer; semantic colors limited to ok `#88b791`, warn `#d6b66e`, error `#d69a90`. Avoid pure white and pure black, avoid saturated accents, keep at least 4.5:1 for text and 3:1 for icons and borders that carry meaning.
 **Open questions:** Dark only, or also a light theme (and does the OS preference decide)? Does the meta layer get its own accent hue, or only a different surface? Where do the tokens live (CSS custom properties in `styles.scss`, mapped into the Material theme variables)? Should the Material prebuilt theme be replaced by a custom one? Should the palette be checked automatically (contrast tests) or only reviewed by eye? Do colors need to remain distinguishable for color-blind users beyond the status text labels?
 **Vocabulary candidates (P-009, not yet agreed):** "token", "surface", "accent", "palette".
+
+### SC-031 — Show the Red-Green-Refactor cycle in the meta app
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-024
+
+Make the current Red-Green-Refactor phase (P-001) visible in the meta (host) layer, so it is clear at a glance whether the work is in Red (a failing test), Green (passing), or Refactor, and what the last test run showed.
+
+**Working boundary:** Exploration and decision first; no new behavior until the source of the phase is agreed. The meta layer already shows the last test run result (passed, failed, error) and the current task in the status toolbar; this concern decides whether the phase is derived from that or recorded explicitly.
+**Open questions:** Is the phase derived from test results (failing means Red, passing after Red means Green) or set explicitly by whoever is working? How is Refactor detected, since a passing run looks the same as Green? Does it show per task or per concern (SC-NN)? Where does it appear (status toolbar, a small indicator next to the current task, or a history of cycles)? Is a history of phase changes kept (and where, see SC-028)? Does it also show P-004 coverage and the other principle gates?
+**Vocabulary candidates (P-009, not yet agreed):** "phase", "cycle", "Red", "Green", "Refactor".
 
 The dependency order does not authorize building both components together.
 

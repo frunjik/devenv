@@ -20,10 +20,10 @@ nav {
 @media (max-width: 42rem) {
     mat-toolbar.mat-toolbar-single-row {
         height: auto;
-        min-height: 64px;
+        min-height: 48px;
         align-items: stretch;
         flex-direction: column;
-        padding: 0.5rem 1rem;
+        padding: 0.25rem 0.75rem;
         white-space: normal;
     }
 
@@ -34,8 +34,8 @@ nav {
     nav {
         width: 100%;
         flex: 0 0 auto;
-        margin: 0.35rem 0 0;
-        padding-bottom: 0.25rem;
+        margin: 0;
+        padding-bottom: 0.1rem;
         white-space: nowrap;
     }
 }

@@ -339,7 +339,7 @@ export class SystemPlanComponent {
             id: 'SC-024',
             title: 'Integrate the problem-solving app into the host app shell',
             kind: 'Design',
-            status: 'In progress',
+            status: 'Validated',
             dependsOn: [],
             summary: 'High priority. Make the problem-solving app look docked into or included by the host app.',
         },

@@ -1,4 +1,26 @@
 <main class="models-page">
     <h1>PPT models</h1>
+    <section aria-label="PPT field editor">
+        <h2>Edit a PPT field</h2>
+        <label for="ppt-field-selection">Field</label>
+        <select
+            id="ppt-field-selection"
+            aria-label="Select a PPT field"
+            [value]="selectedFieldKey"
+            (change)="selectField(fieldSelection.value)"
+            #fieldSelection
+        >
+            @for (option of fieldOptions; track option.key) {
+                <option [value]="option.key">{{ option.label }}</option>
+            }
+        </select>
+        @if (selectedField) {
+            <ppt-field-editor
+                [field]="selectedField"
+                (fieldSaved)="saveField($event)"
+                (cancelRequested)="cancelField()"
+            />
+        }
+    </section>
     <pre aria-label="PPT model definitions">{{ modelText }}</pre>
 </main>

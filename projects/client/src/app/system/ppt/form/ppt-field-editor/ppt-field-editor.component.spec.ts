@@ -71,6 +71,25 @@ describe('PPTFieldEditorComponent', () => {
         expect(saved[1].type).toEqual({ ...model, name: 'Updated model' });
     });
 
+    it('refreshes form values when the selected field input changes', () => {
+        createComponent({ id: 'field-name', type: 'string', name: 'Name' });
+
+        fixture.componentRef.setInput('field', {
+            id: 'field-title',
+            type: 'number',
+            name: 'Title',
+            title: 'Display title',
+        });
+        fixture.detectChanges();
+
+        expect(component.form.getRawValue()).toEqual({
+            id: 'field-title',
+            type: 'number',
+            name: 'Title',
+            title: 'Display title',
+        });
+    });
+
     it('reports invalid JSON for model-valued types without emitting', () => {
         createComponent({
             id: 'field-model',

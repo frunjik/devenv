@@ -5,4 +5,8 @@ Before starting a feature you make sure all tests are green and code has 100% co
 
 The features you are writing are, take them one by one:
 
-make a new client component to hold a form to edit a PPTField object
+
+#1 add a server endpoint to get all known PPTField instances as defined in @shared
+
+#2 add a list of all known PPTField instances as defined in @shared to the Field Editor client page
+

@@ -1,4 +1,4 @@
-import { Component, OnInit, input, output } from '@angular/core';
+import { Component, OnChanges, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,7 +11,7 @@ import type { PPTField } from '@shared';
     imports: [MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
     templateUrl: './ppt-field-editor.component.html',
 })
-export class PPTFieldEditorComponent implements OnInit {
+export class PPTFieldEditorComponent implements OnChanges {
     field = input.required<PPTField>();
     fieldSaved = output<PPTField>();
     cancelRequested = output<void>();
@@ -26,10 +26,10 @@ export class PPTFieldEditorComponent implements OnInit {
 
     private typeIsModel = false;
 
-    ngOnInit(): void {
+    ngOnChanges(): void {
         const field = this.field();
         this.typeIsModel = typeof field.type !== 'string';
-        const type = this.typeIsModel ? JSON.stringify(field.type, null, 2) : field.type;
+        const type = typeof field.type === 'string' ? field.type : JSON.stringify(field.type, null, 2);
         if (type === undefined) {
             throw new Error('PPTField type could not be serialized.');
         }

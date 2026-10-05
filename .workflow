@@ -22,5 +22,9 @@ feature status: new, backlog, commited, progress, delivered, questions, review, 
 rules
 when you have a question make a feature for it on .backlog setting the question field and setting its status to Questions, continue working on the next open feature.
 When you start working on an feature move it from the .queued list (DEVENVOPDEV.md) to .current.
-When the feature is commited move it from .current to .delivered
+When the feature is commited move it from .current to .delivered.
+When working on a feature before writing any code, add move FeatureItem from .queued to .current
+
+
+
 

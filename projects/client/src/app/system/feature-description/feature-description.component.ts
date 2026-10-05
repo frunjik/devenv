@@ -16,7 +16,7 @@ import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
 
-type FeatureListTab = 'open' | 'in-progress' | 'done';
+type FeatureListTab = 'open' | 'queued' | 'done';
 
 @Component({
     selector: 'app-feature-description',
@@ -46,6 +46,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     readonly statuses: PPTFeatureStatus[] = [
         'Questions',
         'Backlog',
+        'Queued',
         'InProgress',
         'Committed',
         'Done',
@@ -68,7 +69,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     doneFeatures: PPTFeature[] = [];
     readonly featureDataSource = new MatTableDataSource<PPTFeature>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
-    selectedFeatureTab: FeatureListTab = 'in-progress';
+    selectedFeatureTab: FeatureListTab = 'queued';
     isLoadingFeatures = false;
     private featureRefreshSubscription = Subscription.EMPTY;
     featuresError = '';
@@ -77,15 +78,15 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         this.featureDataSource.sort = sort;
     }
 
-    get inProgressFeatures(): PPTFeature[] {
-        return this.featureDataSource.data.filter(feature => feature.status === 'InProgress');
+    get queuedFeatures(): PPTFeature[] {
+        return this.featureDataSource.data.filter(feature => feature.status === 'Queued');
     }
 
-    get matchingInProgressFeatures(): PPTFeature[] {
+    get matchingQueuedFeatures(): PPTFeature[] {
         const filter = this.featureSearch.trim().toLocaleLowerCase();
         return filter
-            ? this.inProgressFeatures.filter(feature => this.matchesFeature(feature, filter))
-            : this.inProgressFeatures;
+            ? this.queuedFeatures.filter(feature => this.matchesFeature(feature, filter))
+            : this.queuedFeatures;
     }
 
     get matchingDoneFeatures(): PPTFeature[] {
@@ -104,7 +105,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         }
 
         event.preventDefault();
-        const tabs: FeatureListTab[] = ['in-progress', 'open', 'done'];
+        const tabs: FeatureListTab[] = ['queued', 'open', 'done'];
         const currentIndex = tabs.indexOf(tab);
         const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
         this.selectedFeatureTab = tabs[nextIndex];
@@ -173,8 +174,8 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
-    moveInProgressFeature(feature: PPTFeature, direction: 'up' | 'down'): void {
-        const features = this.inProgressFeatures;
+    moveQueuedFeature(feature: PPTFeature, direction: 'up' | 'down'): void {
+        const features = this.queuedFeatures;
         const position = features.findIndex(item => item.id === feature.id);
         const targetPosition = position + (direction === 'up' ? -1 : 1);
         if (this.isReorderingFeatures || position < 0
@@ -184,7 +185,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
         this.featureOrderError = '';
         this.isReorderingFeatures = true;
-        this.backend.moveInProgressFeature(feature.id, direction).subscribe({
+        this.backend.moveQueuedFeature(feature.id, direction).subscribe({
             next: entries => {
                 this.features = entries;
                 this.refreshFeatureLists();
@@ -269,7 +270,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
                     if (this.featureWork.activeFeature?.id === featureId) {
                         this.featureWork.start(featureId, entry.description);
                     }
-                    if (feature.status === 'InProgress') {
+                    if (feature.status === 'Queued') {
                         this.currentTask.refresh();
                     }
                     this.updateFeatureEntry(entry);
@@ -319,19 +320,19 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         target?: HTMLSelectElement,
     ): void {
         if (feature.status === status) {
-            if (status === 'InProgress') {
+            if (status === 'Queued') {
                 this.featureWork.start(feature.id, feature.description);
             }
             return;
         }
 
         this.statusError = '';
-        const update = status === 'InProgress'
+        const update = status === 'Queued'
             ? this.backend.startFeature(feature.id)
             : this.backend.updateFeatureStatus(feature.id, status);
         update.subscribe({
             next: entry => {
-                if (status === 'InProgress') {
+                if (status === 'Queued') {
                     this.featureWork.start(feature.id, entry.description);
                     this.currentTask.refresh();
                 } else {

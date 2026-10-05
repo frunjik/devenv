@@ -11,6 +11,7 @@ const featureStatuses: readonly PPTFeatureStatus[] = [
     'Questions',
     'Wished',
     'Backlog',
+    'Queued',
     'Committed',
     'InProgress',
     'Delivered',
@@ -28,6 +29,7 @@ const canonicalStatuses: Record<string, PPTFeatureStatus> = {
     questions: 'Questions',
     wished: 'Wished',
     backlog: 'Backlog',
+    queued: 'Queued',
     committed: 'Committed',
     inprogress: 'InProgress',
     'in progress': 'InProgress',
@@ -78,22 +80,13 @@ function addFeaturePriority(entry: string): string {
     return `${entry.slice(0, idEnd)} [${priority}]${priorityMatch[2]}`;
 }
 
-function setFeaturePriority(entry: string, priority: FeaturePriority): string {
-    const prioritizedEntry = addFeaturePriority(entry);
-    const idMatch = prioritizedEntry.match(featureIdPattern)!;
-    const idEnd = idMatch.index + idMatch[0].length;
-    const suffix = prioritizedEntry.slice(idEnd);
-    const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
-    return `${prioritizedEntry.slice(0, idEnd)} [${priority}]${priorityMatch[2]}`;
-}
-
 function addFeatureStatus(entry: string): string {
     const idMatch = entry.match(featureIdPattern)!;
     const idEnd = idMatch.index + idMatch[0].length;
     const suffix = entry.slice(idEnd);
     const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
     const remaining = priorityMatch[2];
-    const statusMatch = remaining.match(/^\s+\[(Questions|Wished|Backlog|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\](.*)$/i);
+    const statusMatch = remaining.match(/^\s+\[(Questions|Wished|Backlog|Queued|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\](.*)$/i);
     if (!statusMatch) {
         return `${entry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}] [Backlog]${remaining}`;
     }
@@ -103,31 +96,10 @@ function addFeatureStatus(entry: string): string {
         + ` [${status}]${statusMatch[2]}`;
 }
 
-function setFeatureStatus(entry: string, status: PPTFeatureStatus): string {
-    const normalizedEntry = addFeatureStatus(addFeaturePriority(entry));
-    const idMatch = normalizedEntry.match(featureIdPattern)!;
-    const idEnd = idMatch.index + idMatch[0].length;
-    const suffix = normalizedEntry.slice(idEnd);
-    const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
-    const statusMatch = priorityMatch[2]
-        .match(/^\s+\[(Questions|Wished|Backlog|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\](.*)$/i)!;
-    const deliveredDateMatch = statusMatch[2].match(/\s+\[Delivered: (\d{4}-\d{2}-\d{2})\]$/);
-    const description = statusMatch[2].replace(/\s+\[Delivered: \d{4}-\d{2}-\d{2}\]$/, '');
-    const deliveredDate = status === 'Done'
-        ? deliveredDateMatch?.[1] ?? formatTimestamp(new Date()).slice(0, 10)
-        : undefined;
-    return `${normalizedEntry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}]`
-        + ` [${status}]${description}${deliveredDate ? ` [Delivered: ${deliveredDate}]` : ''}`;
-}
-
-async function addStartedFeatureToDevEnv(root: string, entry: string, id: string): Promise<void> {
+async function addStartedFeatureToDevEnv(root: string, description: string, id: string): Promise<void> {
     const filename = join(root, 'DEVENVOPDEV.md');
     const contents = await readFile(filename, 'utf8');
     const lines = contents.split(/\r?\n/);
-    const description = entry.replace(
-        /^.*\] \[(?:High|Medium|Low)\] \[InProgress\] /,
-        '',
-    );
     const featureLine = `- [In progress] ${description} <!-- feature-id:${id} -->`;
     const marker = `<!-- feature-id:${id} -->`;
 
@@ -159,19 +131,6 @@ async function addStartedFeatureToDevEnv(root: string, entry: string, id: string
 
     const lineEnding = contents.includes('\r\n') ? '\r\n' : '\n';
     await writeFile(filename, lines.join(lineEnding), 'utf8');
-}
-
-function setFeatureDescription(entry: string, description: string): string {
-    const match = entry.match(
-        /^(\/\/ (?:\[[^\]]+\] )?\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\] \[(?:High|Medium|Low)\] \[(?:Questions|Wished|Backlog|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\] )(.*?)(\s+\[Delivered: \d{4}-\d{2}-\d{2}\])?$/i,
-    );
-    return `${match![1]}${description}${match![3] ?? ''}`;
-}
-
-function featureDescription(entry: string): string {
-    return entry.match(
-        /\[(?:High|Medium|Low)\]\s+\[(?:Questions|Wished|Backlog|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\]\s*(.*)$/i,
-    )![1].replace(/\s+\[Delivered: \d{4}-\d{2}-\d{2}\]$/, '');
 }
 
 function sharedFeatureTermCount(first: string, second: string): number {
@@ -237,11 +196,12 @@ async function removeStartedFeatureTask(
     return { filename, contents };
 }
 
-function entryToPPTFeature(entry: string): PPTFeature {
+function legacyLineToFeature(line: string): PPTFeature {
+    const entry = addFeatureStatus(addFeaturePriority(addFeatureId(line)));
     const idMatch = entry.match(featureIdPattern)!;
     const head = entry.slice(0, idMatch.index);
     const [, priority, status, tail] = entry.slice(idMatch.index + idMatch[0].length).match(
-        /^\s+\[(High|Medium|Low)\]\s+\[(Questions|Wished|Backlog|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\]\s*(.*)$/,
+        /^\s+\[(High|Medium|Low)\]\s+\[(Questions|Wished|Backlog|Queued|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\]\s*(.*)$/,
     )!;
     const createdAt = head.match(/^\/\/ \[([^\]]+)\] $/)?.[1];
     const leadingText = createdAt ? '' : head.replace(/^\/\/\s*/, '').trim();
@@ -250,20 +210,38 @@ function entryToPPTFeature(entry: string): PPTFeature {
         id: idMatch[0].slice(1, -1),
         ...(createdAt ? { createdAt } : {}),
         priority: priority as FeaturePriority,
-        status: status as PPTFeatureStatus,
+        status: canonicalStatuses[status.toLowerCase()],
         description: [leadingText, trailingText].filter(Boolean).join(' '),
         ...(deliveredDate ? { deliveredDate } : {}),
     };
 }
 
-function storedFeatureToEntry(feature: PPTFeature): string {
-    return `// ${feature.createdAt ? `[${feature.createdAt}] ` : ''}[${feature.id}] [${feature.priority}]`
-        + ` [${feature.status}] ${feature.description}`
-        + `${feature.deliveredDate ? ` [Delivered: ${feature.deliveredDate}]` : ''}`;
+function orderedFeature(feature: PPTFeature): PPTFeature {
+    return {
+        id: feature.id,
+        ...(feature.createdAt ? { createdAt: feature.createdAt } : {}),
+        priority: feature.priority,
+        status: feature.status,
+        description: feature.description,
+        ...(feature.deliveredDate ? { deliveredDate: feature.deliveredDate } : {}),
+    };
 }
 
-function serializeEntries(entries: string[]): string {
-    return entries.map(entry => `${JSON.stringify(entryToPPTFeature(entry))}\n`).join('');
+function serializeFeatures(features: PPTFeature[]): string {
+    return features.map(feature => `${JSON.stringify(orderedFeature(feature))}\n`).join('');
+}
+
+function withStatus(feature: PPTFeature, status: PPTFeatureStatus): PPTFeature {
+    const { deliveredDate, ...rest } = feature;
+    return {
+        ...rest,
+        status,
+        ...(status === 'Done' ? { deliveredDate: deliveredDate ?? formatTimestamp(new Date()).slice(0, 10) } : {}),
+    };
+}
+
+function findFeatureIndex(features: PPTFeature[], id: string): number {
+    return features.findIndex(feature => feature.id.toLowerCase() === id.toLowerCase());
 }
 
 function parsePPTFeatureLine(line: string): PPTFeature | undefined {
@@ -281,7 +259,7 @@ function parsePPTFeatureLine(line: string): PPTFeature | undefined {
     }
 }
 
-async function readFeatureEntries(filename: string): Promise<string[]> {
+async function readFeatures(filename: string): Promise<PPTFeature[]> {
     let contents: string;
     try {
         contents = await readFile(filename, 'utf8');
@@ -293,18 +271,17 @@ async function readFeatureEntries(filename: string): Promise<string[]> {
     }
 
     const lines = contents.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-    const identifiedEntries = lines.map(line => {
-        const stored = parsePPTFeatureLine(line);
-        return stored
-            ? storedFeatureToEntry(stored)
-            : addFeatureStatus(addFeaturePriority(addFeatureId(line)));
-    });
-    const normalizedContents = serializeEntries(identifiedEntries);
+    const features = lines.map(line => parsePPTFeatureLine(line) ?? legacyLineToFeature(line));
+    const normalizedContents = serializeFeatures(features);
     if (contents !== normalizedContents) {
         await writeFile(filename, normalizedContents, 'utf8');
     }
-    return identifiedEntries;
+    return features;
 }
+
+
+const featureIdFormat = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const statusMessage = 'Feature status must be Questions, Wished, Backlog, Queued, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.';
 
 export function createFeatureHandler(root: string): RequestHandler {
     return (request, response, next) => {
@@ -324,52 +301,50 @@ export function createFeatureHandler(root: string): RequestHandler {
         const requestedStatus: unknown = request.body?.status ?? 'Backlog';
         if (typeof requestedStatus !== 'string'
             || !featureStatuses.includes(requestedStatus as PPTFeatureStatus)) {
-            response.status(400).json({ error: { message: 'Feature status must be Questions, Wished, Backlog, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.' } });
+            response.status(400).json({ error: { message: statusMessage } });
             return;
         }
 
         const filename = join(root, '.wishlist');
 
-        void readFeatureEntries(filename)
-            .then(async entries => {
+        void readFeatures(filename)
+            .then(async features => {
                 const oneLineDescription = description.trim().replace(/\s+/g, ' ');
-                const duplicateIndex = entries.findIndex(entry =>
-                    sharedFeatureTermCount(featureDescription(entry), oneLineDescription) > 3,
+                const duplicateIndex = features.findIndex(feature =>
+                    sharedFeatureTermCount(feature.description, oneLineDescription) > 3,
                 );
                 if (duplicateIndex >= 0) {
-                    const duplicate = entries[duplicateIndex];
-                    const duplicateId = duplicate.match(featureIdPattern)![0].slice(1, -1);
-
-                    const existingDescription = featureDescription(duplicate);
-                    const mergedDescription = existingDescription.toLowerCase() === oneLineDescription.toLowerCase()
-                        ? existingDescription
-                        : `${existingDescription}; ${oneLineDescription}`;
-                    if (mergedDescription !== existingDescription) {
-                        const previousContents = serializeEntries(entries);
-                        const updatedEntries = [...entries];
-                        updatedEntries[duplicateIndex] = setFeatureDescription(duplicate, mergedDescription);
-                        await writeFile(filename, serializeEntries(updatedEntries), 'utf8');
+                    const duplicate = features[duplicateIndex];
+                    const mergedDescription = duplicate.description.toLowerCase() === oneLineDescription.toLowerCase()
+                        ? duplicate.description
+                        : `${duplicate.description}; ${oneLineDescription}`;
+                    if (mergedDescription !== duplicate.description) {
+                        const previousContents = serializeFeatures(features);
+                        const updatedFeatures = [...features];
+                        updatedFeatures[duplicateIndex] = { ...duplicate, description: mergedDescription };
+                        await writeFile(filename, serializeFeatures(updatedFeatures), 'utf8');
                         try {
-                            await updateStartedFeatureTask(root, duplicateId.toLowerCase(), mergedDescription);
+                            await updateStartedFeatureTask(root, duplicate.id.toLowerCase(), mergedDescription);
                         } catch (error) {
                             await writeFile(filename, previousContents, 'utf8');
                             throw error;
                         }
-                        entries[duplicateIndex] = updatedEntries[duplicateIndex];
+                        features[duplicateIndex] = updatedFeatures[duplicateIndex];
                     }
 
-                    response.status(200).json({ data: entryToPPTFeature(entries[duplicateIndex]) });
+                    response.status(200).json({ data: features[duplicateIndex] });
                     return;
                 }
 
-                const id = randomUUID();
-                const deliveredDate = requestedStatus === 'Done'
-                    ? ` [Delivered: ${formatTimestamp(new Date()).slice(0, 10)}]`
-                    : '';
-                const entry =
-                    `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}${deliveredDate}`;
-                await appendFile(filename, serializeEntries([entry]), 'utf8');
-                response.status(201).json({ data: entryToPPTFeature(entry) });
+                const feature = withStatus({
+                    id: randomUUID(),
+                    createdAt: formatTimestamp(new Date()),
+                    priority: requestedPriority as FeaturePriority,
+                    status: requestedStatus as PPTFeatureStatus,
+                    description: oneLineDescription,
+                }, requestedStatus as PPTFeatureStatus);
+                await appendFile(filename, serializeFeatures([feature]), 'utf8');
+                response.status(201).json({ data: feature });
             })
             .catch(next);
     };
@@ -377,8 +352,8 @@ export function createFeatureHandler(root: string): RequestHandler {
 
 export function createFeaturesListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
-        void readFeatureEntries(join(root, '.wishlist'))
-            .then(entries => response.json({ data: entries.map(entryToPPTFeature) }))
+        void readFeatures(join(root, '.wishlist'))
+            .then(features => response.json({ data: features }))
             .catch(next);
     };
 }
@@ -387,8 +362,7 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];
         const requestedPriority: unknown = request.body?.priority;
-        if (typeof id !== 'string'
-            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
             response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
             return;
         }
@@ -399,19 +373,17 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
         }
 
         const filename = join(root, '.wishlist');
-        void readFeatureEntries(filename)
-            .then(async entries => {
-                const featureIndex = entries.findIndex(entry =>
-                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
-                );
+        void readFeatures(filename)
+            .then(async features => {
+                const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                entries[featureIndex] = setFeaturePriority(entries[featureIndex], requestedPriority as FeaturePriority);
-                await writeFile(filename, serializeEntries(entries), 'utf8');
-                response.json({ data: entryToPPTFeature(entries[featureIndex]) });
+                features[featureIndex] = { ...features[featureIndex], priority: requestedPriority as FeaturePriority };
+                await writeFile(filename, serializeFeatures(features), 'utf8');
+                response.json({ data: features[featureIndex] });
             })
             .catch(next);
     };
@@ -421,8 +393,7 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];
         const direction: unknown = request.body?.direction;
-        if (typeof id !== 'string'
-            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
             response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
             return;
         }
@@ -432,35 +403,33 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
         }
 
         const filename = join(root, '.wishlist');
-        void readFeatureEntries(filename)
-            .then(async entries => {
-                const featureIndex = entries.findIndex(entry =>
-                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
-                );
+        void readFeatures(filename)
+            .then(async features => {
+                const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
-                if (!/\[InProgress\]/i.test(entries[featureIndex])) {
-                    response.status(409).json({ error: { message: `Feature '${id}' is not in progress.` } });
+                if (features[featureIndex].status !== 'Queued') {
+                    response.status(409).json({ error: { message: `Feature '${id}' is not queued.` } });
                     return;
                 }
 
-                const inProgressIndexes = entries.reduce<number[]>((indexes, entry, index) => {
-                    if (/\[InProgress\]/i.test(entry)) {
+                const queuedIndexes = features.reduce<number[]>((indexes, feature, index) => {
+                    if (feature.status === 'Queued') {
                         indexes.push(index);
                     }
                     return indexes;
                 }, []);
-                const position = inProgressIndexes.indexOf(featureIndex);
+                const position = queuedIndexes.indexOf(featureIndex);
                 const targetPosition = position + (direction === 'up' ? -1 : 1);
-                if (targetPosition >= 0 && targetPosition < inProgressIndexes.length) {
-                    const targetIndex = inProgressIndexes[targetPosition];
-                    [entries[featureIndex], entries[targetIndex]] = [entries[targetIndex], entries[featureIndex]];
-                    await writeFile(filename, serializeEntries(entries), 'utf8');
+                if (targetPosition >= 0 && targetPosition < queuedIndexes.length) {
+                    const targetIndex = queuedIndexes[targetPosition];
+                    [features[featureIndex], features[targetIndex]] = [features[targetIndex], features[featureIndex]];
+                    await writeFile(filename, serializeFeatures(features), 'utf8');
                 }
 
-                response.json({ data: entries.map(entryToPPTFeature) });
+                response.json({ data: features });
             })
             .catch(next);
     };
@@ -470,32 +439,29 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];
         const requestedStatus: unknown = request.body?.status;
-        if (typeof id !== 'string'
-            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
             response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
             return;
         }
         if (typeof requestedStatus !== 'string'
             || !featureStatuses.includes(requestedStatus as PPTFeatureStatus)) {
-            response.status(400).json({ error: { message: 'Feature status must be Questions, Wished, Backlog, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.' } });
+            response.status(400).json({ error: { message: statusMessage } });
             return;
         }
 
         const filename = join(root, '.wishlist');
-        void readFeatureEntries(filename)
-            .then(async entries => {
-                const featureIndex = entries.findIndex(entry =>
-                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
-                );
+        void readFeatures(filename)
+            .then(async features => {
+                const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const previousContents = serializeEntries(entries);
-                entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as PPTFeatureStatus);
-                await writeFile(filename, serializeEntries(entries), 'utf8');
-                if (requestedStatus !== 'InProgress') {
+                const previousContents = serializeFeatures(features);
+                features[featureIndex] = withStatus(features[featureIndex], requestedStatus as PPTFeatureStatus);
+                await writeFile(filename, serializeFeatures(features), 'utf8');
+                if (requestedStatus !== 'Queued') {
                     try {
                         await removeStartedFeatureTask(root, id.toLowerCase());
                     } catch (error) {
@@ -503,7 +469,7 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
                         throw error;
                     }
                 }
-                response.json({ data: entryToPPTFeature(entries[featureIndex]) });
+                response.json({ data: features[featureIndex] });
             })
             .catch(next);
     };
@@ -513,8 +479,7 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];
         const requestedDescription: unknown = request.body?.description;
-        if (typeof id !== 'string'
-            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
             response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
             return;
         }
@@ -525,28 +490,26 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
 
         const description = requestedDescription.trim().replace(/\s+/g, ' ');
         const filename = join(root, '.wishlist');
-        void readFeatureEntries(filename)
-            .then(async entries => {
-                const featureIndex = entries.findIndex(entry =>
-                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
-                );
+        void readFeatures(filename)
+            .then(async features => {
+                const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const previousContents = serializeEntries(entries);
-                const updatedEntry = setFeatureDescription(entries[featureIndex], description);
-                const updatedEntries = [...entries];
-                updatedEntries[featureIndex] = updatedEntry;
-                await writeFile(filename, serializeEntries(updatedEntries), 'utf8');
+                const previousContents = serializeFeatures(features);
+                const updatedFeature = { ...features[featureIndex], description };
+                const updatedFeatures = [...features];
+                updatedFeatures[featureIndex] = updatedFeature;
+                await writeFile(filename, serializeFeatures(updatedFeatures), 'utf8');
                 try {
                     await updateStartedFeatureTask(root, id.toLowerCase(), description);
                 } catch (error) {
                     await writeFile(filename, previousContents, 'utf8');
                     throw error;
                 }
-                response.json({ data: entryToPPTFeature(updatedEntry) });
+                response.json({ data: updatedFeature });
             })
             .catch(next);
     };
@@ -555,28 +518,25 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
 export function createFeatureStartHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];
-        if (typeof id !== 'string'
-            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
             response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
             return;
         }
 
         const filename = join(root, '.wishlist');
-        void readFeatureEntries(filename)
-            .then(async entries => {
-                const featureIndex = entries.findIndex(entry =>
-                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
-                );
+        void readFeatures(filename)
+            .then(async features => {
+                const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const entry = setFeatureStatus(entries[featureIndex], 'InProgress');
-                await addStartedFeatureToDevEnv(root, entry, id.toLowerCase());
-                entries[featureIndex] = entry;
-                await writeFile(filename, serializeEntries(entries), 'utf8');
-                response.json({ data: entryToPPTFeature(entry) });
+                const feature = withStatus(features[featureIndex], 'Queued');
+                await addStartedFeatureToDevEnv(root, feature.description, id.toLowerCase());
+                features[featureIndex] = feature;
+                await writeFile(filename, serializeFeatures(features), 'utf8');
+                response.json({ data: feature });
             })
             .catch(next);
     };
@@ -585,33 +545,30 @@ export function createFeatureStartHandler(root: string): RequestHandler {
 export function createFeatureRemovalHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];
-        if (typeof id !== 'string'
-            || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+        if (typeof id !== 'string' || !featureIdFormat.test(id)) {
             response.status(400).json({ error: { message: 'A valid feature ID is required.' } });
             return;
         }
 
         const filename = join(root, '.wishlist');
-        void readFeatureEntries(filename)
-            .then(async entries => {
-                const featureIndex = entries.findIndex(entry =>
-                    entry.match(featureIdPattern)?.[0].slice(1, -1).toLowerCase() === id.toLowerCase(),
-                );
+        void readFeatures(filename)
+            .then(async features => {
+                const featureIndex = findFeatureIndex(features, id);
                 if (featureIndex < 0) {
                     response.status(404).json({ error: { message: `Feature '${id}' was not found.` } });
                     return;
                 }
 
-                const previousContents = serializeEntries(entries);
-                const [removedFeature] = entries.splice(featureIndex, 1);
+                const previousContents = serializeFeatures(features);
+                const [removedFeature] = features.splice(featureIndex, 1);
                 try {
-                    await writeFile(filename, entries.length ? serializeEntries(entries) : '', 'utf8');
+                    await writeFile(filename, features.length ? serializeFeatures(features) : '', 'utf8');
                     await removeStartedFeatureTask(root, id.toLowerCase());
                 } catch (error) {
                     await writeFile(filename, previousContents, 'utf8');
                     throw error;
                 }
-                response.json({ data: entryToPPTFeature(removedFeature) });
+                response.json({ data: removedFeature });
             })
             .catch(next);
     };

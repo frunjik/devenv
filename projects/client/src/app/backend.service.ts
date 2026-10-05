@@ -102,7 +102,7 @@ export class BackendService {
         ).pipe(map(response => response.data));
     }
 
-    moveInProgressFeature(id: string, direction: 'up' | 'down'): Observable<PPTFeature[]> {
+    moveQueuedFeature(id: string, direction: 'up' | 'down'): Observable<PPTFeature[]> {
         return this.httpservice.patch<SuccessResponseBody<PPTFeature[]>>(
             `${this.host}features/${encodeURIComponent(id)}/order`,
             { direction },

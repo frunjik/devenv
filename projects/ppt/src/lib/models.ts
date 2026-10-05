@@ -5,7 +5,7 @@ import { Signal } from "@angular/core";
 
 export type FeaturePriority = 'High' | 'Medium' | 'Low';
 
-export type PPTFeatureStatus = 'Questions' | 'Wished' | 'Backlog' | 'Committed' | 'InProgress' | 'Delivered' | 'Done' | 'Aborted' | 'Denied' | 'Archived' ;
+export type PPTFeatureStatus = 'Questions' | 'Wished' | 'Backlog' | 'Queued' | 'Committed' | 'InProgress' | 'Delivered' | 'Done' | 'Aborted' | 'Denied' | 'Archived' ;
 
 export interface PPTFeature {
     id: string;

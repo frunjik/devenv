@@ -89,7 +89,7 @@ describe('features public API', () => {
                 id: '123e4567-e89b-42d3-a456-426614174000',
                 createdAt: '2026-10-05 07:30 +02:00',
                 priority: 'High',
-                status: 'InProgress',
+                status: 'Queued',
                 description: 'A stored feature',
             }),
             JSON.stringify({
@@ -105,7 +105,7 @@ describe('features public API', () => {
         const response = await request(app).get('/features');
 
         expect(entryData(response.body)).toEqual([
-            '// [2026-10-05 07:30 +02:00] [123e4567-e89b-42d3-a456-426614174000] [High] [InProgress] A stored feature',
+            '// [2026-10-05 07:30 +02:00] [123e4567-e89b-42d3-a456-426614174000] [High] [Queued] A stored feature',
             '// [123e4567-e89b-42d3-a456-426614174001] [Low] [Done] Delivered feature [Delivered: 2026-10-05]',
         ]);
         expect(await readFile(join(root, '.wishlist'), 'utf8')).toBe(stored);
@@ -284,7 +284,7 @@ describe('features public API', () => {
         const created = await request(app).post('/features').send({
             description: 'Create reusable navigation toolbar component',
             priority: 'High',
-            status: 'InProgress',
+            status: 'Queued',
         });
         const id = entryData(created.body).match(/\[([0-9a-f-]{36})\]/)[1];
         await writeFile(join(root, 'DEVENVOPDEV.md'),
@@ -305,7 +305,7 @@ describe('features public API', () => {
                 mergedDescription,
             ),
         );
-        expect(entryData(response.body)).toContain(`[${id}] [High] [InProgress]`);
+        expect(entryData(response.body)).toContain(`[${id}] [High] [Queued]`);
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe(
             `- [In progress] ${mergedDescription} <!-- feature-id:${id} -->\n`,
@@ -350,7 +350,7 @@ describe('features public API', () => {
     it('rolls back a merged description when updating the active task marker fails', async () => {
         const created = await request(app).post('/features').send({
             description: 'Create reusable navigation toolbar component',
-            status: 'InProgress',
+            status: 'Queued',
         });
         await mkdir(join(root, 'DEVENVOPDEV.md'));
 
@@ -375,10 +375,10 @@ describe('features public API', () => {
     it('accepts an explicit feature status', async () => {
         const response = await request(app)
             .post('/features')
-            .send({ description: 'Feature already underway', status: 'InProgress' });
+            .send({ description: 'Feature already underway', status: 'Queued' });
 
         expect(response.status).toBe(201);
-        expect(entryData(response.body)).toMatch(/\[Low\] \[InProgress\] Feature already underway$/);
+        expect(entryData(response.body)).toMatch(/\[Low\] \[Queued\] Feature already underway$/);
     });
 
     it('accepts Aborted as a feature status', async () => {
@@ -427,7 +427,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Wished, Backlog, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.' },
+            error: { message: 'Feature status must be Questions, Wished, Backlog, Queued, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.' },
         });
     });
 
@@ -509,7 +509,7 @@ describe('features public API', () => {
 
     it('updates a description while preserving the feature ID, priority, and status', async () => {
         const created = await request(app).post('/features')
-            .send({ description: 'Old description', priority: 'High', status: 'InProgress' });
+            .send({ description: 'Old description', priority: 'High', status: 'Queued' });
         const id = entryData(created.body).match(/\[([0-9a-f-]{36})\]/)[1];
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'The features you are writing are, take them one by one:',
@@ -546,7 +546,7 @@ describe('features public API', () => {
 
     it('updates in-progress descriptions when the task marker is absent', async () => {
         const created = await request(app).post('/features')
-            .send({ description: 'Unlisted task', status: 'InProgress' });
+            .send({ description: 'Unlisted task', status: 'Queued' });
         const id = entryData(created.body).match(/\[([0-9a-f-]{36})\]/)[1];
         await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions without a matching marker\n');
 
@@ -554,14 +554,14 @@ describe('features public API', () => {
             .send({ description: 'Updated unlisted task' });
 
         expect(response.status).toBe(200);
-        expect(entryData(response.body)).toContain('[InProgress] Updated unlisted task');
+        expect(entryData(response.body)).toContain('[Queued] Updated unlisted task');
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8'))
             .toBe('Instructions without a matching marker\n');
     });
 
     it('preserves LF endings when updating a matching task marker', async () => {
         const created = await request(app).post('/features')
-            .send({ description: 'LF task', status: 'InProgress' });
+            .send({ description: 'LF task', status: 'Queued' });
         const id = entryData(created.body).match(/\[([0-9a-f-]{36})\]/)[1];
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'The features you are writing are, take them one by one:',
@@ -614,7 +614,7 @@ describe('features public API', () => {
     it('does not change features when updating an in-progress task file fails', async () => {
         const created = await request(app).post('/features').send({
             description: 'Old task description',
-            status: 'InProgress',
+            status: 'Queued',
         });
         const id = entryData(created.body).match(/\[([0-9a-f-]{36})\]/)[1];
         await mkdir(join(root, 'DEVENVOPDEV.md'));
@@ -670,9 +670,9 @@ describe('features public API', () => {
         const secondId = '123e4567-e89b-42d3-a456-426614174002';
         const completedId = '123e4567-e89b-42d3-a456-426614174003';
         const originalEntries = [
-            `// [${firstId}] [High] [InProgress] First active feature`,
+            `// [${firstId}] [High] [Queued] First active feature`,
             `// [${backlogId}] [Low] [Backlog] Unchanged backlog feature`,
-            `// [${secondId}] [Medium] [InProgress] Second active feature`,
+            `// [${secondId}] [Medium] [Queued] Second active feature`,
             `// [${completedId}] [Low] [Done] Unchanged completed feature`,
         ];
         await writeFile(join(root, '.wishlist'), `${originalEntries.join('\n')}\n`);
@@ -705,8 +705,8 @@ describe('features public API', () => {
         const firstId = '123e4567-e89b-42d3-a456-426614174000';
         const lastId = '123e4567-e89b-42d3-a456-426614174001';
         const entries = [
-            `// [${firstId}] [High] [InProgress] First active feature`,
-            `// [${lastId}] [Low] [InProgress] Last active feature`,
+            `// [${firstId}] [High] [Queued] First active feature`,
+            `// [${lastId}] [Low] [Queued] Last active feature`,
         ];
         await writeFile(join(root, '.wishlist'), `${entries.join('\n')}\n`);
 
@@ -746,7 +746,7 @@ describe('features public API', () => {
             .send({ direction: 'up' });
 
         expect(response.status).toBe(409);
-        expect(response.body.error.message).toContain('is not in progress');
+        expect(response.body.error.message).toContain('is not queued');
     });
 
     it('forwards feature order filesystem errors to Express', async () => {
@@ -767,11 +767,11 @@ describe('features public API', () => {
 
         const response = await request(app)
             .patch(`/features/${id}/status`)
-            .send({ status: 'InProgress' });
+            .send({ status: 'Queued' });
 
         expect(response.status).toBe(200);
         expect(entryData(response.body)).toBe(
-            entryData(created.body).replace('[Backlog]', '[InProgress]'),
+            entryData(created.body).replace('[Backlog]', '[Queued]'),
         );
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
     });
@@ -790,7 +790,7 @@ describe('features public API', () => {
         const response = await request(app).post(`/features/${id}/start`).send({});
 
         expect(response.status).toBe(200);
-        expect(entryData(response.body)).toContain('[InProgress] Implement feature tracking');
+        expect(entryData(response.body)).toContain('[Queued] Implement feature tracking');
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).toContain(
@@ -830,7 +830,7 @@ describe('features public API', () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
         const otherId = '123e4567-e89b-42d3-a456-426614174001';
         await writeFile(join(root, '.wishlist'),
-            `// [${id}] [High] [InProgress] Keep task listed\n`);
+            `// [${id}] [High] [Queued] Keep task listed\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'Instructions',
             '',
@@ -909,7 +909,7 @@ describe('features public API', () => {
         expect(await readFeatureFile()).toBe(`${entryData(created.body)}\n`);
     });
 
-    it.each(['Questions', 'Backlog', 'InProgress', 'Committed', 'Done', 'Aborted', 'Denied'] as const)(
+    it.each(['Questions', 'Backlog', 'Queued', 'Committed', 'Done', 'Aborted', 'Denied'] as const)(
         'accepts a %s status update',
         async status => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
@@ -925,7 +925,7 @@ describe('features public API', () => {
 
     it('marks a feature committed and removes its in-progress task marker', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        const feature = `// [${id}] [High] [InProgress] Commit this feature`;
+        const feature = `// [${id}] [High] [Queued] Commit this feature`;
         const marker = `<!-- feature-id:${id} -->`;
         await writeFile(join(root, '.wishlist'), `${feature}\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Commit this feature ${marker}\n`);
@@ -935,7 +935,7 @@ describe('features public API', () => {
             .send({ status: 'Committed' });
 
         expect(response.status).toBe(200);
-        expect(entryData(response.body)).toBe(feature.replace('[InProgress]', '[Committed]'));
+        expect(entryData(response.body)).toBe(feature.replace('[Queued]', '[Committed]'));
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(marker);
     });
@@ -991,7 +991,7 @@ describe('features public API', () => {
 
     it('aborts an in-progress feature and removes its task marker while keeping the feature record', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        const feature = `// [${id}] [High] [InProgress] Stop this feature`;
+        const feature = `// [${id}] [High] [Queued] Stop this feature`;
         const marker = `<!-- feature-id:${id} -->`;
         const otherTask = '- [In progress] Keep this task <!-- feature-id:123e4567-e89b-42d3-a456-426614174001 -->';
         await writeFile(join(root, '.wishlist'), `${feature}\n`);
@@ -1007,7 +1007,7 @@ describe('features public API', () => {
             .send({ status: 'Aborted' });
 
         expect(response.status).toBe(200);
-        expect(entryData(response.body)).toBe(feature.replace('[InProgress]', '[Aborted]'));
+        expect(entryData(response.body)).toBe(feature.replace('[Queued]', '[Aborted]'));
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).not.toContain(marker);
@@ -1040,7 +1040,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Wished, Backlog, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.' },
+            error: { message: 'Feature status must be Questions, Wished, Backlog, Queued, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.' },
         });
     });
 

@@ -34,14 +34,14 @@
         <button
             type="button"
             mat-button
-        id="in-progress-features-tab"
+        id="queued-features-tab"
         role="tab"
-        aria-controls="in-progress-features-panel"
-        [attr.aria-selected]="selectedFeatureTab === 'in-progress'"
-        [attr.tabindex]="selectedFeatureTab === 'in-progress' ? 0 : -1"
-        (click)="selectFeatureTab('in-progress')"
-        (keydown)="onFeatureTabKeydown($event, 'in-progress')"
-    >In progress ({{ inProgressFeatures.length }})</button>
+        aria-controls="queued-features-panel"
+        [attr.aria-selected]="selectedFeatureTab === 'queued'"
+        [attr.tabindex]="selectedFeatureTab === 'queued' ? 0 : -1"
+        (click)="selectFeatureTab('queued')"
+        (keydown)="onFeatureTabKeydown($event, 'queued')"
+    >Queued ({{ queuedFeatures.length }})</button>
     <button
         type="button"
         mat-button
@@ -139,7 +139,7 @@
                         class="feature-status-select"
                         [class.status-questions]="feature.status === 'Questions'"
                         [class.status-backlog]="feature.status === 'Backlog'"
-                        [class.status-in-progress]="feature.status === 'InProgress'"
+                        [class.status-queued]="feature.status === 'Queued'"
                         [class.status-done]="feature.status === 'Done'"
                         [attr.aria-label]="'Status for ' + feature.description"
                         (change)="onStatusChange(feature, $event)"
@@ -211,39 +211,39 @@
         ></mat-paginator>
        </section>
        <section
-           id="in-progress-features-panel"
+           id="queued-features-panel"
            role="tabpanel"
-           aria-labelledby="in-progress-features-tab"
-           [hidden]="selectedFeatureTab !== 'in-progress'"
-           class="in-progress-features"
+           aria-labelledby="queued-features-tab"
+           [hidden]="selectedFeatureTab !== 'queued'"
+           class="queued-features"
        >
-        <h2 id="in-progress-features-heading">In progress</h2>
+        <h2 id="queued-features-heading">Queued</h2>
         <p *ngIf="abortError" id="feature-abort-error" role="alert">{{ abortError }}</p>
         <p *ngIf="featureOrderError" id="feature-order-error" role="alert">{{ featureOrderError }}</p>
-        <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
-        <p *ngIf="inProgressFeatures.length > 0 && matchingInProgressFeatures.length === 0">
-            No in-progress features match your search.
+        <p *ngIf="!isLoadingFeatures && queuedFeatures.length === 0">No features queued.</p>
+        <p *ngIf="queuedFeatures.length > 0 && matchingQueuedFeatures.length === 0">
+            No queued features match your search.
         </p>
-        <ul *ngIf="matchingInProgressFeatures.length > 0">
-            <li *ngFor="let feature of matchingInProgressFeatures" class="in-progress-feature">
-                <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
-                <span class="in-progress-feature-description">{{ feature.description }}</span>
-                <div class="in-progress-feature-order">
+        <ul *ngIf="matchingQueuedFeatures.length > 0">
+            <li *ngFor="let feature of matchingQueuedFeatures" class="queued-feature">
+                <span class="queued-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="queued-feature-description">{{ feature.description }}</span>
+                <div class="queued-feature-order">
                     <button
                         type="button"
                         mat-button
                         class="feature-move-up-button"
                         [attr.aria-label]="'Move up: ' + feature.description"
-                        [disabled]="isReorderingFeatures || inProgressFeatures.indexOf(feature) === 0"
-                        (click)="moveInProgressFeature(feature, 'up')"
+                        [disabled]="isReorderingFeatures || queuedFeatures.indexOf(feature) === 0"
+                        (click)="moveQueuedFeature(feature, 'up')"
                     ><mat-icon aria-hidden="true">arrow_upward</mat-icon></button>
                     <button
                         type="button"
                         mat-button
                         class="feature-move-down-button"
                         [attr.aria-label]="'Move down: ' + feature.description"
-                        [disabled]="isReorderingFeatures || inProgressFeatures.indexOf(feature) === inProgressFeatures.length - 1"
-                        (click)="moveInProgressFeature(feature, 'down')"
+                        [disabled]="isReorderingFeatures || queuedFeatures.indexOf(feature) === queuedFeatures.length - 1"
+                        (click)="moveQueuedFeature(feature, 'down')"
                     ><mat-icon aria-hidden="true">arrow_downward</mat-icon></button>
                 </div>
                 <button
@@ -299,7 +299,7 @@
                         class="feature-status-select"
                         [class.status-questions]="feature.status === 'Questions'"
                         [class.status-backlog]="feature.status === 'Backlog'"
-                        [class.status-in-progress]="feature.status === 'InProgress'"
+                        [class.status-queued]="feature.status === 'Queued'"
                         [class.status-done]="feature.status === 'Done'"
                         [attr.aria-label]="'Status for ' + feature.description"
                         (change)="onStatusChange(feature, $event)"

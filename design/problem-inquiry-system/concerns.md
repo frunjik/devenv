@@ -317,7 +317,8 @@ Decide whether a framed ticket can be edited, closed, or marked duplicate after 
 The system plan and problem-inquiry pages belong to the "solving problems with AI" domain, while the existing menu and screens belong to the host (meta) application layer. Find a way for the host to visibly "dock" or include the problem-solving app so they read as one coherent product rather than two mixed-in sets of screens.
 
 **Working boundary:** Clarify the relationship before changing structure. Existing shell, menu, and routing code may only change with permission and an explanation (P-006).
-**Open questions:** Is the problem-solving app a layer above, below, or inside the host? Should it be one menu section, a separate area with its own sub-navigation, or a lazy-loaded route group? Should it share the host's theme and header? Which screens are host and which are problem-solving (e.g. glossary, system plan, inquiry)?
+**Direction (user, 2026-10-06):** The meta (host) layer is hidden by default, with the problem-solving app shown on its own. A small switch enables the meta layer, which then visually surrounds the inner app to show that it governs it. Switching off hides the layer again.
+**Open questions:** Where does the switch live and how is it made discoverable but unobtrusive? Does the layer's state persist across reloads? What does the surrounding frame contain (menu, header, status)? Does enabling it change routing or only presentation? Which screens are host and which are problem-solving (e.g. glossary, system plan, inquiry)?
 **Vocabulary candidates (P-009, not yet agreed):** "meta app/layer", "host", "dock", "domain app". Decide whether any need Glossary entries.
 
 ### SC-022 — Improve glossary screen layout and styling

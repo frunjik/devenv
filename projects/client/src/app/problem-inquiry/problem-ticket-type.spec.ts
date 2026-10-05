@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { ProblemTicket } from '@shared';
 
 const ticket: ProblemTicket = {

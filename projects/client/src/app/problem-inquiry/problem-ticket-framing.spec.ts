@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import problemSetData from '../../../../../problem-domain/problem-sets/wms-problem-set.sample.json';
 
 describe('ProblemTicket framing', () => {

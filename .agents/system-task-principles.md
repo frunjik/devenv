@@ -57,6 +57,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Existing surrounding code may be relied upon when reasonably stable, but must not be changed or removed without the user's permission. If a specific, non-generic part of surrounding code is a real blocker, explain the constraint, why a narrowly scoped change is needed, and its likely impact; ask permission before changing it.
 - **Boundary:** Do not make broad or application-wide changes on this basis. If the blocker is generic or the impact is uncertain, keep it unchanged and offer a safer scoped alternative or ask for further direction.
 
+### P-007 — Import Jest Globals Explicitly
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction
+- **Applies to:** Test files created or modified for this system.
+- **Rule:** Verify that every Jest helper a touched test file uses is explicitly imported from `@jest/globals`; put that import on the first line of the file.
+- **Practice:** Import only the used helpers (for example, `describe`, `it`, `expect`, `beforeEach`, and `jest`). Do not rely on Jest's ambient globals in touched test files.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

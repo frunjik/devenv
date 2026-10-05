@@ -6,4 +6,4 @@
 {"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"Update the readme and changelog"}
 {"id":"d7d045b5-4d5c-40f5-a022-d91924b34e9b","createdAt":"2026-10-05 08:12 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"change all usage of features to use PPTField instead of the text representation; use the converter to copy all archived items back to wishlist in the new format"}
 {"id":"e20a5102-f811-4c51-a85e-9cd6be104d6b","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"before copying the commit message to the commit name dialog, strip the id and show the description"}
-{"id":"38e2fe23-e1f4-4882-91f4-a769dff8e042","createdAt":"2026-10-05 08:48 +02:00","priority":"Low","status":"InProgress","description":"make the client feature show page wide"}
+{"id":"38e2fe23-e1f4-4882-91f4-a769dff8e042","createdAt":"2026-10-05 08:48 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"make the client feature show page wide"}

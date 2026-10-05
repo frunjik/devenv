@@ -1,3 +1,4 @@
+// [2026-10-05 10:15 +02:00] The client feature page now uses the full available width (removed the 72rem page cap and 48rem form cap). Tests green at 100%; client build passes.
 // [2026-10-05 10:05 +02:00] The commit dialog and toolbar now show a JSON .current entry's description instead of the raw record (legacy text still supported). Client 223 and server 193 tests at 100%.
 // [2026-10-05 09:50 +02:00] Copied 159 archived items into .wishlist as PPTFeature JSON (status Done) using the server's legacy converter; .archived unchanged. Tests green at 100%.
 // [2026-10-05 09:35 +02:00] Updated README, WORKSPACE and CHANGELOG (features workflow files, types in @ppt, build order ppt/shared/client). Docs only; tests unchanged.

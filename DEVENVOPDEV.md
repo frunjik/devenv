@@ -7,7 +7,6 @@ Some features are in an old format, convert it to the JSON/PPTFeature format whe
 When you are done with a Feature set its status to Done, leave it in .current
 The features you are writing are, take them one by one:
 
-- [In progress] change all usage of features to use PPTField instead of the text representation; use the converter to copy all archived items back to wishlist in the new format <!-- feature-id:d7d045b5-4d5c-40f5-a022-d91924b34e9b -->
 
 
 

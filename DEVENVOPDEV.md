@@ -7,4 +7,3 @@ Some features are in an old format, convert it to the JSON/PPTFeature format whe
 When you are done with a Feature set its status to Done, leave it in .current
 When there are no items here, pick a Queued item ranked by priority, set its status to Commited and copy in here.
 The features you are writing are, take them one by one:
-{"id":"4dfdfbde-84e2-42a7-9faf-925105220401","createdAt":"2026-10-05 13:18 +02:00","priority":"Low","status":"Queued","description":"fix the style of the status selector on the queued tab on the client features page"}

@@ -595,6 +595,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         const select: HTMLSelectElement = fixture.nativeElement.querySelector('.queued-feature-status-select');
         expect(select.value).toBe('Queued');
+        expect(select.classList.contains('status-queued')).toBe(true);
 
         select.value = 'Questions';
         select.dispatchEvent(new Event('change'));

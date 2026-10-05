@@ -241,6 +241,10 @@
                 <span class="queued-feature-description">{{ feature.description }}</span>
                 <select
                     class="queued-feature-status-select"
+                    [class.status-questions]="feature.status === 'Questions'"
+                    [class.status-backlog]="feature.status === 'Backlog'"
+                    [class.status-queued]="feature.status === 'Queued'"
+                    [class.status-done]="feature.status === 'Done'"
                     [attr.aria-label]="'Status for ' + feature.description"
                     (change)="onStatusChange(feature, $event)"
                 >

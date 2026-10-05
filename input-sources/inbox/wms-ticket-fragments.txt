@@ -1,0 +1,26 @@
+Synthetic source fragments — generated for workflow exploration, not real reports.
+Fragments are intentionally informal and may be incomplete; they are not structured tickets.
+
+[WMS-001]
+I tried to open S-127 and got an error before anything came up. No idea what that screen is meant to do.
+
+[WMS-002]
+We can get this page to show now, but nobody can tell me what "done" is supposed to look like for it.
+
+[WMS-004]
+The scanner sat there for ages, then timed out. I hit it again. Did the first scan take or not? I don't want to count the stock twice.
+
+[WMS-006]
+The new page has a few boxes nobody can explain. Are they mandatory? What do those values even mean?
+
+[WMS-009]
+These two old screen files look almost the same. One of them might be dead, or maybe they only look alike and are used for different jobs.
+
+[WMS-010]
+Night shift changed device halfway through replenishing. Morning shift couldn't tell if the move was started, finished, or never saved.
+
+[WMS-011]
+I enter the value and get "not allowed". Is that a warehouse rule, or is this screen set up wrong? We don't know yet.
+
+[WMS-012]
+Found another screen definition but no one knows what opens it or what you're meant to do after it. Could be unused, could be part of a path we haven't found.

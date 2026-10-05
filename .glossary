@@ -34,6 +34,18 @@ Goal Assessment
 Type
 - A definition that groups things by their shared meaning, properties, relationships, and rules.
 
+Type Description
+- A machine-readable description of a Type's identity, fields, relationships, constraints, variants, and version.
+
+Type Instance
+- A particular value whose structure and validity are described by a Type.
+
+Hydration
+- The process of constructing a Type Instance from serialized data using its Type Description.
+
+Transformation
+- An explicit mapping that converts data from one Type or representation to another while stating semantic differences or information loss.
+
 Contract
 - An agreed specification of the obligations and guarantees between parts of a System.
 

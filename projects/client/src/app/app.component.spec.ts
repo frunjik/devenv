@@ -474,6 +474,22 @@ describe('AppComponent', () => {
         http.expectNone('http://localhost:3000/git/commit');
     });
 
+    it.each([
+        ['a JSON feature record', '{"id":"a","priority":"Low","status":"Done","description":"Strip the id"}', 'Strip the id'],
+        ['JSON without a description', '{"id":"a"}', '{"id":"a"}'],
+        ['non-object JSON', '42', '42'],
+    ])('uses the description for %s as the default commit message', async (_name, entry, message) => {
+        dialogOpen.mockImplementation(() => ({ afterClosed: () => of(undefined) }));
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.componentInstance.currentEntry.entry = entry;
+
+        await startCommit(fixture);
+
+        expect(dialogOpen).toHaveBeenCalledWith(CommitMessageDialogComponent, expect.objectContaining({
+            data: { message },
+        }));
+    });
+
     it('does not commit when the dialog is cancelled', async () => {
         dialogOpen.mockImplementation(() => ({ afterClosed: () => of(undefined) }));
         const fixture = TestBed.createComponent(AppComponent);

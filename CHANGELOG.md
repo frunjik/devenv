@@ -5,6 +5,20 @@ The format is (loosely) based on [Keep a Changelog](https://keepachangelog.com/e
 
 # Unreleased
 
+### Added
+- Features are stored as `PPTFeature` JSON lines in `.wishlist` and `.backlog`, each with a unique ID.
+- `Queued` feature status; starting a feature moves it from `.wishlist` to `.backlog` with status `Queued`.
+- New features default to the `Wished` status.
+
+### Changed
+- All shared types now live in `@ppt`; `@shared` imports them from there.
+- The features API and client use `PPTFeature` instead of the text representation.
+- The client feature list shows the Open tab first, followed by Queued and Done.
+- Build order is now `ppt`, `shared`, `client`.
+
+### Removed
+- `@shared/ppt-fields`; `GET /ppt/fields` returns an empty list.
+
 # 0.0.3 2026-10-02 Layout
 
 ### Added

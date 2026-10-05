@@ -31,17 +31,28 @@ The status toolbar displays both versions, and the API exposes the server versio
 
 ## Build
 
-Build the Angular libraries before the client that consumes them:
+Build the Angular libraries before the client that consumes them. `ppt` comes first because `shared` and the client import its types:
 
 ```bash
-npm run build -- --project shared
 npm run build -- --project ppt
+npm run build -- --project shared
 npm run build -- --project client
 ```
 
 Pass an explicit Angular project to `npm run build`; the root script does not select a default project.
 
 The Angular `server` library target currently has known TypeScript errors, including unresolved PPT `./core` imports. It is not part of the passing build sequence.
+
+## Features workflow
+
+Features are tracked as one JSON object per line (the `PPTFeature` type from `@ppt`):
+
+- `.wishlist`: new features, which default to the `Wished` status.
+- `.backlog`: features that were started from the client; they get the `Queued` status and a task line in `DEVENVOPDEV.md`.
+- `.current`: the feature being worked on; set to `Done` when delivered.
+- `.history`: a one-line entry per delivered feature.
+
+The features API (`/features`) reads `.wishlist` and `.backlog` together. Legacy comment-style lines are converted to JSON when read.
 
 ## Test
 

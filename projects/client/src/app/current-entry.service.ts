@@ -11,7 +11,19 @@ export class CurrentEntryService {
     private polling?: Subscription;
 
     get summary(): string {
-        return this.entry?.replace(/^\/\/ \[\d{4}-\d{2}-\d{2}[^\]]*\]\s*/, '') ?? '';
+        if (!this.entry) {
+            return '';
+        }
+        try {
+            const feature: unknown = JSON.parse(this.entry);
+            if (typeof feature === 'object' && feature !== null
+                && typeof (feature as { description?: unknown }).description === 'string') {
+                return (feature as { description: string }).description;
+            }
+        } catch {
+            // Not a JSON feature record; fall through to the legacy text format.
+        }
+        return this.entry.replace(/^\/\/ \[\d{4}-\d{2}-\d{2}[^\]]*\]\s*/, '');
     }
 
     startPolling(): void {

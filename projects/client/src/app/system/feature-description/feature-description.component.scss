@@ -7,16 +7,12 @@
 .feature-description {
     display: flex;
     flex-direction: column;
-    width: min(72rem, calc(100% - 2rem));
+    width: calc(100% - 2rem);
     height: 100%;
     min-height: 0;
     box-sizing: border-box;
     margin: 0 auto;
     padding: 1rem 0;
-
-    form {
-        max-width: 48rem;
-    }
 
     mat-form-field {
         width: 100%;

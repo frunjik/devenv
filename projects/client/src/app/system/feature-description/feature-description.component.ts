@@ -88,6 +88,13 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         return this.featureDataSource.data.filter(feature => feature.status === 'In progress');
     }
 
+    get matchingInProgressFeatures(): FeatureRow[] {
+        const filter = this.featureSearch.trim().toLocaleLowerCase();
+        return filter
+            ? this.inProgressFeatures.filter(feature => this.matchesFeature(feature, filter))
+            : this.inProgressFeatures;
+    }
+
     get matchingDoneFeatures(): FeatureRow[] {
         const filter = this.featureSearch.trim().toLocaleLowerCase();
         return filter ? this.doneFeatures.filter(feature => this.matchesFeature(feature, filter)) : this.doneFeatures;

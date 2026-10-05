@@ -65,6 +65,28 @@
             (keydown)="onFeatureTabKeydown($event, 'done')"
         >Done ({{ doneFeatures.length }})</button>
     </div>
+    <div class="feature-list-controls">
+        <mat-form-field appearance="outline" *ngIf="features.length > 0">
+            <mat-label>Search features</mat-label>
+            <input
+                matInput
+                type="search"
+                aria-label="Search features"
+                [value]="featureSearch"
+                (input)="onSearchInput($event)"
+            />
+        </mat-form-field>
+        <button
+            type="button"
+            mat-button
+            class="feature-refresh-button"
+            aria-label="Refresh feature list"
+            [disabled]="isLoadingFeatures"
+            (click)="refreshFeatures()"
+        >
+            {{ isLoadingFeatures ? 'Refreshing…' : 'Refresh' }}
+        </button>
+    </div>
        <section
            id="open-features-panel"
            role="tabpanel"
@@ -79,28 +101,6 @@
         <p *ngIf="statusError" id="feature-status-error" role="alert">{{ statusError }}</p>
         <p *ngIf="completionError" id="feature-completion-error" role="alert">{{ completionError }}</p>
         <p *ngIf="editError" id="feature-edit-error" role="alert">{{ editError }}</p>
-        <div class="feature-list-controls">
-            <mat-form-field appearance="outline" *ngIf="features.length > 0">
-                <mat-label>Search features</mat-label>
-                <input
-                    matInput
-                    type="search"
-                    aria-label="Search features"
-                    [value]="featureSearch"
-                    (input)="onSearchInput($event)"
-                />
-            </mat-form-field>
-            <button
-                type="button"
-                mat-button
-                class="feature-refresh-button"
-                aria-label="Refresh feature list"
-                [disabled]="isLoadingFeatures"
-                (click)="refreshFeatures()"
-            >
-                {{ isLoadingFeatures ? 'Refreshing…' : 'Refresh' }}
-            </button>
-        </div>
         <p *ngIf="!isLoadingFeatures && !featuresError && featureDataSource.data.length === 0">
             No open features.
         </p>
@@ -221,8 +221,11 @@
         <p *ngIf="abortError" id="feature-abort-error" role="alert">{{ abortError }}</p>
         <p *ngIf="featureOrderError" id="feature-order-error" role="alert">{{ featureOrderError }}</p>
         <p *ngIf="!isLoadingFeatures && inProgressFeatures.length === 0">No features in progress.</p>
-        <ul *ngIf="inProgressFeatures.length > 0">
-            <li *ngFor="let feature of inProgressFeatures; let index = index" class="in-progress-feature">
+        <p *ngIf="inProgressFeatures.length > 0 && matchingInProgressFeatures.length === 0">
+            No in-progress features match your search.
+        </p>
+        <ul *ngIf="matchingInProgressFeatures.length > 0">
+            <li *ngFor="let feature of matchingInProgressFeatures" class="in-progress-feature">
                 <span class="in-progress-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
                 <span class="in-progress-feature-description">{{ feature.description }}</span>
                 <div class="in-progress-feature-order">
@@ -231,7 +234,7 @@
                         mat-button
                         class="feature-move-up-button"
                         [attr.aria-label]="'Move up: ' + feature.description"
-                        [disabled]="isReorderingFeatures || index === 0"
+                        [disabled]="isReorderingFeatures || inProgressFeatures.indexOf(feature) === 0"
                         (click)="moveInProgressFeature(feature, 'up')"
                     ><mat-icon aria-hidden="true">arrow_upward</mat-icon></button>
                     <button
@@ -239,7 +242,7 @@
                         mat-button
                         class="feature-move-down-button"
                         [attr.aria-label]="'Move down: ' + feature.description"
-                        [disabled]="isReorderingFeatures || index === inProgressFeatures.length - 1"
+                        [disabled]="isReorderingFeatures || inProgressFeatures.indexOf(feature) === inProgressFeatures.length - 1"
                         (click)="moveInProgressFeature(feature, 'down')"
                     ><mat-icon aria-hidden="true">arrow_downward</mat-icon></button>
                 </div>

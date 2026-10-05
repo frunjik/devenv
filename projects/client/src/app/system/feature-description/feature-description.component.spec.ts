@@ -109,6 +109,35 @@ describe('FeatureDescriptionComponent', () => {
         expect(tabs[2].getAttribute('aria-selected')).toBe('true');
     });
 
+    it('shows search outside the tabs and filters the initially selected in-progress list', async () => {
+        await fixture.whenStable();
+        const matchingId = '123e4567-e89b-42d3-a456-426614174000';
+        const otherId = '123e4567-e89b-42d3-a456-426614174001';
+        await writeFile(join(root, '.features'), [
+            `// [${matchingId}] [High] [In progress] Matching active feature`,
+            `// [${otherId}] [Low] [In progress] Unrelated active feature`,
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        expect(search).not.toBeNull();
+        expect(search.closest('[hidden]')).toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('.in-progress-feature')).toHaveLength(2);
+
+        search.value = 'matching';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.in-progress-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.in-progress-feature-description').textContent.trim())
+            .toBe('Matching active feature');
+        expect(fixture.nativeElement.querySelector('.in-progress-features').textContent)
+            .not.toContain('Unrelated active feature');
+    });
+
     it('refreshes the feature list from the client and shows newly added features', async () => {
         await fixture.whenStable();
         fixture.detectChanges();

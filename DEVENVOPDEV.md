@@ -12,10 +12,8 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] Which status should be verified, and what should verification do? The request does not identify a target surface or success criteria. A: what are our current status codes ? <!-- feature-id:3a4da084-57bd-4d06-bc9c-c88edb8b23b3 -->
-- [In progress] Should a JSON feature record include commit-state metadata, and should that be a committed flag, a commit hash, or both? A: both <!-- feature-id:9c8a43de-f7bb-425a-b148-8e0dbd909c35 -->
+- [Questions] Current application status codes are Questions, Backlog, In progress, Committed, Done, Aborted, and Denied. Question: Which status should be verified, and what should verification do? <!-- feature-id:3a4da084-57bd-4d06-bc9c-c88edb8b23b3 -->
 - [In progress] [AI-generated question] Which entities and field metadata are required (types, optionality, validation, relations, defaults), and what runtime or persistence behavior should the structure provide? A: Merge with topic @ModelField <!-- feature-id:1e4eda64-32f3-4564-9ca0-8916c8935a3c -->
-- [In progress] What entities and field metadata should the Model/Field structure represent, and should it be runtime schema, persisted data, or documentation only? A: Model / Field are meta models that describe domain Models add them as empty interfaces to @shared <!-- feature-id:79c6f131-4386-42f2-b10c-c0bebf27a563 -->
 - [In progress] Should a completed JSON feature record include the client or server version it was completed against? A: Yes <!-- feature-id:45fa7646-916d-4e39-8649-6477254486f8 -->
 - [In progress] What sources and domains count as "all terms," and where should the glossary be presented? The request does not define its scope, format, or audience. A: Merge with @Glossary features the Glossary is a list of all Terms used in the system. <!-- feature-id:3076fb2b-198a-49e8-bd89-475f2651ba61 -->
 - [In progress] Should the server glossary be a read-only or editable API, and what fields, persistence format, and client access are required? The request only specifies a list maintained on the server. A: Editable API persistence in JSON start with a Term and short Description as Fields for the Glossary Model <!-- feature-id:951c879c-a2bb-48bc-b30b-8bde89535e39 -->
@@ -27,3 +25,5 @@ The features you are writing are, take them one by one:
 - [In progress] What feature status should be verified, at which workflow stage, and what outcome should verification produce? A: merge with features that have @Workflow <!-- feature-id:70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4 -->
 - [In progress] Clarify whether this should document the Open tab's ID, priority, status, description, and actions, or change the UI; specify where the description should appear. A: what do you mean with 'this' ? <!-- feature-id:9af332fe-e6a1-4926-af46-982a3c957c50 -->
 - [In progress] make a display of features that are in progress to the right side of the input form <!-- feature-id:00d2fcfe-4386-4b35-8f02-2176423c3acc -->
+- [In progress] What entities and field metadata should the Model/Field structure represent, and should it be runtime schema, persisted data, or documentation only? A: Model / Field are meta models that describe domain Models add them as empty interfaces to @shared <!-- feature-id:79c6f131-4386-42f2-b10c-c0bebf27a563 -->
+- [In progress] add a list of models on the client by parsing the received models and show them in a table <!-- feature-id:d059eaa0-b2e4-4dbd-8336-38a4feb51cd1 -->

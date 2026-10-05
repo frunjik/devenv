@@ -1,5 +1,5 @@
 import { version } from './ppt';
-import { PPTValue } from './core';
+import type { PPTValue } from '@shared';
 import { modelField, modelModel, modelList, modelItem, modelItemInspector, modelText } from './ppt-models';
 
 export * from './core';

@@ -1,7 +1,7 @@
 ./.backlog   list of open features
 
 ./.queued    list of queued features
-./.current   active feature
+./.current   active features
 
 ./.delivered list of processed features
 ./.history   list of closed features

@@ -1,4 +1,5 @@
 History
+// [2026-10-05 05:57 +02:00] Exported PPTType, PPTValue, PPTField, PPTModel, PPTItem, and PPTList through @shared, moved the canonical definitions into the shared library, and retained @ppt compatibility re-exports. Shared, PPT, and client builds pass.
 // [2026-10-05 05:24 +02:00] Restored full client coverage by enabling the previously excluded JavaScript workspace spec and testing compile success, evaluation errors, null input fallback, and clear behavior through the public component API; full client/server coverage passed at 100% (200 client and 187 server tests).
 // [2026-10-05 05:16 +02:00] Added an empty standalone client page at /glossary; focused route test and client build pass.
 // [2026-10-05 05:14 +02:00] Added an empty standalone client page at /terms to match the existing navigation link; route test and client build pass.

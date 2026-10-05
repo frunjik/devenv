@@ -343,6 +343,14 @@ export class SystemPlanComponent {
             dependsOn: [],
             summary: 'High priority. Make the problem-solving app look docked into or included by the host app.',
         },
+        {
+            id: 'SC-025',
+            title: 'Explore an AI chatbot inside the meta app',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-024'],
+            summary: 'Explore purpose, data exposure, and placement of an AI chatbot in the meta layer.',
+        },
     ];
 
     get validatedCount(): number {

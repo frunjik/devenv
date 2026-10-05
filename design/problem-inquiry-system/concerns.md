@@ -343,6 +343,16 @@ Find a way to look up a glossary term quickly from any screen without leaving th
 **Working boundary:** Decide the interaction before building; it must not disrupt the underlying page state. Options to compare: global keyboard shortcut opening a search overlay, a persistent header search field, or a floating button with a popover.
 **Open questions:** Which shortcut or trigger? Does it match term names only, or definitions too? Should selecting a result open the glossary screen or show the definition inline? How does it work on touch devices?
 
+### SC-025 — Explore an AI chatbot inside the meta app
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-024
+
+Explore whether an AI chatbot can live inside the meta (host) layer, so it is available around the problem-solving app without being part of it.
+
+**Working boundary:** Exploration only. Do not add AI calls, keys, or a backend integration until the purpose, data exposure, and decision authority are agreed. Earlier decisions keep AI outside SC-006 and require explicit human acceptance of anything it proposes.
+**Open questions:** What is the chatbot for (answering questions, drafting note proposals, explaining glossary terms, helping frame tickets)? Does it see the current screen or only what the user pastes? May it create or change notes and tickets, or only suggest? Where does it appear (panel, drawer, floating button) and does it show only with the meta layer on? Which model or service, and where do credentials and conversation history live? How are real-world reports kept from leaving the sandbox (privacy)?
+**Vocabulary candidates (P-009, not yet agreed):** "chatbot", "assistant", "AI", "proposal". Decide whether any need Glossary entries and whether AI output relates to `NoteProposal`.
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

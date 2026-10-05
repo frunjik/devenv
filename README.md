@@ -47,13 +47,13 @@ The Angular `server` library target currently has known TypeScript errors, inclu
 
 Features are tracked as one JSON object per line (the PPTFeature type from @ppt) in three stores at the repository root:
 
-- .features: all features that are not being worked on or archived (Questions, Wished, Backlog, Queued, Committed, Done). Features added from the client default to Wished. Legacy .wishlist, .backlog and .delivered files are merged into .features on first read and removed.
+- .features: all features that are not being worked on or archived (Questions, Wished, Backlog, Queued, Committed, Done). Features added from the client default to Wished. Legacy .wishlist, .backlog and .delivered files are merged into .features on first read and removed. Denied records are moved to .archived on feature-list refresh.
 - .current: the features being worked on; set to Done when delivered. Done records move from .current into .features on feature-list refresh and before commit, preserving their IDs and replacing any existing copy.
-- .archived: archived features, with status Archived. Legacy text lines are converted to JSON on first read.
+- .archived: archived features, with status Archived, plus denied features whose status remains Denied. Legacy text lines are converted to JSON on first read.
 - DEVENVOPDEV.md: the task list of features actively being worked on (written when a feature is started from the client).
 - .history: a one-line entry per delivered feature.
 
-The client Features page lists them in four tabs, filtered by status: Open, Queued (Queued and Committed), Done and Archived. The selected tab is kept in the URL (?tab=). The Done tab can archive a feature or all Done features at once (POST /features/:id/archive, POST /features/archive-done). Legacy comment-style lines are converted to JSON when read.
+The client Features page lists them in four tabs, filtered by status: Open, Queued (Queued and Committed), Done and Archived. Denying a feature moves it to .archived and removes its copies from .features, .current and the active task list. The selected tab is kept in the URL (?tab=). The Done tab can archive a feature or all Done features at once (POST /features/:id/archive, POST /features/archive-done). Legacy comment-style lines are converted to JSON when read.
 ## Test
 
 The repository uses Jest for client and server tests:

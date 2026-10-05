@@ -280,6 +280,25 @@ async function readFeatures(filename: string): Promise<PPTFeature[]> {
     return features;
 }
 
+async function readOptionalFile(filename: string): Promise<string | undefined> {
+    try {
+        return await readFile(filename, 'utf8');
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return undefined;
+        }
+        throw error;
+    }
+}
+
+async function restoreFile(filename: string, contents: string | undefined): Promise<void> {
+    if (contents === undefined) {
+        await rm(filename, { force: true });
+        return;
+    }
+    await writeFile(filename, contents, 'utf8');
+}
+
 interface FeatureStore {
     features: PPTFeature[];
     save(features: PPTFeature[]): Promise<void>;
@@ -363,6 +382,14 @@ export function createFeaturesListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
         void deliverDoneFeatures(root)
             .then(() => readFeatureStore(root))
+            .then(async store => {
+                await archiveDeniedFeatures(
+                    root,
+                    store,
+                    store.features.filter(feature => feature.status === 'Denied'),
+                );
+            })
+            .then(() => readFeatureStore(root))
             .then(store => response.json({ data: store.features }))
             .catch(next);
     };
@@ -394,7 +421,7 @@ async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
         .map(line => {
             const parsed = parsePPTFeatureLine(line);
             if (parsed) {
-                return withStatus(parsed, 'Archived');
+                return parsed.status === 'Denied' ? parsed : withStatus(parsed, 'Archived');
             }
             const hash = createHash('sha1').update(line).digest('hex');
             const id = `${hash.slice(0, 8)}-${hash.slice(8, 12)}-${hash.slice(12, 16)}-${hash.slice(16, 20)}-${hash.slice(20, 32)}`;
@@ -406,6 +433,58 @@ async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
     }
     return features;
 }
+
+async function archiveDeniedFeatures(
+    root: string,
+    store: FeatureStore,
+    deniedFeatures: PPTFeature[],
+): Promise<void> {
+    if (deniedFeatures.length === 0) {
+        return;
+    }
+
+    const archiveFilename = join(root, '.archived');
+    const currentFilename = join(root, '.current');
+    const originalArchive = await readOptionalFile(archiveFilename);
+    const originalCurrent = await readOptionalFile(currentFilename);
+    const originalTask = await readOptionalFile(join(root, 'DEVENVOPDEV.md'));
+    const restoreStore = store.snapshot();
+
+    try {
+        const archived = await readArchivedFeatures(root);
+        const deniedIds = new Set(deniedFeatures.map(feature => feature.id.toLowerCase()));
+        const updatedArchive = [
+            ...archived.filter(feature => !deniedIds.has(feature.id.toLowerCase())),
+            ...deniedFeatures.map(feature => withStatus(feature, 'Denied')),
+        ];
+        await writeFile(archiveFilename, serializeFeatures(updatedArchive), 'utf8');
+
+        store.features = store.features.filter(feature => !deniedIds.has(feature.id.toLowerCase()));
+        await store.save(store.features);
+
+        if (originalCurrent !== undefined) {
+            const remaining = originalCurrent.split(/\r?\n/).filter(line => {
+                const feature = parsePPTFeatureLine(line.trim());
+                return !feature || !deniedIds.has(feature.id.toLowerCase());
+            });
+            await writeFile(
+                currentFilename,
+                remaining.join('\n'),
+                'utf8',
+            );
+        }
+        for (const feature of deniedFeatures) {
+            await removeStartedFeatureTask(root, feature.id.toLowerCase());
+        }
+    } catch (error) {
+        await restoreStore();
+        await restoreFile(archiveFilename, originalArchive);
+        await restoreFile(currentFilename, originalCurrent);
+        await restoreFile(join(root, 'DEVENVOPDEV.md'), originalTask);
+        throw error;
+    }
+}
+
 export async function deliverDoneFeatures(root: string): Promise<PPTFeature[]> {
     const currentFilename = join(root, '.current');
     let contents: string;
@@ -554,7 +633,14 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
                 }
 
                 const restore = store.snapshot();
-                features[featureIndex] = withStatus(features[featureIndex], requestedStatus as PPTFeatureStatus);
+                const updatedFeature = withStatus(features[featureIndex], requestedStatus as PPTFeatureStatus);
+                if (requestedStatus === 'Denied') {
+                    await archiveDeniedFeatures(root, store, [updatedFeature]);
+                    response.json({ data: updatedFeature });
+                    return;
+                }
+
+                features[featureIndex] = updatedFeature;
                 await store.save(features);
                 if (requestedStatus !== 'Queued') {
                     try {

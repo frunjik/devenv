@@ -1,4 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import fsPromises from 'node:fs/promises';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -58,6 +59,7 @@ describe('features public API', () => {
     });
 
     afterEach(async () => {
+        jest.restoreAllMocks();
         await rm(root, { recursive: true, force: true });
     });
 
@@ -286,9 +288,13 @@ describe('features public API', () => {
         expect(entryData(response.body)[3]).toBe(
             '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Aborted] aborted feature',
         );
-        expect(entryData(response.body)[4]).toBe(
-            '// [123e4567-e89b-42d3-a456-426614174003] [Low] [Denied] rejected feature',
-        );
+        expect(entryData(response.body)).toHaveLength(4);
+        expect((await request(app).get('/archived')).body.data).toContainEqual({
+            id: '123e4567-e89b-42d3-a456-426614174003',
+            priority: 'Low',
+            status: 'Denied',
+            description: 'rejected feature',
+        });
     });
 
     it('returns an empty list when the features file is empty', async () => {
@@ -767,6 +773,120 @@ describe('features public API', () => {
             entryData(created.body).replace('[Wished]', '[Queued]'),
         );
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
+    });
+
+    it('moves Denied features to .archived and removes other copies', async () => {
+        const id = '123e4567-e89b-42d3-a456-426614174020';
+        const feature = { id, priority: 'High', status: 'Wished', description: 'Reject this feature' };
+        const duplicate = { ...feature, priority: 'Low', description: 'Stale duplicate' };
+        const currentCopy = { ...feature, status: 'InProgress' };
+        const unrelatedCurrent = {
+            id: '123e4567-e89b-42d3-a456-426614174025',
+            priority: 'Medium',
+            status: 'InProgress',
+            description: 'Keep this current feature',
+        };
+        const archiveCopy = { ...feature, status: 'Archived', description: 'Old archived copy' };
+        await writeFile(join(root, '.features'), [
+            JSON.stringify(feature),
+            JSON.stringify(duplicate),
+            '',
+        ].join('\n'));
+        await writeFile(join(root, '.current'),
+            `${JSON.stringify(currentCopy)}\n${JSON.stringify(unrelatedCurrent)}\n`);
+        await writeFile(join(root, '.archived'), `${JSON.stringify(archiveCopy)}\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `The features you are writing are, take them one by one:\n${JSON.stringify(currentCopy)}\n`);
+
+        const response = await request(app).patch(`/features/${id}/status`).send({ status: 'Denied' });
+        const archivedFile = (await readFile(join(root, '.archived'), 'utf8')).trim().split('\n')
+            .map(line => JSON.parse(line));
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toEqual({ ...feature, status: 'Denied' });
+        expect((await readPersistedFeatures())).toEqual([]);
+        expect(archivedFile).toEqual([{ ...feature, status: 'Denied' }]);
+        expect(await readFile(join(root, '.current'), 'utf8')).toBe(`${JSON.stringify(unrelatedCurrent)}\n`);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
+        expect((await request(app).get('/archived')).body.data).toEqual([{ ...feature, status: 'Denied' }]);
+        expect((await request(app).get('/features')).body.data).toEqual([]);
+    });
+
+    it('moves existing Denied records from .features to .archived on feature-list refresh', async () => {
+        const denied = {
+            id: '123e4567-e89b-42d3-a456-426614174021',
+            priority: 'Medium',
+            status: 'Denied',
+            description: 'Previously denied feature',
+        };
+        await writeFile(join(root, '.features'), `${JSON.stringify(denied)}\n`);
+
+        const response = await request(app).get('/features');
+
+        expect(response.status).toBe(200);
+        expect(response.body.data).toEqual([]);
+        expect(await readPersistedFeatures()).toEqual([]);
+        expect((await request(app).get('/archived')).body.data).toEqual([denied]);
+        expect(await readFile(join(root, '.archived'), 'utf8')).toBe(`${JSON.stringify(denied)}\n`);
+    });
+
+    it('restores feature stores if archiving a Denied feature fails', async () => {
+        const feature = {
+            id: '123e4567-e89b-42d3-a456-426614174022',
+            priority: 'Low',
+            status: 'Wished',
+            description: 'Feature to deny',
+        };
+        const originalFeatures = `${JSON.stringify(feature)}\n`;
+        const originalArchive = `${JSON.stringify({ ...feature, status: 'Archived' })}\n`;
+        const originalCurrent = `${JSON.stringify({ ...feature, status: 'InProgress' })}\n`;
+        const originalTask = `- [In progress] Feature to deny <!-- feature-id:${feature.id} -->\n`;
+        await writeFile(join(root, '.features'), originalFeatures);
+        await writeFile(join(root, '.archived'), originalArchive);
+        await writeFile(join(root, '.current'), originalCurrent);
+        await writeFile(join(root, 'DEVENVOPDEV.md'), originalTask);
+        jest.spyOn(fsPromises, 'writeFile').mockRejectedValueOnce(new Error('Archive write failed'));
+
+        const response = await request(app).patch(`/features/${feature.id}/status`).send({ status: 'Denied' });
+
+        expect(response.status).toBe(500);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(originalFeatures);
+        expect(await readFile(join(root, '.archived'), 'utf8')).toBe(originalArchive);
+        expect(await readFile(join(root, '.current'), 'utf8')).toBe(originalCurrent);
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe(originalTask);
+    });
+
+    it('removes newly created stores when a Denied archive write fails', async () => {
+        const feature = {
+            id: '123e4567-e89b-42d3-a456-426614174024',
+            priority: 'Low',
+            status: 'Wished',
+            description: 'Feature to deny',
+        };
+        await writeFile(join(root, '.features'), `${JSON.stringify(feature)}\n`);
+        jest.spyOn(fsPromises, 'writeFile').mockRejectedValueOnce(new Error('Archive write failed'));
+
+        const response = await request(app).patch(`/features/${feature.id}/status`).send({ status: 'Denied' });
+
+        expect(response.status).toBe(500);
+        expect(await readPersistedFeatures()).toEqual([feature]);
+        await expect(readFile(join(root, '.archived'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+    });
+
+    it('forwards archive read errors during denial', async () => {
+        const feature = {
+            id: '123e4567-e89b-42d3-a456-426614174023',
+            priority: 'Low',
+            status: 'Wished',
+            description: 'Feature to deny',
+        };
+        await writeFile(join(root, '.features'), `${JSON.stringify(feature)}\n`);
+        await mkdir(join(root, '.archived'));
+
+        const response = await request(app).patch(`/features/${feature.id}/status`).send({ status: 'Denied' });
+
+        expect(response.status).toBe(500);
+        expect(await readPersistedFeatures()).toEqual([feature]);
     });
 
     it('starts a feature in the backlog and records it as in progress in DEVENVOPDEV.md', async () => {

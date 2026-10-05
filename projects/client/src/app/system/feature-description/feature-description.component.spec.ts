@@ -248,7 +248,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(refreshButton.disabled).toBe(false);
     });
 
-    it('shows the embedded description instead of a serialized feature object in the open list', async () => {
+    it('shows embedded descriptions instead of serialized feature objects in open and Done lists', async () => {
         await fixture.whenStable();
         const description = 'Keep the feature description readable';
         const wrappedDescription = JSON.stringify({
@@ -288,6 +288,18 @@ describe('FeatureDescriptionComponent', () => {
                 status: 'Wished',
                 description: '{"description":42}',
             }),
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174006',
+                priority: 'Low',
+                status: 'Done',
+                description: wrappedDescription,
+            }),
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174007',
+                priority: 'Low',
+                status: 'Done',
+                description: 'Completed with a plain description',
+            }),
             '',
         ].join('\n'));
 
@@ -306,6 +318,14 @@ describe('FeatureDescriptionComponent', () => {
             '{"description":42}',
         ]);
         expect(descriptions[0]).not.toContain('"id"');
+
+        const doneDescriptions = Array.from<HTMLElement>(
+            fixture.nativeElement.querySelectorAll('.done-feature-description'),
+        ).map(element => element.textContent!.trim());
+        expect(doneDescriptions).toEqual([
+            description,
+            'Completed with a plain description',
+        ]);
     });
 
     it('cancels an outstanding feature refresh when the component is destroyed', async () => {
@@ -1244,11 +1264,13 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(await readFeatureFile()).toContain('[Denied] Feature to deny');
+        expect(await readFeatureFile()).not.toContain(id);
+        expect(await readFile(join(root, '.archived'), 'utf8')).toContain('"status":"Denied"');
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
-        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
-            .toBe('Denied');
-        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.archived-feature-description').textContent.trim())
+            .toBe('Feature to deny');
         expect(featureWork.activeFeature).toBeNull();
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
     });
@@ -1271,11 +1293,13 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(await readFeatureFile()).toContain('[Denied] Feature to deny by button');
+        expect(await readFeatureFile()).not.toContain(id);
+        expect(await readFile(join(root, '.archived'), 'utf8')).toContain('"status":"Denied"');
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(id);
-        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
-        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
-            .toBe('Denied');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelector('.archived-feature-description').textContent.trim())
+            .toBe('Feature to deny by button');
     });
 
     it('sets a feature to Committed from the client and keeps its feature record', async () => {

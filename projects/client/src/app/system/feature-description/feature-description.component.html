@@ -320,7 +320,7 @@
         <ul *ngIf="matchingDoneFeatures.length > 0">
             <li *ngFor="let feature of matchingDoneFeatures" class="done-feature">
                 <span class="done-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
-                <span class="done-feature-description">{{ feature.description }}</span>
+                <span class="done-feature-description">{{ displayDescription(feature.description) }}</span>
                 <span *ngIf="feature.deliveredDate" class="feature-count">
                     Delivered: {{ feature.deliveredDate }}
                 </span>

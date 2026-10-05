@@ -408,7 +408,16 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
                     this.featureWork.complete(feature.id);
                     this.currentTask.refresh();
                 }
-                this.updateFeatureEntry(entry);
+                if (status === 'Denied') {
+                    this.features = this.features.filter(item => item.id !== entry.id);
+                    this.archivedFeatures = [
+                        ...this.archivedFeatures.filter(item => item.id !== entry.id),
+                        entry,
+                    ];
+                    this.refreshFeatureLists();
+                } else {
+                    this.updateFeatureEntry(entry);
+                }
             },
             error: (error: Error) => {
                 this.statusError = error.message;

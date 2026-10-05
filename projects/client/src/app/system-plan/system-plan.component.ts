@@ -315,7 +315,7 @@ export class SystemPlanComponent {
             id: 'SC-021',
             title: 'Define ticket lifecycle',
             kind: 'Domain',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-016'],
             summary: 'Decide whether a framed ticket can be edited, closed, or marked duplicate, and by whom.',
         },

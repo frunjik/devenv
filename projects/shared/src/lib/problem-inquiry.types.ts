@@ -1,4 +1,37 @@
 export type ProblemTicketId = string;
+export type UserId = string;
+
+export interface User {
+    id: UserId;
+    name?: string;
+}
+
+export type TicketStatus =
+    | { state: 'open' }
+    | { state: 'assigned'; assigneeId: UserId }
+    | { state: 'resolved'; assigneeId?: UserId }
+    | { state: 'closed'; assigneeId?: UserId }
+    | { state: 'duplicate'; duplicateOfId: ProblemTicketId };
+
+export type TicketCommand =
+    | { kind: 'assign'; assigneeId: UserId }
+    | { kind: 'unassign' }
+    | { kind: 'resolve' }
+    | { kind: 'close' }
+    | { kind: 'reopen' }
+    | { kind: 'mark-duplicate'; duplicateOfId: ProblemTicketId };
+
+export interface TicketChangeEvent {
+    kind: TicketCommand['kind'];
+    actor: User;
+    at: string;
+    before: TicketStatus;
+    after: TicketStatus;
+}
+
+export type TicketCommandResult =
+    | { ok: true; status: TicketStatus; event: TicketChangeEvent }
+    | { ok: false; reason: string };
 export type ImportedNoteId = string;
 export type EvidenceId = string;
 export type FindingId = string;

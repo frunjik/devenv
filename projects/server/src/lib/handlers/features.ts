@@ -104,8 +104,13 @@ function setFeatureStatus(entry: string, status: FeatureStatus): string {
     const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
     const statusMatch = priorityMatch[2]
         .match(/^\s+\[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\](.*)$/i)!;
+    const deliveredDateMatch = statusMatch[2].match(/\s+\[Delivered: (\d{4}-\d{2}-\d{2})\]$/);
+    const description = statusMatch[2].replace(/\s+\[Delivered: \d{4}-\d{2}-\d{2}\]$/, '');
+    const deliveredDate = status === 'Done'
+        ? deliveredDateMatch?.[1] ?? formatTimestamp(new Date()).slice(0, 10)
+        : undefined;
     return `${normalizedEntry.slice(0, idEnd)} [${canonicalPriorities[priorityMatch[1].toLowerCase()]}]`
-        + ` [${status}]${statusMatch[2]}`;
+        + ` [${status}]${description}${deliveredDate ? ` [Delivered: ${deliveredDate}]` : ''}`;
 }
 
 async function addStartedFeatureToDevEnv(root: string, entry: string, id: string): Promise<void> {
@@ -151,15 +156,15 @@ async function addStartedFeatureToDevEnv(root: string, entry: string, id: string
 
 function setFeatureDescription(entry: string, description: string): string {
     const match = entry.match(
-        /^(\/\/ (?:\[[^\]]+\] )?\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\] \[(?:High|Medium|Low)\] \[(?:Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] ).*$/i,
+        /^(\/\/ (?:\[[^\]]+\] )?\[[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\] \[(?:High|Medium|Low)\] \[(?:Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] )(.*?)(\s+\[Delivered: \d{4}-\d{2}-\d{2}\])?$/i,
     );
-    return `${match![1]}${description}`;
+    return `${match![1]}${description}${match![3] ?? ''}`;
 }
 
 function featureDescription(entry: string): string {
     return entry.match(
         /\[(?:High|Medium|Low)\]\s+\[(?:Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\]\s*(.*)$/i,
-    )![1];
+    )![1].replace(/\s+\[Delivered: \d{4}-\d{2}-\d{2}\]$/, '');
 }
 
 function sharedFeatureTermCount(first: string, second: string): number {
@@ -302,8 +307,11 @@ export function createFeatureHandler(root: string): RequestHandler {
                 }
 
                 const id = randomUUID();
+                const deliveredDate = requestedStatus === 'Done'
+                    ? ` [Delivered: ${formatTimestamp(new Date()).slice(0, 10)}]`
+                    : '';
                 const entry =
-                    `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}`;
+                    `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}${deliveredDate}`;
                 await appendFile(filename, `${entry}\n`, 'utf8');
                 response.status(201).json({ data: entry });
             })

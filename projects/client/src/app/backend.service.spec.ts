@@ -64,6 +64,10 @@ describe('BackendService', () => {
         expect(service.host).toBe(apiHost);
     });
 
+    it('loads the server version from the public API', async () => {
+        await expect(service.getServerVersion().toPromise()).resolves.toMatch(/^\d+\.\d+\.\d+/);
+    });
+
     it('loads recent commit entries from the git log API', async () => {
         const entries = await service.getGitLog().toPromise();
 

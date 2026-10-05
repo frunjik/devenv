@@ -55,6 +55,14 @@
                     ? 'none'
                     : testRunCacheStatus.status?.status || 'unknown' }}
     </a>
+    <span
+        class="version-info"
+        role="status"
+        [matTooltip]="versionError
+            ? 'Could not load server version: ' + versionError
+            : 'Client version ' + clientVersion + '; server version ' + serverVersion"
+        matTooltipPosition="above"
+    >Client v{{ clientVersion }} | Server v{{ serverVersion }}</span>
     <span class="toolbar-spacer"></span>
     <button
         type="button"

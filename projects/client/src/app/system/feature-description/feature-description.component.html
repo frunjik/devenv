@@ -184,6 +184,15 @@
                         >
                             {{ completingFeatureIds.has(feature.id) ? 'Saving…' : 'Mark done' }}
                         </button>
+                        <button
+                            type="button"
+                            mat-button
+                            class="feature-deny-button"
+                            [attr.aria-label]="'Deny: ' + feature.description"
+                            (click)="denyFeature(feature)"
+                        >
+                            Deny
+                        </button>
                     </div>
                 </td>
             </ng-container>
@@ -265,6 +274,9 @@
             <li *ngFor="let feature of matchingDoneFeatures" class="done-feature">
                 <span class="done-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
                 <span class="done-feature-description">{{ feature.description }}</span>
+                <span *ngIf="feature.deliveredDate" class="feature-count">
+                    Delivered: {{ feature.deliveredDate }}
+                </span>
                 <div class="done-feature-actions">
                     <select
                         class="feature-priority-select"

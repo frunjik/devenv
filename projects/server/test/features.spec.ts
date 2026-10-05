@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import type { ErrorRequestHandler } from 'express';
 import request from 'supertest';
 import { createApp } from '../src/public-api';
+import serverPackage from '../package.json';
 
 describe('features public API', () => {
     let root: string;
@@ -35,6 +36,13 @@ describe('features public API', () => {
         const persistedEntries = (await readFile(join(root, '.features'), 'utf8')).trim().split(/\r?\n/);
         expect(persistedEntries).toEqual(response.body.data);
         expect(new Set(persistedEntries.map(entry => entry.match(/\[([0-9a-f-]{36})\]/)?.[1])).size).toBe(2);
+    });
+
+    it('returns the server package version from the public version API', async () => {
+        const response = await request(app).get('/version');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ data: serverPackage.version });
     });
 
     it('adds IDs to legacy dated entries and preserves existing UUIDs', async () => {
@@ -125,6 +133,17 @@ describe('features public API', () => {
             /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Backlog\] Add a feature with multiline details$/,
         );
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${response.body.data}\n`);
+    });
+
+    it('adds a delivered date when a feature is created as Done', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Create an already completed feature', status: 'Done' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(
+            /\[Done\] Create an already completed feature \[Delivered: \d{4}-\d{2}-\d{2}\]$/,
+        );
     });
 
     it('merges descriptions with more than three matching words and preserves the existing feature', async () => {
@@ -809,6 +828,31 @@ describe('features public API', () => {
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).not.toContain(marker);
         expect(taskFile).toContain(otherTask);
+    });
+
+    it('keeps the delivered date when editing a Done feature and removes it when reopened', async () => {
+        const created = await request(app).post('/features').send({ description: 'Finish this feature' });
+        const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
+        const completed = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'Done' });
+        const deliveredDate = completed.body.data.match(/\[Delivered: (\d{4}-\d{2}-\d{2})\]$/)?.[1];
+        expect(deliveredDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+
+        const edited = await request(app)
+            .patch(`/features/${id}/description`)
+            .send({ description: 'Finish this revised feature' });
+        expect(edited.body.data).toContain(
+            `[Done] Finish this revised feature [Delivered: ${deliveredDate}]`,
+        );
+
+        const reopened = await request(app)
+            .patch(`/features/${id}/status`)
+            .send({ status: 'Backlog' });
+        expect(reopened.body.data).toBe(edited.body.data.replace(
+            `[Done] Finish this revised feature [Delivered: ${deliveredDate}]`,
+            '[Backlog] Finish this revised feature',
+        ));
     });
 
     it('aborts an in-progress feature and removes its task marker while keeping the feature record', async () => {

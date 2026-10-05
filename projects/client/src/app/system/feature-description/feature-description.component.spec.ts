@@ -171,7 +171,7 @@ describe('FeatureDescriptionComponent', () => {
             (row.querySelector('.mat-column-status select') as HTMLSelectElement).value,
         )).toEqual(['Backlog', 'Backlog']);
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row button'))
-            .toHaveLength(6);
+            .toHaveLength(8);
     });
 
     it('lists only in-progress features in its own section and keeps the complete list', async () => {
@@ -659,6 +659,8 @@ describe('FeatureDescriptionComponent', () => {
 
         fixture.nativeElement.querySelector('.feature-start-button').click();
         fixture.detectChanges();
+        await fixture.whenStable();
+        fixture.detectChanges();
         const statusSelector: HTMLSelectElement =
             fixture.nativeElement.querySelector('.feature-status-select');
         statusSelector.dispatchEvent(new Event('change'));
@@ -723,6 +725,8 @@ describe('FeatureDescriptionComponent', () => {
             fixture.nativeElement.querySelectorAll('.done-feature'),
         ).map(row => row.querySelector('.done-feature-description')?.textContent.trim()))
             .toEqual(['Completed feature']);
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-count').textContent.trim())
+            .toMatch(/^Delivered: \d{4}-\d{2}-\d{2}$/);
         expect(fixture.nativeElement.querySelector('#feature-completion-error')).toBeNull();
     }, 15000);
 
@@ -917,6 +921,31 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
         expect(featureWork.activeFeature).toBeNull();
         expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
+    it('denies an open feature using its action button', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [Medium] [Backlog] Feature to deny by button\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature to deny by button <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        fixture.componentInstance.selectFeatureTab('open');
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const denyButton: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-deny-button');
+        expect(denyButton.getAttribute('aria-label')).toBe('Deny: Feature to deny by button');
+        denyButton.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Denied] Feature to deny by button');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Denied');
     });
 
     it('sets a feature to Committed from the client and keeps its feature record', async () => {

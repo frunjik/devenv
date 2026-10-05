@@ -69,6 +69,7 @@ describe('AppComponent', () => {
         http.match('http://localhost:3000/git/status').forEach(request => request.flush({
             data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
         }));
+        http.match('http://localhost:3000/version').forEach(request => request.flush({ data: '0.0.1' }));
         http.verify();
     });
 
@@ -89,6 +90,37 @@ describe('AppComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.textContent).toContain('http://localhost:3000/');
+    });
+
+    it('displays client and server release versions in the status toolbar', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        const versionRequest = http.expectOne('http://localhost:3000/version');
+        expect(versionRequest.request.method).toBe('GET');
+        versionRequest.flush({ data: '1.2.3' });
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.version-info').textContent.trim())
+            .toMatch(/^Client v\d+\.\d+\.\d+ \| Server v1\.2\.3$/);
+        fixture.destroy();
+    });
+
+    it('shows an explicit error when the server version cannot be loaded', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/version').flush(
+            { error: { message: 'Version unavailable.' } },
+            { status: 500, statusText: 'Server Error' },
+        );
+        fixture.detectChanges();
+
+        const versionInfo = fixture.nativeElement.querySelector('.version-info');
+        expect(versionInfo.textContent.trim()).toMatch(/Client v\d+\.\d+\.\d+ \| Server vunavailable/);
+        expect(fixture.debugElement.query(By.css('.version-info')).injector.get(MatTooltip).message)
+            .toContain('500');
+        fixture.destroy();
     });
 
     it('shows and refreshes the DEVENVOPDEV task at the right side of the top toolbar', () => {

@@ -143,6 +143,10 @@ export class BackendService {
         return this.get<string | null>('current');
     }
 
+    getServerVersion(): Observable<string> {
+        return this.get<string>('version');
+    }
+
     getCurrentTask(): Observable<string | null> {
         return this.get<string | null>('task');
     }

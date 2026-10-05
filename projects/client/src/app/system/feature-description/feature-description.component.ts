@@ -20,6 +20,7 @@ interface FeatureRow {
     description: string;
     priority: FeaturePriority;
     status: FeatureStatus;
+    deliveredDate?: string;
 }
 
 type FeatureListTab = 'open' | 'in-progress' | 'done';
@@ -247,6 +248,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         });
     }
 
+    denyFeature(feature: FeatureRow): void {
+        this.updateFeatureStatus(feature, 'Denied');
+    }
+
     editFeature(feature: FeatureRow): void {
         const featureId = feature.id;
 
@@ -349,7 +354,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     private parseFeature(feature: string): FeatureRow {
         const match = feature.match(
-            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] (.+)$/i,
+            /^\/\/ (?:\[[^\]]+\] )?\[([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\] \[(High|Medium|Low)\] \[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\] (.+?)(?: \[Delivered: (\d{4}-\d{2}-\d{2})\])?$/i,
         );
         return match
             ? {
@@ -357,6 +362,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
                 priority: match[2] as FeaturePriority,
                 status: match[3] as FeatureStatus,
                 description: match[4],
+                deliveredDate: match[5],
             }
             : { id: '', priority: 'Medium', status: 'Backlog', description: feature.replace(/^\/\/ \[[^\]]+\] /, '') };
     }

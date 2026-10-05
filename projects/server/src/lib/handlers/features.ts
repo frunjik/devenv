@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { access, appendFile, readFile, writeFile } from 'node:fs/promises';
+import { access, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { RequestHandler } from 'express';
 import type { FeaturePriority, PPTFeature, PPTFeatureStatus } from '@ppt';
@@ -280,41 +280,39 @@ interface FeatureStore {
     features: PPTFeature[];
     save(features: PPTFeature[]): Promise<void>;
     snapshot(): () => Promise<void>;
-    moveToBacklog(id: string): void;
 }
 
+const legacyFeatureStores = ['.wishlist', '.backlog', '.delivered'];
+
 async function readFeatureStore(root: string): Promise<FeatureStore> {
-    const wishlistFilename = join(root, '.wishlist');
-    const backlogFilename = join(root, '.backlog');
-    const wishlist = await readFeatures(wishlistFilename);
-    const backlog = await readFeatures(backlogFilename);
-    const backlogIds = new Set(backlog.map(feature => feature.id.toLowerCase()));
-    const isInBacklog = (feature: PPTFeature): boolean => backlogIds.has(feature.id.toLowerCase());
-    const splitContents = (features: PPTFeature[]) => ({
-        wishlist: serializeFeatures(features.filter(feature => !isInBacklog(feature))),
-        backlog: serializeFeatures(features.filter(isInBacklog)),
-    });
-    const writeContents = async (contents: { wishlist: string; backlog: string }): Promise<void> => {
-        await writeFile(wishlistFilename, contents.wishlist, 'utf8');
-        const backlogExists = await access(backlogFilename).then(() => true, () => false);
-        if (contents.backlog || backlogExists) {
-            await writeFile(backlogFilename, contents.backlog, 'utf8');
+    const filename = join(root, '.features');
+    const features = await readFeatures(filename);
+    const knownIds = new Set(features.map(feature => feature.id.toLowerCase()));
+    for (const legacyName of legacyFeatureStores) {
+        const legacyFilename = join(root, legacyName);
+        const legacyFeaturesList = await readFeatures(legacyFilename);
+        for (const feature of legacyFeaturesList) {
+            if (!knownIds.has(feature.id.toLowerCase())) {
+                knownIds.add(feature.id.toLowerCase());
+                features.push(feature);
+            }
         }
-    };
+        if (legacyFeaturesList.length > 0 || await access(legacyFilename).then(() => true, () => false)) {
+            await writeFile(filename, serializeFeatures(features), 'utf8');
+            await rm(legacyFilename, { force: true });
+        }
+    }
+    const write = (contents: string): Promise<void> => writeFile(filename, contents, 'utf8');
     const store: FeatureStore = {
-        features: [...wishlist, ...backlog],
-        save: features => writeContents(splitContents(features)),
+        features,
+        save: updated => write(serializeFeatures(updated)),
         snapshot: () => {
-            const contents = splitContents(store.features);
-            return () => writeContents(contents);
-        },
-        moveToBacklog: id => {
-            backlogIds.add(id.toLowerCase());
+            const contents = serializeFeatures(store.features);
+            return () => write(contents);
         },
     };
     return store;
 }
-
 const featureIdFormat = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const statusMessage = 'Feature status must be Questions, Wished, Backlog, Queued, Committed, InProgress, Delivered, Done, Aborted, Denied, or Archived.';
 
@@ -340,10 +338,8 @@ export function createFeatureHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.wishlist');
-
         void readFeatureStore(root)
-            .then(async () => {
+            .then(async store => {
                 const oneLineDescription = description.trim().replace(/\s+/g, ' ');
                 const feature = withStatus({
                     id: randomUUID(),
@@ -352,7 +348,7 @@ export function createFeatureHandler(root: string): RequestHandler {
                     status: requestedStatus as PPTFeatureStatus,
                     description: oneLineDescription,
                 }, requestedStatus as PPTFeatureStatus);
-                await appendFile(filename, serializeFeatures([feature]), 'utf8');
+                await store.save([...store.features, feature]);
                 response.status(201).json({ data: feature });
             })
             .catch(next);
@@ -369,8 +365,8 @@ export function createFeaturesListHandler(root: string): RequestHandler {
 
 export function createBacklogListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
-        void readFeatures(join(root, '.backlog'))
-            .then(features => response.json({ data: features }))
+        void readFeatureStore(root)
+            .then(store => response.json({ data: store.features.filter(feature => feature.status === 'Queued') }))
             .catch(next);
     };
 }
@@ -400,23 +396,6 @@ async function readArchivedFeatures(root: string): Promise<PPTFeature[]> {
         });
 }
 
-async function removeFeatureLines(filename: string, ids: string[]): Promise<void> {
-    let contents: string;
-    try {
-        contents = await readFile(filename, 'utf8');
-    } catch (error) {
-        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-            return;
-        }
-        throw error;
-    }
-    const lines = contents.split(/\r?\n/);
-    const remaining = lines.filter(line => !ids.some(id => line.toLowerCase().includes(id.toLowerCase())));
-    if (remaining.length !== lines.length) {
-        await writeFile(filename, remaining.join(contents.includes('\r\n') ? '\r\n' : '\n'), 'utf8');
-    }
-}
-
 export async function deliverDoneFeatures(root: string): Promise<PPTFeature[]> {
     const currentFilename = join(root, '.current');
     let contents: string;
@@ -443,23 +422,17 @@ export async function deliverDoneFeatures(root: string): Promise<PPTFeature[]> {
         return [];
     }
 
-    await appendFile(join(root, '.delivered'), serializeFeatures(delivered), 'utf8');
+    const store = await readFeatureStore(root);
+    const deliveredIds = new Set(delivered.map(feature => feature.id.toLowerCase()));
+    await store.save([
+        ...store.features.filter(feature => !deliveredIds.has(feature.id.toLowerCase())),
+        ...delivered,
+    ]);
     await writeFile(currentFilename, remaining.join(contents.includes('\r\n') ? '\r\n' : '\n'), 'utf8');
-    const ids = delivered.map(feature => feature.id);
-    await removeFeatureLines(join(root, '.backlog'), ids);
-    await removeFeatureLines(join(root, '.wishlist'), ids);
-    for (const id of ids) {
+    for (const id of deliveredIds) {
         await removeStartedFeatureTask(root, id);
     }
     return delivered;
-}
-
-export function createDeliveredListHandler(root: string): RequestHandler {
-    return (_request, response, next) => {
-        void readFeatures(join(root, '.delivered'))
-            .then(features => response.json({ data: features.map(feature => withStatus(feature, 'Done')) }))
-            .catch(next);
-    };
 }
 
 export function createArchivedListHandler(root: string): RequestHandler {
@@ -647,7 +620,6 @@ export function createFeatureStartHandler(root: string): RequestHandler {
                 const feature = withStatus(features[featureIndex], 'Queued');
                 await addStartedFeatureToDevEnv(root, feature);
                 features[featureIndex] = feature;
-                store.moveToBacklog(id);
                 await store.save(features);
                 response.json({ data: feature });
             })

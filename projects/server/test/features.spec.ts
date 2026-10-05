@@ -25,7 +25,7 @@ describe('features public API', () => {
     }
 
     async function readPersistedFeatures(): Promise<PersistedFeature[]> {
-        const contents = await readFile(join(root, '.wishlist'), 'utf8');
+        const contents = await readFile(join(root, '.features'), 'utf8');
         return contents.split('\n').filter(Boolean).map(line => JSON.parse(line) as PersistedFeature);
     }
 
@@ -61,11 +61,11 @@ describe('features public API', () => {
         await rm(root, { recursive: true, force: true });
     });
 
-    it('persists a created feature as a stringified JSON line with a unique ID in .wishlist', async () => {
+    it('persists a created feature as a stringified JSON line with a unique ID in .features', async () => {
         const first = await request(app).post('/features').send({ description: 'First persisted feature', priority: 'High' });
         const second = await request(app).post('/features').send({ description: 'Another unrelated record', status: 'Done' });
 
-        const lines = (await readFile(join(root, '.wishlist'), 'utf8')).split('\n').filter(Boolean);
+        const lines = (await readFile(join(root, '.features'), 'utf8')).split('\n').filter(Boolean);
         const features = await readPersistedFeatures();
 
         expect(first.status).toBe(201);
@@ -105,7 +105,7 @@ describe('features public API', () => {
                 deliveredDate: '2026-10-05',
             }),
         ].join('\n') + '\n';
-        await writeFile(join(root, '.wishlist'), stored);
+        await writeFile(join(root, '.features'), stored);
 
         const response = await request(app).get('/features');
 
@@ -113,11 +113,11 @@ describe('features public API', () => {
             '// [2026-10-05 07:30 +02:00] [123e4567-e89b-42d3-a456-426614174000] [High] [Queued] A stored feature',
             '// [123e4567-e89b-42d3-a456-426614174001] [Low] [Done] Delivered feature [Delivered: 2026-10-05]',
         ]);
-        expect(await readFile(join(root, '.wishlist'), 'utf8')).toBe(stored);
+        expect(await readFile(join(root, '.features'), 'utf8')).toBe(stored);
     });
 
     it('migrates legacy lines and treats invalid JSON records as legacy feature text', async () => {
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             '{not json',
             'null',
             '{"id":5}',
@@ -165,7 +165,7 @@ describe('features public API', () => {
     });
 
     it('lists nonempty feature entries in file order', async () => {
-        await writeFile(join(root, '.wishlist'), '\n// first feature\n \n// second feature\n');
+        await writeFile(join(root, '.features'), '\n// first feature\n \n// second feature\n');
 
         const response = await request(app).get('/features');
 
@@ -186,7 +186,7 @@ describe('features public API', () => {
 
     it('adds IDs to legacy dated entries and preserves existing UUIDs', async () => {
         const existingId = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             '// [2026-10-04 22:45 +02:00] legacy feature',
             `// [2026-10-04 22:46 +02:00] [${existingId}] [high] [in progress] identified feature`,
             '',
@@ -203,7 +203,7 @@ describe('features public API', () => {
     });
 
     it('adds a Medium priority to legacy entries without timestamps', async () => {
-        await writeFile(join(root, '.wishlist'), '// legacy feature\n');
+        await writeFile(join(root, '.features'), '// legacy feature\n');
 
         const response = await request(app).get('/features');
 
@@ -214,7 +214,7 @@ describe('features public API', () => {
 
     it('adds a Backlog status to legacy entries and preserves existing statuses', async () => {
         const existingId = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             '// legacy feature',
             `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [dOnE] completed feature`,
             '// [123e4567-e89b-42d3-a456-426614174001] [Low] [qUeStIoNs] waiting for clarification',
@@ -241,7 +241,7 @@ describe('features public API', () => {
     });
 
     it('returns an empty list when the features file is empty', async () => {
-        await writeFile(join(root, '.wishlist'), ' \n\n');
+        await writeFile(join(root, '.features'), ' \n\n');
 
         const response = await request(app).get('/features');
 
@@ -255,7 +255,7 @@ describe('features public API', () => {
     });
 
     it('forwards feature list read errors to Express', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
 
         const response = await request(app).get('/features');
 
@@ -383,7 +383,7 @@ describe('features public API', () => {
     });
 
     it('appends new entries after existing feature entries', async () => {
-        await writeFile(join(root, '.wishlist'), '// existing entry\n');
+        await writeFile(join(root, '.features'), '// existing entry\n');
 
         const response = await request(app).post('/features').send({ description: 'Next feature' });
 
@@ -394,7 +394,7 @@ describe('features public API', () => {
     });
 
     it('separates an existing file without a trailing newline', async () => {
-        await writeFile(join(root, '.wishlist'), '// existing entry');
+        await writeFile(join(root, '.features'), '// existing entry');
 
         const response = await request(app).post('/features').send({ description: 'Next feature' });
 
@@ -428,7 +428,7 @@ describe('features public API', () => {
     });
 
     it('forwards filesystem read errors to Express', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
 
         const response = await request(app).post('/features').send({ description: 'Next feature' });
 
@@ -597,7 +597,7 @@ describe('features public API', () => {
     });
 
     it('forwards feature priority update filesystem errors to Express', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
 
         const response = await request(app)
             .patch('/features/123e4567-e89b-42d3-a456-426614174000')
@@ -617,7 +617,7 @@ describe('features public API', () => {
             `// [${secondId}] [Medium] [Queued] Second active feature`,
             `// [${completedId}] [Low] [Done] Unchanged completed feature`,
         ];
-        await writeFile(join(root, '.wishlist'), `${originalEntries.join('\n')}\n`);
+        await writeFile(join(root, '.features'), `${originalEntries.join('\n')}\n`);
 
         const movedUp = await request(app)
             .patch(`/features/${secondId}/order`)
@@ -650,7 +650,7 @@ describe('features public API', () => {
             `// [${firstId}] [High] [Queued] First active feature`,
             `// [${lastId}] [Low] [Queued] Last active feature`,
         ];
-        await writeFile(join(root, '.wishlist'), `${entries.join('\n')}\n`);
+        await writeFile(join(root, '.features'), `${entries.join('\n')}\n`);
 
         const firstMove = await request(app).patch(`/features/${firstId}/order`).send({ direction: 'up' });
         const lastMove = await request(app).patch(`/features/${lastId}/order`).send({ direction: 'down' });
@@ -681,7 +681,7 @@ describe('features public API', () => {
 
     it('rejects moving a feature that is not in progress', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [${id}] [Low] [Backlog] Backlog feature\n`);
+        await writeFile(join(root, '.features'), `// [${id}] [Low] [Backlog] Backlog feature\n`);
 
         const response = await request(app)
             .patch(`/features/${id}/order`)
@@ -692,7 +692,7 @@ describe('features public API', () => {
     });
 
     it('forwards feature order filesystem errors to Express', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
 
         const response = await request(app)
             .patch('/features/123e4567-e89b-42d3-a456-426614174000/order')
@@ -733,9 +733,8 @@ describe('features public API', () => {
 
         expect(response.status).toBe(200);
         expect(entryData(response.body)).toContain('[Queued] Implement feature tracking');
-        expect(await readFile(join(root, '.wishlist'), 'utf8')).toBe('');
-        const backlog = (await readFile(join(root, '.backlog'), 'utf8')).split('\n').filter(Boolean);
-        expect(backlog.map(line => JSON.parse(line))).toEqual([response.body.data]);
+        const stored = (await readFile(join(root, '.features'), 'utf8')).split('\n').filter(Boolean);
+        expect(stored.map(line => JSON.parse(line))).toEqual([response.body.data]);
         const listed = await request(app).get('/features');
         expect(listed.body.data).toEqual([response.body.data]);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
@@ -744,7 +743,7 @@ describe('features public API', () => {
         );
     });
 
-    it('keeps started features in .backlog and others in .wishlist across later changes', async () => {
+    it('lists only started features in the backlog while all features stay in .features', async () => {
         const first = await request(app).post('/features').send({ description: 'Stay on the wishlist' });
         const second = await request(app).post('/features').send({ description: 'Move to the backlog' });
         await writeFile(join(root, 'DEVENVOPDEV.md'), 'The features you are writing are, take them one by one:\n');
@@ -755,13 +754,13 @@ describe('features public API', () => {
             .send({ priority: 'High' });
 
         expect(priority.status).toBe(200);
-        const wishlist = (await readFile(join(root, '.wishlist'), 'utf8')).split('\n').filter(Boolean);
-        const backlog = (await readFile(join(root, '.backlog'), 'utf8')).split('\n').filter(Boolean);
-        expect(wishlist.map(line => JSON.parse(line).id)).toEqual([first.body.data.id]);
-        expect(backlog.map(line => JSON.parse(line).id)).toEqual([second.body.data.id]);
+        const stored = (await readFile(join(root, '.features'), 'utf8')).split('\n').filter(Boolean);
+        expect(stored.map(line => JSON.parse(line).id)).toEqual([first.body.data.id, second.body.data.id]);
+        const backlog = await request(app).get('/backlog');
+        expect(backlog.body.data.map((feature: { id: string }) => feature.id)).toEqual([second.body.data.id]);
 
         await request(app).delete(`/features/${second.body.data.id}`);
-        expect(await readFile(join(root, '.backlog'), 'utf8')).toBe('');
+        expect((await request(app).get('/backlog')).body.data).toEqual([]);
     });
 
     it('adds a newly started feature after the existing in-progress tasks', async () => {
@@ -795,7 +794,7 @@ describe('features public API', () => {
     it('moves an existing task marker to the bottom without creating a duplicate', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
         const otherId = '123e4567-e89b-42d3-a456-426614174001';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [High] [Queued] Keep task listed\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'Instructions',
@@ -893,7 +892,7 @@ describe('features public API', () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
         const feature = `// [${id}] [High] [Queued] Commit this feature`;
         const marker = `<!-- feature-id:${id} -->`;
-        await writeFile(join(root, '.wishlist'), `${feature}\n`);
+        await writeFile(join(root, '.features'), `${feature}\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Commit this feature ${marker}\n`);
 
         const response = await request(app)
@@ -960,7 +959,7 @@ describe('features public API', () => {
         const feature = `// [${id}] [High] [Queued] Stop this feature`;
         const marker = `<!-- feature-id:${id} -->`;
         const otherTask = '- [In progress] Keep this task <!-- feature-id:123e4567-e89b-42d3-a456-426614174001 -->';
-        await writeFile(join(root, '.wishlist'), `${feature}\n`);
+        await writeFile(join(root, '.features'), `${feature}\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'The features you are writing are, take them one by one:',
             `- [In progress] Stop this feature ${marker}`,
@@ -1029,7 +1028,7 @@ describe('features public API', () => {
     });
 
     it('forwards feature status update filesystem errors to Express', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
 
         const response = await request(app)
             .patch('/features/123e4567-e89b-42d3-a456-426614174000/status')
@@ -1129,7 +1128,7 @@ describe('features public API', () => {
     });
 
     it('forwards feature removal filesystem errors to Express', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
 
         const response = await request(app)
             .delete('/features/123e4567-e89b-42d3-a456-426614174000');

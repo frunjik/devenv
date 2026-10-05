@@ -161,10 +161,6 @@ export class BackendService {
         return this.get<PPTFeature[]>('archived');
     }
 
-    getDelivered(): Observable<PPTFeature[]> {
-        return this.get<PPTFeature[]>('delivered');
-    }
-
     getServerVersion(): Observable<string> {
         return this.get<string>('version');
     }

@@ -142,14 +142,10 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         this.featureRefreshSubscription.unsubscribe();
         this.isLoadingFeatures = true;
         this.featuresError = '';
-        this.featureRefreshSubscription = forkJoin([
-            this.backend.getFeatures(),
-            this.backend.getDelivered(),
-            this.backend.getArchived(),
-        ]).subscribe({
-            next: ([features, deliveredFeatures, archivedFeatures]) => {
+        this.featureRefreshSubscription = forkJoin([this.backend.getFeatures(), this.backend.getArchived()]).subscribe({
+            next: ([features, archivedFeatures]) => {
                 this.features = features;
-                this.archivedFeatures = [...deliveredFeatures, ...archivedFeatures];
+                this.archivedFeatures = archivedFeatures;
                 this.refreshFeatureLists();
                 this.isLoadingFeatures = false;
             },

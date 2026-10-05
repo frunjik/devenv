@@ -19,9 +19,7 @@ describe('FeatureDescriptionComponent', () => {
     const browserWindow = window as Window & { host?: string };
 
     async function readFeatureFile(): Promise<string> {
-        const wishlist = await readFile(join(root, '.wishlist'), 'utf8');
-        const backlog = await readFile(join(root, '.backlog'), 'utf8').catch(() => '');
-        const contents = `${wishlist}${backlog}`;
+        const contents = await readFile(join(root, '.features'), 'utf8');
         return contents.split('\n').filter(Boolean).map(line => {
             const feature = JSON.parse(line) as {
                 id: string;
@@ -54,10 +52,8 @@ describe('FeatureDescriptionComponent', () => {
     });
 
     beforeEach(async () => {
-        await rm(join(root, '.wishlist'), { recursive: true, force: true });
-        await rm(join(root, '.backlog'), { recursive: true, force: true });
+        await rm(join(root, '.features'), { recursive: true, force: true });
         await rm(join(root, '.archived'), { recursive: true, force: true });
-        await rm(join(root, '.delivered'), { recursive: true, force: true });
         await rm(join(root, 'DEVENVOPDEV.md'), { recursive: true, force: true });
         await writeFile(join(root, 'DEVENVOPDEV.md'), 'Instructions\n\n'
             + 'The features you are writing are, take them one by one:\n');
@@ -139,7 +135,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const matchingId = '123e4567-e89b-42d3-a456-426614174000';
         const otherId = '123e4567-e89b-42d3-a456-426614174001';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [${matchingId}] [High] [Queued] Matching active feature`,
             `// [${otherId}] [Low] [Queued] Unrelated active feature`,
             '',
@@ -169,7 +165,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
 
-        await writeFile(join(root, '.wishlist'), '// A feature added elsewhere\n');
+        await writeFile(join(root, '.features'), '// A feature added elsewhere\n');
         const refreshButton: HTMLButtonElement =
             fixture.nativeElement.querySelector('.feature-refresh-button');
         expect(refreshButton.getAttribute('aria-label')).toBe('Refresh feature list');
@@ -198,7 +194,7 @@ describe('FeatureDescriptionComponent', () => {
     it('shows saved features below the form', async () => {
         await fixture.whenStable();
         const content = '// [2026-10-04 22:45 +02:00] Add a saved feature\n// [2026-10-04 22:46 +02:00] Add another feature\n';
-        await writeFile(join(root, '.wishlist'), content);
+        await writeFile(join(root, '.features'), content);
 
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -232,7 +228,7 @@ describe('FeatureDescriptionComponent', () => {
     it('lists only queued features in its own section and keeps the complete list', async () => {
         await fixture.whenStable();
         const queuedId = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [${queuedId}] [High] [Queued] Feature being worked on`,
             '// [123e4567-e89b-42d3-a456-426614174001] [Medium] [Backlog] Feature waiting',
             '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature',
@@ -263,7 +259,7 @@ describe('FeatureDescriptionComponent', () => {
         const firstId = '123e4567-e89b-42d3-a456-426614174000';
         const backlogId = '123e4567-e89b-42d3-a456-426614174001';
         const secondId = '123e4567-e89b-42d3-a456-426614174002';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [${firstId}] [High] [Queued] First active feature`,
             `// [${backlogId}] [Low] [Backlog] Unchanged backlog feature`,
             `// [${secondId}] [Medium] [Queued] Second active feature`,
@@ -314,7 +310,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const firstId = '123e4567-e89b-42d3-a456-426614174000';
         const secondId = '123e4567-e89b-42d3-a456-426614174001';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [${firstId}] [High] [Queued] First active feature`,
             `// [${secondId}] [Medium] [Queued] Second active feature`,
             '',
@@ -323,8 +319,8 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.componentInstance.selectFeatureTab('queued');
         fixture.detectChanges();
-        await rm(join(root, '.wishlist'));
-        await mkdir(join(root, '.wishlist'));
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
 
         (fixture.nativeElement.querySelectorAll('.feature-move-up-button')[1] as HTMLButtonElement).click();
         await fixture.whenStable();
@@ -339,7 +335,7 @@ describe('FeatureDescriptionComponent', () => {
     it('aborts an queued feature, returns it to the open list, and clears active work', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [High] [Queued] Feature to abort\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to abort <!-- feature-id:${id} -->\n`);
@@ -375,7 +371,7 @@ describe('FeatureDescriptionComponent', () => {
     it('retains queued status and reports errors when aborting a feature fails', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [Medium] [Queued] Feature that cannot be aborted\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -399,7 +395,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('shows completed features separately when there are no open features', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature\n');
+        await writeFile(join(root, '.features'), '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Completed feature\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -413,7 +409,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('lists .archived entries on the Done tab after the features with status Done', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             '{"id":"123e4567-e89b-42d3-a456-426614174004","priority":"Low","status":"Done","description":"Wishlist entry"}\n');
         await writeFile(join(root, '.archived'), 'Archived\n// [2026-10-04 21:00 +02:00] Archived entry\n');
         fixture.componentInstance.refreshFeatures();
@@ -425,9 +421,9 @@ describe('FeatureDescriptionComponent', () => {
         expect(done).toEqual(['Wishlist entry', 'Archived entry']);
     });
 
-    it('lists .delivered entries on the Done tab', async () => {
+    it('lists features with status Done from .features on the Done tab', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.delivered'),
+        await writeFile(join(root, '.features'),
             '{"id":"123e4567-e89b-42d3-a456-426614174005","priority":"Low","status":"Done","description":"Delivered entry"}\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -440,7 +436,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('filters the completed list with the shared feature search', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Done] Finished feature',
             '// [123e4567-e89b-42d3-a456-426614174003] [Medium] [Done] Other completion',
             '',
@@ -467,7 +463,7 @@ describe('FeatureDescriptionComponent', () => {
             '123e4567-e89b-42d3-a456-426614174002',
             '123e4567-e89b-42d3-a456-426614174003',
         ];
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [${ids[0]}] [High] [Questions] Needs clarification`,
             `// [${ids[1]}] [Medium] [Backlog] Urgent task`,
             `// [${ids[2]}] [Medium] [Queued] Active task`,
@@ -504,7 +500,7 @@ describe('FeatureDescriptionComponent', () => {
     it('edits a Queued feature from the Queued list', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `{"id":"${id}","priority":"High","status":"Queued","description":"Queued feature"}\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -530,7 +526,7 @@ describe('FeatureDescriptionComponent', () => {
     it('edits a feature description in a dialog and updates its active task', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [High] [Queued] Old feature description\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), [
             'The features you are writing are, take them one by one:',
@@ -581,7 +577,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('does not update a feature when the edit dialog is cancelled', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// A feature to cancel editing\n');
+        await writeFile(join(root, '.features'), '// A feature to cancel editing\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -610,7 +606,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('does not submit a blank description with the keyboard shortcut', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// A feature to keep while editing\n');
+        await writeFile(join(root, '.features'), '// A feature to keep while editing\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -643,7 +639,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('does not send a save when the description is unchanged', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// An unchanged feature\n');
+        await writeFile(join(root, '.features'), '// An unchanged feature\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -661,12 +657,12 @@ describe('FeatureDescriptionComponent', () => {
 
     it('reports edit failures and keeps the original feature description visible', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// Feature whose edit will fail\n');
+        await writeFile(join(root, '.features'), '// Feature whose edit will fail\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
-        await rm(join(root, '.wishlist'));
-        await mkdir(join(root, '.wishlist'));
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
 
         fixture.nativeElement.querySelector('.feature-edit-button')!.click();
         fixture.detectChanges();
@@ -691,7 +687,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const firstId = '223e4567-e89b-42d3-a456-426614174001';
         const secondId = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [2026-10-04 22:45 +02:00] [${firstId}] [Low] [Done] Zebra feature`,
             `// [2026-10-04 22:46 +02:00] [${secondId}] [High] [Backlog] Apple feature`,
             '',
@@ -725,7 +721,7 @@ describe('FeatureDescriptionComponent', () => {
     it('marks a feature as started when its row action is clicked', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -759,7 +755,7 @@ describe('FeatureDescriptionComponent', () => {
     it('activates an already queued feature when its row action is clicked', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Queued] Continue this feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -784,7 +780,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         const completedId = '123e4567-e89b-42d3-a456-426614174000';
         const remainingId = '123e4567-e89b-42d3-a456-426614174001';
-        await writeFile(join(root, '.wishlist'), [
+        await writeFile(join(root, '.features'), [
             `// [2026-10-04 22:45 +02:00] [${completedId}] [High] [Backlog] Completed feature`,
             `// [2026-10-04 22:46 +02:00] [${remainingId}] [Medium] [Backlog] Remaining feature`,
             '',
@@ -841,12 +837,12 @@ describe('FeatureDescriptionComponent', () => {
     it('retains the feature and reports errors when marking it done fails', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Keep this feature\n`);
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Keep this feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
-        await rm(join(root, '.wishlist'));
-        await mkdir(join(root, '.wishlist'));
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
 
         const doneButton: HTMLButtonElement = fixture.nativeElement.querySelector('.feature-done-button');
         doneButton.click();
@@ -949,7 +945,7 @@ describe('FeatureDescriptionComponent', () => {
     it('updates an open feature status through the public API', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [2026-10-04 22:45 +02:00] [${id}] [High] Feature to track\n`);
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [High] Feature to track\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'), `- [In progress] Feature to track <!-- feature-id:${id} -->\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -979,7 +975,7 @@ describe('FeatureDescriptionComponent', () => {
     it('keeps a feature in Questions status and removes it from the active task list', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [High] [Queued] Feature needing clarification\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature needing clarification <!-- feature-id:${id} -->\n`);
@@ -1006,7 +1002,7 @@ describe('FeatureDescriptionComponent', () => {
     it('sets a feature to Denied from the client and clears its active task marker', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [High] [Queued] Feature to deny\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to deny <!-- feature-id:${id} -->\n`);
@@ -1035,7 +1031,7 @@ describe('FeatureDescriptionComponent', () => {
     it('denies an open feature using its action button', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [Medium] [Backlog] Feature to deny by button\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature to deny by button <!-- feature-id:${id} -->\n`);
@@ -1060,7 +1056,7 @@ describe('FeatureDescriptionComponent', () => {
     it('sets a feature to Committed from the client and keeps its feature record', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [${id}] [High] [Queued] Feature already committed\n`);
         await writeFile(join(root, 'DEVENVOPDEV.md'),
             `- [In progress] Feature already committed <!-- feature-id:${id} -->\n`);
@@ -1089,7 +1085,7 @@ describe('FeatureDescriptionComponent', () => {
     it('records a feature as in progress in DEVENVOPDEV.md when its status is changed', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to promote\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -1116,13 +1112,13 @@ describe('FeatureDescriptionComponent', () => {
     it('reports status update failures and restores the previous selection', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to track\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
-        await rm(join(root, '.wishlist'));
-        await mkdir(join(root, '.wishlist'));
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
 
         const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
         selector.value = 'Done';
@@ -1138,13 +1134,13 @@ describe('FeatureDescriptionComponent', () => {
     it('does not activate a feature when its status cannot be updated from Start', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to start\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
-        await rm(join(root, '.wishlist'));
-        await mkdir(join(root, '.wishlist'));
+        await rm(join(root, '.features'));
+        await mkdir(join(root, '.features'));
 
         fixture.nativeElement.querySelector('.feature-start-button')!.click();
         await fixture.whenStable();
@@ -1158,7 +1154,7 @@ describe('FeatureDescriptionComponent', () => {
     it('does not activate a feature when DEVENVOPDEV.md cannot be updated from Start', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature to start\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -1178,7 +1174,7 @@ describe('FeatureDescriptionComponent', () => {
     it('updates an open feature priority through the public API', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] Add a feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -1198,7 +1194,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('shows legacy feature priorities and descriptions without a timestamp', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// Legacy feature\n');
+        await writeFile(join(root, '.features'), '// Legacy feature\n');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -1213,11 +1209,11 @@ describe('FeatureDescriptionComponent', () => {
     it('reports priority update failures and restores the previous selection', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature to prioritize\n`);
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature to prioritize\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
-        await writeFile(join(root, '.wishlist'), '');
+        await writeFile(join(root, '.features'), '');
 
         const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.mat-column-priority select');
         selector.value = 'High';
@@ -1233,7 +1229,7 @@ describe('FeatureDescriptionComponent', () => {
     it('ignores invalid and unchanged priority selections', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature\n`);
+        await writeFile(join(root, '.features'), `// [2026-10-04 22:45 +02:00] [${id}] [Medium] Feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -1253,7 +1249,7 @@ describe('FeatureDescriptionComponent', () => {
     it('ignores invalid and unchanged status selections', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.wishlist'),
+        await writeFile(join(root, '.features'),
             `// [2026-10-04 22:45 +02:00] [${id}] [Medium] [Backlog] Feature\n`);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
@@ -1273,7 +1269,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('paginates the open features table', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), Array.from(
+        await writeFile(join(root, '.features'), Array.from(
             { length: 7 },
             (_, index) => `// Feature ${index + 1}`,
         ).join('\n'));
@@ -1303,7 +1299,7 @@ describe('FeatureDescriptionComponent', () => {
         const content = Array.from({ length: 7 }, (_, index) =>
             `// [2026-10-04 22:45 +02:00] [123e4567-e89b-42d3-a456-42661417400${index}] Feature ${index + 1}`,
         ).join('\n');
-        await writeFile(join(root, '.wishlist'), content);
+        await writeFile(join(root, '.features'), content);
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -1333,7 +1329,7 @@ describe('FeatureDescriptionComponent', () => {
 
     it('shows an empty state when no feature matches the search', async () => {
         await fixture.whenStable();
-        await writeFile(join(root, '.wishlist'), '// One feature');
+        await writeFile(join(root, '.features'), '// One feature');
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -1381,7 +1377,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.componentInstance.submit();
 
         expect(fixture.componentInstance.isSubmitting).toBe(false);
-        await expect(readFile(join(root, '.wishlist'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+        await expect(readFile(join(root, '.features'), 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
     });
 
     it('prevents duplicate submissions while the backend request is pending', async () => {
@@ -1396,7 +1392,7 @@ describe('FeatureDescriptionComponent', () => {
     });
 
     it('shows backend errors to the user', async () => {
-        await mkdir(join(root, '.wishlist'));
+        await mkdir(join(root, '.features'));
         const textarea: HTMLTextAreaElement = fixture.nativeElement.querySelector('textarea');
         textarea.value = 'This cannot be saved';
         textarea.dispatchEvent(new Event('input'));
@@ -1416,8 +1412,8 @@ describe('FeatureDescriptionComponent', () => {
 
     it('shows backend errors when loading the open feature list', async () => {
         await fixture.whenStable();
-        await rm(join(root, '.wishlist'), { force: true });
-        await mkdir(join(root, '.wishlist'));
+        await rm(join(root, '.features'), { force: true });
+        await mkdir(join(root, '.features'));
 
         fixture.componentInstance.refreshFeatures();
         await fixture.whenStable();

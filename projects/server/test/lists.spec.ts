@@ -65,11 +65,12 @@ describe('history, glossary and backlog API', () => {
         expect(response.status).toBe(500);
     });
 
-    it('returns only the features stored in .backlog', async () => {
-        await writeFile(join(root, '.wishlist'),
-            '{"id":"123e4567-e89b-42d3-a456-426614174000","priority":"Low","status":"Wished","description":"Wish"}\n');
-        await writeFile(join(root, '.backlog'),
-            '{"id":"123e4567-e89b-42d3-a456-426614174001","priority":"High","status":"Queued","description":"Backlog item"}\n');
+    it('returns only the Queued features stored in .features', async () => {
+        await writeFile(join(root, '.features'), [
+            '{"id":"123e4567-e89b-42d3-a456-426614174000","priority":"Low","status":"Wished","description":"Wish"}',
+            '{"id":"123e4567-e89b-42d3-a456-426614174001","priority":"High","status":"Queued","description":"Backlog item"}',
+            '',
+        ].join('\n'));
 
         const response = await request(app).get('/backlog');
 
@@ -79,11 +80,29 @@ describe('history, glossary and backlog API', () => {
         ]);
     });
 
-    it('returns an empty backlog when .backlog does not exist and forwards other read errors', async () => {
+    it('returns an empty backlog when .features does not exist and forwards other read errors', async () => {
         expect((await request(app).get('/backlog')).body).toEqual({ data: [] });
 
-        await mkdir(join(root, '.backlog'));
+        await mkdir(join(root, '.features'));
         expect((await request(app).get('/backlog')).status).toBe(500);
+    });
+
+    it('migrates .wishlist, .backlog and .delivered into .features once and removes them', async () => {
+        const line = (id: string, status: string): string =>
+            `{"id":"123e4567-e89b-42d3-a456-42661417400${id}","priority":"Low","status":"${status}","description":"f${id}"}\n`;
+        await writeFile(join(root, '.features'), line('0', 'Wished'));
+        await writeFile(join(root, '.wishlist'), line('0', 'Done') + line('1', 'Wished'));
+        await writeFile(join(root, '.backlog'), line('2', 'Queued'));
+        await writeFile(join(root, '.delivered'), '');
+
+        const response = await request(app).get('/features');
+
+        expect(response.body.data.map((feature: { id: string }) => feature.id.slice(-1))).toEqual(['0', '1', '2']);
+        expect(response.body.data[0].status).toBe('Wished');
+        expect((await readFile(join(root, '.features'), 'utf8')).split('\n').filter(Boolean)).toHaveLength(3);
+        for (const legacy of ['.wishlist', '.backlog', '.delivered']) {
+            await expect(readFile(join(root, legacy), 'utf8')).rejects.toThrow();
+        }
     });
 
     it('returns .archived entries as Done features with stable ids without rewriting the file', async () => {
@@ -117,20 +136,6 @@ describe('history, glossary and backlog API', () => {
         expect((await request(app).get('/archived')).status).toBe(500);
     });
 
-    it('returns .delivered features as Done and forwards read errors', async () => {
-        expect((await request(app).get('/delivered')).body).toEqual({ data: [] });
-
-        await writeFile(join(root, '.delivered'),
-            '{"id":"123e4567-e89b-42d3-a456-426614174000","priority":"Low","status":"Delivered","description":"Shipped"}\n');
-        const response = await request(app).get('/delivered');
-        expect(response.body.data).toHaveLength(1);
-        expect(response.body.data[0]).toMatchObject({ description: 'Shipped', status: 'Done' });
-
-        await rm(join(root, '.delivered'));
-        await mkdir(join(root, '.delivered'));
-        expect((await request(app).get('/delivered')).status).toBe(500);
-    });
-
     describe('delivering Done features on commit', () => {
         const doneId = '123e4567-e89b-42d3-a456-426614174001';
         const openId = '123e4567-e89b-42d3-a456-426614174002';
@@ -156,26 +161,24 @@ describe('history, glossary and backlog API', () => {
             }
         });
 
-        it('moves Done records from .current to .delivered and removes them elsewhere before committing', async () => {
+        it('moves Done records from .current into .features and removes the task line before committing', async () => {
             await writeFile(join(root, '.current'),
                 `${record(doneId, 'Done', 'Finished')}\n${record(openId, 'InProgress', 'Working')}\nlegacy line\n`);
-            await writeFile(join(root, '.backlog'), `${record(doneId, 'Queued', 'Finished')}\n`);
-            await writeFile(join(root, '.wishlist'), `${record(openId, 'Wished', 'Other')}\n`);
+            await writeFile(join(root, '.features'),
+                `${record(doneId, 'Queued', 'Finished')}\n${record(openId, 'Wished', 'Other')}\n`);
             await writeFile(join(root, 'DEVENVOPDEV.md'),
                 `The features you are writing are, take them one by one:\n${record(doneId, 'Queued', 'Finished')}\n`);
 
             const response = await request(gitApp).post('/git/commit').send({ message: 'Deliver' });
 
             expect(response.status).toBe(200);
-            expect(await readFile(join(root, '.delivered'), 'utf8')).toContain(doneId);
+            const stored = (await readFile(join(root, '.features'), 'utf8')).split('\n').filter(Boolean)
+                .map(entry => JSON.parse(entry));
+            expect(stored.map(feature => [feature.id, feature.status])).toEqual([[openId, 'Wished'], [doneId, 'Done']]);
             expect(await readFile(join(root, '.current'), 'utf8')).not.toContain(doneId);
             expect(await readFile(join(root, '.current'), 'utf8')).toContain(openId);
-            expect(await readFile(join(root, '.backlog'), 'utf8')).not.toContain(doneId);
-            expect(await readFile(join(root, '.wishlist'), 'utf8')).toContain(openId);
             expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(doneId);
-            expect(execFileSync('git', ['-C', root, 'show', 'HEAD:.delivered'], { encoding: 'utf8' })).toContain(doneId);
-            const delivered = (await request(gitApp).get('/delivered')).body.data;
-            expect(delivered.map((feature: { id: string }) => feature.id)).toEqual([doneId]);
+            expect(execFileSync('git', ['-C', root, 'show', 'HEAD:.features'], { encoding: 'utf8' })).toContain(doneId);
         });
 
         it('leaves everything untouched when .current is missing or has no Done records', async () => {
@@ -184,26 +187,24 @@ describe('history, glossary and backlog API', () => {
 
             await writeFile(join(root, '.current'), `${record(openId, 'InProgress', 'Working')}\n`);
             expect((await request(gitApp).post('/git/commit').send({ message: 'Two' })).status).toBe(200);
-            await expect(readFile(join(root, '.delivered'), 'utf8')).rejects.toThrow();
+            await expect(readFile(join(root, '.features'), 'utf8')).rejects.toThrow();
         });
 
-        it('delivers when the other files are missing or already clean', async () => {
+        it('delivers when .features and DEVENVOPDEV.md do not contain the record yet', async () => {
             await writeFile(join(root, '.current'), `${record(doneId, 'Done', 'Finished')}\n`);
-            await writeFile(join(root, '.wishlist'), `${record(openId, 'Wished', 'Other')}\n`);
+            await writeFile(join(root, '.features'), `${record(openId, 'Wished', 'Other')}\n`);
 
             expect((await request(gitApp).post('/git/commit').send({ message: 'Deliver' })).status).toBe(200);
-            expect(await readFile(join(root, '.wishlist'), 'utf8')).toContain(openId);
+            expect(await readFile(join(root, '.features'), 'utf8')).toContain(doneId);
+            expect(await readFile(join(root, '.features'), 'utf8')).toContain(openId);
         });
 
-        it('keeps CRLF line endings in the files it rewrites', async () => {
+        it('keeps CRLF line endings in .current', async () => {
             await writeFile(join(root, '.current'),
                 `${record(doneId, 'Done', 'Finished')}\r\n${record(openId, 'InProgress', 'Working')}\r\n`);
-            await writeFile(join(root, '.backlog'),
-                `${record(doneId, 'Queued', 'Finished')}\r\n${record(openId, 'Queued', 'Working')}\r\n`);
 
             expect((await request(gitApp).post('/git/commit').send({ message: 'Deliver' })).status).toBe(200);
             expect(await readFile(join(root, '.current'), 'utf8')).toBe(`${record(openId, 'InProgress', 'Working')}\r\n`);
-            expect(await readFile(join(root, '.backlog'), 'utf8')).toBe(`${record(openId, 'Queued', 'Working')}\r\n`);
         });
 
         it('fails the commit when a tracking file cannot be read', async () => {
@@ -212,7 +213,7 @@ describe('history, glossary and backlog API', () => {
 
             await rm(join(root, '.current'), { recursive: true });
             await writeFile(join(root, '.current'), `${record(doneId, 'Done', 'Finished')}\n`);
-            await mkdir(join(root, '.backlog'));
+            await mkdir(join(root, '.features'));
             expect((await request(gitApp).post('/git/commit').send({ message: 'Fail' })).status).toBe(500);
         });
     });

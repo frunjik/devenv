@@ -291,7 +291,7 @@ export class SystemPlanComponent {
             id: 'SC-018',
             title: 'Explore a wide-screen inquiry layout',
             kind: 'Design',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: ['SC-016'],
             summary: 'Evaluate a responsive grid-based arrangement against the current stacked page.',
         },

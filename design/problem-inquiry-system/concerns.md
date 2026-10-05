@@ -270,13 +270,14 @@ Add a toggle to the inquiry data views. In the combined mode, show sample and re
 
 ### SC-018 — Explore a wide-screen inquiry layout
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-016
+**Kind:** Design · **Status:** Validated · **Depends on:** SC-016
 
 Evaluate how the inquiry workflow can use wide displays more effectively. Compare the current stacked arrangement with a responsive grid-based alternative, considering how the converter, accepted-note list, ticket-framing form, and framed-ticket list relate.
 
 **Working boundary:** This is a layout exploration, not a commitment to use a grid. Keep narrow-screen behavior usable and avoid reducing readability to fill available width.
 **Open questions:** Which sections should share a row or column at desktop sizes? Should the grid follow workflow stages, or place inputs beside their resulting lists? What viewport widths should trigger layout changes?
-**Validation evidence:** Requested by the user on 2026-10-06. No alternative layout has been prototyped or evaluated yet.
+**Decision:** Use paired columns on wide screens: the converter beside accepted notes, and the ticket-framing form beside framed tickets. Keep a single-column flow below 70rem.
+**Validation evidence:** The responsive grid was inspected in the browser at 320, 768, 1024, and 1440 px. No horizontal overflow occurs; the paired workflow sections sit side by side at 1440 px and stack below the breakpoint. The grid makes use of wide space but does not materially reduce total page height in the empty state because the explicit ticket form remains tall; compacting or changing that form is outside this layout decision.
 
 ### SC-019 — Clarify what a system concern is
 

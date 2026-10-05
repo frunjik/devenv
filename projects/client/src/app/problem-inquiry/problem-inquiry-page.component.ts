@@ -32,6 +32,51 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
             <app-framed-tickets-list [tickets]="visibleTickets" [notes]="visibleNotes" />
         </main>
     `,
+    styles: `
+        :host {
+            display: block;
+            min-width: 0;
+        }
+
+        main {
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 1.5rem;
+            width: min(100%, 100rem);
+            margin-inline: auto;
+            padding: 1rem;
+        }
+
+        h1,
+        .sample-data-toggle {
+            margin: 0;
+        }
+
+        .sample-data-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sample-data-toggle input {
+            width: auto;
+        }
+
+        @media (min-width: 70rem) {
+            main {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                column-gap: 2rem;
+                row-gap: 2rem;
+                padding: 2rem;
+            }
+
+            h1,
+            .sample-data-toggle {
+                grid-column: 1 / -1;
+            }
+        }
+    `,
 })
 export class ProblemInquiryPageComponent {
     notes: readonly ImportedNote[] = [];

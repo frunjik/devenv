@@ -12,21 +12,9 @@ import { createGitStatusHandler } from './handlers/git-status';
 import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createLinesHandler } from './handlers/lines';
-import { createCurrentTaskHandler } from './handlers/current-task';
 import {
     createFeatureHandler,
-    createFeatureDescriptionHandler,
-    createFeatureOrderHandler,
-    createFeaturePriorityHandler,
-    createFeatureStartHandler,
-    createFeatureStatusHandler,
     createFeaturesListHandler,
-    createFeatureRemovalHandler,
-    createArchivedListHandler,
-    createFeatureArchiveHandler,
-    createArchiveDoneHandler,
-    createBacklogListHandler,
-    deliverDoneFeatures,
 } from './handlers/features';
 import {
     createAuthenticationMiddleware,
@@ -71,29 +59,18 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.post('/files', postFiles as RequestHandler);
     app.get('/folders', getFolders as RequestHandler);
     app.get('/current', createCurrentEntryHandler(root));
-    app.get('/task', createCurrentTaskHandler(root));
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
     app.get('/ppt/fields', (_request, response) => response.json({ data: [] }));
     app.get('/history', createLinesHandler(root, ['.history']));
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
-    app.get('/backlog', createBacklogListHandler(root));
-    app.get('/archived', createArchivedListHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
-    app.patch('/features/:id/description', createFeatureDescriptionHandler(root));
-    app.patch('/features/:id/order', createFeatureOrderHandler(root));
-    app.patch('/features/:id', createFeaturePriorityHandler(root));
-    app.post('/features/:id/start', createFeatureStartHandler(root));
-    app.post('/features/archive-done', createArchiveDoneHandler(root));
-    app.post('/features/:id/archive', createFeatureArchiveHandler(root));
-    app.patch('/features/:id/status', createFeatureStatusHandler(root));
-    app.delete('/features/:id', createFeatureRemovalHandler(root));
 
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));
         app.get('/tests/cache/status', createTestRunCacheStatusHandler(testRunCacheDirectory));
-        app.post('/git/commit', createGitCommitHandler(gitCommitCwd, undefined, () => deliverDoneFeatures(root)));
+        app.post('/git/commit', createGitCommitHandler(gitCommitCwd));
         app.post('/git/undo', createGitUndoHandler(gitCommitCwd));
         app.get('/git/diff', createGitDiffHandler(gitCommitCwd));
         app.get('/git/log', createGitLogHandler(gitCommitCwd));

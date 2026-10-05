@@ -64,7 +64,6 @@ describe('AppComponent', () => {
                 exitCode: null,
             },
         }));
-        http.match('http://localhost:3000/task').forEach(request => request.flush({ data: null }));
         http.match('http://localhost:3000/current').forEach(request => request.flush({ data: null }));
         http.match('http://localhost:3000/git/status').forEach(request => request.flush({
             data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
@@ -119,83 +118,6 @@ describe('AppComponent', () => {
         const versionInfo = fixture.nativeElement.querySelector('.version-info');
         expect(versionInfo.textContent.trim()).toMatch(/Client v\d+\.\d+\.\d+ \| Server vunavailable/);
         expect(fixture.debugElement.query(By.css('.version-info')).injector.get(MatTooltip).message)
-            .toContain('500');
-        fixture.destroy();
-    });
-
-    it('shows and refreshes the DEVENVOPDEV task at the right side of the top toolbar', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('Loading…');
-
-        const initialRequest = http.expectOne('http://localhost:3000/task');
-        expect(initialRequest.request.method).toBe('GET');
-        initialRequest.flush({
-            data: '- [In progress] Implement current task toolbar <!-- feature-id:123e4567-e89b-42d3-a456-426614174000 -->',
-        });
-        fixture.detectChanges();
-
-        const taskControl = fixture.nativeElement.querySelector('.top-current-task');
-        expect(taskControl.textContent).toContain('Implement current task toolbar');
-        expect(taskControl.textContent).not.toContain('[Queued]');
-        expect(taskControl.textContent).not.toContain('feature-id:');
-        expect(taskControl.getAttribute('aria-label')).toBe('Refresh current task');
-        expect(taskControl.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
-            & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
-        expect(fixture.debugElement.query(By.css('.top-current-task')).injector.get(MatTooltip).message)
-            .toBe('Implement current task toolbar');
-
-        taskControl.click();
-        const refreshRequest = http.expectOne('http://localhost:3000/task');
-        refreshRequest.flush({ data: '- [Questions] Next task <!-- feature-id:123e4567-e89b-42d3-a456-426614174001 -->' });
-        fixture.detectChanges();
-
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('Next task');
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).not.toContain('[Questions]');
-        fixture.destroy();
-    });
-
-    it('shows the description of a JSON feature task and keeps non-feature JSON lines as text', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-
-        http.expectOne('http://localhost:3000/task').flush({
-            data: JSON.stringify({ id: '123e4567-e89b-42d3-a456-426614174000', status: 'Queued', description: 'JSON task' }),
-        });
-        fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('JSON task');
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).not.toContain('"id"');
-
-        fixture.nativeElement.querySelector('.top-current-task').click();
-        http.expectOne('http://localhost:3000/task').flush({ data: '{"other":1}' });
-        fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('{"other":1}');
-        fixture.destroy();
-    });
-
-    it('shows an empty-task state when DEVENVOPDEV.md contains no active task', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-
-        http.expectOne('http://localhost:3000/task').flush({ data: null });
-        fixture.detectChanges();
-
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent)
-            .toContain('No active task');
-        fixture.destroy();
-    });
-
-    it('shows an error when the DEVENVOPDEV task cannot be loaded', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-
-        http.expectOne('http://localhost:3000/task').flush(
-            { error: { message: 'Task file unavailable.' } },
-            { status: 500, statusText: 'Server Error' },
-        );
-        fixture.detectChanges();
-
-        expect(fixture.nativeElement.querySelector('.top-current-task').textContent)
             .toContain('500');
         fixture.destroy();
     });

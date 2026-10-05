@@ -43,17 +43,9 @@ Pass an explicit Angular project to `npm run build`; the root script does not se
 
 The Angular `server` library target currently has known TypeScript errors, including unresolved PPT `./core` imports. It is not part of the passing build sequence.
 
-## Features workflow
+## Features
 
-Features are tracked as one JSON object per line (the PPTFeature type from @ppt) in three stores at the repository root:
-
-- .features: all features that are not being worked on or archived (Questions, Wished, Backlog, Queued, Committed, Done). Features added from the client default to Wished. Legacy .wishlist, .backlog and .delivered files are merged into .features on first read and removed. Denied records are moved to .archived on feature-list refresh.
-- .current: the features being worked on; set to Done when delivered. Done records move from .current into .features on feature-list refresh and before commit, preserving their IDs and replacing any existing copy.
-- .archived: archived features, with status Archived, plus denied features whose status remains Denied. Legacy text lines are converted to JSON on first read.
-- DEVENVOPDEV.md: the task list of features actively being worked on (written when a feature is started from the client).
-- .history: a one-line entry per delivered feature.
-
-The client Features page lists them in four tabs, filtered by status: Open, Queued (Queued and Committed), Done and Archived. Denying a feature moves it to .archived and removes its copies from .features, .current and the active task list. The selected tab is kept in the URL (?tab=). The Done tab can archive a feature or all Done features at once (POST /features/:id/archive, POST /features/archive-done). Legacy comment-style lines are converted to JSON when read.
+The Features page provides a form to create a feature and a read-only list of open features. New features are appended as JSON-lines to `.features` with status `Wished` and priority `Low`. Open features are records with status `Questions`, `Wished`, or `Backlog`. The API exposes `GET /features` and `POST /features`; the other feature lifecycle controls and endpoints have been removed.
 ## Test
 
 The repository uses Jest for client and server tests:

@@ -6,10 +6,8 @@ import { Router, RouterOutlet } from '@angular/router';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
 import { CurrentEntryService } from './current-entry.service';
-import { CurrentTaskService } from './current-task.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
-import { FeatureWorkService } from './feature-work.service';
 import { TestRunCacheStatusService } from './test-run-cache-status.service';
 import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
 import { StatusToolbarComponent } from './status-toolbar/status-toolbar.component';
@@ -29,9 +27,7 @@ export class AppComponent implements OnInit, OnDestroy {
     isCommitDialogOpen = false;
     readonly gitStatus = inject(GitStatusService);
     readonly currentEntry = inject(CurrentEntryService);
-    readonly currentTask = inject(CurrentTaskService);
     readonly testRunCacheStatus = inject(TestRunCacheStatusService);
-    private featureWork = inject(FeatureWorkService);
     private gitLogRefresh = inject(GitLogRefreshService);
     private snackbar = inject(MatSnackBar);
     private dialog = inject(MatDialog);
@@ -47,7 +43,6 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.gitStatus.startPolling();
         this.currentEntry.startPolling();
-        this.currentTask.refresh();
         this.testRunCacheStatus.refresh();
     }
 
@@ -103,20 +98,6 @@ export class AppComponent implements OnInit, OnDestroy {
                 this.showCommitMessage(result.stdout.trim() || 'Changes committed.');
                 this.isCommitting = false;
                 this.gitStatus.refresh();
-                const activeFeature = this.featureWork.activeFeature;
-                if (activeFeature) {
-                    this.bs.updateFeatureStatus(activeFeature.id, 'Committed').subscribe({
-                        next: () => {
-                            this.featureWork.complete(activeFeature.id);
-                            this.currentTask.refresh();
-                        },
-                        error: (error: Error) => this.showCommitMessage(
-                            `Changes committed, but feature '${activeFeature.id}' could not be marked committed: `
-                                + this.getApiErrorMessage(error, 'Feature could not be marked committed.'),
-                            true,
-                        ),
-                    });
-                }
                 this.gitLogRefresh.refresh().subscribe({
                     error: error => this.showCommitMessage(
                         `Changes committed, but the Git log could not be refreshed: ${error.message}`,

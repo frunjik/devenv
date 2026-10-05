@@ -7,15 +7,11 @@
         |
         <a mat-button routerLink="/tests">TEST</a>
         |
-        <a mat-button routerLink="/feature">featurs</a>
+        <a mat-button routerLink="/feature">Features</a>
         |
         <a mat-button routerLink="/terms">terms</a>
         |
         <a mat-button routerLink="/glossary">glossary</a>
-        |
-        <a mat-button routerLink="/backlog">backlog</a>
-        |
-        <a mat-button routerLink="/states">states</a>
         |
         <a mat-button routerLink="/history">history</a>
         |
@@ -41,20 +37,4 @@
             {{ isCommitting ? 'Committing…' : 'Commit changes' }}
         </button>
     </nav>
-    <button
-        type="button"
-        mat-button
-        class="top-current-task"
-        aria-label="Refresh current task"
-        [matTooltip]="currentTask.displayEntry || currentTask.errorMessage
-            || (currentTask.isLoading ? 'Loading current task…' : 'No active task.')"
-        matTooltipPosition="below"
-        (click)="currentTask.refresh()"
-    >
-        <span class="top-current-task-label">Task</span>
-        <span class="top-current-task-entry">
-            {{ currentTask.displayEntry || currentTask.errorMessage
-                || (currentTask.isLoading ? 'Loading…' : 'No active task') }}
-        </span>
-    </button>
 </mat-toolbar>

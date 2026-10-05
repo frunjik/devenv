@@ -19,23 +19,6 @@ describe('BackendService', () => {
     let apiHost: string;
     const browserWindow = window as Window & { host?: string };
 
-    async function readFeatureFile(): Promise<string> {
-        const contents = await readFile(join(root, '.features'), 'utf8');
-        return contents.split('\n').filter(Boolean).map(line => {
-            const feature = JSON.parse(line) as {
-                id: string;
-                createdAt?: string;
-                priority: string;
-                status: string;
-                description: string;
-                deliveredDate?: string;
-            };
-            return `// ${feature.createdAt ? `[${feature.createdAt}] ` : ''}[${feature.id}] [${feature.priority}]`
-                + ` [${feature.status}] ${feature.description}`
-                + `${feature.deliveredDate ? ` [Delivered: ${feature.deliveredDate}]` : ''}\n`;
-        }).join('');
-    }
-
     beforeAll(async () => {
         root = await mkdtemp(join(tmpdir(), 'devenv-client-api-'));
         await writeFile(join(root, 'sample.txt'), 'initial');
@@ -109,19 +92,6 @@ describe('BackendService', () => {
         await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
     });
 
-    it('loads the first task entry from DEVENVOPDEV.md', async () => {
-        await writeFile(join(root, 'DEVENVOPDEV.md'), [
-            'Instructions',
-            '',
-            'The features you are writing are, take them one by one:',
-            '- Current task',
-            '- Next task',
-            '',
-        ].join('\n'));
-
-        await expect(service.getCurrentTask().toPromise()).resolves.toBe('- Current task');
-    });
-
     it('assigns the default Low priority when adding a feature without selecting one', async () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 
@@ -129,27 +99,16 @@ describe('BackendService', () => {
         await rm(join(root, '.features'), { force: true });
     });
 
-    it('updates a feature description through the public API', async () => {
-        const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.features'),
-            `// [${id}] [High] [Backlog] Original description\n`);
+    it('loads feature records from the public API', async () => {
+        const feature = {
+            id: '123e4567-e89b-42d3-a456-426614174000',
+            priority: 'Low',
+            status: 'Wished',
+            description: 'Open feature',
+        };
+        await writeFile(join(root, '.features'), `${JSON.stringify(feature)}\n`);
 
-        await expect(service.updateFeatureDescription(id, ' Updated description ').toPromise())
-            .resolves.toMatchObject({ id, priority: 'High', status: 'Backlog', description: 'Updated description' });
-        expect(await readFeatureFile())
-            .toContain(`[${id}] [High] [Backlog] Updated description`);
-        await rm(join(root, '.features'), { force: true });
-    });
-
-    it('removes a feature through the public API', async () => {
-        const id = '123e4567-e89b-42d3-a456-426614174000';
-        const entry = `// [${id}] [High] [Backlog] Remove this feature`;
-        await writeFile(join(root, '.features'), `${entry}\n`);
-
-        await expect(service.removeFeature(id).toPromise()).resolves.toEqual({
-            id, priority: 'High', status: 'Backlog', description: 'Remove this feature',
-        });
-        expect(await readFeatureFile()).not.toContain(id);
+        await expect(service.getFeatures().toPromise()).resolves.toEqual([feature]);
         await rm(join(root, '.features'), { force: true });
     });
 

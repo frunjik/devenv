@@ -5,9 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 import type {
-    FeaturePriority,
     PPTFeature,
-    PPTFeatureStatus,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
@@ -21,8 +19,6 @@ import type {
 import { LoggerService } from './logger.service';
 
 export type {
-    FeaturePriority,
-    PPTFeatureStatus,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
@@ -80,69 +76,11 @@ export class BackendService {
         return this.post<GitCommitResult>('git/commit', { message });
     }
 
-    addFeature(
-        description: string,
-        priority: FeaturePriority = 'Low',
-        status: PPTFeatureStatus = 'Wished',
-    ): Observable<PPTFeature> {
-        return this.post<PPTFeature>('features', { description, priority, status });
-    }
-
-    updateFeatureDescription(id: string, description: string): Observable<PPTFeature> {
-        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
-            `${this.host}features/${encodeURIComponent(id)}/description`,
-            { description },
-        ).pipe(map(response => response.data));
-    }
-
-    updateFeaturePriority(id: string, priority: FeaturePriority): Observable<PPTFeature> {
-        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
-            `${this.host}features/${encodeURIComponent(id)}`,
-            { priority },
-        ).pipe(map(response => response.data));
-    }
-
-    moveQueuedFeature(id: string, direction: 'up' | 'down'): Observable<PPTFeature[]> {
-        return this.httpservice.patch<SuccessResponseBody<PPTFeature[]>>(
-            `${this.host}features/${encodeURIComponent(id)}/order`,
-            { direction },
-        ).pipe(map(response => response.data));
-    }
-
-    updateFeatureStatus(id: string, status: PPTFeatureStatus): Observable<PPTFeature> {
-        return this.httpservice.patch<SuccessResponseBody<PPTFeature>>(
-            `${this.host}features/${encodeURIComponent(id)}/status`,
-            { status },
-        ).pipe(map(response => response.data));
-    }
-
-    startFeature(id: string): Observable<PPTFeature> {
-        return this.httpservice.post<SuccessResponseBody<PPTFeature>>(
-            `${this.host}features/${encodeURIComponent(id)}/start`,
-            {},
-        ).pipe(map(response => response.data));
-    }
-
-    archiveFeature(id: string): Observable<PPTFeature> {
-        return this.httpservice.post<SuccessResponseBody<PPTFeature>>(
-            `${this.host}features/${encodeURIComponent(id)}/archive`,
-            {},
-        ).pipe(map(response => response.data));
-    }
-    archiveDoneFeatures(): Observable<PPTFeature[]> {
-        return this.httpservice.post<SuccessResponseBody<PPTFeature[]>>(
-            `${this.host}features/archive-done`,
-            {},
-        ).pipe(map(response => response.data));
+    addFeature(description: string): Observable<PPTFeature> {
+        return this.post<PPTFeature>('features', { description });
     }
     getFeatures(): Observable<PPTFeature[]> {
         return this.get<PPTFeature[]>('features');
-    }
-
-    removeFeature(id: string): Observable<PPTFeature> {
-        return this.httpservice.delete<SuccessResponseBody<PPTFeature>>(
-            `${this.host}features/${encodeURIComponent(id)}`,
-        ).pipe(map(response => response.data));
     }
 
     getGitLog(): Observable<GitLogEntry[]> {
@@ -165,24 +103,12 @@ export class BackendService {
         return this.get<string[]>('glossary');
     }
 
-    getBacklog(): Observable<PPTFeature[]> {
-        return this.get<PPTFeature[]>('backlog');
-    }
-
-    getArchived(): Observable<PPTFeature[]> {
-        return this.get<PPTFeature[]>('archived');
-    }
-
     getServerVersion(): Observable<string> {
         return this.get<string>('version');
     }
 
     getPPTFields(): Observable<PPTField[]> {
         return this.get<PPTField[]>('ppt/fields');
-    }
-
-    getCurrentTask(): Observable<string | null> {
-        return this.get<string | null>('task');
     }
 
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {

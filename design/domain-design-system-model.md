@@ -62,6 +62,12 @@ Describe obligations, guarantees, and failure behavior at meaningful boundaries.
 
 Evaluate usefulness through representative Domains and outcomes: can people explain concepts more consistently, notice contradictions, communicate meaning, and make better-informed decisions? Completing a model is not proof that it is useful.
 
+### Traceability toward implementation
+
+Because the eventual purpose is working software, preserve a path from the Problems and Evidence that motivate change through desired outcomes, Domain concepts, rules and Contracts, to candidate capabilities and later implementation decisions and tests. Keep rationale and revisions so code can be understood in terms of the need it serves.
+
+This path is not necessarily linear or one-to-one: a Problem may motivate several capabilities, and a capability may serve several outcomes. It is a design concern, not a chosen representation or promise that artifacts can generate code automatically.
+
 ## Illustrative Conceptual Model
 
 The following notation is a thinking aid, not a final schema, runtime DTO, or commitment to these exact concepts:

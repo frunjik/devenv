@@ -23,7 +23,7 @@ When we describe a real situation that motivated this System, does explicit Prob
 
 ## Record
 
-Keep brief notes on the situation and context, participants, observations, interpretations, disagreements, and relevant paper artifacts. Distinguish what was directly observed from what was inferred. Do not invent results in advance.
+Keep brief notes on the situation and context, participants, observations, interpretations, disagreements, and relevant paper artifacts. Distinguish what was directly observed from what was inferred. Link findings to affected Problems, Goals, candidate concepts, or Contracts where useful, preserving why they may matter to later design and code. Do not invent results in advance or assume a direct translation to code.
 
 ## Evaluate
 
@@ -31,4 +31,4 @@ Did the structured framing reveal a hidden assumption, disagreement, missing evi
 
 ## Possible Outcomes
 
-Keep, revise, or reject the Problem-framing concept for this purpose, or conclude that evidence is insufficient. Record the rationale and any next question. Promote useful learning into durable design documents; retain, supersede, or discard the remaining artifacts with a reason.
+Keep, revise, or reject the Problem-framing concept for this purpose, or conclude that evidence is insufficient. Record the rationale and any next question. Promote useful learning into durable design documents; retain, supersede, or discard the remaining artifacts with a reason. Preserve traceability so later implementation choices can be connected back to the evidence and intent.

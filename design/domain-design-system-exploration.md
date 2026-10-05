@@ -5,11 +5,17 @@
 
 ## Current Boundary: What Before How
 
-The current phase is about what the System should help people understand and express. Explore needs, concepts, meaning, relationships, constraints, evidence, and open questions. Record candidate Terms, Types, Contracts, and models as design artifacts; any notation is illustrative, not code or a committed schema.
+The current phase is about what the System should help people understand and express. Explore needs, concepts, meaning, relationships, constraints, evidence, and open questions. Record candidate Terms, Types, Contracts, and models as design artifacts; any notation is illustrative, not code or a committed schema. Preserve enough structure and rationale that later design can trace implementation candidates back to the Problems, evidence, and decisions that motivate them.
 
 Do not write application code, select technology, or turn a candidate strategy into an implementation plan during this phase. TDD, implementation architecture, storage formats, and frameworks belong to a later discussion about how to realize agreed needs.
 
 Keep alternatives visible. Treat candidate outcomes as candidates until they have agreed, observable meanings. The aim is sufficient shared understanding to make future choices deliberately, not exhaustive specification.
+
+### Preserve a Path from Learning to Code
+
+The eventual purpose is to build software that helps address Problems and achieve Goals. Exploration artifacts should therefore be more than disconnected prose or pictures: preserve traceable links from **Problem and Evidence → desired outcome → concepts, rules, and Contracts → candidate capabilities or behaviors → later implementation and tests**. These links may be many-to-many and change as understanding evolves.
+
+Use consistent labels, references, and recorded rationale where useful, but do not choose a formal format or assume direct generation of code. Later implementation decisions must interpret the design and retain traceability to its evidence and intent.
 
 ## Possible Strategies to Evaluate Later
 
@@ -21,7 +27,7 @@ These are alternatives to evaluate against real needs, not a prescribed sequence
 - **Competing-model comparison:** Describe the same example Domain in different candidate approaches and compare clarity, expressiveness, assumptions, and tradeoffs.
 - **Paper or narrative prototype:** Use sketches, example documents, and walkthroughs to examine concepts and diagnostics without writing software.
 - **Prior-art study:** Compare Magritte, EMF, JSON Schema, CUE, SHACL, and OWL against concrete needs rather than assuming any one is a complete answer.
-- **Spike:** Run a bounded, time-limited inquiry to answer a specific question. It may be paper-based; code is not implied. Keep artifacts under `design/explorations/<date>-<topic>/` using a brief, lightweight convention that preserves the question, assumptions, artifacts, observations, findings, and decision. Afterwards, promote useful knowledge into durable designs, retain context, mark superseded conclusions, or discard material with a reason. Evaluate the convention after use; do not build tooling for it in advance.
+- **Spike:** Run a bounded, time-limited inquiry to answer a specific question. It may be paper-based; code is not implied. Keep artifacts under `design/explorations/<date>-<topic>/` using a brief, lightweight convention that preserves the question, assumptions, artifacts, observations, findings, decision, and links to affected Problems, Goals, concepts, or Contracts. Afterwards, promote useful knowledge into durable designs, retain context, mark superseded conclusions, or discard material with a reason. Evaluate the convention after use; do not build tooling for it in advance.
 
 The planned [Problem-framing Spike blueprint](./explorations/2026-10-05-problem-framing-assumption/README.md) is an example of this strategy, not a record of completed research.
 

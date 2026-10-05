@@ -46,7 +46,9 @@ The inquiry can use Domain-first, scenario-first, vertical-slice, competing-mode
 
 ### Exploration as a System Strategy
 
-The System may support bounded exploration as a strategy: pose a **Question** or **Hypothesis**, review Types and examples, record **Evidence**, **Findings** (including contradictions and ambiguities), then a **Decision** with rationale. These are candidate primitives, not settled Types. A topic branch is an optional tool for code-based experiments, not a universal exploration primitive. Keep the process lightweight until real inquiries show what is needed.
+An **Inquiry** is a purposeful, revisable investigation into a question or uncertainty relevant to a Goal. A simple loop is: Question or Hypothesis → examine examples and evidence → record findings, contradictions, or ambiguities → decide with rationale → revisit when understanding changes. Candidate supporting concepts are Question, Hypothesis, Evidence, Finding, and Decision; they are not yet settled Types. A topic branch is optional for code-based experiments, not a universal inquiry primitive. Keep the process lightweight until real inquiries show what is needed.
+
+**Reference practice:** Use canonical Terms for concepts and qualify them by Domain or context when ambiguous. Link to definitions where useful. Treat this as a lightweight inquiry tool; stable identifiers or a reference format can be explored later if needed.
 
 ## “Don't Write Features” as a Design Lens
 

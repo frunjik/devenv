@@ -91,7 +91,8 @@
     }
 
     .queued-feature {
-        display: flex;
+        display: grid;
+        grid-template-columns: 9ch minmax(0, 1fr) 5.5rem 4.5rem 6rem;
         align-items: baseline;
         gap: 0.75rem;
         min-width: 0;
@@ -99,12 +100,10 @@
     }
 
     .queued-feature-id {
-        flex: 0 0 auto;
         font-family: monospace;
     }
 
     .queued-feature-description {
-        flex: 1 1 auto;
         min-width: 0;
         overflow-wrap: anywhere;
     }

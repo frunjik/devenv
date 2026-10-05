@@ -375,6 +375,25 @@ Terms in the glossary may come from different domains (the WMS problem domain, t
 **Working boundary:** Decide the model before changing `.glossary` or the glossary screen. Options to compare: (a) separate glossaries per domain; (b) one global glossary where each term carries a level/domain marking; (c) one global glossary where a term can have a distinct definition per domain.
 **Open questions:** Which levels exist (e.g. meta, problem-solving app, WMS domain)? Can one term appear in several levels with different meanings? Does the marking become a filter in the glossary screen (SC-022) and quick search (SC-023)? How does this relate to the host vs problem-solving split (SC-024) and to P-009 vocabulary review? Is the marking a Type (a Domain/Level value) rather than free text (P-002)?
 **Leaning (agent, not decided):** Option (b) first: one searchable global glossary with a level marking, since quick search from anywhere (SC-023) works best over one set; split later only if collisions appear.
+
+### SC-028 — Persist notes and tickets across reloads
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-020, SC-021
+
+Accepted notes, review decisions, and framed tickets currently live in memory and are lost on reload. Decide how they are stored.
+
+**Working boundary:** Decide the storage approach before building. Options to compare: browser storage behind a small service (as in SC-024), the existing server with a database, or exported/imported files.
+**Open questions:** Single user or shared? Which records (notes, decisions, tickets, assignments)? How are sample and real data kept apart (SC-017)? How are real-world reports protected? Is there a versioning or migration need for stored records?
+
+### SC-029 — Assign problem tickets
+
+**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-021, SC-028
+
+Let a user assign a framed problem ticket to someone from the problem-solving app.
+
+**Working boundary:** Decide the model before building. Assignment is likely a lifecycle step (SC-021) and meaningless without persistence (SC-028).
+**Open questions:** Is an assignee a person, a team, or a role, and is that a new Type (P-002)? One assignee or several? Does assigning mean "responsible for resolving" or "asked to investigate"? Who may assign, and is real user identity needed or are names enough for now? Can tickets be reassigned, and is the history kept? Should the list (SC-026) filter or sort by assignee?
+**Vocabulary candidates (P-009, not yet agreed):** "assign", "assignee", "owner".
 
 The dependency order does not authorize building both components together.
 

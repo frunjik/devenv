@@ -367,6 +367,22 @@ export class SystemPlanComponent {
             dependsOn: ['SC-019', 'SC-022'],
             summary: 'Decide between separate glossaries or a level marking on a global glossary.',
         },
+        {
+            id: 'SC-028',
+            title: 'Persist notes and tickets across reloads',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-020', 'SC-021'],
+            summary: 'Decide how accepted notes, decisions, and framed tickets are stored.',
+        },
+        {
+            id: 'SC-029',
+            title: 'Assign problem tickets',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: ['SC-021', 'SC-028'],
+            summary: 'Let a user assign a framed ticket; model assignee, lifecycle step, and persistence first.',
+        },
     ];
 
     get validatedCount(): number {

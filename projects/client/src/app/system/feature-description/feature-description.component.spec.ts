@@ -99,6 +99,7 @@ describe('FeatureDescriptionComponent', () => {
             'Open (0)',
             'Queued (0)',
             'Done (0)',
+            'Archived (0)',
         ]);
         expect(tabs[1].getAttribute('aria-selected')).toBe('true');
         expect(fixture.nativeElement.querySelector('#queued-features-panel').hidden).toBe(false);
@@ -120,15 +121,53 @@ describe('FeatureDescriptionComponent', () => {
 
         tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
         fixture.detectChanges();
+        expect(tabs[3].getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#archived-features-panel').hidden).toBe(false);
+
+        tabs[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
+        fixture.detectChanges();
         expect(tabs[0].getAttribute('aria-selected')).toBe('true');
 
         tabs[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true }));
         fixture.detectChanges();
-        expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+        expect(tabs[3].getAttribute('aria-selected')).toBe('true');
 
-        tabs[2].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+        tabs[3].dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
         fixture.detectChanges();
-        expect(tabs[2].getAttribute('aria-selected')).toBe('true');
+        expect(tabs[3].getAttribute('aria-selected')).toBe('true');
+    });
+
+    it('lists features with status Archived on the Archived tab, filtered by search, and not as open', async () => {
+        await fixture.whenStable();
+        await writeFile(join(root, '.features'), [
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174000\",\"priority\":\"Low\",\"status\":\"Archived\",\"description\":\"Old kept feature\"}',
+            '{\"id\":\"123e4567-e89b-42d3-a456-426614174001\",\"priority\":\"Low\",\"status\":\"Archived\",\"description\":\"Another record\"}',
+            '',
+        ].join('\n'));
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
+        expect(fixture.nativeElement.querySelector('#archived-features-tab').textContent.trim()).toBe('Archived (2)');
+        expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(2);
+        expect(fixture.nativeElement.querySelector('.archived-feature-id').textContent.trim()).toBe('123e4567');
+
+        const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
+        search.value = 'kept';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelectorAll('.archived-feature')).toHaveLength(1);
+        search.value = 'nothing';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.textContent).toContain('No archived features match your search.');
+    });
+
+    it('shows an empty message on the Archived tab without archived features', async () => {
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('#archived-features-panel').textContent).toContain('No archived features.');
     });
 
     it('shows search outside the tabs and filters the initially selected queued list', async () => {

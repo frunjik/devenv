@@ -16,7 +16,7 @@ import { CurrentTaskService } from '../../current-task.service';
 import { FeatureWorkService } from '../../feature-work.service';
 import { EditFeatureDialogComponent } from './edit-feature-dialog.component';
 
-type FeatureListTab = 'open' | 'queued' | 'done';
+type FeatureListTab = 'open' | 'queued' | 'done' | 'archived';
 
 @Component({
     selector: 'app-feature-description',
@@ -69,6 +69,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     features: PPTFeature[] = [];
     archivedFeatures: PPTFeature[] = [];
     doneFeatures: PPTFeature[] = [];
+    archivedStatusFeatures: PPTFeature[] = [];
     readonly featureDataSource = new MatTableDataSource<PPTFeature>([]);
     readonly displayedColumns = ['id', 'priority', 'status', 'description', 'actions'];
     selectedFeatureTab: FeatureListTab = 'queued';
@@ -96,6 +97,13 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         return filter ? this.doneFeatures.filter(feature => this.matchesFeature(feature, filter)) : this.doneFeatures;
     }
 
+    get matchingArchivedFeatures(): PPTFeature[] {
+        const filter = this.featureSearch.trim().toLocaleLowerCase();
+        return filter
+            ? this.archivedStatusFeatures.filter(feature => this.matchesFeature(feature, filter))
+            : this.archivedStatusFeatures;
+    }
+
     selectFeatureTab(tab: FeatureListTab): void {
         this.selectedFeatureTab = tab;
     }
@@ -107,7 +115,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         }
 
         event.preventDefault();
-        const tabs: FeatureListTab[] = ['open', 'queued', 'done'];
+        const tabs: FeatureListTab[] = ['open', 'queued', 'done', 'archived'];
         const currentIndex = tabs.indexOf(tab);
         const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
         this.selectedFeatureTab = tabs[nextIndex];
@@ -358,8 +366,9 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
     private refreshFeatureLists(): void {
         const features = this.features;
         this.doneFeatures = [...features.filter(feature => feature.status === 'Done'), ...this.archivedFeatures];
+        this.archivedStatusFeatures = features.filter(feature => feature.status === 'Archived');
         this.featureDataSource.data = features.filter(feature =>
-            feature.status !== 'Done' && feature.status !== 'Queued' && feature.status !== 'Committed');
+            !['Done', 'Queued', 'Committed', 'Archived'].includes(feature.status));
         this.featureDataSource.filter = this.featureSearch.trim().toLocaleLowerCase();
     }
 

@@ -64,6 +64,17 @@
             (click)="selectFeatureTab('done')"
             (keydown)="onFeatureTabKeydown($event, 'done')"
         >Done ({{ doneFeatures.length }})</button>
+        <button
+            type="button"
+            mat-button
+            id="archived-features-tab"
+            role="tab"
+            aria-controls="archived-features-panel"
+            [attr.aria-selected]="selectedFeatureTab === 'archived'"
+            [attr.tabindex]="selectedFeatureTab === 'archived' ? 0 : -1"
+            (click)="selectFeatureTab('archived')"
+            (keydown)="onFeatureTabKeydown($event, 'archived')"
+        >Archived ({{ archivedStatusFeatures.length }})</button>
     </div>
     <div class="feature-list-controls">
         <mat-form-field appearance="outline" *ngIf="features.length > 0">
@@ -337,6 +348,25 @@
                         Start
                     </button>
                 </div>
+            </li>
+        </ul>
+       </section>
+       <section
+           id="archived-features-panel"
+           role="tabpanel"
+           aria-labelledby="archived-features-tab"
+           [hidden]="selectedFeatureTab !== 'archived'"
+           class="archived-features"
+       >
+        <h2 id="archived-features-heading">Archived</h2>
+        <p *ngIf="!isLoadingFeatures && archivedStatusFeatures.length === 0">No archived features.</p>
+        <p *ngIf="archivedStatusFeatures.length > 0 && matchingArchivedFeatures.length === 0">
+            No archived features match your search.
+        </p>
+        <ul *ngIf="matchingArchivedFeatures.length > 0">
+            <li *ngFor="let feature of matchingArchivedFeatures" class="archived-feature">
+                <span class="archived-feature-id" [attr.title]="feature.id">{{ feature.id | slice:0:8 }}</span>
+                <span class="archived-feature-description">{{ feature.description }}</span>
             </li>
         </ul>
        </section>

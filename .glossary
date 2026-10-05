@@ -71,7 +71,7 @@ Acceptance Criterion
 - An observable condition that must hold for a Goal to count as achieved.
 
 Evidence
-- An observation or Artifact that supports a conclusion about whether an Acceptance Criterion holds.
+- An observation or Artifact used to support or challenge a claim, including whether an Acceptance Criterion holds.
 
 System Observation
 - A recorded, directly observable behavior or state of a System.

@@ -1,62 +1,53 @@
 # Spike Blueprint: AI-Assisted WMS Authoring
 
-**Status:** Planned, not conducted · **Mode:** Conceptual; no AI trial or code performed
+**Status:** Planned, not conducted · **Mode:** Conceptual; no AI trial or code
 
-## Question
+## Question and Context
 
-Can an AI system help WMS builders produce a reliable web replacement while preserving human judgment, traceability, and knowledge needed after the experienced operator retires?
+Can AI help builders turn incomplete WMS knowledge into a reliable web replacement, while preserving human judgment and continuity?
 
-## Context and Problem Framing
-
-The Domain is the people writing the web replacement for a mature native WMS. The System under exploration is an AI-assisted way of doing that work. One experienced operator—described as a grandfather approaching retirement in about two years—holds or can help uncover valuable knowledge. The team has limited time and cannot fully reconstruct every legacy workflow before building.
-
-The problem is not simply generating code faster. Builders need to turn incomplete evidence and operational expectations into target behavior, implementation, and tests. AI output may be plausible but wrong, untraceable, hard to verify, or dependent on context that disappears when a session ends or the expert leaves.
-
-The retirement timeline is a continuity constraint, not a reason to treat one person as the sole source of truth. Identify other sources, disagreements, and knowledge gaps.
+The Domain is builders' work; the System is AI assisting it. In the supplied scenario, an experienced AI operator retires in about two years and may also hold domain knowledge. Operating AI, building, and validating behavior are distinct roles. The team cannot discover all legacy behavior first. Treat retirement as a continuity constraint, not proof that one person is the sole knowledge source.
 
 ## Working Hypothesis
 
-AI is useful when it helps builders examine evidence, make explicit proposals, and produce reviewable implementation or tests—while people retain decisions and verification. Its value depends on durable context, provenance, and a workflow that exposes uncertainty rather than concealing it.
+AI may turn incomplete evidence into reviewable target changes. Test whether source links, visible assumptions, human verification, and durable decisions make its help useful and resumable.
 
 ## Candidate Terms
 
 | Term | Working meaning |
 |---|---|
-| **Builder** | Person responsible for understanding, changing, or validating the target system. |
-| **Legacy Evidence** | Screen definition, code, data, observation, report, or explanation used to understand current behavior. |
-| **Expectation** | Intended outcome or constraint for the target, with context and evidence. |
-| **Work Slice** | Bounded target behavior considered for design, implementation, and validation. |
-| **AI Proposal** | AI-produced interpretation, design, code, test, or question; not accepted truth. |
-| **Verification** | Human or automated check of a proposal against expectations and evidence. |
-| **Decision** | Recorded acceptance, revision, or rejection, with rationale and accountable owner. |
-| **Knowledge Gap** | Important uncertainty, contradiction, or reliance on knowledge not yet captured. |
-| **Continuity Record** | Durable, linked context that lets others resume work without relying on a disappearing conversation or person. |
+| **AI Operator** | Person directing AI; may also build or provide expertise. |
+| **Builder** | Person changing the target system. |
+| **Expectation** | Contextual intended outcome or constraint. |
+| **Work Slice** | Bounded behavior and acceptance checks. |
+| **AI Proposal** | AI output, not accepted truth. |
+| **Verification** | Check against expectations and evidence. |
+| **Decision** | Owned outcome and rationale. |
+| **Knowledge Gap** | Important uncertainty or uncaptured knowledge. |
+| **Continuity Record** | Context that lets others resume work. |
 
-Terms are provisional and should be tested on real work.
+Terms are provisional.
 
 ## Candidate Types
 
 ```text
 WorkSlice {
-    intendedOutcome
+    outcome
     context
-    inScope
-    exclusions
-    acceptanceEvidence
+    scopeAndExclusions
+    acceptanceChecks
     openQuestions
 }
 
 EvidenceItem {
     source
-    observedContent
-    relatedExpectation
+    supportsOrChallenges
     provenance
     confidence
-    contradictions
 }
 
 AIProposal {
-    proposalKind: interpretation | design | code | test | question
+    kind: interpretation | design | code | test | question
     content
     basedOn: EvidenceItem[]
     assumptions
@@ -64,12 +55,11 @@ AIProposal {
     suggestedChecks
 }
 
-Verification {
+Review {
     proposal
-    checks
-    results
-    uncoveredRisks
+    checksAndResults
     reviewer
+    uncoveredRisks
 }
 
 Decision {
@@ -77,46 +67,28 @@ Decision {
     outcome: accept | revise | reject | defer
     rationale
     owner
-    linksToTargetChanges
+    targetChanges
 }
 
 ContinuityRecord {
     workSlice
+    evidence
     decisions
-    rationale
-    unresolvedKnowledgeGaps
+    knowledgeGaps
     nextSteps
-    references
 }
 ```
 
-## Exercise
+## Small Trial
 
-Use one small, representative WMS behavior—not a whole workflow or an easy toy example.
+Choose one representative behavior and accessible sources. Before AI use, record expectation, context, evidence, uncertainty, and acceptance checks. Request a bounded interpretation/change and tests, with sources, assumptions, and questions exposed. Have a builder and knowledgeable reviewer independently check it. Record omissions, corrections, effort, decision, and successor needs; test normal and important failure cases. Compare with a similar non-AI task if practical.
 
-1. Select a behavior with accessible legacy evidence and an operator who can explain it.
-2. Record the expectation, context, evidence, uncertainty, and acceptance checks before asking AI for help.
-3. Ask AI to interpret or propose one bounded change and tests. Require it to identify assumptions, evidence used, and questions it cannot answer.
-4. Have a builder and the knowledgeable operator independently review the proposal against evidence and operational expectations.
-5. Record corrections, missed behavior, verification effort, decision, and what another builder would need to continue.
-6. Compare with a similar non-AI-assisted task if practical; avoid claiming speed or quality gains from impressions alone.
+Before a live trial, define data/tool access; exclude sensitive production data and unreviewed production changes.
 
-Do not enter sensitive production data or grant AI unreviewed authority to change production resources. Tool access and data handling are outside this paper blueprint and must be decided before a live trial.
+## Decide and Preserve
 
-## What to Observe
+Assess traceability, correctness, gaps found, review effort, and continuity. Classify **useful**, **conditional**, **not useful**, or **unknown**, with evidence. One slice proves neither autonomous AI capability nor WMS coverage.
 
-- Did AI help reveal missing expectations, contradictions, or useful questions?
-- Could reviewers trace each important proposal to evidence and a bounded work slice?
-- Were incorrect or invented claims easy to detect?
-- Did proposed code and tests reflect operational rules and failure cases, not only the happy path?
-- How much expert and builder time was needed to review and correct the result?
-- Could another builder continue from the continuity record without the original AI conversation or expert?
-- Which work is suitable for AI assistance, and which requires direct domain judgment?
+Preserve rationale and links to code/tests; retain or discard artifacts with reasons. This blueprint is untested.
 
-Record measured results where possible; distinguish observation from opinion.
-
-## Decision
-
-Classify the approach as **useful**, **useful with conditions**, **not useful for this work**, or **unknown**. State the evidence, risks, and conditions that could change the decision. Do not infer that AI can autonomously replace domain expertise from one successful slice.
-
-Keep durable findings and links to resulting work; retain or discard trial material with rationale. This Spike is a blueprint only and has not been run.
+Related context: [WMS modernization inquiry](../2026-10-05-warehouse-web-modernization/README.md) and [candidate WMS model](../2026-10-05-warehouse-web-modernization/domain-model.md).

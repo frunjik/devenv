@@ -19,6 +19,23 @@ describe('BackendService', () => {
     let apiHost: string;
     const browserWindow = window as Window & { host?: string };
 
+    async function readFeatureFile(): Promise<string> {
+        const contents = await readFile(join(root, '.wishlist'), 'utf8');
+        return contents.split('\n').filter(Boolean).map(line => {
+            const feature = JSON.parse(line) as {
+                id: string;
+                createdAt?: string;
+                priority: string;
+                status: string;
+                description: string;
+                deliveredDate?: string;
+            };
+            return `// ${feature.createdAt ? `[${feature.createdAt}] ` : ''}[${feature.id}] [${feature.priority}]`
+                + ` [${feature.status}] ${feature.description}`
+                + `${feature.deliveredDate ? ` [Delivered: ${feature.deliveredDate}]` : ''}\n`;
+        }).join('');
+    }
+
     beforeAll(async () => {
         root = await mkdtemp(join(tmpdir(), 'devenv-client-api-'));
         await writeFile(join(root, 'sample.txt'), 'initial');
@@ -109,29 +126,29 @@ describe('BackendService', () => {
         const entry = await service.addFeature('Feature with default priority').toPromise();
 
         expect(entry).toMatch(/\[Low\] \[Backlog\] Feature with default priority$/);
-        await rm(join(root, '.features'), { force: true });
+        await rm(join(root, '.wishlist'), { force: true });
     });
 
     it('updates a feature description through the public API', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
-        await writeFile(join(root, '.features'),
+        await writeFile(join(root, '.wishlist'),
             `// [${id}] [High] [Backlog] Original description\n`);
 
         await expect(service.updateFeatureDescription(id, ' Updated description ').toPromise())
             .resolves.toMatch(/\[High\] \[Backlog\] Updated description$/);
-        expect(await readFile(join(root, '.features'), 'utf8'))
+        expect(await readFeatureFile())
             .toContain(`[${id}] [High] [Backlog] Updated description`);
-        await rm(join(root, '.features'), { force: true });
+        await rm(join(root, '.wishlist'), { force: true });
     });
 
     it('removes a feature through the public API', async () => {
         const id = '123e4567-e89b-42d3-a456-426614174000';
         const entry = `// [${id}] [High] [Backlog] Remove this feature`;
-        await writeFile(join(root, '.features'), `${entry}\n`);
+        await writeFile(join(root, '.wishlist'), `${entry}\n`);
 
         await expect(service.removeFeature(id).toPromise()).resolves.toBe(entry);
-        expect(await readFile(join(root, '.features'), 'utf8')).not.toContain(id);
-        await rm(join(root, '.features'), { force: true });
+        expect(await readFeatureFile()).not.toContain(id);
+        await rm(join(root, '.wishlist'), { force: true });
     });
 
     it('loads the cached test result status through the public API', async () => {

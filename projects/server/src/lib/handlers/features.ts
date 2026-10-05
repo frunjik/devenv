@@ -230,6 +230,59 @@ async function removeStartedFeatureTask(
     return { filename, contents };
 }
 
+interface StoredFeature {
+    id: string;
+    createdAt?: string;
+    priority: FeaturePriority;
+    status: PPTFeatureStatus;
+    description: string;
+    deliveredDate?: string;
+}
+
+function entryToStoredFeature(entry: string): StoredFeature {
+    const idMatch = entry.match(featureIdPattern)!;
+    const head = entry.slice(0, idMatch.index);
+    const [, priority, status, tail] = entry.slice(idMatch.index + idMatch[0].length).match(
+        /^\s+\[(High|Medium|Low)\]\s+\[(Questions|Backlog|In progress|Committed|Done|Aborted|Denied)\]\s*(.*)$/,
+    )!;
+    const createdAt = head.match(/^\/\/ \[([^\]]+)\] $/)?.[1];
+    const leadingText = createdAt ? '' : head.replace(/^\/\/\s*/, '').trim();
+    const [, trailingText, deliveredDate] = tail.match(/^(.*?)(?: \[Delivered: (\d{4}-\d{2}-\d{2})\])?$/)!;
+    return {
+        id: idMatch[0].slice(1, -1),
+        ...(createdAt ? { createdAt } : {}),
+        priority: priority as FeaturePriority,
+        status: status as PPTFeatureStatus,
+        description: [leadingText, trailingText].filter(Boolean).join(' '),
+        ...(deliveredDate ? { deliveredDate } : {}),
+    };
+}
+
+function storedFeatureToEntry(feature: StoredFeature): string {
+    return `// ${feature.createdAt ? `[${feature.createdAt}] ` : ''}[${feature.id}] [${feature.priority}]`
+        + ` [${feature.status}] ${feature.description}`
+        + `${feature.deliveredDate ? ` [Delivered: ${feature.deliveredDate}]` : ''}`;
+}
+
+function serializeEntries(entries: string[]): string {
+    return entries.map(entry => `${JSON.stringify(entryToStoredFeature(entry))}\n`).join('');
+}
+
+function parseStoredFeatureLine(line: string): StoredFeature | undefined {
+    try {
+        const parsed: unknown = JSON.parse(line);
+        const candidate = parsed as Partial<StoredFeature> | null;
+        return typeof candidate?.id === 'string'
+            && typeof candidate.description === 'string'
+            && featurePriorities.includes(candidate.priority as FeaturePriority)
+            && featureStatuses.includes(candidate.status as PPTFeatureStatus)
+            ? candidate as StoredFeature
+            : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
 async function readFeatureEntries(filename: string): Promise<string[]> {
     let contents: string;
     try {
@@ -241,9 +294,14 @@ async function readFeatureEntries(filename: string): Promise<string[]> {
         throw error;
     }
 
-    const entries = contents.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
-    const identifiedEntries = entries.map(entry => addFeatureStatus(addFeaturePriority(addFeatureId(entry))));
-    const normalizedContents = identifiedEntries.length ? `${identifiedEntries.join('\n')}\n` : '';
+    const lines = contents.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    const identifiedEntries = lines.map(line => {
+        const stored = parseStoredFeatureLine(line);
+        return stored
+            ? storedFeatureToEntry(stored)
+            : addFeatureStatus(addFeaturePriority(addFeatureId(line)));
+    });
+    const normalizedContents = serializeEntries(identifiedEntries);
     if (contents !== normalizedContents) {
         await writeFile(filename, normalizedContents, 'utf8');
     }
@@ -272,7 +330,7 @@ export function createFeatureHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
 
         void readFeatureEntries(filename)
             .then(async entries => {
@@ -289,10 +347,10 @@ export function createFeatureHandler(root: string): RequestHandler {
                         ? existingDescription
                         : `${existingDescription}; ${oneLineDescription}`;
                     if (mergedDescription !== existingDescription) {
-                        const previousContents = `${entries.join('\n')}\n`;
+                        const previousContents = serializeEntries(entries);
                         const updatedEntries = [...entries];
                         updatedEntries[duplicateIndex] = setFeatureDescription(duplicate, mergedDescription);
-                        await writeFile(filename, `${updatedEntries.join('\n')}\n`, 'utf8');
+                        await writeFile(filename, serializeEntries(updatedEntries), 'utf8');
                         try {
                             await updateStartedFeatureTask(root, duplicateId.toLowerCase(), mergedDescription);
                         } catch (error) {
@@ -312,7 +370,7 @@ export function createFeatureHandler(root: string): RequestHandler {
                     : '';
                 const entry =
                     `// [${formatTimestamp(new Date())}] [${id}] [${requestedPriority}] [${requestedStatus}] ${oneLineDescription}${deliveredDate}`;
-                await appendFile(filename, `${entry}\n`, 'utf8');
+                await appendFile(filename, serializeEntries([entry]), 'utf8');
                 response.status(201).json({ data: entry });
             })
             .catch(next);
@@ -321,7 +379,7 @@ export function createFeatureHandler(root: string): RequestHandler {
 
 export function createFeaturesListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
-        void readFeatureEntries(join(root, '.features'))
+        void readFeatureEntries(join(root, '.wishlist'))
             .then(entries => response.json({ data: entries }))
             .catch(next);
     };
@@ -342,7 +400,7 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
         void readFeatureEntries(filename)
             .then(async entries => {
                 const featureIndex = entries.findIndex(entry =>
@@ -354,7 +412,7 @@ export function createFeaturePriorityHandler(root: string): RequestHandler {
                 }
 
                 entries[featureIndex] = setFeaturePriority(entries[featureIndex], requestedPriority as FeaturePriority);
-                await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                await writeFile(filename, serializeEntries(entries), 'utf8');
                 response.json({ data: entries[featureIndex] });
             })
             .catch(next);
@@ -375,7 +433,7 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
         void readFeatureEntries(filename)
             .then(async entries => {
                 const featureIndex = entries.findIndex(entry =>
@@ -401,7 +459,7 @@ export function createFeatureOrderHandler(root: string): RequestHandler {
                 if (targetPosition >= 0 && targetPosition < inProgressIndexes.length) {
                     const targetIndex = inProgressIndexes[targetPosition];
                     [entries[featureIndex], entries[targetIndex]] = [entries[targetIndex], entries[featureIndex]];
-                    await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                    await writeFile(filename, serializeEntries(entries), 'utf8');
                 }
 
                 response.json({ data: entries });
@@ -425,7 +483,7 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
         void readFeatureEntries(filename)
             .then(async entries => {
                 const featureIndex = entries.findIndex(entry =>
@@ -436,9 +494,9 @@ export function createFeatureStatusHandler(root: string): RequestHandler {
                     return;
                 }
 
-                const previousContents = `${entries.join('\n')}\n`;
+                const previousContents = serializeEntries(entries);
                 entries[featureIndex] = setFeatureStatus(entries[featureIndex], requestedStatus as PPTFeatureStatus);
-                await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                await writeFile(filename, serializeEntries(entries), 'utf8');
                 if (requestedStatus !== 'In progress') {
                     try {
                         await removeStartedFeatureTask(root, id.toLowerCase());
@@ -468,7 +526,7 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
         }
 
         const description = requestedDescription.trim().replace(/\s+/g, ' ');
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
         void readFeatureEntries(filename)
             .then(async entries => {
                 const featureIndex = entries.findIndex(entry =>
@@ -479,11 +537,11 @@ export function createFeatureDescriptionHandler(root: string): RequestHandler {
                     return;
                 }
 
-                const previousContents = `${entries.join('\n')}\n`;
+                const previousContents = serializeEntries(entries);
                 const updatedEntry = setFeatureDescription(entries[featureIndex], description);
                 const updatedEntries = [...entries];
                 updatedEntries[featureIndex] = updatedEntry;
-                await writeFile(filename, `${updatedEntries.join('\n')}\n`, 'utf8');
+                await writeFile(filename, serializeEntries(updatedEntries), 'utf8');
                 try {
                     await updateStartedFeatureTask(root, id.toLowerCase(), description);
                 } catch (error) {
@@ -505,7 +563,7 @@ export function createFeatureStartHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
         void readFeatureEntries(filename)
             .then(async entries => {
                 const featureIndex = entries.findIndex(entry =>
@@ -519,7 +577,7 @@ export function createFeatureStartHandler(root: string): RequestHandler {
                 const entry = setFeatureStatus(entries[featureIndex], 'In progress');
                 await addStartedFeatureToDevEnv(root, entry, id.toLowerCase());
                 entries[featureIndex] = entry;
-                await writeFile(filename, `${entries.join('\n')}\n`, 'utf8');
+                await writeFile(filename, serializeEntries(entries), 'utf8');
                 response.json({ data: entry });
             })
             .catch(next);
@@ -535,7 +593,7 @@ export function createFeatureRemovalHandler(root: string): RequestHandler {
             return;
         }
 
-        const filename = join(root, '.features');
+        const filename = join(root, '.wishlist');
         void readFeatureEntries(filename)
             .then(async entries => {
                 const featureIndex = entries.findIndex(entry =>
@@ -546,10 +604,10 @@ export function createFeatureRemovalHandler(root: string): RequestHandler {
                     return;
                 }
 
-                const previousContents = `${entries.join('\n')}\n`;
+                const previousContents = serializeEntries(entries);
                 const [removedFeature] = entries.splice(featureIndex, 1);
                 try {
-                    await writeFile(filename, entries.length ? `${entries.join('\n')}\n` : '', 'utf8');
+                    await writeFile(filename, entries.length ? serializeEntries(entries) : '', 'utf8');
                     await removeStartedFeatureTask(root, id.toLowerCase());
                 } catch (error) {
                     await writeFile(filename, previousContents, 'utf8');

@@ -1,0 +1,1 @@
+// [2026-10-05 07:45 +02:00] Features are now persisted as stringified JSON lines (unique id, createdAt, priority, status, description, deliveredDate?) in .wishlist; legacy lines migrate on read and the API format is unchanged. Client 221 and server 191 tests pass at 100% coverage.

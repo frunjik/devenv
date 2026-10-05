@@ -262,6 +262,7 @@ describe('AppComponent', () => {
 
         const gitLogLink = fixture.nativeElement.querySelector('a[href="/git/log"]');
         expect(gitLogLink.textContent).toContain('Git log');
+        expect(fixture.nativeElement.querySelector('a[href*=".workflow"]')).toBeNull();
     });
 
     it('shows the number of open changes from the git status API', () => {

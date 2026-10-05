@@ -248,6 +248,66 @@ describe('FeatureDescriptionComponent', () => {
         expect(refreshButton.disabled).toBe(false);
     });
 
+    it('shows the embedded description instead of a serialized feature object in the open list', async () => {
+        await fixture.whenStable();
+        const description = 'Keep the feature description readable';
+        const wrappedDescription = JSON.stringify({
+            id: '123e4567-e89b-42d3-a456-426614174001',
+            priority: 'Low',
+            status: 'Wished',
+            description,
+        });
+        await writeFile(join(root, '.features'), [
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174000',
+                priority: 'Low',
+                status: 'Wished',
+                description: wrappedDescription,
+            }),
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174002',
+                priority: 'Low',
+                status: 'Wished',
+                description: 'A plain description remains unchanged',
+            }),
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174003',
+                priority: 'Low',
+                status: 'Wished',
+                description: '{"notDescription":"Leave this JSON text intact"}',
+            }),
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174004',
+                priority: 'Low',
+                status: 'Wished',
+                description: '{"broken JSON',
+            }),
+            JSON.stringify({
+                id: '123e4567-e89b-42d3-a456-426614174005',
+                priority: 'Low',
+                status: 'Wished',
+                description: '{"description":42}',
+            }),
+            '',
+        ].join('\n'));
+
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        const descriptions = Array.from<HTMLElement>(
+            fixture.nativeElement.querySelectorAll('.open-features td.mat-column-description'),
+        ).map(cell => cell.textContent!.trim());
+        expect(descriptions).toEqual([
+            description,
+            'A plain description remains unchanged',
+            '{"notDescription":"Leave this JSON text intact"}',
+            '{"broken JSON',
+            '{"description":42}',
+        ]);
+        expect(descriptions[0]).not.toContain('"id"');
+    });
+
     it('cancels an outstanding feature refresh when the component is destroyed', async () => {
         await fixture.whenStable();
         fixture.componentInstance.refreshFeatures();

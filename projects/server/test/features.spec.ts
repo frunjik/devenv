@@ -116,6 +116,57 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(stored);
     });
 
+    it('moves Done records from .current into .features on refresh without duplicate ids', async () => {
+        const doneId = '123e4567-e89b-42d3-a456-426614174010';
+        const currentId = '123e4567-e89b-42d3-a456-426614174011';
+        const doneInCurrent = {
+            id: doneId,
+            priority: 'High',
+            status: 'Done',
+            description: 'Completed from current',
+        };
+        const oldFeatureCopy = {
+            id: doneId,
+            priority: 'Low',
+            status: 'Queued',
+            description: 'Stale copy',
+        };
+        const activeInCurrent = {
+            id: currentId,
+            priority: 'Medium',
+            status: 'InProgress',
+            description: 'Still active',
+        };
+        await writeFile(join(root, '.current'), [
+            JSON.stringify(doneInCurrent),
+            JSON.stringify(activeInCurrent),
+            '',
+        ].join('\n'));
+        await writeFile(join(root, '.features'), `${JSON.stringify(oldFeatureCopy)}\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `The features you are writing are, take them one by one:\n${JSON.stringify(doneInCurrent)}\n`);
+
+        const firstRefresh = await request(app).get('/features');
+        const storedAfterFirstRefresh = await readPersistedFeatures();
+        const currentAfterFirstRefresh = await readFile(join(root, '.current'), 'utf8');
+        const taskAfterFirstRefresh = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
+        const secondRefresh = await request(app).get('/features');
+
+        expect(firstRefresh.status).toBe(200);
+        expect(firstRefresh.body.data).toEqual([
+            expect.objectContaining({ ...doneInCurrent, deliveredDate: expect.any(String) }),
+        ]);
+        expect(storedAfterFirstRefresh).toHaveLength(1);
+        expect(storedAfterFirstRefresh[0]).toEqual(expect.objectContaining({
+            ...doneInCurrent,
+            deliveredDate: expect.any(String),
+        }));
+        expect(currentAfterFirstRefresh).toBe(`${JSON.stringify(activeInCurrent)}\n`);
+        expect(taskAfterFirstRefresh).not.toContain(doneId);
+        expect(secondRefresh.body.data).toEqual(firstRefresh.body.data);
+        expect(await readPersistedFeatures()).toHaveLength(1);
+    });
+
     it('migrates legacy lines and treats invalid JSON records as legacy feature text', async () => {
         await writeFile(join(root, '.features'), [
             '{not json',

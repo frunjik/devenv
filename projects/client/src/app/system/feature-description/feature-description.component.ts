@@ -88,6 +88,24 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         return this.features.filter(feature => feature.status === 'Queued' || feature.status === 'Committed');
     }
 
+    displayDescription(description: string): string {
+        if (!description.trimStart().startsWith('{')) {
+            return description;
+        }
+
+        try {
+            const parsed: unknown = JSON.parse(description);
+            if (typeof parsed === 'object' && parsed !== null
+                && 'description' in parsed && typeof parsed.description === 'string') {
+                return parsed.description;
+            }
+        } catch {
+            return description;
+        }
+
+        return description;
+    }
+
     get matchingQueuedFeatures(): PPTFeature[] {
         const filter = this.featureSearch.trim().toLocaleLowerCase();
         return filter

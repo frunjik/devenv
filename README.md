@@ -48,7 +48,7 @@ The Angular `server` library target currently has known TypeScript errors, inclu
 Features are tracked as one JSON object per line (the PPTFeature type from @ppt) in three stores at the repository root:
 
 - .features: all features that are not being worked on or archived (Questions, Wished, Backlog, Queued, Committed, Done). Features added from the client default to Wished. Legacy .wishlist, .backlog and .delivered files are merged into .features on first read and removed.
-- .current: the features being worked on; set to Done when delivered. On commit, Done records move from .current into .features.
+- .current: the features being worked on; set to Done when delivered. Done records move from .current into .features on feature-list refresh and before commit, preserving their IDs and replacing any existing copy.
 - .archived: archived features, with status Archived. Legacy text lines are converted to JSON on first read.
 - DEVENVOPDEV.md: the task list of features actively being worked on (written when a feature is started from the client).
 - .history: a one-line entry per delivered feature.

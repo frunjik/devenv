@@ -361,7 +361,8 @@ export function createFeatureHandler(root: string): RequestHandler {
 
 export function createFeaturesListHandler(root: string): RequestHandler {
     return (_request, response, next) => {
-        void readFeatureStore(root)
+        void deliverDoneFeatures(root)
+            .then(() => readFeatureStore(root))
             .then(store => response.json({ data: store.features }))
             .catch(next);
     };

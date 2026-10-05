@@ -65,6 +65,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Verify that every Jest helper a touched test file uses is explicitly imported from `@jest/globals`; put that import on the first line of the file.
 - **Practice:** Import only the used helpers (for example, `describe`, `it`, `expect`, `beforeEach`, and `jest`). Do not rely on Jest's ambient globals in touched test files.
 
+### P-008 — Ask Before Continuing Long Tasks
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction
+- **Applies to:** Ongoing tasks that take more than three minutes.
+- **Rule:** After more than three minutes of work, pause at the next stable point and ask the user whether to continue. Do not continue until the user explicitly permits it; stop if they ask to stop.
+- **Loop:** If the user permits continuation, record any new user-provided rule in this register and the relevant project guidance before resuming. Apply the same three-minute gate again while the task remains ongoing.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

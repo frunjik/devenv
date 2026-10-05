@@ -154,7 +154,7 @@ export class SystemPlanComponent {
             id: 'SC-001',
             title: 'Distinguish input from ticket',
             kind: 'Domain',
-            status: 'In progress',
+            status: 'Validated',
             dependsOn: [],
             summary: 'Clarify the difference between raw input, an imported note, and a Problem Ticket.',
         },

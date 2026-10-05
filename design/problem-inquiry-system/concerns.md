@@ -1,6 +1,6 @@
 # Problem-Inquiry System Concerns
 
-**Status:** Initial register; concerns and names are provisional.
+**Status:** Active register; domain names and future workflow decisions remain revisable.
 
 Use this register to order system work without implementing multiple components in one step. A concern may describe a domain uncertainty, system behavior, quality constraint, or implementation slice. Resolve prerequisites first; implement and validate one component at a time using Red-Green-Refactor.
 
@@ -27,7 +27,7 @@ The entries below are design concerns, not implementation commitments. Status re
 
 ### SC-001 — Distinguish input from ticket
 
-**Kind:** Domain · **Status:** In progress · **Depends on:** None
+**Kind:** Domain · **Status:** Validated · **Depends on:** None
 
 Distinguish raw text, an imported note, and a Problem Ticket. Decide when an imported note qualifies as a ticket; do not assume one-to-one conversion.
 
@@ -42,8 +42,14 @@ For example, WMS-011's raw wording asks whether a validation error is a domain r
 
 **Type review:** Keep `InboxArtifact`, `SourceFragment`, provisional `ImportedNote`, and `ProblemTicket` distinct where their lifecycle/provenance differs. A fragment is not automatically a domain Type, and plain text need not become a wrapper Type without behavior or constraints.
 
-**Open questions:** Does “note” fit better than “candidate,” “report,” or another term? What minimum framing makes an imported interpretation a Problem Ticket?
-**Validation evidence:** Compared against the existing synthetic inbox samples only; no real source or domain-user review yet.
+**Decision (user, 2026-10-05):** Frame a **Problem Ticket** with an undesirable condition, who or what is affected in context, and why the condition matters. Cause may remain uncertain if the condition and impact are clear. Otherwise retain the item as a note or question. Acceptance of a note does not certify truth or promote it to a ticket.
+
+**Provisional term:** **Imported note** remains the current type/UI label, not a confirmed domain name. It is neutral and matches current workflow language; revisit with real-user feedback.
+
+**Type review:** `ProblemTicket.report: string` currently hides the confirmed framing; `WorkContext` describes surrounding context but does not explicitly identify who or what is affected, and there is no impact field. Add a `ProblemFrame` value Type with explicit condition, affected party/thing, and impact. Do not add a root-cause field: the user confirmed cause may remain uncertain.
+
+**Open questions:** Revisit the framing against real reports before automating promotion; ask real users whether “Imported note” is the right term.
+**Validation evidence:** User confirmed the framing rule on 2026-10-05. `ProblemTicket` now has a distinct `ProblemFrame` with required condition, affected party/thing, and impact; it has no cause field. The synthetic WMS ProblemSet records these frames while retaining the original report text. A public-contract test checks all sample tickets contain each part. Compared against inaccessible/unknown-purpose screens (WMS-001, WMS-012), uncertain cause (WMS-011), and interrupted/repeated operations (WMS-004, WMS-010). Synthetic only; no real source or domain-user review.
 
 ### SC-002 — Preserve source provenance
 
@@ -61,8 +67,12 @@ Keep each interpretation traceable to its original inbox artifact and relevant w
 
 **Type review:** The first slice now uses `SourceReference` for optional artifact identity and locator. It does not yet model immutable artifact versions or a separate identity-bearing `SourceFragment`; decide whether either is needed when file import is in scope. Do not store source text only in a converted note.
 
-**Open questions:** What locators remain stable as files change? Is retaining an exact excerpt sufficient, or must the original artifact be immutable/versioned? How should non-text sources be referenced?
-**Validation evidence:** Compared with the synthetic inbox set: two files contain multiple passages, standalone files contain one report, and all are marked synthetic. No real source or domain-user review yet.
+**Proposed working rule:** During manual entry, preserve the exact submitted text and the user-provided artifact/locator as supplied. For future file import, retain the original artifact unchanged and identify a passage with a stable fragment label where available, otherwise a line range or excerpt; treat a locator as navigation aid, not proof. Do not introduce content hashing, version storage, or non-text attachment Types until persistence/file-import requirements establish their need.
+
+**Type review:** `SourceReference` supports an optional artifact and locator, but does not guarantee identity, immutability, or a stable fragment. A separate identity-bearing `SourceFragment` is a candidate only if import, versioning, or many-to-many passage reuse needs it. Keep `SourceOrigin` separate from provenance and verification.
+
+**Open questions:** Validate the proposed locator fallback when file import is designed. Define versioning and non-text source handling only when those source kinds enter scope.
+**Validation evidence:** Compared with the synthetic inbox set: grouped operator and corpus files contain multiple passages, standalone reports contain one, and all are marked synthetic. The current manual slice retains entered source text and optional artifact/locator but does not import or freeze files. No real source or domain-user review yet.
 
 ### SC-003 — Represent uncertain conversion
 
@@ -80,8 +90,12 @@ Treat conversion as a proposal that can retain ambiguity, missing information, a
 
 **Type review:** `NoteProposal` and `SourceReference` now model one tentative interpretation, source, and open questions. The current slice supports only one interpretation per submission. A separate Type for each explanation is not justified; multiple proposals can be explored later.
 
-**Open questions:** Is confidence useful to reviewers, or should uncertainty be expressed only through evidence and questions? Which claim kinds help without forcing classification?
-**Validation evidence:** Walked through synthetic WMS-011 and the corpus questions: both need competing interpretations and explicit unknowns. Not tested with users or real reports.
+**Proposed working rule:** For the manual slice, express uncertainty as explicit open questions and, when useful, separate alternative interpretations into separate proposals. Do not add a numeric confidence field yet: the synthetic material gives no calibrated basis for one, and uncertainty is already visible in the source wording and questions. Do not force claim-kind classification during capture.
+
+**Type review:** `NoteProposal` represents one interpretation and its open questions; it does not assert that one source has only one interpretation. Multiple proposals can share source text. A `ClaimKind` or confidence Type is not justified until a later workflow demonstrates a decision or behavior that depends on it.
+
+**Open questions:** Revisit only if reviewers need to compare alternatives together or a downstream decision demonstrably requires confidence/claim classification.
+**Validation evidence:** Walked through WMS-011, which explicitly leaves warehouse rule versus setup defect unresolved, and the grouped corpus questions, which also offer multiple explanations. Supports preserving unknowns and avoiding premature numeric confidence. Not tested with users or real reports.
 
 ### SC-004 — Define human review
 
@@ -95,7 +109,9 @@ Decide how a person reviews, edits, accepts, defers, or rejects a conversion bef
 
 **Type review:** This implies distinct proposal and accepted-note lifecycles. Avoid one ambiguous boolean such as `accepted`; keep review outcome separate from source verification and Problem Ticket status.
 
-**Open questions:** Who may promote an accepted note to a Problem Ticket? Should revisions be versioned or is retaining prior decisions sufficient? Are defer/reject needed before persistence exists?
+**Proposed working rule:** In the current local single-user slice, acceptance records only that the note is useful to keep; it is not verification, ticket promotion, or a durable review history. Revising before acceptance replaces the current proposal. Defer/reject history, revision history, roles, and promotion authorization require a separate persistence/ownership decision and remain out of scope.
+
+**Open questions:** Define promotion authority and durable revision/defer/reject history when multi-user or persistence behavior is in scope. Do not imply the current local workflow answers those questions.
 **Validation evidence:** User selected explicit acceptance and an accepted-only list. Converter now previews proposals and exposes separate revise/accept actions; public tests cover both. No domain-user review yet.
 
 ### SC-005 — Preserve sample provenance
@@ -108,8 +124,10 @@ Keep synthetic examples distinguishable from observed or verified WMS reports du
 
 **Type review:** `SourceOrigin` and `VerificationStatus` are now separate Types because they answer different questions. “Verified” needs supporting evidence and an accountable reviewer, not a self-asserted label. The component only records origin and defaults verification to `unreviewed`; later review behavior remains undefined.
 
-**Open questions:** What counts as corroboration, and who can record it? Which real source classes are needed?
-**Validation evidence:** Existing sample files explicitly label themselves synthetic; no real reported or verified cases to test distinctions against.
+**Proposed working rule:** Preserve `synthetic` origin and `unreviewed` verification through proposal, revision, acceptance, and display. Later, use `corroborated` only when supporting evidence is recorded; use `disputed` only when contrary evidence or an explicit challenge is recorded. Do not define automatic verification transitions.
+
+**Open questions:** Define what evidence qualifies as corroboration or dispute, who may record it, and whether further source-origin categories are needed when real reports enter the system.
+**Validation evidence:** All current inbox examples explicitly identify themselves as synthetic or invented; none is operational evidence. The converter emits `unreviewed`, and acceptance does not upgrade status. The proposed future criteria are not implemented or user-validated.
 
 ### SC-006 — Build the input converter
 

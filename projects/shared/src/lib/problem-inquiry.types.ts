@@ -22,10 +22,17 @@ export interface WorkContext {
     };
 }
 
+export interface ProblemFrame {
+    condition: string;
+    affected: string;
+    impact: string;
+}
+
 export interface ProblemTicket {
     id: ProblemTicketId;
     title: string;
     report: string;
+    problem: ProblemFrame;
     scope: ProblemScope;
     context: WorkContext;
     reportedBy: string;

@@ -12,8 +12,8 @@ The features you are writing are, take them one by one:
 {"id":"1a620995-e4d5-45d8-af68-6d6d3e2ade78","createdAt":"2026-10-05 08:32 +02:00","priority":"High","status":"Queued","description":"move the order of the tabs put open first in the feature list on client; improve the arrow layout in the client queued list; show the backlog list on the client; in the done list on the ciient make the Prio and Status labels readonly, Remove the Edit button and replace the start by Archive; add the tab choice on client feature page urlstate; move the feature entry form into a new tab (and make it the last one); The client's Done tab reads from `.wishlist` this is wrong the wishlist should show as open"}
 
 
-- [In progress] Update the readme and changelog <!-- feature-id:e9da6317-1e61-43e9-b733-913d7cba3a1b -->
 - [In progress] move the order of the tabs put open first in the feature list on client; improve the arrow layout in the client queued list; show the backlog list on the client; in the done list on the ciient make the Prio and Status labels readonly, Remove the Edit button and replace the start by Archive; add the tab choice on client feature page urlstate; move the feature entry form into a new tab (and make it the last one); The client's Done tab reads from `.wishlist` this is wrong the wishlist should show as open <!-- feature-id:1a620995-e4d5-45d8-af68-6d6d3e2ade78 -->
+{"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"High","status":"Queued","description":"Update the readme and changelog with a summary of the changes in this branch"}
 
 
 

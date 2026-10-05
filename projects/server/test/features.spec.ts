@@ -29,6 +29,11 @@ describe('features public API', () => {
         return contents.split('\n').filter(Boolean).map(line => JSON.parse(line) as PersistedFeature);
     }
 
+    function taskLineFor(feature: PersistedFeature): string {
+        const { id, createdAt, priority, status, description, deliveredDate } = feature;
+        return JSON.stringify({ id, createdAt, priority, status, description, deliveredDate });
+    }
+
     function entryOf(feature: PersistedFeature): string {
         return `// ${feature.createdAt ? `[${feature.createdAt}] ` : ''}[${feature.id}] [${feature.priority}]`
             + ` [${feature.status}] ${feature.description}`
@@ -461,9 +466,11 @@ describe('features public API', () => {
             'Revised description',
         ));
         expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toContain(
-            `- [In progress] Revised description <!-- feature-id:${id} -->`,
-        );
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
+            'The features you are writing are, take them one by one:',
+            taskLineFor(response.body.data),
+            '',
+        ].join('\r\n'));
     });
 
     it('updates backlog descriptions when DEVENVOPDEV.md does not exist', async () => {
@@ -510,7 +517,7 @@ describe('features public API', () => {
         expect(response.status).toBe(200);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
             'The features you are writing are, take them one by one:',
-            `- [In progress] Updated LF task <!-- feature-id:${id} -->`,
+            taskLineFor(response.body.data),
             '',
         ].join('\n'));
     });
@@ -733,7 +740,7 @@ describe('features public API', () => {
         expect(listed.body.data).toEqual([response.body.data]);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).toContain(
-            `The features you are writing are, take them one by one:\r\n- [In progress] Implement feature tracking <!-- feature-id:${id} -->\r\nExisting feature`,
+            `The features you are writing are, take them one by one:\r\n${taskLineFor(response.body.data)}\r\nExisting feature`,
         );
     });
 
@@ -779,7 +786,7 @@ describe('features public API', () => {
             'The features you are writing are, take them one by one:',
             '- [In progress] Existing active one',
             '- [In progress] Existing active two',
-            `- [In progress] Last active feature <!-- feature-id:${id} -->`,
+            taskLineFor(response.body.data),
             '- [Backlog] Deferred feature',
             '',
         ].join('\n'));
@@ -804,13 +811,13 @@ describe('features public API', () => {
 
         expect(response.status).toBe(200);
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
-        expect(taskFile.match(new RegExp(`feature-id:${id}`, 'g'))).toHaveLength(1);
+        expect(taskFile.split(id)).toHaveLength(2);
         expect(taskFile).toBe([
             'Instructions',
             '',
             'The features you are writing are, take them one by one:',
             `- [In progress] Another task <!-- feature-id:${otherId} -->`,
-            `- [In progress] Keep task listed <!-- feature-id:${id} -->`,
+            taskLineFor(response.body.data),
             '- [Backlog] Deferred feature',
             '',
         ].join('\n'));
@@ -828,7 +835,7 @@ describe('features public API', () => {
             'Instructions without a feature section',
             '',
             'The features you are writing are, take them one by one:',
-            `- [In progress] Append task section <!-- feature-id:${id} -->`,
+            taskLineFor(response.body.data),
         ].join('\n'));
     });
 
@@ -842,7 +849,7 @@ describe('features public API', () => {
         expect(response.status).toBe(200);
         expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe([
             'The features you are writing are, take them one by one:',
-            `- [In progress] Start on empty task list <!-- feature-id:${id} -->`,
+            taskLineFor(response.body.data),
         ].join('\n'));
     });
 

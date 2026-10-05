@@ -1,7 +1,7 @@
-{"id":"1faaf839-491d-4248-b55c-e9aa67c01508","createdAt":"2026-10-05 09:19 +02:00","priority":"High","status":"Queued","description":"always save feature as JSON"}
+{"id":"1faaf839-491d-4248-b55c-e9aa67c01508","createdAt":"2026-10-05 09:19 +02:00","priority":"High","status":"Done","description":"always save feature as JSON"}
 {"id":"e193b69c-d69e-4124-8df7-7bd118117232","createdAt":"2026-10-05 09:09 +02:00","priority":"Low","status":"Done","description":"fix typescript errors"}
 {"id":"e20a5102-f811-4c51-a85e-9cd6be104d6b","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Done","description":"before copying the commit message to the commit name dialog, strip the id and show the description","deliveredDate":"2026-10-05"}
 {"id":"38e2fe23-e1f4-4882-91f4-a769dff8e042","createdAt":"2026-10-05 08:48 +02:00","priority":"Low","status":"Done","description":"make the client feature show page wide; make the gitlog page wide","deliveredDate":"2026-10-05"}
-{"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"High","status":"Queued","description":"Update the readme and changelog"}
+{"id":"e9da6317-1e61-43e9-b733-913d7cba3a1b","createdAt":"2026-10-05 07:56 +02:00","priority":"High","status":"Queued","description":"Update the readme and changelog with a summary of the changes in this branch"}
 {"id":"d7d045b5-4d5c-40f5-a022-d91924b34e9b","createdAt":"2026-10-05 08:12 +02:00","priority":"Low","status":"Done","description":"change all usage of features to use PPTField instead of the text representation; use the converter to copy all archived items back to wishlist in the new format","deliveredDate":"2026-10-05"}
 {"id":"f3df7281-cecf-468c-9612-70f7abe016a3","priority":"Medium","status":"Done","description":"Backlog","deliveredDate":"2026-10-05"}

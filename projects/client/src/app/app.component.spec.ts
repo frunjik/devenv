@@ -155,6 +155,24 @@ describe('AppComponent', () => {
         fixture.destroy();
     });
 
+    it('shows the description of a JSON feature task and keeps non-feature JSON lines as text', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        http.expectOne('http://localhost:3000/task').flush({
+            data: JSON.stringify({ id: '123e4567-e89b-42d3-a456-426614174000', status: 'Queued', description: 'JSON task' }),
+        });
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('JSON task');
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).not.toContain('"id"');
+
+        fixture.nativeElement.querySelector('.top-current-task').click();
+        http.expectOne('http://localhost:3000/task').flush({ data: '{"other":1}' });
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('.top-current-task').textContent).toContain('{"other":1}');
+        fixture.destroy();
+    });
+
     it('shows an empty-task state when DEVENVOPDEV.md contains no active task', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();

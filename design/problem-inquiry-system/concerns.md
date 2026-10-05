@@ -6,37 +6,118 @@ Use this register to order system work without implementing multiple components 
 
 ## Concern Record
 
-Each entry records:
+Use one Markdown section per concern:
 
 ```text
-SystemConcern {
-    id
-    statement
-    kind: domain | behavior | quality | implementation
-    status: open | ready | in-progress | validated | deferred
-    dependsOn: SystemConcernId[]
-    openQuestions
-    validationEvidence
-}
+### SC-000 — Short title
+Kind: ...
+Status: ...
+Depends on: ...
+
+Description in ordinary language.
+Open questions: ...
+Validation evidence: ...
 ```
 
 `dependsOn` names actual prerequisites, not merely related work. A concern can remain open while a dependent concern is explored, but implementation should not assume its unresolved decisions.
 
 ## Initial Register
 
-| ID | Kind | Concern | Status | Depends on |
-|---|---|---|---|---|
-| SC-001 | domain | Distinguish an incoming raw text fragment, an imported note, and a Problem Ticket. Decide when a note qualifies as a ticket; do not assume a one-to-one conversion. | open | — |
-| SC-002 | behavior | Preserve source provenance from inbox artifact and fragment through any converted item, so reviewers can inspect the original wording. | open | SC-001 |
-| SC-003 | behavior | Define conversion as a proposal that can retain ambiguity, missing information, and multiple possible interpretations rather than inventing certainty. | open | SC-001, SC-002 |
-| SC-004 | behavior | Decide how a person reviews, edits, accepts, defers, or rejects a conversion before it enters the converted-items list. | open | SC-003 |
-| SC-005 | quality | Keep synthetic examples distinct from observed or verified WMS reports throughout import and display. | open | SC-002 |
-| SC-006 | implementation | Build one input-converter component against the agreed input and review boundary; test it through its public interface before production implementation. | open | SC-003, SC-004, SC-005 |
-| SC-007 | behavior | Define which converted items appear in the list and how their review state, source, and unresolved fields are visible. | open | SC-004, SC-005 |
-| SC-008 | implementation | Build one converted-items list component against the agreed list behavior; integrate only after its own public-interface tests are red. | open | SC-007 |
-| SC-009 | implementation | Connect the converter and list as a vertical slice, preserving the source-to-result link and accepted review state. | open | SC-006, SC-008 |
+The entries below are design concerns, not implementation commitments. Status reflects current progress.
 
-All entries are open: these are design concerns, not decisions or implementation commitments. The ordering expresses dependencies; it does not authorize building both components together.
+### SC-001 — Distinguish input from ticket
+
+**Kind:** Domain · **Status:** In progress · **Depends on:** None
+
+Distinguish raw text, an imported note, and a Problem Ticket. Decide when an imported note qualifies as a ticket; do not assume one-to-one conversion.
+
+**Working distinction:**
+
+- **Inbox artifact:** the received file or message, retained as-is.
+- **Source fragment:** a verbatim passage from an artifact; it may be incomplete or unrelated to a Problem.
+- **Imported note** *(provisional name)*: an interpretation attached to one or more fragments. It may remain a question, observation, or uncertain claim; it is not yet an accepted Problem.
+- **Problem Ticket:** a deliberately framed, context-bound undesirable condition with an affected party and reason it matters. It can be informed by multiple notes; one note may produce multiple candidate Problems.
+
+For example, WMS-011's raw wording asks whether a validation error is a domain rule or a system defect. The import should preserve that uncertainty; it should not turn either explanation into a Problem fact without more evidence.
+
+**Type review:** Keep `InboxArtifact`, `SourceFragment`, provisional `ImportedNote`, and `ProblemTicket` distinct where their lifecycle/provenance differs. A fragment is not automatically a domain Type, and plain text need not become a wrapper Type without behavior or constraints.
+
+**Open questions:** Does “note” fit better than “candidate,” “report,” or another term? What minimum framing makes an imported interpretation a Problem Ticket?
+**Validation evidence:** Compared against the existing synthetic inbox samples only; no real source or domain-user review yet.
+
+### SC-002 — Preserve source provenance
+
+**Kind:** Behavior · **Status:** Open · **Depends on:** SC-001
+
+Keep a link from each converted item to its inbox artifact and source fragment, so reviewers can inspect the original wording.
+
+**Open questions:** Can one item cite multiple fragments, or one fragment produce multiple items?
+**Validation evidence:** None yet.
+
+### SC-003 — Represent uncertain conversion
+
+**Kind:** Behavior · **Status:** Open · **Depends on:** SC-001, SC-002
+
+Treat conversion as a proposal that can retain ambiguity, missing information, and multiple interpretations instead of inventing certainty.
+
+**Open questions:** Which uncertainties must be explicit to reviewers?
+**Validation evidence:** None yet.
+
+### SC-004 — Define human review
+
+**Kind:** Behavior · **Status:** Open · **Depends on:** SC-003
+
+Decide how a person reviews, edits, accepts, defers, or rejects a conversion before it appears in the converted-items list.
+
+**Open questions:** What does each review outcome mean for the source and proposed item?
+**Validation evidence:** None yet.
+
+### SC-005 — Preserve sample provenance
+
+**Kind:** Quality · **Status:** Open · **Depends on:** SC-002
+
+Keep synthetic examples distinguishable from observed or verified WMS reports during import and display.
+
+**Open questions:** What source labels and evidence qualify as verified?
+**Validation evidence:** None yet.
+
+### SC-006 — Build the input converter
+
+**Kind:** Implementation · **Status:** Open · **Depends on:** SC-003, SC-004, SC-005
+
+Build and test one input-converter component against the agreed input and review behavior, using its public interface.
+
+**Open questions:** What exact interaction starts and completes a conversion?
+**Validation evidence:** None yet.
+
+### SC-007 — Define the converted-items list
+
+**Kind:** Behavior · **Status:** Open · **Depends on:** SC-004, SC-005
+
+Decide which converted items appear and how review status, source, and unresolved fields are shown.
+
+**Open questions:** Are deferred or rejected items listed, and how are they distinguished?
+**Validation evidence:** None yet.
+
+### SC-008 — Build the converted-items list
+
+**Kind:** Implementation · **Status:** Open · **Depends on:** SC-007
+
+Build and test one list component against the agreed display behavior. Treat it as a separate slice from the converter.
+
+**Open questions:** None recorded.
+**Validation evidence:** None yet.
+
+### SC-009 — Connect the vertical slice
+
+**Kind:** Implementation · **Status:** Open · **Depends on:** SC-006, SC-008
+
+Connect converter and list while preserving the source-to-result link and review outcome.
+
+**Open questions:** What boundary carries accepted results between components?
+**Validation evidence:** None yet.
+
+The dependency order does not authorize building both components together.
 
 ## Working Sequence
 
@@ -49,6 +130,6 @@ For each coding slice, derive tests from the synthetic inbox inputs and known Pr
 
 ## Type Review
 
-**Strong candidate for a future Type:** `ImportedNote` (or a better name) with a source reference and proposed interpretation. The current `ProblemTicket` is structured as an already-classified problem, while inbox text may be ambiguous or fail to describe a Problem at all. Keep this as a candidate until SC-001 establishes the distinction; do not add a production Type solely to encode this register.
+Current candidates: `SourceFragment` with a source reference/location, and `ImportedNote` (or a better name) holding a tentative interpretation linked to one or more fragments. Do not add production Types until their responsibilities and validation examples are agreed.
 
 Review this register as examples reveal missing concerns. Add entries rather than silently folding distinct concerns together; record decisions and validation evidence when they become available.

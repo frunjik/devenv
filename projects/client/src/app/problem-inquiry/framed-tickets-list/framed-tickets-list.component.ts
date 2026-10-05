@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ImportedNote, ProblemTicket } from '@shared';
+import { ImportedNote, ProblemTicket, ScopeLevel } from '@shared';
 
 @Component({
     selector: 'app-framed-tickets-list',
@@ -11,8 +11,28 @@ import { ImportedNote, ProblemTicket } from '@shared';
             @if (tickets.length === 0) {
                 <p class="empty-state">No framed problem tickets yet.</p>
             } @else {
+                <div class="ticket-controls">
+                    <label>
+                        Search tickets
+                        <input type="search" [value]="query" (input)="query = $any($event.target).value">
+                    </label>
+                    <label>
+                        Sort by
+                        <select [value]="sortProperty" (change)="changeSortProperty($any($event.target).value)">
+                            @for (option of sortOptions; track option.value) {
+                                <option [value]="option.value" [selected]="option.value === sortProperty">{{ option.label }}</option>
+                            }
+                        </select>
+                    </label>
+                    <button type="button" class="sort-direction" (click)="toggleDirection()">{{ directionLabel }}</button>
+                </div>
+            }
+
+            @if (tickets.length > 0 && displayedTickets.length === 0) {
+                <p class="empty-state">No matching tickets.</p>
+            } @else if (tickets.length > 0) {
                 <ul class="ticket-list">
-                    @for (ticket of tickets; track ticket.id) {
+                    @for (ticket of displayedTickets; track ticket.id) {
                         <li>
                             <article class="ticket-card" [attr.aria-label]="'Problem ticket ' + ticket.id">
                                 <header>
@@ -109,6 +129,26 @@ import { ImportedNote, ProblemTicket } from '@shared';
             margin-block: 2rem;
         }
 
+        .ticket-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 0.5rem 1rem;
+            margin-block-end: 1rem;
+        }
+
+        .ticket-controls label {
+            display: grid;
+            gap: 0.2rem;
+            min-width: 0;
+        }
+
+        .ticket-controls input,
+        .ticket-controls select {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
         .ticket-list,
         .source-notes {
             display: grid;
@@ -199,7 +239,93 @@ export class FramedTicketsListComponent {
     @Input() tickets: readonly ProblemTicket[] = [];
     @Input() notes: readonly ImportedNote[] = [];
 
+    readonly sortOptions: readonly { value: SortProperty; label: string }[] = [
+        { value: 'created', label: 'Creation time' },
+        { value: 'title', label: 'Title' },
+        { value: 'scope', label: 'Scope level' },
+        { value: 'reporter', label: 'Reporter' },
+    ];
+
+    query = '';
+    sortProperty: SortProperty = 'created';
+    ascending = false;
+
+    get displayedTickets(): readonly ProblemTicket[] {
+        const needle = normalize(this.query.trim());
+        const matching = needle
+            ? this.tickets.filter(ticket => searchableText(ticket).includes(needle))
+            : [...this.tickets];
+        return matching.sort((a, b) => this.compare(a, b));
+    }
+
+    get directionLabel(): string {
+        const labels = DIRECTION_LABELS[this.sortProperty];
+        return this.ascending ? labels.ascending : labels.descending;
+    }
+
+    changeSortProperty(property: SortProperty): void {
+        this.sortProperty = property;
+        this.ascending = property !== 'created';
+    }
+
+    toggleDirection(): void {
+        this.ascending = !this.ascending;
+    }
+
     findNote(noteId: string): ImportedNote | undefined {
         return this.notes.find(note => note.id === noteId);
+    }
+
+    private compare(a: ProblemTicket, b: ProblemTicket): number {
+        const left = sortKey(a, this.sortProperty);
+        const right = sortKey(b, this.sortProperty);
+        if (left === undefined || right === undefined) {
+            return Number(left === undefined) - Number(right === undefined);
+        }
+        const order = typeof left === 'number' && typeof right === 'number'
+            ? left - right
+            : String(left).localeCompare(String(right));
+        return this.ascending ? order : -order;
+    }
+}
+
+type SortProperty = 'created' | 'title' | 'scope' | 'reporter';
+
+const SCOPE_ORDER: readonly ScopeLevel[] = ['operation', 'workflow', 'system', 'cross-system'];
+
+const DIRECTION_LABELS: Record<SortProperty, { ascending: string; descending: string }> = {
+    created: { ascending: 'Oldest first', descending: 'Newest first' },
+    title: { ascending: 'A to Z', descending: 'Z to A' },
+    scope: { ascending: 'Narrowest first', descending: 'Widest first' },
+    reporter: { ascending: 'A to Z', descending: 'Z to A' },
+};
+
+function normalize(text: string): string {
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function searchableText(ticket: ProblemTicket): string {
+    return normalize([
+        ticket.title,
+        ticket.report,
+        ticket.problem.condition,
+        ticket.problem.affected,
+        ticket.problem.impact,
+    ].join('\n'));
+}
+
+// Returns undefined for a missing value so such tickets sort last in either direction.
+function sortKey(ticket: ProblemTicket, property: SortProperty): string | number | undefined {
+    switch (property) {
+        case 'created': {
+            const time = Date.parse(ticket.reportedAt);
+            return Number.isNaN(time) ? undefined : time;
+        }
+        case 'title':
+            return ticket.title.trim() ? ticket.title : undefined;
+        case 'scope':
+            return SCOPE_ORDER.indexOf(ticket.scope.level);
+        case 'reporter':
+            return ticket.reportedBy.trim() ? ticket.reportedBy : undefined;
     }
 }

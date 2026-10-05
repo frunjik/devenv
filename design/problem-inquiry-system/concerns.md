@@ -355,13 +355,15 @@ Explore whether an AI chatbot can live inside the meta (host) layer, so it is av
 
 ### SC-026 — Sort and search the problem ticket list
 
-**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-015, SC-017
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-015, SC-017
 
 Let the user sort the list of framed problem tickets on different properties and find tickets with a search field that matches their description.
 
 **Working boundary:** View-only: sorting and searching change visibility and order, never the underlying records, and must compose with the sample/real data filter (SC-017).
 **Decisions (user, 2026-10-06):** Search matches the ticket title, report, and problem-frame fields (condition, affected, impact), case-insensitive substring with diacritics ignored. Sortable on creation time, title, scope level, and reporter; default is newest first by creation time. Applies to tickets only for now (notes later if needed). Choices are not persisted and reset on reload; an empty result shows a "no matching tickets" message.
-**Open questions:** Is the sort direction togglable per property? How are tickets with missing optional values ordered? Does the "no matching tickets" message differ when the sample/real filter hides everything?
+**Open questions:** None for this slice. Notes may later get the same controls.
+**Assumptions (agent, 2026-10-06; revisit if wrong):** Each property has a default direction (creation time newest first; title, scope, and reporter ascending) and the direction button toggles it; changing property resets to that default. Tickets with a missing or unreadable value sort last in either direction. Scope level sorts by width (operation, workflow, system, cross-system), not alphabetically. The empty message is "No matching tickets." when search hides everything; when the sample/real filter leaves no tickets the existing "No framed problem tickets yet." shows.
+**Validation evidence:** The framed-ticket list has a search field and a sort selector with a direction toggle. Public-interface tests cover default order, each property, direction, missing values, case/accent-insensitive search over title, report, and problem-frame fields, non-searched fields, the no-match message, and sort-plus-search. The list component and page have 100% statements, branches, functions, and lines; full client suite (191 tests) and build pass. Verified in the browser with two tickets: search filters, "No matching tickets." shows, and there is no horizontal overflow at 320, 768, and 1440 px. Records are never modified.
 **Vocabulary note (P-009):** In this concern, "description" means the searchable text fields above, not a separate ticket field.
 
 The dependency order does not authorize building both components together.

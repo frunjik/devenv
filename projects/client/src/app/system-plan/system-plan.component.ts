@@ -355,7 +355,7 @@ export class SystemPlanComponent {
             id: 'SC-026',
             title: 'Sort and search the problem ticket list',
             kind: 'Behavior',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: ['SC-015', 'SC-017'],
             summary: 'Sort framed tickets by different properties and search them by description.',
         },

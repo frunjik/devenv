@@ -82,6 +82,238 @@ describe('FramedTicketsListComponent', () => {
         expect(content).toContain('No things recorded.');
     });
 
+    describe('sorting and searching', () => {
+        function ticket(
+            id: string,
+            overrides: Partial<ProblemTicket> & { frame?: Partial<ProblemTicket['problem']> } = {},
+        ): ProblemTicket {
+            const { frame, ...rest } = overrides;
+            return {
+                ...makeTicket(id, `Title ${id}`, ['note-1']),
+                report: 'Neutral report',
+                ...rest,
+                problem: { condition: 'Neutral condition', affected: 'Neutral party', impact: 'Neutral impact', ...frame },
+            };
+        }
+
+        function setTickets(tickets: ProblemTicket[]): void {
+            fixture.componentRef.setInput('tickets', tickets);
+            fixture.detectChanges();
+        }
+
+        function ids(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-id') as NodeListOf<HTMLElement>)
+                .map(element => element.textContent?.trim() ?? '');
+        }
+
+        function search(text: string): void {
+            const input = fixture.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+            input.value = text;
+            input.dispatchEvent(new Event('input'));
+            fixture.detectChanges();
+        }
+
+        function sortBy(property: string): void {
+            const select = fixture.nativeElement.querySelector('select') as HTMLSelectElement;
+            select.value = property;
+            select.dispatchEvent(new Event('change'));
+            fixture.detectChanges();
+        }
+
+        function directionButton(): HTMLButtonElement {
+            return fixture.nativeElement.querySelector('.sort-direction') as HTMLButtonElement;
+        }
+
+        it('shows no controls while there are no tickets', () => {
+            expect(fixture.nativeElement.querySelector('input[type="search"]')).toBeNull();
+            expect(fixture.nativeElement.querySelector('select')).toBeNull();
+        });
+
+        it('lists newest first by creation time by default', () => {
+            setTickets([
+                ticket('old', { reportedAt: '2026-01-01T00:00:00.000Z' }),
+                ticket('new', { reportedAt: '2026-03-01T00:00:00.000Z' }),
+                ticket('mid', { reportedAt: '2026-02-01T00:00:00.000Z' }),
+            ]);
+
+            expect(ids()).toEqual(['new', 'mid', 'old']);
+            expect(directionButton().textContent).toContain('Newest first');
+        });
+
+        it('toggles the direction of the current property', () => {
+            setTickets([
+                ticket('old', { reportedAt: '2026-01-01T00:00:00.000Z' }),
+                ticket('new', { reportedAt: '2026-03-01T00:00:00.000Z' }),
+            ]);
+
+            directionButton().click();
+            fixture.detectChanges();
+
+            expect(ids()).toEqual(['old', 'new']);
+            expect(directionButton().textContent).toContain('Oldest first');
+        });
+
+        it('sorts by title ascending first, ignoring case, and can be reversed', () => {
+            setTickets([
+                ticket('b', { title: 'beta' }),
+                ticket('c', { title: 'Gamma' }),
+                ticket('a', { title: 'Alpha' }),
+            ]);
+
+            sortBy('title');
+            expect(ids()).toEqual(['a', 'b', 'c']);
+            expect(directionButton().textContent).toContain('A to Z');
+
+            directionButton().click();
+            fixture.detectChanges();
+            expect(ids()).toEqual(['c', 'b', 'a']);
+            expect(directionButton().textContent).toContain('Z to A');
+        });
+
+        it('sorts by scope level in widening order rather than alphabetically', () => {
+            setTickets([
+                ticket('cross', { scope: { level: 'cross-system', label: 'x' } }),
+                ticket('op', { scope: { level: 'operation', label: 'x' } }),
+                ticket('sys', { scope: { level: 'system', label: 'x' } }),
+                ticket('flow', { scope: { level: 'workflow', label: 'x' } }),
+            ]);
+
+            sortBy('scope');
+            expect(ids()).toEqual(['op', 'flow', 'sys', 'cross']);
+        });
+
+        it('sorts by reporter and keeps the original order for ties', () => {
+            setTickets([
+                ticket('z1', { reportedBy: 'Zed' }),
+                ticket('a1', { reportedBy: 'Ann' }),
+                ticket('z2', { reportedBy: 'Zed' }),
+            ]);
+
+            sortBy('reporter');
+            expect(ids()).toEqual(['a1', 'z1', 'z2']);
+        });
+
+        it('puts tickets with missing values last in either direction', () => {
+            setTickets([
+                ticket('none', { reportedBy: '' }),
+                ticket('ann', { reportedBy: 'Ann' }),
+                ticket('bob', { reportedBy: 'Bob' }),
+            ]);
+
+            sortBy('reporter');
+            expect(ids()).toEqual(['ann', 'bob', 'none']);
+
+            directionButton().click();
+            fixture.detectChanges();
+            expect(ids()).toEqual(['bob', 'ann', 'none']);
+        });
+
+        it('puts tickets with a blank title last when sorting by title', () => {
+            setTickets([
+                ticket('blank', { title: '  ' }),
+                ticket('named', { title: 'Alpha' }),
+            ]);
+
+            sortBy('title');
+
+            expect(ids()).toEqual(['named', 'blank']);
+        });
+
+        it('puts tickets with an unreadable creation time last', () => {
+            setTickets([
+                ticket('bad', { reportedAt: 'not a date' }),
+                ticket('good', { reportedAt: '2026-01-01T00:00:00.000Z' }),
+            ]);
+
+            expect(ids()).toEqual(['good', 'bad']);
+        });
+
+        it('restores the default direction of each property when the property changes', () => {
+            setTickets([
+                ticket('a', { title: 'Alpha', reportedAt: '2026-01-01T00:00:00.000Z' }),
+                ticket('b', { title: 'Beta', reportedAt: '2026-02-01T00:00:00.000Z' }),
+            ]);
+
+            sortBy('title');
+            directionButton().click();
+            fixture.detectChanges();
+            sortBy('created');
+
+            expect(ids()).toEqual(['b', 'a']);
+        });
+
+        it('searches title, report, and problem-frame fields, ignoring case and accents', () => {
+            setTickets([
+                ticket('title', { title: 'Scanner CRASH' }),
+                ticket('report', { report: 'Pallet label unreadable' }),
+                ticket('condition', { frame: { condition: 'Réservation duplicated' } }),
+                ticket('affected', { frame: { affected: 'Night shift' } }),
+                ticket('impact', { frame: { impact: 'Late shipment' } }),
+            ]);
+
+            search('crash');
+            expect(ids()).toEqual(['title']);
+            search('LABEL');
+            expect(ids()).toEqual(['report']);
+            search('reservation');
+            expect(ids()).toEqual(['condition']);
+            search('night');
+            expect(ids()).toEqual(['affected']);
+            search('shipment');
+            expect(ids()).toEqual(['impact']);
+        });
+
+        it('ignores surrounding whitespace and shows everything again when cleared', () => {
+            setTickets([
+                ticket('one', { title: 'Alpha' }),
+                ticket('two', { title: 'Beta' }),
+            ]);
+
+            search('  alp ');
+            expect(ids()).toEqual(['one']);
+            search('');
+            expect(ids().length).toBe(2);
+        });
+
+        it('does not search note text, reporter, or scope', () => {
+            setTickets([ticket('one', { title: 'Alpha', reportedBy: 'Zorro', scope: { level: 'system', label: 'Warehouse' } })]);
+
+            search('zorro');
+            expect(ids()).toEqual([]);
+            search('warehouse');
+            expect(ids()).toEqual([]);
+            search('scanner timed out');
+            expect(ids()).toEqual([]);
+        });
+
+        it('shows a no-match message with the controls kept, without altering the tickets', () => {
+            const tickets = [ticket('one', { title: 'Alpha' })];
+            setTickets(tickets);
+
+            search('nothing like this');
+
+            expect(fixture.nativeElement.textContent).toContain('No matching tickets.');
+            expect(fixture.nativeElement.textContent).not.toContain('No framed problem tickets yet.');
+            expect(fixture.nativeElement.querySelector('input[type="search"]')).not.toBeNull();
+            expect(tickets.length).toBe(1);
+            search('');
+            expect(ids()).toEqual(['one']);
+        });
+
+        it('combines search with sorting', () => {
+            setTickets([
+                ticket('b', { title: 'Scan beta' }),
+                ticket('a', { title: 'Scan alpha' }),
+                ticket('x', { title: 'Other' }),
+            ]);
+
+            sortBy('title');
+            search('scan');
+
+            expect(ids()).toEqual(['a', 'b']);
+        });
+    });
+
     function makeTicket(
         id: string,
         title: string,

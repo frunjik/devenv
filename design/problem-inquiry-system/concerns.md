@@ -249,13 +249,13 @@ Build a separate view of explicitly created Problem Tickets and their linked acc
 
 ### SC-016 — Connect note framing to ticket review
 
-**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-014, SC-015
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-014, SC-015
 
 Connect accepted notes, explicit ticket framing, and the framed-ticket list without collapsing their separate lifecycles.
 
 **Working boundary:** The parent page owns in-memory notes and tickets. A source note can be linked to multiple tickets; only an explicit completed form creates a ticket.
 **Open questions:** None for the in-memory vertical slice.
-**Validation evidence:** Not started.
+**Validation evidence:** The inquiry page passes accepted notes to the framing form and ticket list, and adds emitted tickets to a separate in-memory collection. Public-interface tests verify that accepting a note alone creates no ticket and that explicit framing creates a ticket linked to the accepted source. Page coverage is 100% statements, branches, functions, and lines; client build passes. At a 320 px viewport, the integrated page has no horizontal overflow and converter controls remain within the component width.
 
 The dependency order does not authorize building both components together.
 

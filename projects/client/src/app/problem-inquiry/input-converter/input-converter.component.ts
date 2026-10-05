@@ -66,6 +66,64 @@ import { ImportedNote, NoteProposal, SourceOrigin, SourceReference } from '@shar
             </section>
         }
     `,
+    styles: `
+        :host {
+            display: block;
+            min-width: 0;
+        }
+
+        form,
+        section[aria-labelledby="proposal-review-heading"] {
+            display: grid;
+            gap: 0.75rem;
+            max-width: 100%;
+        }
+
+        fieldset {
+            box-sizing: border-box;
+            min-width: 0;
+            max-width: 100%;
+            padding: 0.75rem;
+        }
+
+        form > label {
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        textarea {
+            box-sizing: border-box;
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            padding: 0.6rem;
+        }
+
+        textarea {
+            min-height: 5rem;
+            resize: vertical;
+        }
+
+        fieldset fieldset label {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem;
+            margin-inline-end: 0.75rem;
+        }
+
+        fieldset fieldset input[type="radio"] {
+            width: auto;
+        }
+
+        section[aria-labelledby="proposal-review-heading"] {
+            margin-block-start: 1rem;
+        }
+
+        button {
+            justify-self: start;
+        }
+    `,
 })
 export class InputConverterComponent {
     @Output() readonly proposalCreated = new EventEmitter<NoteProposal>();

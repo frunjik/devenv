@@ -275,7 +275,7 @@ export class SystemPlanComponent {
             id: 'SC-016',
             title: 'Connect note framing to ticket review',
             kind: 'Implementation',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: ['SC-014', 'SC-015'],
             summary: 'Connect accepted notes, explicit ticket creation, and the framed-ticket list.',
         },

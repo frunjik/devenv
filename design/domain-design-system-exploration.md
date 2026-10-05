@@ -22,6 +22,30 @@ These are alternatives to evaluate against real needs, not a prescribed sequence
 - **Paper or narrative prototype:** Use sketches, example documents, and walkthroughs to examine concepts and diagnostics without writing software.
 - **Prior-art study:** Compare Magritte, EMF, JSON Schema, CUE, SHACL, and OWL against concrete needs rather than assuming any one is a complete answer.
 
+## “Don't Write Features” as a Design Lens
+
+Juval Löwy's *Righting Software* includes the chapter “There Is No Feature,” alongside guidance to avoid functional decomposition and to decompose systems around volatility. The useful question for this exploration is not whether users need features—users need capabilities and outcomes—but whether a feature list is being mistaken for a definition or structure of the System.
+
+For the Domain Design System, “add a glossary page,” “add a type editor,” and “add a validation panel” describe possible product features or surfaces. On their own, they do not establish:
+
+- what Domain-design problem those capabilities address;
+- what coherent responsibility the System has;
+- what concepts and Contracts the capabilities share;
+- how those capabilities serve the same user outcomes; or
+- which changes are likely to affect together and therefore belong together in a future design.
+
+As a **what-phase** lens, this suggests:
+
+- Describe desired outcomes, responsibilities, concepts, and Contracts before accumulating feature requests.
+- Treat proposed features as evidence or hypotheses about needed capabilities; ask which problem and outcome each supports.
+- Look for capabilities that form a coherent whole, rather than assuming each visible feature is an independent building block.
+- Record likely sources of change and volatility as questions for later design; do not turn them into architecture or implementation decisions now.
+- Keep room for user-visible capabilities: “no feature” should not be read as “no functionality,” but as a warning that feature enumeration alone is not system design.
+
+This lens complements, rather than replaces, Problem-first inquiry and concrete scenarios. A feature request can reveal an unmet need, but needs investigation before being accepted as the need itself. A scenario can expose several required capabilities; a capability may support several outcomes.
+
+This is a working interpretation to evaluate against the book's method and concrete examples, not a complete summary of Löwy's argument or a universal rule that features should never be discussed.
+
 ## Why “How” May Not Be Mere Detail
 
 The focus on defining what a System must do is valuable, but there are counterarguments to treating how as irrelevant:
@@ -65,3 +89,8 @@ The exploration may be ready to inform a separate “how” discussion when:
 - there is agreement on the next question to investigate, without assuming code must be written.
 
 These conditions are guidance, not a demand for exhaustive certainty.
+
+## References
+
+- [*Righting Software* official site](https://rightingsoftware.org/) — describes the book's integrated approach to system and project design, including decomposition by volatility.
+- [Publisher's book page and table of contents](https://www.informit.com/store/righting-software-9780136524038) — lists “Avoid Functional Decomposition,” “Volatility-Based Decomposition,” and “There Is No Feature.”

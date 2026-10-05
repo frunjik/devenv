@@ -21,6 +21,7 @@ These are alternatives to evaluate against real needs, not a prescribed sequence
 - **Competing-model comparison:** Describe the same example Domain in different candidate approaches and compare clarity, expressiveness, assumptions, and tradeoffs.
 - **Paper or narrative prototype:** Use sketches, example documents, and walkthroughs to examine concepts and diagnostics without writing software.
 - **Prior-art study:** Compare Magritte, EMF, JSON Schema, CUE, SHACL, and OWL against concrete needs rather than assuming any one is a complete answer.
+- **Spike:** Run a bounded, time-limited inquiry to answer a specific question. It may be paper-based; code is not implied. Keep artifacts under `design/explorations/<date>-<topic>/` using a brief, lightweight convention that preserves the question, assumptions, artifacts, observations, findings, and decision. Afterwards, promote useful knowledge into durable designs, retain context, mark superseded conclusions, or discard material with a reason. Evaluate the convention after use; do not build tooling for it in advance.
 
 ## Candidate Bootstrap Inquiry
 

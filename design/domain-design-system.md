@@ -25,7 +25,7 @@ This is a possible direction for DevEnv, not a claim about current application c
 ## Explore Further
 
 - [What the Domain Design System may need to express](./domain-design-system-model.md) — candidate Goal, outcomes, Domain concepts, illustrative model, and Contracts.
-- [Exploration notes and possible strategies](./domain-design-system-exploration.md) — current what-before-how boundary, “Don't Write Features” as a design lens, strategies to evaluate later, counterarguments, tensions, and possible exit conditions.
+- [Exploration notes and possible strategies](./domain-design-system-exploration.md) — current what-before-how boundary, “Don't Write Features” as a design lens, Spike strategy, other strategies to evaluate, counterarguments, tensions, and possible exit conditions.
 - [Why a Meta-Type System May Be Useful](./meta-type-system-purpose.md) — rationale, Magritte and other prior art, benefits, and risks.
 - [Type Description Model](./type-description-model.md) — exploratory description structure, consumer Contracts, and open questions.
 

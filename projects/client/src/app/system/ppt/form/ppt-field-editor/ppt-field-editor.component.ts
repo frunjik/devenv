@@ -10,6 +10,7 @@ import type { PPTField } from '@shared';
     standalone: true,
     imports: [MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
     templateUrl: './ppt-field-editor.component.html',
+    styleUrl: './ppt-field-editor.component.scss',
 })
 export class PPTFieldEditorComponent implements OnChanges {
     field = input.required<PPTField>();

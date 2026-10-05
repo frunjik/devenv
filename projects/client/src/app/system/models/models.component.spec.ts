@@ -29,7 +29,9 @@ describe('ModelsComponent', () => {
     it('selects a field and resets the editor to that field', () => {
         const component = fixture.componentInstance;
         const nextField = component.fieldOptions[1];
-        const selector = fixture.nativeElement.querySelector('#ppt-field-selection') as HTMLSelectElement;
+        const selector = fixture.nativeElement.querySelector(
+            'select[aria-label="Select a PPT field"]',
+        ) as HTMLSelectElement;
 
         selector.value = nextField.key;
         selector.dispatchEvent(new Event('change'));

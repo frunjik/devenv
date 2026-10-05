@@ -1,19 +1,25 @@
 <main class="models-page">
     <h1>PPT models</h1>
     <section aria-label="PPT field editor">
-        <h2>Edit a PPT field</h2>
-        <label for="ppt-field-selection">Field</label>
-        <select
-            id="ppt-field-selection"
-            aria-label="Select a PPT field"
-            [value]="selectedFieldKey"
-            (change)="selectField(fieldSelection.value)"
-            #fieldSelection
-        >
-            @for (option of fieldOptions; track option.key) {
-                <option [value]="option.key">{{ option.label }}</option>
-            }
-        </select>
+        <header class="field-editor-heading">
+            <div>
+                <h2>Edit a PPT field</h2>
+                <p>Choose a field to update its definition in this session.</p>
+            </div>
+            <label class="field-picker">
+                <span>Selected field</span>
+                <select
+                    aria-label="Select a PPT field"
+                    [value]="selectedFieldKey"
+                    (change)="selectField(fieldSelection.value)"
+                    #fieldSelection
+                >
+                    @for (option of fieldOptions; track option.key) {
+                        <option [value]="option.key">{{ option.label }}</option>
+                    }
+                </select>
+            </label>
+        </header>
         @if (selectedField) {
             <ppt-field-editor
                 [field]="selectedField"

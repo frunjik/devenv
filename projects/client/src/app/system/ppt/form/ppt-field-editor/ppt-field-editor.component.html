@@ -1,27 +1,29 @@
-<form [formGroup]="form" (ngSubmit)="save()">
-    <mat-form-field>
+<form class="field-editor-form" [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field class="field-editor-control">
         <mat-label>ID</mat-label>
         <input matInput formControlName="id">
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="field-editor-control field-type-control">
         <mat-label>Type</mat-label>
-        <textarea matInput formControlName="type" rows="4"></textarea>
+        <textarea matInput formControlName="type" rows="5" spellcheck="false"></textarea>
     </mat-form-field>
     @if (typeError) {
-        <p role="alert">{{ typeError }}</p>
+        <p class="type-error" role="alert">{{ typeError }}</p>
     }
 
-    <mat-form-field>
+    <mat-form-field class="field-editor-control">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name">
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="field-editor-control">
         <mat-label>Title</mat-label>
-        <input matInput formControlName="title">
+        <input matInput formControlName="title" placeholder="Optional">
     </mat-form-field>
 
-    <button mat-button type="submit" [disabled]="form.invalid">Save</button>
-    <button mat-button type="button" (click)="requestCancel()">Cancel</button>
+    <div class="field-editor-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Save changes</button>
+        <button mat-button type="button" (click)="requestCancel()">Cancel</button>
+    </div>
 </form>

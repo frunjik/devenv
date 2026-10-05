@@ -3,6 +3,8 @@
 **Status:** Updated desk exploration; based on the scenario description, not independent inspection
 **Mode:** Conceptual; no code, screen-corpus analysis, or stakeholder interviews performed
 
+See the companion [candidate Terms, Types, and Primitives model](./domain-model.md). It is exploratory and not validated against the actual screen corpus.
+
 ## Subject
 
 Builders are replacing a roughly 30-year-old monolithic Warehouse Management System (WMS) with a web-based system. More than 400 screens are defined in a structure that is incomplete and still evolving. The screens contain information, but it is unclear which parts express warehouse-domain concerns and which express system or presentation concerns. The legacy system also uses internal GUI-building means; the primitives needed by the web counterpart are unknown.

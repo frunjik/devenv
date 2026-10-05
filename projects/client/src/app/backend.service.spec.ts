@@ -154,7 +154,7 @@ describe('BackendService', () => {
     });
 
     it('loads the cached test result status through the public API', async () => {
-        const status = await service.getTestRunCacheStatus().toPromise();
+        const status = (await service.getTestRunCacheStatus().toPromise())!;
 
         expect(status).toMatchObject({
             available: expect.any(Boolean),

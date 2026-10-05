@@ -100,7 +100,7 @@ export function createTestRunHandler(
             result.finishedAt = new Date().toISOString();
             if (event.type === 'complete') {
                 result.exitCode = event.exitCode;
-            } else {
+            } else if (event.type === 'error') {
                 result.error = event.message;
             }
 

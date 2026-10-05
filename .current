@@ -8,3 +8,4 @@
 {"id":"e20a5102-f811-4c51-a85e-9cd6be104d6b","createdAt":"2026-10-05 08:32 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"before copying the commit message to the commit name dialog, strip the id and show the description"}
 {"id":"38e2fe23-e1f4-4882-91f4-a769dff8e042","createdAt":"2026-10-05 08:48 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"make the client feature show page wide"}
 {"id":"6e43a1fb-f632-4757-ae86-34181308a95b","createdAt":"2026-10-04 23:23 +02:00","priority":"Low","status":"InProgress","description":"bundle of ~17 older items; check each and implement the missing ones"}
+{"id":"e193b69c-d69e-4124-8df7-7bd118117232","createdAt":"2026-10-05 09:09 +02:00","priority":"Low","status":"Done","deliveredDate":"2026-10-05","description":"fix typescript errors"}

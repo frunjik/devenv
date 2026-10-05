@@ -9,7 +9,7 @@ When there are no items here, pick a Queued item by prio, set its status to Comm
 The features you are writing are, take them one by one:
 - [In progress] make the client feature show page wide; make the gitlog page wide <!-- feature-id:38e2fe23-e1f4-4882-91f4-a769dff8e042 -->
 - [In progress] Update the readme and changelog <!-- feature-id:e9da6317-1e61-43e9-b733-913d7cba3a1b -->
-- [In progress] fix typescript errors <!-- feature-id:e193b69c-d69e-4124-8df7-7bd118117232 -->
+- [In progress] move the order of the tabs put open first in the feature list on client; improve the arrow layout in the client queued list; show the backlog list on the client; in the done list on the ciient make the Prio and Status labels readonly, Remove the Edit button and replace the start by Archive; add the tab choice on client feature page urlstate; move the feature entry form into a new tab (and make it the last one) <!-- feature-id:1a620995-e4d5-45d8-af68-6d6d3e2ade78 -->
 
 
 

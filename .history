@@ -1,3 +1,4 @@
+// [2026-10-05 09:20 +02:00] Fixed TypeScript errors: server lib (idMatch.index, TestCommandEvent narrowing, orphaned ppt/core imports) and strict-null errors in client/server specs. Both tsc type-checks clean; 231 client + 201 server tests at 100%.
 // [2026-10-05 11:10 +02:00] Client add-feature form now defaults to Wished (added to the status list) and switches to the Open tab after adding, so a new item is visible. Client 231 and server 201 tests at 100%.
 // [2026-10-05 10:40 +02:00] Added GET /history, /glossary (.glossary, falling back to .terms) and /backlog endpoints plus client History, Glossary and Backlog views with routes and nav links (part of bundled feature 6e43a1fb). Client 231 and server 201 tests at 100%; client build passes.
 // [2026-10-05 10:15 +02:00] The client feature page now uses the full available width (removed the 72rem page cap and 48rem form cap). Tests green at 100%; client build passes.

@@ -27,10 +27,10 @@ describe('HistoryComponent', () => {
 
         const items = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.history-item'));
         expect(items).toHaveLength(2);
-        expect(items[0].querySelector('.history-timestamp').textContent).toBe('2026-10-05 10:15 +02:00');
-        expect(items[0].querySelector('.history-text').textContent).toBe('Did a thing');
+        expect(items[0].querySelector('.history-timestamp')!.textContent).toBe('2026-10-05 10:15 +02:00');
+        expect(items[0].querySelector('.history-text')!.textContent).toBe('Did a thing');
         expect(items[1].querySelector('.history-timestamp')).toBeNull();
-        expect(items[1].querySelector('.history-text').textContent).toBe('plain line');
+        expect(items[1].querySelector('.history-text')!.textContent).toBe('plain line');
     });
 
     it('shows an empty message when there is nothing to show', () => {
@@ -44,7 +44,7 @@ describe('HistoryComponent', () => {
         http.expectOne('http://localhost:3000/history').flush({ error: { message: 'boom' } }, { status: 500, statusText: 'Server Error' });
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('500');
+        expect(fixture.nativeElement.querySelector('[role="alert"]')!.textContent).toContain('500');
         expect(fixture.nativeElement.textContent).not.toContain('No history yet.');
     });
 });

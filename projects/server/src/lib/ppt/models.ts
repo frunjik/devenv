@@ -1,4 +1,4 @@
-import { PPTField, PPTModel } from './core';
+import { PPTField, PPTModel } from '@ppt';
 // TODO: Generate
 // everyting after this from its own descriptions below
 

@@ -69,7 +69,7 @@ function addFeatureId(entry: string): string {
 
 function addFeaturePriority(entry: string): string {
     const idMatch = entry.match(featureIdPattern)!;
-    const idEnd = idMatch.index + idMatch[0].length;
+    const idEnd = idMatch.index! + idMatch[0].length;
     const suffix = entry.slice(idEnd);
     const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i);
     if (!priorityMatch) {
@@ -82,7 +82,7 @@ function addFeaturePriority(entry: string): string {
 
 function addFeatureStatus(entry: string): string {
     const idMatch = entry.match(featureIdPattern)!;
-    const idEnd = idMatch.index + idMatch[0].length;
+    const idEnd = idMatch.index! + idMatch[0].length;
     const suffix = entry.slice(idEnd);
     const priorityMatch = suffix.match(/^\s+\[(High|Medium|Low)\](.*)$/i)!;
     const remaining = priorityMatch[2];
@@ -199,8 +199,8 @@ async function removeStartedFeatureTask(
 function legacyLineToFeature(line: string): PPTFeature {
     const entry = addFeatureStatus(addFeaturePriority(addFeatureId(line)));
     const idMatch = entry.match(featureIdPattern)!;
-    const head = entry.slice(0, idMatch.index);
-    const [, priority, status, tail] = entry.slice(idMatch.index + idMatch[0].length).match(
+    const head = entry.slice(0, idMatch.index!);
+    const [, priority, status, tail] = entry.slice(idMatch.index! + idMatch[0].length).match(
         /^\s+\[(High|Medium|Low)\]\s+\[(Questions|Wished|Backlog|Queued|Committed|InProgress|In progress|Delivered|Done|Aborted|Denied|Archived)\]\s*(.*)$/,
     )!;
     const createdAt = head.match(/^\/\/ \[([^\]]+)\] $/)?.[1];

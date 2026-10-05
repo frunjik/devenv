@@ -115,7 +115,7 @@ describe('authentication public API', () => {
 
         try {
             const authenticatedApp = createApp(root, { authenticationService });
-            authenticatedApp.use((_error, _request, response, _next) => response.status(503).end());
+            authenticatedApp.use(((_error, _request, response, _next) => response.status(503).end()) as ErrorRequestHandler);
             const response = await request(authenticatedApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(503);

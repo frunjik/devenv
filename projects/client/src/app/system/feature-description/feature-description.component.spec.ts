@@ -77,7 +77,7 @@ describe('FeatureDescriptionComponent', () => {
     });
 
     it('shows a feature description form', () => {
-        expect(fixture.nativeElement.querySelector('h1').textContent).toContain('New feature');
+        expect(fixture.nativeElement.querySelector('h1')!.textContent).toContain('New feature');
         expect(fixture.nativeElement.querySelector('textarea[aria-label="Feature description"]')).not.toBeNull();
     });
 
@@ -85,10 +85,10 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.open-features').textContent).toContain('No open features.');
-        expect(fixture.nativeElement.querySelector('.queued-features').textContent)
+        expect(fixture.nativeElement.querySelector('.open-features')!.textContent).toContain('No open features.');
+        expect(fixture.nativeElement.querySelector('.queued-features')!.textContent)
             .toContain('No features queued.');
-        expect(fixture.nativeElement.querySelector('.done-features').textContent)
+        expect(fixture.nativeElement.querySelector('.done-features')!.textContent)
             .toContain('No completed features.');
     });
 
@@ -97,7 +97,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         const tabs: NodeListOf<HTMLButtonElement> = fixture.nativeElement.querySelectorAll('[role="tab"]');
 
-        expect(Array.from(tabs).map(tab => tab.textContent.trim())).toEqual([
+        expect(Array.from(tabs).map(tab => tab.textContent!.trim())).toEqual([
             'Open (0)',
             'Queued (0)',
             'Done (0)',
@@ -156,9 +156,9 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
-        expect(fixture.nativeElement.querySelector('.queued-feature-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
             .toBe('Matching active feature');
-        expect(fixture.nativeElement.querySelector('.queued-features').textContent)
+        expect(fixture.nativeElement.querySelector('.queued-features')!.textContent)
             .not.toContain('Unrelated active feature');
     });
 
@@ -179,7 +179,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
-        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
             .toBe('A feature added elsewhere');
         expect(refreshButton.disabled).toBe(false);
     });
@@ -204,8 +204,8 @@ describe('FeatureDescriptionComponent', () => {
 
         const rows = fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row');
         expect(Array.from<HTMLTableRowElement>(rows).map(row => ({
-            id: row.querySelector('.mat-column-id')?.textContent.trim(),
-            description: row.querySelector('.mat-column-description')?.textContent.trim(),
+            id: row.querySelector('.mat-column-id')?.textContent!.trim(),
+            description: row.querySelector('.mat-column-description')?.textContent!.trim(),
             title: row.querySelector('.mat-column-id')?.getAttribute('title'),
         })))
             .toEqual(expect.arrayContaining([
@@ -243,16 +243,16 @@ describe('FeatureDescriptionComponent', () => {
         const currentTasks: NodeListOf<HTMLLIElement> =
             fixture.nativeElement.querySelectorAll('.queued-feature');
         expect(currentTasks).toHaveLength(1);
-        expect(currentTasks[0].querySelector('.queued-feature-id').textContent.trim())
+        expect(currentTasks[0].querySelector('.queued-feature-id')!.textContent!.trim())
             .toBe('123e4567');
-        expect(currentTasks[0].querySelector('.queued-feature-id').getAttribute('title'))
+        expect(currentTasks[0].querySelector('.queued-feature-id')!.getAttribute('title'))
             .toBe(queuedId);
-        expect(currentTasks[0].querySelector('.queued-feature-description').textContent.trim())
+        expect(currentTasks[0].querySelector('.queued-feature-description')!.textContent!.trim())
             .toBe('Feature being worked on');
-        expect(fixture.nativeElement.querySelector('.feature-count').textContent.trim()).toBe('(1)');
+        expect(fixture.nativeElement.querySelector('.feature-count')!.textContent!.trim()).toBe('(1)');
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(2);
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
-        expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
             .toBe('Completed feature');
     });
 
@@ -273,14 +273,14 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         let rows: NodeListOf<HTMLLIElement> = fixture.nativeElement.querySelectorAll('.queued-feature');
-        expect(Array.from(rows).map(row => row.querySelector('.queued-feature-description').textContent.trim()))
+        expect(Array.from(rows).map(row => row.querySelector('.queued-feature-description')!.textContent!.trim()))
             .toEqual(['First active feature', 'Second active feature']);
         expect((rows[0].querySelector('.feature-move-up-button') as HTMLButtonElement).disabled).toBe(true);
         expect((rows[1].querySelector('.feature-move-down-button') as HTMLButtonElement).disabled).toBe(true);
-        expect(rows[1].querySelector('.feature-move-up-button').getAttribute('aria-label'))
+        expect(rows[1].querySelector('.feature-move-up-button')!.getAttribute('aria-label'))
             .toBe('Move up: Second active feature');
-        expect(rows[1].querySelector('.feature-move-up-button mat-icon').textContent.trim()).toBe('arrow_upward');
-        expect(rows[1].querySelector('.feature-move-down-button mat-icon').textContent.trim()).toBe('arrow_downward');
+        expect(rows[1].querySelector('.feature-move-up-button mat-icon')!.textContent!.trim()).toBe('arrow_upward');
+        expect(rows[1].querySelector('.feature-move-down-button mat-icon')!.textContent!.trim()).toBe('arrow_downward');
         const activeFeatures = fixture.componentInstance.queuedFeatures;
         fixture.componentInstance.moveQueuedFeature(activeFeatures[0], 'up');
         fixture.componentInstance.moveQueuedFeature(activeFeatures[1], 'down');
@@ -294,7 +294,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         rows = fixture.nativeElement.querySelectorAll('.queued-feature');
-        expect(Array.from(rows).map(row => row.querySelector('.queued-feature-description').textContent.trim()))
+        expect(Array.from(rows).map(row => row.querySelector('.queued-feature-description')!.textContent!.trim()))
             .toEqual(['Second active feature', 'First active feature']);
         expect((await readFeatureFile()).split(/\r?\n/).filter(Boolean).map(entry =>
             entry.match(/\[([0-9a-f-]{36})\]/)?.[1],
@@ -303,8 +303,8 @@ describe('FeatureDescriptionComponent', () => {
         (rows[0].querySelector('.feature-move-down-button') as HTMLButtonElement).click();
         await fixture.whenStable();
         fixture.detectChanges();
-        expect(Array.from(fixture.nativeElement.querySelectorAll('.queued-feature'))
-            .map((row: HTMLLIElement) => row.querySelector('.queued-feature-description').textContent.trim()))
+        expect(Array.from<HTMLLIElement>(fixture.nativeElement.querySelectorAll('.queued-feature'))
+            .map((row: HTMLLIElement) => row.querySelector('.queued-feature-description')!.textContent!.trim()))
             .toEqual(['First active feature', 'Second active feature']);
     });
 
@@ -330,7 +330,7 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(fixture.componentInstance.queuedFeatures.map(feature => feature.id))
             .toEqual([firstId, secondId]);
-        expect(fixture.nativeElement.querySelector('#feature-order-error').textContent).toContain('500');
+        expect(fixture.nativeElement.querySelector('#feature-order-error')!.textContent).toContain('500');
         expect(fixture.componentInstance.isReorderingFeatures).toBe(false);
     });
 
@@ -391,7 +391,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(await readFeatureFile())
             .toContain('[Queued] Feature that cannot be aborted');
         expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
-        expect(fixture.nativeElement.querySelector('#feature-abort-error').textContent).toContain('500');
+        expect(fixture.nativeElement.querySelector('#feature-abort-error')!.textContent).toContain('500');
         expect(fixture.componentInstance.abortingFeatureIds.size).toBe(0);
     });
 
@@ -402,10 +402,10 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.open-features').textContent).toContain('No open features.');
+        expect(fixture.nativeElement.querySelector('.open-features')!.textContent).toContain('No open features.');
         expect(fixture.nativeElement.querySelector('.open-features table')).toBeNull();
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
-        expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
             .toBe('Completed feature');
     });
 
@@ -426,7 +426,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelectorAll('.done-feature')).toHaveLength(1);
-        expect(fixture.nativeElement.querySelector('.done-feature-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.done-feature-description')!.textContent!.trim())
             .toBe('Finished feature');
     });
 
@@ -488,18 +488,18 @@ describe('FeatureDescriptionComponent', () => {
         const featureWork = TestBed.inject(FeatureWorkService);
         featureWork.start(id, 'Old feature description');
 
-        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
         fixture.detectChanges();
         const editor: HTMLTextAreaElement = document.querySelector(
             'app-edit-feature-dialog textarea[aria-label="Feature description"]',
-        );
+        )!;
         expect(editor.value).toBe('Old feature description');
         editor.value = '  Updated feature\n description  ';
         editor.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         const saveButton: HTMLButtonElement = document.querySelector(
             'app-edit-feature-dialog mat-dialog-actions button:last-child',
-        );
+        )!;
         expect(saveButton.disabled).toBe(false);
         editor.dispatchEvent(new KeyboardEvent('keydown', {
             key: 'Enter',
@@ -517,7 +517,7 @@ describe('FeatureDescriptionComponent', () => {
             id,
             description: 'Updated feature description',
         });
-        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
             .toBe('Updated feature description');
         expect(fixture.nativeElement.querySelector('#feature-edit-error')).toBeNull();
     });
@@ -529,11 +529,11 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
         fixture.detectChanges();
         const editor: HTMLTextAreaElement = document.querySelector(
             'app-edit-feature-dialog textarea[aria-label="Feature description"]',
-        );
+        )!;
         editor.value = 'Unsaved edit';
         editor.dispatchEvent(new Event('input'));
         fixture.detectChanges();
@@ -544,7 +544,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(document.querySelector('app-edit-feature-dialog')).not.toBeNull();
         document.querySelector<HTMLButtonElement>(
             'app-edit-feature-dialog mat-dialog-actions button:first-child',
-        ).click();
+        )!.click();
         await fixture.whenStable();
 
         expect(await readFeatureFile()).toContain('A feature to cancel editing');
@@ -558,17 +558,17 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
         fixture.detectChanges();
         const editor: HTMLTextAreaElement = document.querySelector(
             'app-edit-feature-dialog textarea[aria-label="Feature description"]',
-        );
+        )!;
         editor.value = ' ';
         editor.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         const saveButton: HTMLButtonElement = document.querySelector(
             'app-edit-feature-dialog mat-dialog-actions button:last-child',
-        );
+        )!;
         expect(saveButton.disabled).toBe(true);
         editor.dispatchEvent(new KeyboardEvent('keydown', {
             key: 'Enter',
@@ -580,7 +580,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(await readFeatureFile()).toContain('A feature to keep while editing');
         document.querySelector<HTMLButtonElement>(
             'app-edit-feature-dialog mat-dialog-actions button:first-child',
-        ).click();
+        )!.click();
         await fixture.whenStable();
     });
 
@@ -591,11 +591,11 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
         fixture.detectChanges();
         document.querySelector<HTMLButtonElement>(
             'app-edit-feature-dialog mat-dialog-actions button:last-child',
-        ).click();
+        )!.click();
         await fixture.whenStable();
 
         expect(await readFeatureFile()).toContain('An unchanged feature');
@@ -611,22 +611,22 @@ describe('FeatureDescriptionComponent', () => {
         await rm(join(root, '.wishlist'));
         await mkdir(join(root, '.wishlist'));
 
-        fixture.nativeElement.querySelector('.feature-edit-button').click();
+        fixture.nativeElement.querySelector('.feature-edit-button')!.click();
         fixture.detectChanges();
         const editor: HTMLTextAreaElement = document.querySelector(
             'app-edit-feature-dialog textarea[aria-label="Feature description"]',
-        );
+        )!;
         editor.value = 'Unpersisted edit';
         editor.dispatchEvent(new Event('input'));
         fixture.detectChanges();
         document.querySelector<HTMLButtonElement>(
             'app-edit-feature-dialog mat-dialog-actions button:last-child',
-        ).click();
+        )!.click();
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('#feature-edit-error').textContent).toContain('500');
-        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('#feature-edit-error')!.textContent).toContain('500');
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
             .toBe('Feature whose edit will fail');
     });
 
@@ -645,7 +645,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         const firstCell = (column: string): string =>
-            fixture.nativeElement.querySelector(`tr.mat-mdc-row .mat-column-${column}`).textContent.trim();
+            fixture.nativeElement.querySelector(`tr.mat-mdc-row .mat-column-${column}`).textContent!.trim();
         const sortBy = (column: string): void => {
             fixture.nativeElement.querySelector(`th.mat-column-${column}`).click();
             fixture.detectChanges();
@@ -673,7 +673,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
         fixture.detectChanges();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -682,18 +682,18 @@ describe('FeatureDescriptionComponent', () => {
             id,
             description: 'Add a feature',
         });
-        expect(fixture.nativeElement.querySelector('.feature-start-button').textContent.trim()).toBe('Started');
-        expect(fixture.nativeElement.querySelector('.feature-start-button').getAttribute('aria-pressed')).toBe('true');
+        expect(fixture.nativeElement.querySelector('.feature-start-button')!.textContent!.trim()).toBe('Started');
+        expect(fixture.nativeElement.querySelector('.feature-start-button')!.getAttribute('aria-pressed')).toBe('true');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Queued');
         expect(fixture.nativeElement.querySelectorAll('.queued-feature')).toHaveLength(1);
-        expect(fixture.nativeElement.querySelector('.queued-feature-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.queued-feature-description')!.textContent!.trim())
             .toBe('Add a feature');
         const taskFile = await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8');
         expect(taskFile).toContain(
             `- [In progress] Add a feature <!-- feature-id:${id} -->`,
         );
-        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
         await fixture.whenStable();
         expect(TestBed.inject(FeatureWorkService).activeFeature?.id).toBe(id);
         expect((await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).match(/feature-id:/g))
@@ -709,7 +709,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
         fixture.detectChanges();
         await fixture.whenStable();
         fixture.detectChanges();
@@ -741,7 +741,7 @@ describe('FeatureDescriptionComponent', () => {
             completedRow = Array.from<HTMLTableRowElement>(
                 fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
             ).find(row =>
-                row.querySelector('.mat-column-description')?.textContent.trim() === 'Completed feature',
+                row.querySelector('.mat-column-description')?.textContent!.trim() === 'Completed feature',
             );
             if (completedRow) {
                 break;
@@ -757,7 +757,7 @@ describe('FeatureDescriptionComponent', () => {
         if (!completedRow) {
             throw new Error('Completed feature row did not render.');
         }
-        const doneButton: HTMLButtonElement = completedRow.querySelector('.feature-done-button');
+        const doneButton: HTMLButtonElement = completedRow.querySelector('.feature-done-button')!;
         expect(doneButton?.getAttribute('aria-label')).toBe('Mark done: Completed feature');
         doneButton.click();
         doneButton.click();
@@ -771,13 +771,13 @@ describe('FeatureDescriptionComponent', () => {
         expect(await readFeatureFile()).toContain('Remaining feature');
         expect(Array.from<HTMLTableRowElement>(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
-        ).map(row => row.querySelector('.mat-column-description')?.textContent.trim()))
+        ).map(row => row.querySelector('.mat-column-description')?.textContent!.trim()))
             .toEqual(['Remaining feature']);
         expect(Array.from<HTMLLIElement>(
             fixture.nativeElement.querySelectorAll('.done-feature'),
-        ).map(row => row.querySelector('.done-feature-description')?.textContent.trim()))
+        ).map(row => row.querySelector('.done-feature-description')?.textContent!.trim()))
             .toEqual(['Completed feature']);
-        expect(fixture.nativeElement.querySelector('.done-feature .feature-count').textContent.trim())
+        expect(fixture.nativeElement.querySelector('.done-feature .feature-count')!.textContent!.trim())
             .toMatch(/^Delivered: \d{4}-\d{2}-\d{2}$/);
         expect(fixture.nativeElement.querySelector('#feature-completion-error')).toBeNull();
     }, 15000);
@@ -797,9 +797,9 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description').textContent.trim())
+        expect(fixture.nativeElement.querySelector('tr.mat-mdc-row .mat-column-description')!.textContent!.trim())
             .toBe('Keep this feature');
-        expect(fixture.nativeElement.querySelector('#feature-completion-error').textContent)
+        expect(fixture.nativeElement.querySelector('#feature-completion-error')!.textContent)
             .toContain('500');
         expect(fixture.componentInstance.completingFeatureIds.size).toBe(0);
     });
@@ -822,7 +822,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('button').click();
+        fixture.nativeElement.querySelector('button')!.click();
         await fixture.whenStable();
         fixture.detectChanges();
 
@@ -839,7 +839,7 @@ describe('FeatureDescriptionComponent', () => {
         );
         expect(Array.from<HTMLTableRowElement>(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
-        ).map(row => row.querySelector('.mat-column-description')?.textContent.trim()))
+        ).map(row => row.querySelector('.mat-column-description')?.textContent!.trim()))
             .toEqual(['Add a feature submission form']);
     });
 
@@ -854,7 +854,7 @@ describe('FeatureDescriptionComponent', () => {
         textarea.dispatchEvent(new Event('input'));
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('button[type="submit"]').click();
+        fixture.nativeElement.querySelector('button[type="submit"]')!.click();
         await fixture.whenStable();
         fixture.detectChanges();
 
@@ -862,7 +862,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.componentInstance.priority).toBe('Low');
         expect((fixture.nativeElement.querySelector('select[aria-label="Feature priority"]') as HTMLSelectElement).value)
             .toBe('Low');
-        expect(fixture.nativeElement.querySelector('.mat-column-priority select').value).toBe('High');
+        expect(fixture.nativeElement.querySelector('.mat-column-priority select')!.value).toBe('High');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
             .toBe('Wished');
     });
@@ -878,7 +878,7 @@ describe('FeatureDescriptionComponent', () => {
         textarea.dispatchEvent(new Event('input'));
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('button[type="submit"]').click();
+        fixture.nativeElement.querySelector('button[type="submit"]')!.click();
         await fixture.whenStable();
         fixture.detectChanges();
 
@@ -1073,7 +1073,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(selector.value).toBe('Backlog');
-        expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
+        expect(fixture.nativeElement.querySelector('#feature-status-error')!.textContent)
             .toContain('500');
     });
 
@@ -1088,12 +1088,12 @@ describe('FeatureDescriptionComponent', () => {
         await rm(join(root, '.wishlist'));
         await mkdir(join(root, '.wishlist'));
 
-        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
         await fixture.whenStable();
         fixture.detectChanges();
 
         expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
-        expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
+        expect(fixture.nativeElement.querySelector('#feature-status-error')!.textContent)
             .toContain('500');
     });
 
@@ -1108,12 +1108,12 @@ describe('FeatureDescriptionComponent', () => {
         await rm(join(root, 'DEVENVOPDEV.md'));
         await mkdir(join(root, 'DEVENVOPDEV.md'));
 
-        fixture.nativeElement.querySelector('.feature-start-button').click();
+        fixture.nativeElement.querySelector('.feature-start-button')!.click();
         await fixture.whenStable();
         fixture.detectChanges();
 
         expect(TestBed.inject(FeatureWorkService).activeFeature).toBeNull();
-        expect(fixture.nativeElement.querySelector('#feature-status-error').textContent)
+        expect(fixture.nativeElement.querySelector('#feature-status-error')!.textContent)
             .toContain('500');
     });
 
@@ -1146,8 +1146,8 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         const row: HTMLTableRowElement = fixture.nativeElement.querySelector('.open-features tr.mat-mdc-row');
-        expect(row.querySelector('.mat-column-id')?.textContent.trim()).toMatch(/^[0-9a-f]{8}$/);
-        expect(row.querySelector('.mat-column-description')?.textContent.trim()).toBe('Legacy feature');
+        expect(row.querySelector('.mat-column-id')?.textContent!.trim()).toMatch(/^[0-9a-f]{8}$/);
+        expect(row.querySelector('.mat-column-description')?.textContent!.trim()).toBe('Legacy feature');
         expect((row.querySelector('.mat-column-priority select') as HTMLSelectElement).value).toBe('Medium');
         expect((row.querySelector('.feature-status-select') as HTMLSelectElement).value).toBe('Backlog');
     });
@@ -1168,7 +1168,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(selector.value).toBe('Medium');
-        expect(fixture.nativeElement.querySelector('#feature-priority-error').textContent)
+        expect(fixture.nativeElement.querySelector('#feature-priority-error')!.textContent)
             .toContain('404');
     });
 
@@ -1225,9 +1225,9 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(5);
-        expect(fixture.nativeElement.querySelector('mat-paginator').textContent).toContain('1 – 5 of 7');
+        expect(fixture.nativeElement.querySelector('mat-paginator')!.textContent).toContain('1 – 5 of 7');
 
-        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next').click();
+        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next')!.click();
         fixture.detectChanges();
 
         const rows: HTMLTableRowElement[] = Array.from(
@@ -1250,9 +1250,9 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next').click();
+        fixture.nativeElement.querySelector('.mat-mdc-paginator-navigation-next')!.click();
         fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('mat-paginator').textContent).toContain('6 – 7 of 7');
+        expect(fixture.nativeElement.querySelector('mat-paginator')!.textContent).toContain('6 – 7 of 7');
 
         const search: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Search features"]');
         search.value = 'FEATURE 2';
@@ -1260,12 +1260,12 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.componentInstance.featureSearch).toBe('FEATURE 2');
-        expect(fixture.nativeElement.querySelector('mat-paginator').textContent).toContain('1 – 1 of 1');
+        expect(fixture.nativeElement.querySelector('mat-paginator')!.textContent).toContain('1 – 1 of 1');
         const rows: HTMLTableRowElement[] = Array.from(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
         );
         expect(rows).toHaveLength(1);
-        expect(rows[0].querySelector('.mat-column-description')?.textContent.trim()).toBe('Feature 2');
+        expect(rows[0].querySelector('.mat-column-description')?.textContent!.trim()).toBe('Feature 2');
 
         search.value = '123e4567';
         search.dispatchEvent(new Event('input'));
@@ -1285,7 +1285,7 @@ describe('FeatureDescriptionComponent', () => {
         search.dispatchEvent(new Event('input'));
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.open-features').textContent)
+        expect(fixture.nativeElement.querySelector('.open-features')!.textContent)
             .toContain('No open features match your search.');
         expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(0);
     });
@@ -1348,7 +1348,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('#feature-submit-error').textContent.trim()).not.toBe('');
+        expect(fixture.nativeElement.querySelector('#feature-submit-error')!.textContent!.trim()).not.toBe('');
         expect(fixture.componentInstance.isSubmitting).toBe(false);
         expect(fixture.componentInstance.description).toBe('This cannot be saved');
         fixture.detectChanges();
@@ -1365,7 +1365,7 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('#feature-list-error').textContent.trim()).not.toBe('');
+        expect(fixture.nativeElement.querySelector('#feature-list-error')!.textContent!.trim()).not.toBe('');
         expect(fixture.componentInstance.isLoadingFeatures).toBe(false);
     });
 });

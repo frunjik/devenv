@@ -59,7 +59,7 @@ describe('FileEditorComponent', () => {
 
     beforeEach(async () => {
         browserWindow.host = apiHost;
-        snackbarOpen = jest.fn<MatSnackBar['open']>();
+        snackbarOpen = jest.fn() as jest.MockedFunction<MatSnackBar['open']>;
         await TestBed.configureTestingModule({
             imports: [FileEditorComponent],
             providers: [

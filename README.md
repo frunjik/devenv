@@ -1,6 +1,10 @@
 # DevEnv
 
-An experimental Angular client and Express API workspace.
+DevEnv exists to help make intended outcomes explicit and support the work of achieving them. It is a workspace for connecting Goals to the work, project artifacts, tests, and changes that contribute to those outcomes. Its central concern is what the System is meant to achieve; the software and tools are means to that end.
+
+In this README, **Glossary**, **Term**, **Type**, and **Contract** are defined terms; see the [project glossary](./.glossary) for their meanings.
+
+DevEnv is currently implemented as an Angular client and Express API.
 
 ## Requirements
 

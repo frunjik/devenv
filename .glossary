@@ -1,0 +1,20 @@
+Term
+- A word or phrase with a specific, agreed meaning within a Domain or System.
+
+Domain
+- A bounded area of knowledge and activity, including its concepts, entities, relationships, and rules, as understood in a particular context.
+
+System
+- A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior.
+
+Goal
+- A desired outcome or condition that a System is intended to achieve.
+
+Type
+- A definition that groups things by their shared meaning, properties, relationships, and rules.
+
+Contract
+- An agreed specification of the obligations and guarantees between parts of a System.
+
+Glossary
+- An organized collection of defined Terms used within a Domain or System.

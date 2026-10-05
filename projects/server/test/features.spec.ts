@@ -280,86 +280,21 @@ describe('features public API', () => {
         );
     });
 
-    it('merges descriptions with more than three matching words and preserves the existing feature', async () => {
-        const created = await request(app).post('/features').send({
+    it('adds similar and identical descriptions as separate features', async () => {
+        const first = await request(app).post('/features').send({
             description: 'Create reusable navigation toolbar component',
-            priority: 'High',
-            status: 'Queued',
         });
-        const id = entryData(created.body).match(/\[([0-9a-f-]{36})\]/)[1];
-        await writeFile(join(root, 'DEVENVOPDEV.md'),
-            `- [In progress] Create reusable navigation toolbar component <!-- feature-id:${id} -->\n`);
-
-        const response = await request(app).post('/features').send({
-            description: 'Create a navigation toolbar component with reusable styles',
-            priority: 'Low',
-            status: 'Backlog',
-        });
-        const mergedDescription =
-            'Create reusable navigation toolbar component; Create a navigation toolbar component with reusable styles';
-
-        expect(response.status).toBe(200);
-        expect(entryData(response.body)).toBe(
-            entryData(created.body).replace(
-                'Create reusable navigation toolbar component',
-                mergedDescription,
-            ),
-        );
-        expect(entryData(response.body)).toContain(`[${id}] [High] [Queued]`);
-        expect(await readFeatureFile()).toBe(`${entryData(response.body)}\n`);
-        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).toBe(
-            `- [In progress] ${mergedDescription} <!-- feature-id:${id} -->\n`,
-        );
-    });
-
-    it('adds a feature when only three unique words match an existing description', async () => {
-        await request(app).post('/features').send({
-            description: 'Create reusable navigation toolbar',
-        });
-
-        const response = await request(app).post('/features').send({
-            description: 'Create reusable navigation menu',
-        });
-
-        expect(response.status).toBe(201);
-        expect((await request(app).get('/features')).body.data).toHaveLength(2);
-    });
-
-    it('does not append a duplicate when the description already matches exactly', async () => {
-        const created = await request(app).post('/features').send({
-            description: 'Build a reusable feature toolbar',
-        });
-
-        const response = await request(app).post('/features').send({
-            description: 'Build a reusable feature toolbar',
-        });
-
-        expect(response.status).toBe(200);
-        expect(entryData(response.body)).toBe(entryData(created.body));
-        expect(await readFeatureFile()).toBe(`${entryData(created.body)}\n`);
-    });
-
-    it('does not treat punctuation-only descriptions as duplicates', async () => {
-        await request(app).post('/features').send({ description: '!!!' });
-        const response = await request(app).post('/features').send({ description: '!!!' });
-
-        expect(response.status).toBe(201);
-        expect((await request(app).get('/features')).body.data).toHaveLength(2);
-    });
-
-    it('rolls back a merged description when updating the active task marker fails', async () => {
-        const created = await request(app).post('/features').send({
-            description: 'Create reusable navigation toolbar component',
-            status: 'Queued',
-        });
-        await mkdir(join(root, 'DEVENVOPDEV.md'));
-
-        const response = await request(app).post('/features').send({
+        const similar = await request(app).post('/features').send({
             description: 'Create a navigation toolbar component with reusable styles',
         });
+        const identical = await request(app).post('/features').send({
+            description: 'Create reusable navigation toolbar component',
+        });
 
-        expect(response.status).toBe(500);
-        expect(await readFeatureFile()).toBe(`${entryData(created.body)}\n`);
+        expect([first.status, similar.status, identical.status]).toEqual([201, 201, 201]);
+        const features = (await request(app).get('/features')).body.data;
+        expect(features).toHaveLength(3);
+        expect(new Set(features.map((feature: { id: string }) => feature.id)).size).toBe(3);
     });
 
     it('accepts an explicit feature priority', async () => {

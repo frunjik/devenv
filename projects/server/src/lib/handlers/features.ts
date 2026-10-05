@@ -133,12 +133,6 @@ async function addStartedFeatureToDevEnv(root: string, description: string, id: 
     await writeFile(filename, lines.join(lineEnding), 'utf8');
 }
 
-function sharedFeatureTermCount(first: string, second: string): number {
-    const firstTerms = new Set(first.toLowerCase().match(/[a-z0-9]+/g) ?? []);
-    const secondTerms = new Set(second.toLowerCase().match(/[a-z0-9]+/g) ?? []);
-    return [...firstTerms].filter(term => secondTerms.has(term)).length;
-}
-
 async function updateStartedFeatureTask(
     root: string,
     id: string,
@@ -346,35 +340,8 @@ export function createFeatureHandler(root: string): RequestHandler {
         const filename = join(root, '.wishlist');
 
         void readFeatureStore(root)
-            .then(async store => {
-                const features = store.features;
+            .then(async () => {
                 const oneLineDescription = description.trim().replace(/\s+/g, ' ');
-                const duplicateIndex = features.findIndex(feature =>
-                    sharedFeatureTermCount(feature.description, oneLineDescription) > 3,
-                );
-                if (duplicateIndex >= 0) {
-                    const duplicate = features[duplicateIndex];
-                    const mergedDescription = duplicate.description.toLowerCase() === oneLineDescription.toLowerCase()
-                        ? duplicate.description
-                        : `${duplicate.description}; ${oneLineDescription}`;
-                    if (mergedDescription !== duplicate.description) {
-                        const restore = store.snapshot();
-                        const updatedFeatures = [...features];
-                        updatedFeatures[duplicateIndex] = { ...duplicate, description: mergedDescription };
-                        await store.save(updatedFeatures);
-                        try {
-                            await updateStartedFeatureTask(root, duplicate.id.toLowerCase(), mergedDescription);
-                        } catch (error) {
-                            await restore();
-                            throw error;
-                        }
-                        features[duplicateIndex] = updatedFeatures[duplicateIndex];
-                    }
-
-                    response.status(200).json({ data: features[duplicateIndex] });
-                    return;
-                }
-
                 const feature = withStatus({
                     id: randomUUID(),
                     createdAt: formatTimestamp(new Date()),

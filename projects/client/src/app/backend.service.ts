@@ -145,6 +145,18 @@ export class BackendService {
         return this.get<string | null>('current');
     }
 
+    getHistory(): Observable<string[]> {
+        return this.get<string[]>('history');
+    }
+
+    getGlossary(): Observable<string[]> {
+        return this.get<string[]>('glossary');
+    }
+
+    getBacklog(): Observable<PPTFeature[]> {
+        return this.get<PPTFeature[]>('backlog');
+    }
+
     getServerVersion(): Observable<string> {
         return this.get<string>('version');
     }

@@ -397,6 +397,14 @@ export function createFeaturesListHandler(root: string): RequestHandler {
     };
 }
 
+export function createBacklogListHandler(root: string): RequestHandler {
+    return (_request, response, next) => {
+        void readFeatures(join(root, '.backlog'))
+            .then(features => response.json({ data: features }))
+            .catch(next);
+    };
+}
+
 export function createFeaturePriorityHandler(root: string): RequestHandler {
     return (request, response, next) => {
         const id = request.params['id'];

@@ -11,6 +11,7 @@ import { createGitLogHandler } from './handlers/git-log';
 import { createGitStatusHandler } from './handlers/git-status';
 import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
+import { createLinesHandler } from './handlers/lines';
 import { createCurrentTaskHandler } from './handlers/current-task';
 import {
     createFeatureHandler,
@@ -21,6 +22,7 @@ import {
     createFeatureStatusHandler,
     createFeaturesListHandler,
     createFeatureRemovalHandler,
+    createBacklogListHandler,
 } from './handlers/features';
 import {
     createAuthenticationMiddleware,
@@ -68,6 +70,9 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/task', createCurrentTaskHandler(root));
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
     app.get('/ppt/fields', (_request, response) => response.json({ data: [] }));
+    app.get('/history', createLinesHandler(root, ['.history']));
+    app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
+    app.get('/backlog', createBacklogListHandler(root));
     app.get('/features', createFeaturesListHandler(root));
     app.post('/features', createFeatureHandler(root));
     app.patch('/features/:id/description', createFeatureDescriptionHandler(root));

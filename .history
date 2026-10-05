@@ -1,3 +1,5 @@
+// [2026-10-05 11:10 +02:00] Client add-feature form now defaults to Wished (added to the status list) and switches to the Open tab after adding, so a new item is visible. Client 231 and server 201 tests at 100%.
+// [2026-10-05 10:40 +02:00] Added GET /history, /glossary (.glossary, falling back to .terms) and /backlog endpoints plus client History, Glossary and Backlog views with routes and nav links (part of bundled feature 6e43a1fb). Client 231 and server 201 tests at 100%; client build passes.
 // [2026-10-05 10:15 +02:00] The client feature page now uses the full available width (removed the 72rem page cap and 48rem form cap). Tests green at 100%; client build passes.
 // [2026-10-05 10:05 +02:00] The commit dialog and toolbar now show a JSON .current entry's description instead of the raw record (legacy text still supported). Client 223 and server 193 tests at 100%.
 // [2026-10-05 09:50 +02:00] Copied 159 archived items into .wishlist as PPTFeature JSON (status Done) using the server's legacy converter; .archived unchanged. Tests green at 100%.

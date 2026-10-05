@@ -8,6 +8,8 @@ import { FeatureDescriptionComponent } from './system/feature-description/featur
 import { ModelsComponent } from './system/models/models.component';
 import { TermsComponent } from './system/terms/terms.component';
 import { GlossaryComponent } from './system/glossary/glossary.component';
+import { HistoryComponent } from './system/history/history.component';
+import { BacklogComponent } from './system/backlog/backlog.component';
 
 export const routes: Routes = [
     {
@@ -49,6 +51,14 @@ export const routes: Routes = [
     {
         path: 'glossary',
         component: GlossaryComponent
+    },
+    {
+        path: 'history',
+        component: HistoryComponent
+    },
+    {
+        path: 'backlog',
+        component: BacklogComponent
     },
     // { path: '',   redirectTo: '/ppt/browse', pathMatch: 'full' }    
 ];

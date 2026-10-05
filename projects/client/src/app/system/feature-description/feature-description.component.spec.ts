@@ -835,7 +835,7 @@ describe('FeatureDescriptionComponent', () => {
         fixture.detectChanges();
         expect((fixture.nativeElement.querySelector('textarea') as HTMLTextAreaElement).value).toBe('');
         await expect(readFeatureFile()).resolves.toMatch(
-            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Backlog\] Add a feature submission form\n$/,
+            /^\/\/ \[\d{4}-\d{2}-\d{2} \d{2}:\d{2} [+-]\d{2}:\d{2}\] \[[0-9a-f-]{36}\] \[Low\] \[Wished\] Add a feature submission form\n$/,
         );
         expect(Array.from<HTMLTableRowElement>(
             fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row'),
@@ -858,13 +858,13 @@ describe('FeatureDescriptionComponent', () => {
         await fixture.whenStable();
         fixture.detectChanges();
 
-        expect(await readFeatureFile()).toMatch(/\[High\] \[Backlog\] Prioritize this feature/);
+        expect(await readFeatureFile()).toMatch(/\[High\] \[Wished\] Prioritize this feature/);
         expect(fixture.componentInstance.priority).toBe('Low');
         expect((fixture.nativeElement.querySelector('select[aria-label="Feature priority"]') as HTMLSelectElement).value)
             .toBe('Low');
         expect(fixture.nativeElement.querySelector('.mat-column-priority select').value).toBe('High');
         expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
-            .toBe('Backlog');
+            .toBe('Wished');
     });
 
     it('submits and resets the selected feature status', async () => {
@@ -884,9 +884,10 @@ describe('FeatureDescriptionComponent', () => {
 
         expect(await readFeatureFile())
             .toMatch(/\[Low\] \[Queued\] Start this feature immediately/);
-        expect(fixture.componentInstance.status).toBe('Backlog');
+        expect(fixture.componentInstance.status).toBe('Wished');
+        expect(fixture.componentInstance.selectedFeatureTab).toBe('open');
         expect((fixture.nativeElement.querySelector('select[aria-label="Feature status"]') as HTMLSelectElement).value)
-            .toBe('Backlog');
+            .toBe('Wished');
     });
 
     it('updates an open feature status through the public API', async () => {
@@ -1312,7 +1313,7 @@ describe('FeatureDescriptionComponent', () => {
         expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
         expect(fixture.nativeElement.textContent).not.toContain('Feature added.');
         await expect(readFeatureFile()).resolves.toMatch(
-            new RegExp(`\\] \\[[0-9a-f-]{36}\\] \\[Low\\] \\[Backlog\\] Submit with ${key}\\n$`),
+            new RegExp(`\\] \\[[0-9a-f-]{36}\\] \\[Low\\] \\[Wished\\] Submit with ${key}\\n$`),
         );
     });
 

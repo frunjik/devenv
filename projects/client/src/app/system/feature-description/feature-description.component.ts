@@ -41,10 +41,11 @@ type FeatureListTab = 'open' | 'queued' | 'done';
 export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, OnInit {
     description = '';
     priority: FeaturePriority = 'Low';
-    status: PPTFeatureStatus = 'Backlog';
+    status: PPTFeatureStatus = 'Wished';
     readonly priorities: FeaturePriority[] = ['High', 'Medium', 'Low'];
     readonly statuses: PPTFeatureStatus[] = [
         'Questions',
+        'Wished',
         'Backlog',
         'Queued',
         'InProgress',
@@ -379,7 +380,8 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
                 this.isSubmitting = false;
                 this.description = '';
                 this.priority = 'Low';
-                this.status = 'Backlog';
+                this.status = 'Wished';
+                this.selectedFeatureTab = 'open';
                 this.refreshFeatures();
             },
             error: (error: Error) => {

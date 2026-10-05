@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -106,6 +107,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
 
     selectFeatureTab(tab: FeatureListTab): void {
         this.selectedFeatureTab = tab;
+        void this.router.navigate([], { relativeTo: this.route, queryParams: { tab }, queryParamsHandling: 'merge', replaceUrl: true });
     }
 
     onFeatureTabKeydown(event: KeyboardEvent, tab: FeatureListTab): void {
@@ -118,7 +120,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         const tabs: FeatureListTab[] = ['open', 'queued', 'done', 'archived'];
         const currentIndex = tabs.indexOf(tab);
         const nextIndex = (currentIndex + direction + tabs.length) % tabs.length;
-        this.selectedFeatureTab = tabs[nextIndex];
+        this.selectFeatureTab(tabs[nextIndex]);
         const target = event.currentTarget;
         if (target instanceof HTMLButtonElement) {
             target.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex]?.focus();
@@ -130,11 +132,17 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
         readonly featureWork: FeatureWorkService,
         private currentTask: CurrentTaskService,
         private dialog: MatDialog,
+        private router: Router,
+        private route: ActivatedRoute,
     ) {
         this.featureDataSource.filterPredicate = (feature, filter) => this.matchesFeature(feature, filter);
     }
 
     ngOnInit(): void {
+        const tab = this.route.snapshot.queryParamMap.get('tab');
+        if (tab === 'open' || tab === 'queued' || tab === 'done' || tab === 'archived') {
+            this.selectedFeatureTab = tab;
+        }
         this.refreshFeatures();
     }
 
@@ -390,7 +398,7 @@ export class FeatureDescriptionComponent implements AfterViewInit, OnDestroy, On
                 this.description = '';
                 this.priority = 'Low';
                 this.status = 'Wished';
-                this.selectedFeatureTab = 'open';
+                this.selectFeatureTab('open');
                 this.refreshFeatures();
             },
             error: (error: Error) => {

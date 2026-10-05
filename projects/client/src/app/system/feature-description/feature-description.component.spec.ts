@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { provideRouter, Router } from '@angular/router';
 import { createServer } from 'node:http';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -60,7 +61,7 @@ describe('FeatureDescriptionComponent', () => {
         browserWindow.host = apiHost;
         await TestBed.configureTestingModule({
             imports: [FeatureDescriptionComponent],
-            providers: [provideHttpClient()],
+            providers: [provideHttpClient(), provideRouter([])],
         }).compileComponents();
 
         fixture = TestBed.createComponent(FeatureDescriptionComponent);
@@ -74,6 +75,21 @@ describe('FeatureDescriptionComponent', () => {
         await rm(root, { recursive: true, force: true });
     });
 
+    it('keeps the selected tab in the url and restores it', async () => {
+        const router = TestBed.inject(Router);
+        fixture.nativeElement.querySelector('#done-features-tab').click();
+        await fixture.whenStable();
+        expect(router.url).toBe('/?tab=done');
+
+        const restored = TestBed.createComponent(FeatureDescriptionComponent);
+        restored.detectChanges();
+        expect(restored.componentInstance.selectedFeatureTab).toBe('done');
+
+        await router.navigate([], { queryParams: { tab: 'bogus' } });
+        const ignored = TestBed.createComponent(FeatureDescriptionComponent);
+        ignored.detectChanges();
+        expect(ignored.componentInstance.selectedFeatureTab).toBe('queued');
+    });
     it('shows a feature description form', () => {
         expect(fixture.nativeElement.querySelector('h1')!.textContent).toContain('New feature');
         expect(fixture.nativeElement.querySelector('textarea[aria-label="Feature description"]')).not.toBeNull();

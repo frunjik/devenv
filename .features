@@ -25,3 +25,5 @@
 {"id":"f246574a-8e9d-4048-b41b-6fe12bbfb041","createdAt":"2026-10-05 11:58 +02:00","priority":"Low","status":"Committed","description":"Add an archive all button on the Done tab of the client Features page"}
 {"id":"2ba39858-ef41-4069-bbdb-b2511595cd0a","createdAt":"2026-10-05 11:44 +02:00","priority":"Low","status":"Done","description":"add an Archived Tab on the client Features Page as the last tab in the sheet","deliveredDate":"2026-10-05"}
 {"id":"a3cac3a1-cde6-4e73-a396-10a5940b2749","createdAt":"2026-10-05 11:46 +02:00","priority":"Low","status":"Done","description":"fix the styling of the Queued items list on the client, give the column proportional width according their expected value display length","deliveredDate":"2026-10-05"}
+{"id":"caa277b0-3ed2-436b-a879-4aa0f9c6da47","createdAt":"2026-10-05 12:05 +02:00","priority":"Low","status":"Queued","description":"add a button to archive an item in the done features list on the client"}
+{"id":"11d8b9d5-4d11-4a96-843c-195bc126a516","createdAt":"2026-10-05 12:20 +02:00","priority":"Low","status":"Done","description":"keep the selected Features page tab in the URL (?tab=)","deliveredDate":"2026-10-05"}

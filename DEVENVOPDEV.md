@@ -8,7 +8,4 @@ Before writing any code set the status of the feature to InProgress.
 When you are done with a Feature set its status to Done, leave it in .current
 When there are no items here, pick a Queued item ranked by priority, set its status to Commited and copy in here.
 The features you are writing are, take them one by one:
-{"id":"3c2984cd-9135-449d-9e59-5465848389c2","priority":"Medium","status":"Done","description":"{\"id\":\"ae7c637a-822e-48d0-905e-ab78431b02f5\",\"createdAt\":\"2026-10-05 14:37 +02:00\",\"priority\":\"Low\",\"status\":\"Done\",\"description\":\"demolish the workspace main menu link and the underlying components\"}"}
-{"id":"ae7c637a-822e-48d0-905e-ab78431b02f5","createdAt":"2026-10-05 14:37 +02:00","priority":"Low","status":"Done","description":"demolish the workspace main menu link and the underlying components","deliveredDate":"2026-10-05"}
-
 

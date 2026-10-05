@@ -812,6 +812,35 @@ describe('FeatureDescriptionComponent', () => {
         expect(featureWork.activeFeature).toBeNull();
     });
 
+    it('sets a feature to Denied from the client and clears its active task marker', async () => {
+        await fixture.whenStable();
+        const id = '123e4567-e89b-42d3-a456-426614174000';
+        await writeFile(join(root, '.features'),
+            `// [${id}] [High] [In progress] Feature to deny\n`);
+        await writeFile(join(root, 'DEVENVOPDEV.md'),
+            `- [In progress] Feature to deny <!-- feature-id:${id} -->\n`);
+        fixture.componentInstance.refreshFeatures();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        const featureWork = TestBed.inject(FeatureWorkService);
+        featureWork.start(id, 'Feature to deny');
+
+        const selector: HTMLSelectElement = fixture.nativeElement.querySelector('.feature-status-select');
+        expect(Array.from(selector.options).map(option => option.value)).toContain('Denied');
+        selector.value = 'Denied';
+        selector.dispatchEvent(new Event('change'));
+        await fixture.whenStable();
+        fixture.detectChanges();
+
+        expect(await readFile(join(root, '.features'), 'utf8')).toContain('[Denied] Feature to deny');
+        expect(await readFile(join(root, 'DEVENVOPDEV.md'), 'utf8')).not.toContain(`feature-id:${id}`);
+        expect((fixture.nativeElement.querySelector('.feature-status-select') as HTMLSelectElement).value)
+            .toBe('Denied');
+        expect(fixture.nativeElement.querySelectorAll('.open-features tr.mat-mdc-row')).toHaveLength(1);
+        expect(featureWork.activeFeature).toBeNull();
+        expect(fixture.nativeElement.querySelector('#feature-status-error')).toBeNull();
+    });
+
     it('records a feature as in progress in DEVENVOPDEV.md when its status is changed', async () => {
         await fixture.whenStable();
         const id = '123e4567-e89b-42d3-a456-426614174000';

@@ -12,17 +12,11 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] make a feature describing what features the open features on the client displays and add it to ./features <!-- feature-id:9af332fe-e6a1-4926-af46-982a3c957c50 -->
-- [In progress] make a client display of the open changes on the client show the new (uncommited) full file contents <!-- feature-id:2629d3f8-23fb-48d1-afe2-20ffcd5ac96d -->
-- [In progress] add feature priority as a number on top of the indication low, medium high <!-- feature-id:0e9d228a-e5e5-4657-bbe5-5ace4e522fce -->
-- [In progress] allow prioritizing open feature list items from the client <!-- feature-id:ac4d3847-af47-45a1-b042-81f9ebe3fc07 -->
-- [In progress] add abort button on in progress features that puts the feature back in ./features with status Aborted <!-- feature-id:876234ff-990a-4b61-989d-43dabbaafc15 -->
-- [In progress] a feature category describes which domain the feature is for possible domains include: client and server <!-- feature-id:ef3b9d44-3a01-4e24-b28c-befe465095ee -->
-- [In progress] create a canban view <!-- feature-id:8a0a1061-9ef3-48ec-94c8-b384d84bbabc -->
-- [In progress] review code changes on client <!-- feature-id:dbc95ad2-a6dd-4bbb-8d84-2890d861adcf -->
-- [In progress] add the possibility to set the status to Denied from the client <!-- feature-id:7a75ec30-e877-4e77-8f70-ba5389cbf03b -->
-- [In progress] prevent duplicate features <!-- feature-id:67766a83-30b9-4e55-85e6-96891449e37e -->
-- [Backlog] Consolidate duplicated API response and domain types in the shared library <!-- feature-id:549019fb-fea8-4735-94cd-5d23418b3cec -->
+- [In progress] put the new feature form in a new tab in the existing sheet and place it last <!-- feature-id:b793074b-c6b8-4039-84f5-56681c2903fa -->
+- [In progress] when starting a feature add it to the bottom of the in progress list in DEVENVOPDEV.md <!-- feature-id:917d8577-ebbd-46e7-8457-32c7e4845403 -->
+- [In progress] add move up and down buttons to lower and higher the priority of items in the in progress list <!-- feature-id:69240ff3-3f25-46b8-a9ca-d74b6cbe9dea -->
+- [In progress] create a priority scale mapping to number from 1 to 10 where the lower the number the higher the priority <!-- feature-id:a9098ae5-cfc0-477d-9c0b-b90f6afa42b0 -->
+- [In progress] Consolidate duplicated API response and domain types in the shared library <!-- feature-id:549019fb-fea8-4735-94cd-5d23418b3cec -->
 - [Backlog] Preserve filesystem API failures as errors instead of returning empty success values from BackendService <!-- feature-id:f05a3223-fa50-4f17-9232-e2fb2678d3fe -->
 - [In progress] Update README and WORKSPACE documentation to match the current Angular and Jest workflows <!-- feature-id:3776c3fd-ce89-4054-8eda-43850b0f52d1 -->
 - [Backlog] Replace positional createApp configuration parameters with a typed options object <!-- feature-id:e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1 -->

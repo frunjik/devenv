@@ -72,6 +72,7 @@ describe('features public API', () => {
             `// [2026-10-04 22:46 +02:00] [${existingId}] [High] [dOnE] completed feature`,
             '// [123e4567-e89b-42d3-a456-426614174001] [Low] [qUeStIoNs] waiting for clarification',
             '// [123e4567-e89b-42d3-a456-426614174002] [Low] [aBoRtEd] aborted feature',
+            '// [123e4567-e89b-42d3-a456-426614174003] [Low] [dEnIeD] rejected feature',
             '',
         ].join('\n'));
 
@@ -86,6 +87,9 @@ describe('features public API', () => {
         );
         expect(response.body.data[3]).toBe(
             '// [123e4567-e89b-42d3-a456-426614174002] [Low] [Aborted] aborted feature',
+        );
+        expect(response.body.data[4]).toBe(
+            '// [123e4567-e89b-42d3-a456-426614174003] [Low] [Denied] rejected feature',
         );
     });
 
@@ -151,6 +155,15 @@ describe('features public API', () => {
         expect(response.body.data).toMatch(/\[Low\] \[Aborted\] Feature stopped before completion$/);
     });
 
+    it('accepts Denied as a feature status', async () => {
+        const response = await request(app)
+            .post('/features')
+            .send({ description: 'Feature not accepted', status: 'Denied' });
+
+        expect(response.status).toBe(201);
+        expect(response.body.data).toMatch(/\[Low\] \[Denied\] Feature not accepted$/);
+    });
+
     it('accepts Questions as a feature status', async () => {
         const response = await request(app)
             .post('/features')
@@ -170,7 +183,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, or Aborted.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, Aborted, or Denied.' },
         });
     });
 
@@ -517,7 +530,7 @@ describe('features public API', () => {
         expect(await readFile(join(root, '.features'), 'utf8')).toBe(`${created.body.data}\n`);
     });
 
-    it.each(['Questions', 'Backlog', 'In progress', 'Done', 'Aborted'] as const)('accepts a %s status update', async status => {
+    it.each(['Questions', 'Backlog', 'In progress', 'Done', 'Aborted', 'Denied'] as const)('accepts a %s status update', async status => {
         const created = await request(app).post('/features').send({ description: 'Complete this feature' });
         const id = created.body.data.match(/\[([0-9a-f-]{36})\]/)[1];
 
@@ -603,7 +616,7 @@ describe('features public API', () => {
 
         expect(response.status).toBe(400);
         expect(response.body).toEqual({
-            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, or Aborted.' },
+            error: { message: 'Feature status must be Questions, Backlog, In progress, Done, Aborted, or Denied.' },
         });
     });
 

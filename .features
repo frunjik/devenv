@@ -1,11 +1,11 @@
 // [2026-10-04 23:23 +02:00] [6e43a1fb-f632-4757-ae86-34181308a95b] [Low] [Done] more rows by default in the client feature list
 // [2026-10-04 23:30 +02:00] [a6ce4823-9840-4890-aab4-7b3a8ea1a7c4] [Medium] [Backlog] create workflow
 // [2026-10-04 23:34 +02:00] [946168e0-1215-4cec-980b-b461add0b2e4] [Medium] [Done] remove feature added from client feature page
-// [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] [Medium] [Backlog] review code changes on client
+// [2026-10-04 23:38 +02:00] [dbc95ad2-a6dd-4bbb-8d84-2890d861adcf] [Medium] [In progress] review code changes on client
 // [2026-10-04 23:46 +02:00] [0d4617c4-58a9-4fc2-a6d6-1f7a73f5d134] [Medium] [Backlog] extract subcomponents from client main form
 // [2026-10-04 23:51 +02:00] [1566328a-ff5c-442f-8576-4e1f7aedcb10] [Medium] [Done] make low the default for a feature
 // [2026-10-04 23:55 +02:00] [f916d6dd-9b75-4716-821d-f4b7eeee86f3] [Medium] [Backlog] show the current ./thoughts on the client
-// [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [Questions] a feature category describes which domain the feature is for
+// [2026-10-05 00:03 +02:00] [ef3b9d44-3a01-4e24-b28c-befe465095ee] [Medium] [In progress] a feature category describes which domain the feature is for possible domains include: client and server
 // [2026-10-05 00:10 +02:00] [411d9121-796b-445a-9b60-33ff17d0a378] [Medium] [Backlog] add backlog
 // [2026-10-05 00:19 +02:00] [3d279160-c6fd-4f56-947a-f9b55e263557] [Medium] [Done] make the current task client display longer (to cover more text)
 // [2026-10-05 00:19 +02:00] [71ab986c-c263-4010-b27c-febe8ccfaf20] [Medium] [Backlog] tasks done indicator
@@ -19,7 +19,6 @@
 // [2026-10-05 00:39 +02:00] [497829fe-e624-48d7-8a88-b29c135d368f] [Medium] [Backlog] add waiting for input status
 // [2026-10-05 00:41 +02:00] [8f772957-b253-44d3-871b-35458a8d412e] [Medium] [Backlog] ask question about feature
 // [2026-10-05 00:42 +02:00] [38737ce4-8b9c-4d63-a5d0-c63ff804a8c0] [Medium] [Backlog] mark features as progress
-// [2026-10-05 00:46 +02:00] [b27908cc-b8c2-47ba-bbd5-84632f4fd0f0] [Medium] [In progress] remove xml comment from DEVENVOPDEV.md entries replace it by a [] marked field
 // [2026-10-05 00:48 +02:00] [1b78bc47-a79c-457c-8c0c-6bb4aca2d623] [Medium] [Backlog] improve layout of feature clent page
 // [2026-10-05 00:48 +02:00] [7a75ec30-e877-4e77-8f70-ba5389cbf03b] [Medium] [In progress] add the possibility to set the status to Denied from the client
 // [2026-10-05 00:49 +02:00] [35817510-2c56-4ba0-9625-d58ce6e740e8] [Medium] [Backlog] Add status Later
@@ -28,13 +27,13 @@
 // [2026-10-05 00:53 +02:00] [79985af5-96fd-478a-a572-85ebf50d479f] [Medium] [Backlog] mark a feature with Questions
 // [2026-10-05 00:55 +02:00] [e1a4b339-fde5-47c9-ba8e-9bccc794953f] [Medium] [In progress] list features in progress
 // [2026-10-05 00:59 +02:00] [bfb88622-58cd-4bd5-afdf-c7efcb5f1961] [Medium] [Backlog] questions form
-// [2026-10-05 01:00 +02:00] [876234ff-990a-4b61-989d-43dabbaafc15] [Medium] [Backlog] add abort button on in progress features that puts the feature back in ./features with status Aborted
+// [2026-10-05 01:00 +02:00] [876234ff-990a-4b61-989d-43dabbaafc15] [Medium] [In progress] add abort button on in progress features that puts the feature back in ./features with status Aborted
 // [2026-10-05 01:01 +02:00] [ac4d3847-af47-45a1-b042-81f9ebe3fc07] [Medium] [Backlog] allow prioritizing open feature list items from the client
 // [2026-10-05 01:01 +02:00] [5466fa4f-848c-40ab-ba39-325d552b2ee7] [Medium] [Backlog] add a number urgency to sort the features in progress
 // [2026-10-05 01:06 +02:00] [32084c42-c61c-4133-af88-f672298c9717] [Medium] [Backlog] stable versions
 // [2026-10-05 01:10 +02:00] [48da0605-50be-4be6-988e-49e6ac880011] [Medium] [Backlog] mark current feature in progress
 // [2026-10-05 01:14 +02:00] [84536587-745f-4b22-aa4b-947925dc69b9] [Medium] [Backlog] add status Questions to features
-// [2026-10-05 01:14 +02:00] [761f28d0-bb20-407c-807c-1320d2fc9d4e] [Medium] [Backlog] add model for features
+// [2026-10-05 01:14 +02:00] [761f28d0-bb20-407c-807c-1320d2fc9d4e] [High] [Done] we want to migrate to a json model for features add tasks with status Question asking the fields to add and add these to the ./features list
 // [2026-10-05 01:14 +02:00] [3aa9e269-c494-42d0-9e8a-77527fb24ad5] [Medium] [In progress] use json for data persistence
 // [2026-10-05 01:15 +02:00] [31cfbd9f-abb5-4830-8480-c1a1a8718344] [Medium] [Backlog] mark as done in open features
 // [2026-10-05 01:27 +02:00] [51ed9afa-b542-457e-8ef2-a99197b89ed3] [Medium] [Backlog] open features refresh on client
@@ -42,14 +41,14 @@
 // [2026-10-05 01:30 +02:00] [4d0d4c3c-86ad-45ae-8802-b554d9eb24a4] [Medium] [Backlog] create a gitundo server endpoint that undoes the latest git commit
 // [2026-10-05 01:30 +02:00] [d7b7b5aa-e0cf-4dac-8651-c7b765f226be] [Medium] [Backlog] keep a version number for the client and server code
 // [2026-10-05 01:31 +02:00] [12306c80-889f-4161-9474-93a072dcb535] [Medium] [Backlog] mark features done with the current version of client or server depending on which domain they belong in
-// [2026-10-05 01:33 +02:00] [39dd1237-56d0-445d-a485-811e8f44036f] [Medium] [Backlog] verify the architecture of the system and add tasks for improvements
-// [2026-10-05 01:34 +02:00] [c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2] [Medium] [Backlog] verify the status of the system and leave the result as a feature to be confirmed
+// [2026-10-05 01:33 +02:00] [39dd1237-56d0-445d-a485-811e8f44036f] [Medium] [Done] verify the architecture of the system and add tasks for improvements
+// [2026-10-05 01:34 +02:00] [c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2] [Medium] [In progress] verify the status of the system and leave the result as a feature to be confirmed
 // [2026-10-05 01:35 +02:00] [0e9d228a-e5e5-4657-bbe5-5ace4e522fce] [Medium] [Backlog] add feature priority as a number on top of the indication low, medium high
-// [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [Backlog] create a canban view
+// [2026-10-05 01:35 +02:00] [8a0a1061-9ef3-48ec-94c8-b384d84bbabc] [Medium] [In progress] create a canban view
 // [2026-10-05 01:36 +02:00] [9587581b-df62-4ba7-a0e5-45167be22a1d] [Medium] [Done] make a server endpoint to retrieve the current uncommited code
 // [2026-10-05 01:48 +02:00] [eddcde7f-775c-4e69-9579-97f07dedf83a] [Low] [Done] remove the display of the top toolbar feature status
 // [2026-10-05 01:49 +02:00] [3a4da084-57bd-4d06-bc9c-c88edb8b23b3] [Low] [Backlog] add status verify
-// [2026-10-05 01:53 +02:00] [57db25d7-bf49-4f35-85ac-6f7e362c694b] [Low] [Backlog] show models
+// [2026-10-05 01:53 +02:00] [57db25d7-bf49-4f35-85ac-6f7e362c694b] [High] [Backlog] show models
 // [2026-10-05 01:53 +02:00] [05af9d39-4847-4a07-9544-646eddef9d09] [Low] [Done] we want to create Typescript interfaces for our models create tasks with status Questions for each potential model we have already have and for the ones you discover when examining the code
 // [2026-10-05 01:55 +02:00] [1a61a983-122f-419e-92d4-647354a18744] [Low] [Questions] Define the shared PPTValue model interface
 // [2026-10-05 01:55 +02:00] [3b0101b5-4272-4a65-a1fb-ce477686bef7] [Low] [Questions] Define the shared PPTField model interface
@@ -58,7 +57,7 @@
 // [2026-10-05 01:55 +02:00] [c740dc00-3b2e-4035-ab8a-d168f752bb23] [Low] [Questions] Define the shared PPTList model interface
 // [2026-10-05 01:55 +02:00] [be028999-5aac-4f75-a137-c724fbe1605d] [Low] [Questions] Define the shared PPTTextModel model interface
 // [2026-10-05 01:55 +02:00] [e9822df5-b322-4d46-bf58-02179a2b8107] [Low] [Questions] Define the shared PPTTextComponentModel model interface
-// [2026-10-05 01:55 +02:00] [c870ba7a-bfdb-4ca2-afbe-2e4571fc0c9c] [Low] [Questions] Define a typed feature record model for FeatureRow
+// [2026-10-05 01:55 +02:00] [c870ba7a-bfdb-4ca2-afbe-2e4571fc0c9c] [High] [Questions] Define a typed feature record model for FeatureRow
 // [2026-10-05 01:55 +02:00] [50392b03-57e8-4a39-936b-eb5387488922] [Low] [Questions] Define shared feature-priority and feature-status model types
 // [2026-10-05 01:55 +02:00] [237363db-c581-4b79-8158-9333a67fee2c] [Low] [Questions] Define the ActiveFeature model interface
 // [2026-10-05 01:55 +02:00] [4bc0c832-29b7-4f07-a43d-dd70ba983d91] [Low] [Questions] Define the GitCommitResult model interface
@@ -70,10 +69,23 @@
 // [2026-10-05 01:55 +02:00] [206fdb0b-8a04-4b3f-ac53-b3599ef8da05] [Low] [Questions] Define the current TestRunResult model interface
 // [2026-10-05 01:55 +02:00] [6e3cbd5b-5446-4e0f-9a4e-b7e17d56d6e7] [Low] [Questions] Define a typed TestCommandEvent model
 // [2026-10-05 01:55 +02:00] [a02aaf39-c72b-4e4c-9dd8-469c89efe57e] [Low] [Questions] Unify FolderEntry and PPTFolderEntry models
-// [2026-10-05 01:55 +02:00] [8ab4b101-3f90-4685-b661-72b0498da5cb] [Low] [Questions] Define the shared SuccessResponseBody model interface
+// [2026-10-05 01:55 +02:00] [8ab4b101-3f90-4685-b661-72b0498da5cb] [Low] [In progress] Define the shared SuccessResponseBody model interface
 // [2026-10-05 01:55 +02:00] [aa72b943-3e95-4ad3-946b-7bb94e8380ee] [Low] [Questions] Define the shared FailureResponseBody model interface
 // [2026-10-05 01:55 +02:00] [6c78b785-cb3d-446b-9189-34f4046a1056] [Low] [Questions] Define the AuthenticatedPrincipal model interface
 // [2026-10-05 01:55 +02:00] [8364dbb5-19b2-4466-b5bf-e736a3ffad86] [Low] [Questions] Define the PPTFileStats model interface
 // [2026-10-05 02:00 +02:00] [250329d6-57f9-4e5d-ac72-a39f3626bed4] [Low] [Done] move questions with features from the ./DEVENVOPDEV.md file to the ./features file converting them to the correct format
 // [2026-10-05 02:04 +02:00] [cca73db4-75bd-4015-81c9-3711028a04dc] [Low] [Questions] we need to display the current task in a better way then in the toolbar
+// [2026-10-05 02:19 +02:00] [db79327c-2817-4476-80f2-089d7cd004e0] [Low] [Questions] Should a JSON feature record include a category field, and should it be required with client and server as its allowed values?
+// [2026-10-05 02:19 +02:00] [c1643ad0-c69a-43e2-87d4-0568f14067e8] [Low] [Questions] Should a JSON feature record include a numeric urgency field in addition to its High, Medium, or Low priority?
+// [2026-10-05 02:19 +02:00] [9c8a43de-f7bb-425a-b148-8e0dbd909c35] [Low] [Questions] Should a JSON feature record include commit-state metadata, and should that be a committed flag, a commit hash, or both?
+// [2026-10-05 02:19 +02:00] [45fa7646-916d-4e39-8649-6477254486f8] [Low] [Questions] Should a completed JSON feature record include the client or server version it was completed against?
+// [2026-10-05 02:24 +02:00] [549019fb-fea8-4735-94cd-5d23418b3cec] [Medium] [Backlog] Consolidate duplicated API response and domain types in the shared library
+// [2026-10-05 02:24 +02:00] [f05a3223-fa50-4f17-9232-e2fb2678d3fe] [Medium] [Backlog] Preserve filesystem API failures as errors instead of returning empty success values from BackendService
+// [2026-10-05 02:24 +02:00] [3776c3fd-ce89-4054-8eda-43850b0f52d1] [Low] [Backlog] Update README and WORKSPACE documentation to match the current Angular and Jest workflows
+// [2026-10-05 02:24 +02:00] [e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1] [Low] [Backlog] Replace positional createApp configuration parameters with a typed options object
 // [2026-10-05 02:11 +02:00] [2629d3f8-23fb-48d1-afe2-20ffcd5ac96d] [Low] [Backlog] make a client display of the open changes on the client show the new (uncommited) full file contents
+// [2026-10-05 02:16 +02:00] [70a55484-e7a4-4e13-a4ff-7a53ffa5d8f4] [Low] [Backlog] feature verify status
+// [2026-10-05 02:21 +02:00] [9af332fe-e6a1-4926-af46-982a3c957c50] [Low] [Backlog] make a feature describing what features the open features on the client displays and add it to ./features
+// [2026-10-05 02:22 +02:00] [09b22dbc-721f-48cb-8202-51c6bee42b65] [Low] [In progress] add the multiple feature list views in tabs
+// [2026-10-05 02:23 +02:00] [f2bf5951-6e30-4941-a799-188853c2cf6b] [Low] [In progress] remove the outer scrollbar on the features page after the lists have been moved into tabs
+// [2026-10-05 02:25 +02:00] [29ae97af-bbc6-4dc0-9830-9a831d4cd653] [Low] [In progress] create a models folder to be shared by client and server code

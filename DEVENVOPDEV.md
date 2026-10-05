@@ -12,6 +12,18 @@ After a feature is done you can pick the next feature to work on from the below 
 
 
 The features you are writing are, take them one by one:
-- [In progress] remove xml comment from DEVENVOPDEV.md entries replace it by a [] marked field <!-- feature-id:b27908cc-b8c2-47ba-bbd5-84632f4fd0f0 -->
+- [In progress] Define the shared SuccessResponseBody model interface <!-- feature-id:8ab4b101-3f90-4685-b661-72b0498da5cb -->
+- [In progress] create a models folder to be shared by client and server code <!-- feature-id:29ae97af-bbc6-4dc0-9830-9a831d4cd653 -->
+- [In progress] verify the status of the system and leave the result as a feature to be confirmed <!-- feature-id:c9ba3bd0-a91a-4fb8-88f4-13b02f1390d2 -->
+- [In progress] remove the outer scrollbar on the features page after the lists have been moved into tabs <!-- feature-id:f2bf5951-6e30-4941-a799-188853c2cf6b -->
+- [In progress] add the multiple feature list views in tabs <!-- feature-id:09b22dbc-721f-48cb-8202-51c6bee42b65 -->
+- [In progress] add abort button on in progress features that puts the feature back in ./features with status Aborted <!-- feature-id:876234ff-990a-4b61-989d-43dabbaafc15 -->
+- [In progress] a feature category describes which domain the feature is for possible domains include: client and server <!-- feature-id:ef3b9d44-3a01-4e24-b28c-befe465095ee -->
+- [In progress] create a canban view <!-- feature-id:8a0a1061-9ef3-48ec-94c8-b384d84bbabc -->
+- [In progress] review code changes on client <!-- feature-id:dbc95ad2-a6dd-4bbb-8d84-2890d861adcf -->
 - [In progress] add the possibility to set the status to Denied from the client <!-- feature-id:7a75ec30-e877-4e77-8f70-ba5389cbf03b -->
 - [In progress] prevent duplicate features <!-- feature-id:67766a83-30b9-4e55-85e6-96891449e37e -->
+- [Backlog] Consolidate duplicated API response and domain types in the shared library <!-- feature-id:549019fb-fea8-4735-94cd-5d23418b3cec -->
+- [Backlog] Preserve filesystem API failures as errors instead of returning empty success values from BackendService <!-- feature-id:f05a3223-fa50-4f17-9232-e2fb2678d3fe -->
+- [Backlog] Update README and WORKSPACE documentation to match the current Angular and Jest workflows <!-- feature-id:3776c3fd-ce89-4054-8eda-43850b0f52d1 -->
+- [Backlog] Replace positional createApp configuration parameters with a typed options object <!-- feature-id:e4e7f8ab-1a29-412c-ab22-bb2a5f0691d1 -->

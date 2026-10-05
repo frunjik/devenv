@@ -43,6 +43,34 @@ Forms and hydration can be generated or guided by Type Descriptions. This is use
 
 Explicit descriptions can support mappings between representations, such as a domain Type and a storage or interchange format. They may also support cross-language or cross-domain transformations when semantic mappings are supplied. The description alone cannot prove that two similarly shaped Types mean the same thing.
 
+## Magritte as Prior Art
+
+[Magritte](https://github.com/magritte-metamodel/magritte) is a useful precedent for this idea. Its own README describes a fully dynamic meta-description framework intended to reduce the repetitive work of building views, editors, reports, queries, validation, and storage for domain objects whose shape changes. It presents descriptions as reusable information about domain objects, rather than making each consumer independently encode every field.
+
+The [Contact Manager example](https://github.com/magritte-metamodel/magritte/blob/master/source/Magritte-ContactManager/CMPerson.class.st) shows the pattern concretely: a domain object provides descriptions for fields such as first name, birthday, and addresses. Those descriptions identify accessors and types, and can also specify labels, ordering, requiredness, read-only behavior, options, relations, and value conditions. A field description can therefore serve more than one generic consumer.
+
+The transferable idea is not a universal schema format. It is a **shared, inspectable description of domain properties, interpreted by multiple capabilities**. Magritte demonstrates that this can make generic editing and validation practical while leaving domain objects and programmer-defined behavior in control.
+
+### Application to Goals, Tasks, and Costs
+
+| Concept | What a shared description could usefully express | What still needs domain-specific meaning or behavior |
+| --- | --- | --- |
+| **Goal** | Identity, title, desired outcome, dates, parent Goal, related criteria, and presentation hints; required fields and basic value constraints can guide forms and input validation. | Whether evidence satisfies an Acceptance Criterion, whether a Goal is achieved, and how changing a Goal affects linked work. A structurally valid Goal is not necessarily a well-defined or achieved Goal. |
+| **Task / Work Item** | Title, description, status options, estimates, dates, dependencies, and references to Goals or criteria; generic editors could display relations and validate simple field constraints. | Legal state transitions, dependency and blocker semantics, progress aggregation, and whether completed work contributes enough evidence toward a Goal. These rules must be explicit domain contracts, not inferred from field layout. |
+| **Cost** | Amount, currency, unit, period, estimate rationale, and links to a candidate or Work Item; typed descriptions can guide entry and check simple constraints such as positive amounts and required units. | What counts as cost, how estimates are evidenced, whether periods and currencies are comparable, and how totals or value-for-money measures are derived. Those are accounting and decision rules, not generic field behavior. |
+
+This is a good fit where the same concepts need multiple generic capabilities—for example, editing a Goal, validating submitted data, rendering its relations, and serializing a versioned instance. It is less compelling if each Type has only one stable, hand-written form and no runtime inspection or generic processing requirement.
+
+### Ideas Worth Reusing
+
+1. **Describe once, consume many ways.** Use one canonical description as the source for generic form structure, basic validation, inspection, and serialization metadata instead of duplicating field definitions in each layer.
+2. **Compose descriptions from meaningful building blocks.** Distinguish strings, quantities, dates, enumerations, single and repeated relations, and nested structures; add field identity and semantic explanation so the metadata is useful beyond a widget choice.
+3. **Keep generic behavior bounded.** A consumer should declare which description features it supports and report unsupported constraints or relations rather than silently ignoring them.
+4. **Preserve domain authority.** Generic metadata can validate local, declarative constraints, but domain logic remains responsible for cross-field invariants, workflows, derived measures, and Goal-achievement judgments.
+5. **Separate portable facts from runtime behavior and presentation.** Magritte descriptions can be assembled in Smalltalk and can include executable conditions or component choices. That flexibility is powerful inside its runtime, but such code is not automatically portable, safely editable as data, or transformable into another language. For DevEnv, keep semantic constraints, presentation hints, and executable domain behavior distinguishable; use explicit, safe rule forms or named domain validators where needed.
+
+**Assessment:** Reuse Magritte’s descriptive approach as prior art, not as a framework to copy wholesale. Its strongest match is generic, metadata-driven editing and validation of the fields and relations within Goals, Tasks, and Costs. The DevEnv model must go further in explicitly representing evidence, dependencies, decision context, lifecycle contracts, and the difference between completing work and achieving a Goal.
+
 ## Costs and Risks
 
 A meta-type system is itself a System to design and maintain. It adds concepts and contracts before it removes complexity. Its costs include:
@@ -111,4 +139,10 @@ The experiment succeeds only if the description reduces duplication while preser
 
 ## Relationship to the Schema Proposal
 
-This document records the **why**, likely benefits, tradeoffs, and conditions for investment. The separate [Type Description Model](./type-description-model.md) explores the **what**: a possible conceptual structure, consumer contracts, and open schema decisions. Neither document commits the System to a runtime format or implementation.
+This document records the **why**, likely benefits, tradeoffs, conditions for investment, and relevant prior art in Magritte. The separate [Type Description Model](./type-description-model.md) explores the **what**: a possible conceptual structure, consumer contracts, and open schema decisions. Neither document commits the System to a runtime format or implementation.
+
+## References
+
+- [Magritte repository and project overview](https://github.com/magritte-metamodel/magritte)
+- [Magritte `CMPerson` example](https://github.com/magritte-metamodel/magritte/blob/master/source/Magritte-ContactManager/CMPerson.class.st)
+- [Magritte paper: A Meta-Driven Approach to Empower Developers and End Users](https://scg.unibe.ch/archive/papers/Reng07aMagritte.pdf)

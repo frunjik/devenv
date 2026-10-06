@@ -13,4 +13,12 @@ module.exports = {
     },
     setupFilesAfterEnv: ['<rootDir>/projects/client/setup-jest.ts'],
     testMatch: ['<rootDir>/projects/client/src/**/*.spec.ts'],
+    coverageThreshold: {
+        global: {
+            branches: 100,
+            functions: 100,
+            lines: 100,
+            statements: 100,
+        },
+    },
 };

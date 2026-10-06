@@ -33,4 +33,20 @@ describe('StatusToolbarComponent', () => {
 
         expect(fixture.nativeElement.querySelector('[aria-label="Client busy"]')).toBeNull();
     });
+
+    it('shows no placeholder text while the current task is not known', () => {
+        TestBed.configureTestingModule({
+            imports: [StatusToolbarComponent],
+            providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+        });
+
+        const fixture = TestBed.createComponent(StatusToolbarComponent);
+        fixture.componentRef.setInput('gitStatus', TestBed.inject(GitStatusService));
+        fixture.componentRef.setInput('currentEntry', TestBed.inject(CurrentEntryService));
+        fixture.componentRef.setInput('testRunCacheStatus', TestBed.inject(TestRunCacheStatusService));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim()).toBe('');
+        expect(fixture.nativeElement.textContent).not.toContain('Loading current');
+    });
 });

@@ -136,7 +136,12 @@
                                 <form class="duplicate-form" (submit)="requestDuplicate($event, ticket, original)">
                                     <label>
                                         Duplicate of
-                                        <input #original type="text" autocomplete="off" placeholder="Original ticket id">
+                                        <select #original>
+                                            <option value="">Choose the original ticket</option>
+                                            @for (candidate of duplicateCandidates(ticket); track candidate.id) {
+                                                <option [value]="candidate.id">{{ candidate.id }} — {{ candidate.title }}</option>
+                                            }
+                                        </select>
                                     </label>
                                     <button type="submit">Mark duplicate</button>
                                 </form>

@@ -381,7 +381,7 @@ export class SystemPlanComponent {
             kind: 'Behavior',
             status: 'In progress',
             dependsOn: ['SC-021', 'SC-028'],
-            summary: 'Assign, lifecycle actions, sort by assignee built; refusals show the server reason; duplicate target existence checked; team/role, who-may-assign still open.',
+            summary: 'Assign, lifecycle actions, sort by assignee, a duplicate-original picker built; refusals show the server reason; duplicate existence checked; team/role, who-may-assign still open.',
         },
         {
             id: 'SC-030',

@@ -932,28 +932,48 @@ describe('FramedTicketsListComponent', () => {
             ]);
         });
 
-        function markDuplicate(original: string): void {
+        function duplicateOptions(): string[] {
             const form = fixture.nativeElement.querySelector('.duplicate-form') as HTMLFormElement;
-            (form.querySelector('input') as HTMLInputElement).value = original;
+            return Array.from(form.querySelectorAll('select option') as NodeListOf<HTMLOptionElement>)
+                .map(option => option.textContent!.trim());
+        }
+
+        function markDuplicate(originalId: string): void {
+            const form = fixture.nativeElement.querySelector('.duplicate-form') as HTMLFormElement;
+            (form.querySelector('select') as HTMLSelectElement).value = originalId;
             form.dispatchEvent(new Event('submit'));
             fixture.detectChanges();
         }
 
-        it('marks a ticket as a duplicate of the trimmed original id and clears the box', () => {
-            const requests = commands();
-            const ticket = show({ state: 'open' });
+        it('offers every other stored ticket as a candidate original, excluding itself and unstored tickets', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'open' }),
+                stored('b', { state: 'assigned', assigneeId: 'u' }),
+                makeTicket('local', 'Local', undefined),
+            ]);
+            fixture.detectChanges();
 
-            markDuplicate('  T-9 ');
-
-            expect(requests).toEqual([{ ticket, command: { kind: 'mark-duplicate', duplicateOfId: 'T-9' } }]);
-            expect((fixture.nativeElement.querySelector('.duplicate-form input') as HTMLInputElement).value).toBe('');
+            expect(duplicateOptions()).toEqual(['Choose the original ticket', 'b — Title b']);
         });
 
-        it('does not mark a duplicate without an original id', () => {
+        it('marks a ticket as a duplicate of the chosen original and resets the selection', () => {
             const requests = commands();
-            show({ state: 'closed' });
+            const ticket = stored('a', { state: 'open' });
+            fixture.componentRef.setInput('tickets', [ticket, stored('b', { state: 'assigned', assigneeId: 'u' })]);
+            fixture.detectChanges();
 
-            markDuplicate('   ');
+            markDuplicate('b');
+
+            expect(requests).toEqual([{ ticket, command: { kind: 'mark-duplicate', duplicateOfId: 'b' } }]);
+            expect((fixture.nativeElement.querySelector('.duplicate-form select') as HTMLSelectElement).value).toBe('');
+        });
+
+        it('does not mark a duplicate without a chosen original', () => {
+            const requests = commands();
+            fixture.componentRef.setInput('tickets', [stored('a', { state: 'closed', assigneeId: 'u' }), stored('b', { state: 'open' })]);
+            fixture.detectChanges();
+
+            markDuplicate('');
 
             expect(requests).toEqual([]);
         });

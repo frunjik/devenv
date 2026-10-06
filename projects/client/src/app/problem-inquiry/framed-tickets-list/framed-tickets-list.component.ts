@@ -144,13 +144,18 @@ export class FramedTicketsListComponent {
         this.commandRequested.emit({ ticket, command });
     }
 
-    requestDuplicate(event: Event, ticket: StoredTicket, input: HTMLInputElement): void {
+    requestDuplicate(event: Event, ticket: StoredTicket, select: HTMLSelectElement): void {
         event.preventDefault();
-        const duplicateOfId = input.value.trim();
+        const duplicateOfId = select.value.trim();
         if (duplicateOfId) {
             this.requestCommand(ticket, { kind: 'mark-duplicate', duplicateOfId });
-            input.value = '';
+            select.value = '';
         }
+    }
+
+    duplicateCandidates(ticket: StoredTicket): StoredTicket[] {
+        return this.tickets.filter((candidate): candidate is StoredTicket =>
+            this.isStored(candidate) && candidate.id !== ticket.id);
     }
 
     isStored(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {

@@ -1,14 +1,32 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImportedNote, ProblemTicket } from '@shared';
+import { Observable, of, throwError } from 'rxjs';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket } from '@shared';
+import { BackendService } from '../backend.service';
 import { ProblemInquiryPageComponent } from './problem-inquiry-page.component';
 
 describe('ProblemInquiryPageComponent', () => {
     let fixture: ComponentFixture<ProblemInquiryPageComponent>;
+    let stored: StoredTicket[];
+    let created: { ticket: NewProblemTicket; dataKind: DataKind }[];
+    let createResult: (ticket: NewProblemTicket, dataKind: DataKind) => Observable<StoredTicket>;
+    let listResult: () => Observable<StoredTicket[]>;
 
     beforeEach(async () => {
+        stored = [];
+        created = [];
+        listResult = () => of(stored);
+        createResult = (ticket, dataKind) => of(storedTicket(ticket, dataKind, 'T-1'));
+        const backend = {
+            listTickets: jest.fn(() => listResult()),
+            createTicket: jest.fn((ticket: NewProblemTicket, dataKind: DataKind) => {
+                created.push({ ticket, dataKind });
+                return createResult(ticket, dataKind);
+            }),
+        };
         await TestBed.configureTestingModule({
             imports: [ProblemInquiryPageComponent],
+            providers: [{ provide: BackendService, useValue: backend }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ProblemInquiryPageComponent);
@@ -127,6 +145,72 @@ describe('ProblemInquiryPageComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('A real report.');
         expect(fixture.nativeElement.textContent).not.toContain('A sample report.');
     });
+
+    it('lists stored tickets loaded from the server', () => {
+        stored = [storedTicket(makeTicket('ignored', undefined), 'real', 'T-9')];
+        fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.ticket-card').length).toBe(1);
+        expect(fixture.nativeElement.textContent).toContain('T-9');
+    });
+
+    it('filters stored tickets by their stored data kind, not by notes', () => {
+        stored = [
+            storedTicket(makeTicket('x', undefined), 'real', 'T-real'),
+            storedTicket(makeTicket('x', undefined), 'sample', 'T-sample'),
+        ];
+        fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.ticket-card').length).toBe(2);
+
+        toggleSampleData();
+
+        expect(fixture.nativeElement.querySelectorAll('.ticket-card').length).toBe(1);
+        expect(fixture.nativeElement.textContent).toContain('T-real');
+        expect(fixture.nativeElement.textContent).not.toContain('T-sample');
+    });
+
+    it('stores a new ticket with the server, flagged real only when all linked notes are known-real', () => {
+        fixture.componentInstance.notes = [
+            makeNote('note-real', 'external-report', 'A real report.'),
+            makeNote('note-sample', 'synthetic', 'A sample report.'),
+        ];
+
+        fixture.componentInstance.addTicket(makeTicket('local-1', ['note-real']));
+        fixture.componentInstance.addTicket(makeTicket('local-2', ['note-real', 'note-sample']));
+        fixture.componentInstance.addTicket(makeTicket('local-3', undefined));
+
+        expect(created.map(entry => entry.dataKind)).toEqual(['real', 'sample', 'sample']);
+        expect(created[0].ticket).not.toHaveProperty('id');
+        expect(created[0].ticket.title).toBe('Title for local-1');
+        expect(fixture.componentInstance.tickets.map(ticket => ticket.id)).toEqual(['T-1', 'T-1', 'T-1']);
+    });
+
+    it('does not list a ticket the server failed to store, and says so', () => {
+        createResult = () => throwError(() => new Error('down'));
+
+        fixture.componentInstance.addTicket(makeTicket('local-1', undefined));
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.tickets).toHaveLength(0);
+        expect(fixture.nativeElement.querySelector('.storage-error').textContent)
+            .toContain('could not be saved');
+    });
+
+    it('says so when stored tickets cannot be loaded', () => {
+        listResult = () => throwError(() => new Error('down'));
+        fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.storage-error').textContent)
+            .toContain('could not be loaded');
+    });
+
+    function storedTicket(ticket: NewProblemTicket, dataKind: DataKind, id: string): StoredTicket {
+        return { ...ticket, id, status: { state: 'open' }, version: 1, dataKind };
+    }
 
     function toggleSampleData(): void {
         const toggle = fixture.nativeElement.querySelector('#sample-data-toggle') as HTMLInputElement;

@@ -399,6 +399,8 @@ Accepted notes, review decisions, and framed tickets currently live in memory an
 
 **Third slice built (client service):** BackendService has listTickets, createTicket (data kind defaults to sample), changeTicket (command plus expected version) and getTicketHistory, tested against the real in-process server; a stale change surfaces as an HttpErrorResponse with status 409 and the current ticket. setup-jest.ts now polyfills structuredClone because jsdom lacks it. Client suite: 199 tests, build passes. Remaining: showing stored tickets with the sample/real flag (SC-017).
 
+**Fourth slice built (page uses the store):** The inquiry page loads stored tickets on start and saves each newly framed ticket through the server (the server issues its id). A ticket is flagged real only when all its linked notes are known-real, otherwise sample; in real-only mode stored tickets are filtered by that stored flag, so they stay correct after a reload when the notes are gone. A failed load or save shows an error and never lists an unsaved ticket. Verified in the browser against the running server. Client suite: 204 tests, build passes. Notes are still in memory only. Remaining: persisting beyond the in-memory store, and a user id/name for the actor.
+
 ### SC-029 — Assign problem tickets
 
 **Kind:** Behavior · **Status:** Ready · **Depends on:** SC-021, SC-028

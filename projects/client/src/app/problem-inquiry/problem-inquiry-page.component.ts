@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { ImportedNote, ProblemTicket, SourceOrigin } from '@shared';
+import { Component, inject, OnInit } from '@angular/core';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin } from '@shared';
+import { BackendService } from '../backend.service';
 import { FramedTicketsListComponent } from './framed-tickets-list/framed-tickets-list.component';
 import { ImportedNotesListComponent } from './imported-notes-list/imported-notes-list.component';
 import { InputConverterComponent } from './input-converter/input-converter.component';
@@ -26,6 +27,9 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
                 >
                 Include sample data
             </label>
+            @if (storageError) {
+                <p class="storage-error" role="alert">{{ storageError }}</p>
+            }
             <app-input-converter (noteAccepted)="addNote($event)" />
             <app-imported-notes-list [notes]="visibleNotes" />
             <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
@@ -59,6 +63,11 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
             gap: 0.5rem;
         }
 
+        .storage-error {
+            margin: 0;
+            color: #d69a90;
+        }
+
         .sample-data-toggle input {
             width: auto;
         }
@@ -72,16 +81,20 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
             }
 
             h1,
-            .sample-data-toggle {
+            .sample-data-toggle,
+            .storage-error {
                 grid-column: 1 / -1;
             }
         }
     `,
 })
-export class ProblemInquiryPageComponent {
+export class ProblemInquiryPageComponent implements OnInit {
+    private readonly backend = inject(BackendService);
+
     notes: readonly ImportedNote[] = [];
     tickets: readonly ProblemTicket[] = [];
     showSamples = true;
+    storageError = '';
 
     get visibleNotes(): readonly ImportedNote[] {
         return this.showSamples ? this.notes : this.notes.filter(note => this.isKnownReal(note.proposal.sourceOrigin));
@@ -92,14 +105,14 @@ export class ProblemInquiryPageComponent {
             return this.tickets;
         }
 
-        return this.tickets.filter(ticket => {
-            const sourceNoteIds = ticket.sourceNoteIds;
-            return sourceNoteIds !== undefined
-                && sourceNoteIds.length > 0
-                && sourceNoteIds.every(noteId => {
-                    const note = this.notes.find(candidate => candidate.id === noteId);
-                    return note !== undefined && this.isKnownReal(note.proposal.sourceOrigin);
-                });
+        return this.tickets.filter(ticket =>
+            ('dataKind' in ticket ? ticket.dataKind : this.dataKindOf(ticket)) === 'real');
+    }
+
+    ngOnInit(): void {
+        this.backend.listTickets().subscribe({
+            next: stored => this.tickets = [...this.tickets, ...stored],
+            error: () => this.storageError = 'Stored tickets could not be loaded.',
         });
     }
 
@@ -108,11 +121,27 @@ export class ProblemInquiryPageComponent {
     }
 
     addTicket(ticket: ProblemTicket): void {
-        this.tickets = [...this.tickets, ticket];
+        const { id: _localId, ...newTicket } = ticket;
+        this.backend.createTicket(newTicket satisfies NewProblemTicket, this.dataKindOf(ticket)).subscribe({
+            next: stored => {
+                this.storageError = '';
+                this.tickets = [...this.tickets, stored];
+            },
+            error: () => this.storageError = 'The ticket could not be saved.',
+        });
     }
 
     toggleSamples(): void {
         this.showSamples = !this.showSamples;
+    }
+
+    private dataKindOf(ticket: ProblemTicket): DataKind {
+        const noteIds = ticket.sourceNoteIds ?? [];
+        const real = noteIds.length > 0 && noteIds.every(noteId => {
+            const note = this.notes.find(candidate => candidate.id === noteId);
+            return note !== undefined && this.isKnownReal(note.proposal.sourceOrigin);
+        });
+        return real ? 'real' : 'sample';
     }
 
     private isKnownReal(sourceOrigin: SourceOrigin): boolean {

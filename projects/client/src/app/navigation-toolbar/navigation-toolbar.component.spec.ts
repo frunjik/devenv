@@ -20,7 +20,9 @@ describe('NavigationToolbarComponent', () => {
     it('shows the host and only host-level links', () => {
         const text = fixture.nativeElement.textContent as string;
 
-        expect(text).toContain('DevEnv - http://host/');
+        expect(fixture.nativeElement.querySelector('.meta-badge').textContent.trim()).toBe('DevEnv');
+        expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
+        expect(text).not.toContain('Meta');
         expect(text).toContain('glossary');
         expect(text.toLowerCase()).not.toContain('system plan');
     });

@@ -94,7 +94,7 @@ describe('AppComponent', () => {
         expect(fixture.nativeElement.querySelector('app-status-toolbar')).not.toBeNull();
         expect(fixture.nativeElement.querySelector('.meta-layer-label')).toBeNull();
         expect(fixture.nativeElement.querySelector('app-navigation-toolbar .meta-badge').textContent.trim())
-            .toBe('Meta');
+            .toBe('DevEnv');
         expect(fixture.nativeElement.querySelector('.inner-app').classList).toContain('framed');
     });
 

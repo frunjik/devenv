@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { calculateMetric, METRIC_METHODS, MetricMethod } from '../ticket-metrics';
-import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } from '@shared';
+import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketContent, TicketStatus } from '@shared';
 
 @Component({
     selector: 'app-framed-tickets-list',
@@ -63,6 +63,45 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
                                     </form>
                                 }
 
+                                @if (isStored(ticket)) {
+                                    <button type="button" class="edit-toggle" (click)="toggleEdit(ticket.id)">
+                                        {{ editingId === ticket.id ? 'Close editor' : 'Edit' }}
+                                    </button>
+                                    @if (editingId === ticket.id) {
+                                        <form class="edit-form" (submit)="requestEdit($event, ticket)">
+                                            <label>Title <input name="title" type="text" [value]="ticket.title"></label>
+                                            <label>Report <textarea name="report" [value]="ticket.report"></textarea></label>
+                                            <label>Undesirable condition <textarea name="condition" [value]="ticket.problem.condition"></textarea></label>
+                                            <label>Who or what is affected <input name="affected" type="text" [value]="ticket.problem.affected"></label>
+                                            <label>Why it matters <textarea name="impact" [value]="ticket.problem.impact"></textarea></label>
+                                            <label>
+                                                Scope level
+                                                <select name="scopeLevel">
+                                                    @for (level of scopeLevels; track level) {
+                                                        <option [value]="level" [selected]="level === ticket.scope.level">{{ level }}</option>
+                                                    }
+                                                </select>
+                                            </label>
+                                            <label>Scope description <input name="scopeLabel" type="text" [value]="ticket.scope.label"></label>
+                                            @for (rating of ratingFields; track rating.name) {
+                                                <label>
+                                                    {{ rating.label }} (1 to 5)
+                                                    <select [name]="rating.name">
+                                                        <option value="" [selected]="!ticket.estimate">Not rated</option>
+                                                        @for (value of ratingValues; track value) {
+                                                            <option [value]="value" [selected]="ticket.estimate?.[rating.key] === value">{{ value }}</option>
+                                                        }
+                                                    </select>
+                                                </label>
+                                            }
+                                            @if (editError) {
+                                                <p role="alert">{{ editError }}</p>
+                                            }
+                                            <button type="submit">Save changes</button>
+                                            <button type="button" class="edit-cancel" (click)="editingId = undefined">Cancel</button>
+                                        </form>
+                                    }
+                                }
                                 <p><strong>Report</strong>: {{ ticket.report }}</p>
 
                                 <section aria-label="Problem frame">
@@ -224,6 +263,18 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
             font-weight: 600;
         }
 
+        .edit-form {
+            display: grid;
+            gap: 0.5rem;
+            margin-block: 0.5rem;
+        }
+
+        .edit-form label {
+            display: grid;
+            gap: 0.2rem;
+            font-weight: 600;
+        }
+
         .ticket-metric {
             margin: 0.2rem 0;
             color: #475569;
@@ -304,8 +355,18 @@ export class FramedTicketsListComponent {
     @Input() tickets: readonly (ProblemTicket | StoredTicket)[] = [];
     @Input() notes: readonly ImportedNote[] = [];
     readonly metricMethods = METRIC_METHODS;
+    readonly scopeLevels: readonly ScopeLevel[] = ['operation', 'workflow', 'system', 'cross-system'];
+    readonly ratingValues: readonly EstimateRating[] = [1, 2, 3, 4, 5];
+    readonly ratingFields = [
+        { name: 'estimateImpact', key: 'impact', label: 'Impact' },
+        { name: 'estimateUrgency', key: 'urgency', label: 'Urgency' },
+        { name: 'estimateEffort', key: 'effort', label: 'Effort' },
+    ] as const;
+    editingId?: string;
+    editError = '';
     metricMethod: MetricMethod = 'impact-urgency';
 
+    @Output() readonly editRequested = new EventEmitter<{ ticket: StoredTicket; content: TicketContent }>();
     @Output() readonly assignRequested = new EventEmitter<{ ticket: StoredTicket; assigneeId: string }>();
 
     readonly sortOptions: readonly { value: SortProperty; label: string }[] = [
@@ -347,6 +408,47 @@ export class FramedTicketsListComponent {
 
     metricOf(ticket: ProblemTicket | StoredTicket): number | undefined {
         return calculateMetric(this.metricMethod, ticket.estimate);
+    }
+
+    isStored(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {
+        return this.statusOf(ticket) !== undefined;
+    }
+
+    toggleEdit(id: string): void {
+        this.editingId = this.editingId === id ? undefined : id;
+        this.editError = '';
+    }
+
+    requestEdit(event: Event, ticket: StoredTicket): void {
+        event.preventDefault();
+        const data = new FormData(event.target as HTMLFormElement);
+        const text = (name: string) => String(data.get(name));
+        const scopeLevel = this.scopeLevels.find(level => level === text('scopeLevel'));
+        if (!scopeLevel) {
+            this.editError = 'Select a valid scope level.';
+            return;
+        }
+
+        const rated = this.ratingFields.map(field => text(field.name));
+        const [impact, urgency, effort] = rated.map(value => this.ratingValues.find(rating => String(rating) === value));
+        const hasEstimate = rated.some(value => value !== '');
+        if (hasEstimate && !(impact && urgency && effort)) {
+            this.editError = 'Rate impact, urgency, and effort, or leave all three blank.';
+            return;
+        }
+
+        const content: TicketContent = {
+            title: text('title'),
+            report: text('report'),
+            problem: { condition: text('condition'), affected: text('affected'), impact: text('impact') },
+            scope: { level: scopeLevel, label: text('scopeLabel') },
+        };
+        if (impact && urgency && effort) {
+            content.estimate = { impact, urgency, effort };
+        }
+        this.editingId = undefined;
+        this.editError = '';
+        this.editRequested.emit({ ticket, content });
     }
 
     canAssign(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {

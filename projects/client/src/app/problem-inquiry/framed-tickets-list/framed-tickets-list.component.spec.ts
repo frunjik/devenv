@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImportedNote, ProblemTicket, StoredTicket, TicketStatus } from '@shared';
+import { ImportedNote, ProblemTicket, StoredTicket, TicketContent, TicketStatus } from '@shared';
 import { FramedTicketsListComponent } from './framed-tickets-list.component';
 
 describe('FramedTicketsListComponent', () => {
@@ -404,6 +404,163 @@ describe('FramedTicketsListComponent', () => {
             chooseMethod('wsjf');
 
             expect(metrics()).toEqual(['Weighted shortest job first: 4.5', 'Weighted shortest job first: no estimate']);
+        });
+    });
+    describe('editing', () => {
+        function stored(id: string): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status: { state: 'open' }, version: 3, dataKind: 'real' };
+        }
+
+        function field(name: string): HTMLInputElement {
+            return fixture.nativeElement.querySelector(`.edit-form [name="${name}"]`) as HTMLInputElement;
+        }
+
+        function click(selector: string): void {
+            (fixture.nativeElement.querySelector(selector) as HTMLElement).click();
+            fixture.detectChanges();
+        }
+
+        function set(name: string, value: string): void {
+            field(name).value = value;
+        }
+
+        function submit(): void {
+            fixture.nativeElement.querySelector('.edit-form').dispatchEvent(new Event('submit'));
+            fixture.detectChanges();
+        }
+
+        function request(): { ticket: StoredTicket; content: TicketContent }[] {
+            const requests: { ticket: StoredTicket; content: TicketContent }[] = [];
+            fixture.componentInstance.editRequested.subscribe(r => requests.push(r));
+            return requests;
+        }
+
+        it('offers editing only on stored tickets, with the form hidden until asked for', () => {
+            fixture.componentRef.setInput('tickets', [stored('a'), makeTicket('local', 'Local', undefined)]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelectorAll('.edit-toggle').length).toBe(1);
+            expect(fixture.nativeElement.querySelector('.edit-form')).toBeNull();
+        });
+
+        it('opens a form filled with the current content', () => {
+            const ticket = { ...stored('a'), estimate: { impact: 4, urgency: 5, effort: 2 } };
+            fixture.componentRef.setInput('tickets', [ticket]);
+            fixture.detectChanges();
+
+            click('.edit-toggle');
+
+            expect(field('title').value).toBe('Title a');
+            expect(field('report').value).toBe(ticket.report);
+            expect(field('condition').value).toBe(ticket.problem.condition);
+            expect(field('affected').value).toBe(ticket.problem.affected);
+            expect(field('impact').value).toBe(ticket.problem.impact);
+            expect(field('scopeLevel').value).toBe(ticket.scope.level);
+            expect(field('scopeLabel').value).toBe(ticket.scope.label);
+            expect([field('estimateImpact').value, field('estimateUrgency').value, field('estimateEffort').value])
+                .toEqual(['4', '5', '2']);
+        });
+
+        it('emits the edited content and closes the form', () => {
+            const requests = request();
+            const ticket = stored('a');
+            fixture.componentRef.setInput('tickets', [ticket]);
+            fixture.detectChanges();
+            click('.edit-toggle');
+            set('title', 'New title');
+            set('estimateImpact', '3');
+            set('estimateUrgency', '2');
+            set('estimateEffort', '1');
+
+            submit();
+
+            expect(requests).toEqual([{
+                ticket,
+                content: {
+                    title: 'New title',
+                    report: ticket.report,
+                    problem: ticket.problem,
+                    scope: ticket.scope,
+                    estimate: { impact: 3, urgency: 2, effort: 1 },
+                },
+            }]);
+            expect(fixture.nativeElement.querySelector('.edit-form')).toBeNull();
+        });
+
+        it('leaves the estimate out when none is rated', () => {
+            const requests = request();
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.detectChanges();
+            click('.edit-toggle');
+
+            submit();
+
+            expect(requests[0].content).not.toHaveProperty('estimate');
+        });
+
+        it('keeps the form open and says so when only some of the estimate is rated', () => {
+            const requests = request();
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.detectChanges();
+            click('.edit-toggle');
+            set('estimateImpact', '3');
+
+            submit();
+
+            expect(requests).toEqual([]);
+            expect(fixture.nativeElement.querySelector('.edit-form [role="alert"]').textContent)
+                .toContain('Rate impact, urgency, and effort, or leave all three blank.');
+        });
+
+        it('keeps the form open for an estimate outside 1 to 5 or an unknown scope level', () => {
+            const requests = request();
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.detectChanges();
+            click('.edit-toggle');
+            for (const name of ['estimateImpact', 'estimateUrgency', 'estimateEffort']) {
+                const option = document.createElement('option');
+                option.value = '9';
+                field(name).append(option);
+                set(name, '9');
+            }
+
+            submit();
+            const scope = field('scopeLevel');
+            const option = document.createElement('option');
+            option.value = 'galaxy';
+            scope.append(option);
+            set('scopeLevel', 'galaxy');
+            for (const name of ['estimateImpact', 'estimateUrgency', 'estimateEffort']) {
+                set(name, '');
+            }
+            submit();
+
+            expect(requests).toEqual([]);
+            expect(fixture.nativeElement.querySelector('.edit-form [role="alert"]').textContent).toContain('scope level');
+        });
+
+        it('cancels without emitting and starts fresh next time', () => {
+            const requests = request();
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.detectChanges();
+            click('.edit-toggle');
+            set('title', 'Discarded');
+
+            click('.edit-cancel');
+            click('.edit-toggle');
+
+            expect(requests).toEqual([]);
+            expect(field('title').value).toBe('Title a');
+        });
+
+        it('closes the form when the toggle is used again', () => {
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.detectChanges();
+
+            click('.edit-toggle');
+            click('.edit-toggle');
+
+            expect(fixture.nativeElement.querySelector('.edit-form')).toBeNull();
         });
     });
     describe('state badge', () => {

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket } from '@shared';
+import { Observable } from 'rxjs';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket, TicketContent } from '@shared';
 import { BackendService } from '../backend.service';
 import { FramedTicketsListComponent } from './framed-tickets-list/framed-tickets-list.component';
 import { ImportedNotesListComponent } from './imported-notes-list/imported-notes-list.component';
@@ -38,6 +39,7 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
                 [tickets]="visibleTickets"
                 [notes]="visibleNotes"
                 (assignRequested)="assign($event)"
+                (editRequested)="edit($event)"
             />
         </main>
     `,
@@ -137,7 +139,15 @@ export class ProblemInquiryPageComponent implements OnInit {
     }
 
     assign({ ticket, assigneeId }: { ticket: StoredTicket; assigneeId: string }): void {
-        this.backend.changeTicket(ticket.id, { kind: 'assign', assigneeId }, ticket.version).subscribe({
+        this.applyChange(this.backend.changeTicket(ticket.id, { kind: 'assign', assigneeId }, ticket.version), 'assigned');
+    }
+
+    edit({ ticket, content }: { ticket: StoredTicket; content: TicketContent }): void {
+        this.applyChange(this.backend.editTicket(ticket.id, content, ticket.version), 'saved');
+    }
+
+    private applyChange(request: Observable<{ ticket: StoredTicket }>, verb: string): void {
+        request.subscribe({
             next: ({ ticket: changed }) => {
                 this.storageError = '';
                 this.replaceTicket(changed);
@@ -148,12 +158,11 @@ export class ProblemInquiryPageComponent implements OnInit {
                     this.replaceTicket(current);
                     this.storageError = 'The ticket changed in the meantime; the latest version is shown.';
                 } else {
-                    this.storageError = 'The ticket could not be assigned.';
+                    this.storageError = `The ticket could not be ${verb}.`;
                 }
             },
         });
     }
-
     toggleSamples(): void {
         this.showSamples = !this.showSamples;
     }

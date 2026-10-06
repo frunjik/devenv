@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket, TicketCommand, TicketChangeEvent } from '@shared';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket, TicketCommand, TicketChangeEvent, TicketContent, TicketEditEvent } from '@shared';
 import { BackendService } from '../backend.service';
 import { ProblemInquiryPageComponent } from './problem-inquiry-page.component';
 
@@ -12,6 +12,7 @@ describe('ProblemInquiryPageComponent', () => {
     let created: { ticket: NewProblemTicket; dataKind: DataKind }[];
     let createResult: (ticket: NewProblemTicket, dataKind: DataKind) => Observable<StoredTicket>;
     let listResult: () => Observable<StoredTicket[]>;
+    let editResult: (id: string, content: TicketContent, version: number) => Observable<{ ticket: StoredTicket; event: TicketEditEvent }>;
     let changeResult: (id: string, command: TicketCommand, version: number) => Observable<{ ticket: StoredTicket; event: TicketChangeEvent }>;
 
     beforeEach(async () => {
@@ -23,7 +24,12 @@ describe('ProblemInquiryPageComponent', () => {
             ticket: { ...stored.find(ticket => ticket.id === id)!, version: version + 1, status: { state: 'assigned', assigneeId: (command as { assigneeId: string }).assigneeId } },
             event: {} as TicketChangeEvent,
         });
+        editResult = (id, content, version) => of({
+            ticket: { ...stored.find(ticket => ticket.id === id)!, ...content, version: version + 1 },
+            event: {} as TicketEditEvent,
+        });
         const backend = {
+            editTicket: jest.fn((id: string, content: TicketContent, version: number) => editResult(id, content, version)),
             changeTicket: jest.fn((id: string, command: TicketCommand, version: number) => changeResult(id, command, version)),
             listTickets: jest.fn(() => listResult()),
             createTicket: jest.fn((ticket: NewProblemTicket, dataKind: DataKind) => {
@@ -263,6 +269,52 @@ describe('ProblemInquiryPageComponent', () => {
         });
     });
 
+    describe('editing', () => {
+        beforeEach(() => {
+            stored = [storedTicket(makeTicket('x', undefined), 'real', 'T-1'), storedTicket(makeTicket('y', undefined), 'real', 'T-2')];
+            fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+            fixture.detectChanges();
+        });
+
+        function edit(card: number, title: string): void {
+            (fixture.nativeElement.querySelectorAll('.edit-toggle')[card] as HTMLElement).click();
+            fixture.detectChanges();
+            (fixture.nativeElement.querySelector('.edit-form [name="title"]') as HTMLInputElement).value = title;
+            fixture.nativeElement.querySelector('.edit-form').dispatchEvent(new Event('submit'));
+            fixture.detectChanges();
+        }
+
+        function titles(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-card h3') as NodeListOf<HTMLElement>)
+                .map(heading => heading.textContent!.trim());
+        }
+
+        it('saves through the server and replaces only that ticket with the stored result', () => {
+            edit(1, 'Renamed');
+
+            expect(titles()).toEqual([stored[0].title, 'Renamed']);
+            expect(fixture.nativeElement.querySelector('.storage-error')).toBeNull();
+        });
+
+        it('shows the latest ticket and says so when the ticket changed in the meantime', () => {
+            const current = { ...stored[0], version: 5, title: 'Changed by someone' } as StoredTicket;
+            editResult = () => throwError(() => new HttpErrorResponse({ status: 409, error: { error: { current } } }));
+
+            edit(0, 'Mine');
+
+            expect(titles()).toEqual(['Changed by someone', stored[1].title]);
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('changed');
+        });
+
+        it('says so when the edit is refused or fails', () => {
+            editResult = () => throwError(() => new HttpErrorResponse({ status: 422, error: { error: { message: 'No.' } } }));
+
+            edit(0, 'Mine');
+
+            expect(titles()).toEqual([stored[0].title, stored[1].title]);
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be saved');
+        });
+    });
     function storedTicket(ticket: NewProblemTicket, dataKind: DataKind, id: string): StoredTicket {
         return { ...ticket, id, status: { state: 'open' }, version: 1, dataKind };
     }

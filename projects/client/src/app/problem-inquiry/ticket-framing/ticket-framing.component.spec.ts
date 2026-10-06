@@ -180,6 +180,29 @@ describe('TicketFramingComponent', () => {
         expect(tickets).toEqual([]);
         expect(fixture.nativeElement.textContent).toContain('Rate impact, urgency, and effort, or leave all three blank.');
     });
+
+    it('adds dependsOnTicketIds when entered, one per line', () => {
+        const tickets: ProblemTicket[] = [];
+        fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));
+        selectNotes(['note-1']);
+        enterTicketFields();
+        setValue('#depends-on-ticket-ids', 'ticket-5\n\n ticket-6 \n');
+
+        submitForm();
+
+        expect(tickets[0].dependsOnTicketIds).toEqual(['ticket-5', 'ticket-6']);
+    });
+
+    it('leaves dependsOnTicketIds out when nothing is entered', () => {
+        const tickets: ProblemTicket[] = [];
+        fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));
+        selectNotes(['note-1']);
+        enterTicketFields();
+
+        submitForm();
+
+        expect(tickets[0]).not.toHaveProperty('dependsOnTicketIds');
+    });
     it('prompts for an accepted note when there are no notes to select', () => {
         fixture.componentRef.setInput('notes', []);
         fixture.detectChanges();

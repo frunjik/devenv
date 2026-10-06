@@ -641,6 +641,8 @@ No ticket-to-ticket "depends on" relation exists yet; the only current relation 
 
 **First data-model slice built (2026-10-06):** Chose the `dependsOnTicketIds?: ProblemTicketId[]` array field (not a separate store) for this first slice — simplest to add, matching how `sourceNoteIds` already works. The framed-ticket list shows a "Depends on" section listing the ids when present; nothing shows when absent. Not yet built: any way to set this field (no input in the framing or edit form yet), existence checking of referenced ticket ids, or cycle detection/prevention — all explicitly deferred. Client suite 289 tests, 100% coverage on the touched component; build passes; server suite unaffected (160 tests, type-only `@shared` usage).
 
+**Second slice built (2026-10-06):** The ticket-framing form gained an optional "Depends on (ticket ids, one per line)" textarea, following the same newline-split pattern as the work-context fields; entering ids sets `dependsOnTicketIds`, leaving it blank omits the field entirely (matching the optional-estimate pattern). No server change was needed — `POST /tickets` and the ticket stores already pass unknown-to-them fields through unchanged. Still not built: existence checking of referenced ids (a ticket can "depend on" an id that does not exist, same as "duplicate of" today) and cycle detection; a ticket picker instead of free-text entry (same open item as SC-029's "duplicate of" box) would also help here. Client suite 291 tests, 100% coverage; build passes; server suite unaffected (160 tests).
+
 ### SC-048 — Validate the layout and style of every route
 
 **Kind:** Behavior · **Status:** Ready · **Depends on:** None

@@ -17,6 +17,7 @@ interface TicketFormValues {
     estimateImpact: string;
     estimateUrgency: string;
     estimateEffort: string;
+    dependsOnTicketIds: string;
 }
 
 const ratings = new Map<string, EstimateRating>([['1', 1], ['2', 2], ['3', 3], ['4', 4], ['5', 5]]);
@@ -58,7 +59,8 @@ const scopeLevels = new Map<string, ScopeLevel>([
                     reportedAt: reportedAt.value,
                     estimateImpact: estimateImpact.value,
                     estimateUrgency: estimateUrgency.value,
-                    estimateEffort: estimateEffort.value
+                    estimateEffort: estimateEffort.value,
+                    dependsOnTicketIds: dependsOnTicketIds.value
                 },
                 $event
             )">
@@ -140,6 +142,10 @@ const scopeLevels = new Map<string, ScopeLevel>([
                             <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                         </select>
                     </fieldset>
+
+                    <label for="depends-on-ticket-ids">Depends on (ticket ids, optional, one per line)</label>
+                    <textarea id="depends-on-ticket-ids" #dependsOnTicketIds name="dependsOnTicketIds"></textarea>
+
                     <label for="reported-by">Reported by</label>
                     <input id="reported-by" #reportedBy name="reportedBy" type="text" required>
 
@@ -251,6 +257,8 @@ export class TicketFramingComponent {
             return;
         }
 
+        const dependsOnTicketIds = this.toEntries(values.dependsOnTicketIds);
+
         this.validationMessage = '';
         const ticket: ProblemTicket = {
             id: `ticket-${this.nextTicketNumber++}`,
@@ -274,6 +282,7 @@ export class TicketFramingComponent {
             reportedBy: values.reportedBy.trim(),
             reportedAt: reportedAt.toISOString(),
             ...(estimate ? { estimate } : {}),
+            ...(dependsOnTicketIds.length ? { dependsOnTicketIds } : {}),
         };
         this.ticketCreated.emit(ticket);
     }

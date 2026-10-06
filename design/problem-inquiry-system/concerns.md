@@ -454,7 +454,7 @@ The host (meta) toolbar shows a scrollbar and its text looks far too big. Make i
 
 ### SC-034 — Give the meta menu the label bar's styling and drop the label bar
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-024, SC-033
+**Kind:** Design · **Status:** Validated · **Depends on:** SC-024, SC-033
 
 The pre-existing host menu (the navigation toolbar with Browse, Test, and so on) should take on the styling of the "META LAYER · hosts the problem-solving app" bar below it, and, if possible, that lower bar should be removed so the meta layer is a single bar.
 
@@ -463,6 +463,9 @@ The pre-existing host menu (the navigation toolbar with Browse, Test, and so on)
 **Working boundary:** Presentation first; the host menu items and routes stay unchanged. The change touches the navigation toolbar and the label in the app shell (P-006: confirm before changing anything beyond those two).
 **Open questions:** If the label bar goes, how does the user still see that this is the meta layer (a short "Meta" badge in the menu, the shared color alone, or nothing)? Is the "hosts the problem-solving app" wording worth keeping anywhere (P-009)? Which label-bar styles carry over (dark green background, muted text, small uppercase lettering)? Does the Material toolbar keep its own elevation or take the flat label look? Does the single bar still fit at 320 px, where the menu wraps (SC-033)? This also decides where SC-031 and SC-032 display their information, and it relates to the palette in SC-030.
 **Vocabulary candidates (P-009, not yet agreed):** "meta menu", "label bar".
+
+**Decisions (agent, 2026-10-06, user said "SC-034" without answering the open questions; revisit if wrong):** The label bar is removed. The meta menu takes its colors (background `#1d2922`, text `#aebbb0`) and a small outlined uppercase "Meta" badge in front of the brand text identifies the layer. The "hosts the problem-solving app" wording is dropped (the frame and the problem-solving menu already show the nesting). The Material toolbar stays, flat, in the same compact form as SC-033.
+**Validation evidence:** In the browser the toolbar background is `rgb(29, 41, 34)` at 1440, 768, and 320 px, there is no `.meta-layer-label`, the toolbar is 40, 59, and 129 px high with no scrolling or horizontal overflow. Full client suite and build pass.
 
 The dependency order does not authorize building both components together.
 

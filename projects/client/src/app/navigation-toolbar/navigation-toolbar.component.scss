@@ -2,13 +2,33 @@ mat-toolbar.mat-toolbar-single-row {
     height: auto;
     min-height: 40px;
     padding: 0.1rem 1rem;
+    background: #1d2922;
+    color: #aebbb0;
     font-size: 0.8rem;
     white-space: nowrap;
 }
 
+.toolbar-title {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    margin-right: 0.75rem;
+}
+
+.meta-badge {
+    flex: 0 0 auto;
+    margin-right: 0.6rem;
+    padding: 0.1rem 0.45rem;
+    border: 1px solid #596b5d;
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
 .toolbar-brand {
     flex: 0 0 auto;
-    margin-right: 0.75rem;
 }
 
 nav {
@@ -39,7 +59,7 @@ nav {
         white-space: normal;
     }
 
-    .toolbar-brand {
+    .toolbar-title {
         margin-right: 0;
     }
 

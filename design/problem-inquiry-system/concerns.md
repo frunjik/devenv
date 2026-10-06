@@ -586,6 +586,26 @@ SC-018 validated a paired-column grid (converter beside accepted notes, ticket-f
 **Open questions:** Does a tabsheet fit a workflow that is meant to be read top-to-bottom (notes inform tickets), or does it suit switching between largely independent concerns (for example "Convert input," "Review notes," "Frame a ticket," "Browse tickets")? Would tabs hide the framed-ticket list's growing controls from view when working in another tab, and is that acceptable? Is a grid-only revision (for example separating the ticket list's own controls from its cards, or giving the list more width) sufficient without introducing tabs at all? Should the comparison also weigh keyboard/screen-reader navigation between tabs versus a single scrollable document? Does this interact with the wide-screen inquiry layout decision (SC-018) or the host-vs-problem-solving-app framing (SC-024)?
 **Vocabulary candidates (P-009, not yet agreed):** "tabsheet", "panel", "section" (as used for a route's layout regions, distinct from a ticket's `scope`).
 
+### SC-045 — Export system contents to an external system
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-028, SC-002
+
+Nothing in the system today leaves it: tickets live only in our own store and notes only in memory. Decide what it means to export our contents (problem tickets, their history, and/or imported notes) so another, external system can receive them.
+
+**Working boundary:** Decide scope and format before building. This is about data leaving the system toward an external destination; it is the mirror of SC-046 (data arriving from one), not the same concern. No implementation until what is exported, in what shape, and through what mechanism are agreed.
+**Open questions:** What is exported — a single ticket, a filtered/visible set (composing with SC-017's sample/real toggle and SC-026's search/filter), or everything? Does an export include the lifecycle history (SC-021) and linked notes' provenance (SC-002), or only the current `ProblemTicket`/`StoredTicket` fields? What format serves an unknown external system best (JSON matching the shared Types, CSV, another interchange format), and is that format itself a concern to agree before building? Is export triggered from the UI, a server endpoint, or both? Do our server-assigned ids and local-only identifiers (SC-028) mean anything to the receiving system, or must export translate or drop them? Should a sample-data ticket ever be exportable, given SC-017 treats sample data as not real?
+**Vocabulary candidates (P-009, not yet agreed):** "export", "external system", "interchange format".
+
+### SC-046 — Import from an external, unknown-quality source
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-001, SC-002, SC-003, SC-006
+
+SC-006's input converter only accepts manually typed or pasted text from a person already using the system; it explicitly excludes loading inbox files. Decide how content arriving from an external source of unknown trustworthiness (a file, another system's export per SC-045, or an arbitrary payload) is brought in, given it cannot be assumed to match our shared Types or to be truthful.
+
+**Working boundary:** Decide validation and provenance handling before building; do not promote external content directly to a `ProblemTicket` (SC-001's framing distinction still applies — imported content becomes a note or proposal first, not an accepted fact). This is the mirror of SC-045 (export); it is not a decision about what an "Imported note" means generally (SC-001, SC-003) but about the specific new entry path.
+**Open questions:** What formats must be accepted (a structured export from another instance of this system per SC-045, free text, something else), and what happens when a payload does not match any expected shape? Does an externally sourced item always land as a `NoteProposal`/`ImportedNote` for review (SC-006, SC-007) rather than skipping review, regardless of how well-formed it looks? What `SourceOrigin` does it get — is "unknown" the only honest default until a human attests otherwise, even if the payload claims to be an `external-report`? How are colliding identifiers from the external source handled, given ids here are otherwise server-assigned (SC-028)? Is there a preview/dry-run step before anything is accepted into the system? Does this relate to a file-import locator (the open question left in SC-002), and should malformed or partially unreadable input be rejected outright or partially accepted with flagged gaps?
+**Vocabulary candidates (P-009, not yet agreed):** "import", "external source", "unknown-quality", "payload".
+
 ## Working Sequence
 
 1. Resolve enough of SC-001–SC-005 to define the converter boundary and observable behavior.

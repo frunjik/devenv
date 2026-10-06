@@ -503,6 +503,22 @@ export class SystemPlanComponent {
             dependsOn: ['SC-018'],
             summary: 'Revisit the paired-column grid now the framed-ticket list has many more controls; weigh a tabsheet against another grid.',
         },
+        {
+            id: 'SC-045',
+            title: 'Export system contents to an external system',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-028', 'SC-002'],
+            summary: 'Decide what leaves the system, in what shape, for an external destination to receive.',
+        },
+        {
+            id: 'SC-046',
+            title: 'Import from an external, unknown-quality source',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-001', 'SC-002', 'SC-003', 'SC-006'],
+            summary: 'Decide how content of unknown trustworthiness enters the system without skipping review or provenance.',
+        },
     ];
 
     get validatedCount(): number {

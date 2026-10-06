@@ -34,6 +34,7 @@ describe('git commit public API', () => {
         const gitRoot = join(root, 'git-repo');
         await mkdir(gitRoot);
         execFileSync('git', ['init', gitRoot]);
+        execFileSync('git', ['-C', gitRoot, 'config', 'core.autocrlf', 'false']);
         execFileSync('git', ['-C', gitRoot, 'config', 'user.name', 'Test User']);
         execFileSync('git', ['-C', gitRoot, 'config', 'user.email', 'test@example.com']);
         await writeFile(join(gitRoot, 'tracked.txt'), 'initial');
@@ -123,6 +124,7 @@ describe('git commit public API', () => {
     it('reports git commit failures with captured output', async () => {
         const originalNodeEnv = process.env['NODE_ENV'];
         execFileSync('git', ['init', root]);
+        execFileSync('git', ['-C', root, 'config', 'core.autocrlf', 'false']);
         execFileSync('git', ['-C', root, 'config', 'user.name', 'Test User']);
         execFileSync('git', ['-C', root, 'config', 'user.email', 'test@example.com']);
         execFileSync('git', ['-C', root, 'add', '--all']);

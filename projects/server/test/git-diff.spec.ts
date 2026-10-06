@@ -30,6 +30,7 @@ describe('git diff public API', () => {
     it('returns staged and unstaged tracked changes from HEAD', async () => {
         const originalNodeEnv = process.env['NODE_ENV'];
         execFileSync('git', ['init', '-b', 'main', root]);
+        execFileSync('git', ['-C', root, 'config', 'core.autocrlf', 'false']);
         execFileSync('git', ['-C', root, 'config', 'user.name', 'Test User']);
         execFileSync('git', ['-C', root, 'config', 'user.email', 'test@example.com']);
         await writeFile(join(root, 'unstaged.txt'), 'before\n');
@@ -65,6 +66,7 @@ describe('git diff public API', () => {
     it('returns an empty diff when there are no changes', async () => {
         const originalNodeEnv = process.env['NODE_ENV'];
         execFileSync('git', ['init', root]);
+        execFileSync('git', ['-C', root, 'config', 'core.autocrlf', 'false']);
         execFileSync('git', ['-C', root, 'config', 'user.name', 'Test User']);
         execFileSync('git', ['-C', root, 'config', 'user.email', 'test@example.com']);
         await writeFile(join(root, 'tracked.txt'), 'unchanged\n');

@@ -87,6 +87,7 @@ describe('git log public API', () => {
         const gitRoot = join(root, 'git-log-repo');
         await mkdir(gitRoot);
         execFileSync('git', ['init', gitRoot]);
+        execFileSync('git', ['-C', gitRoot, 'config', 'core.autocrlf', 'false']);
         execFileSync('git', ['-C', gitRoot, 'config', 'user.name', 'Test User']);
         execFileSync('git', ['-C', gitRoot, 'config', 'user.email', 'test@example.com']);
         await writeFile(join(gitRoot, 'log.txt'), 'initial');

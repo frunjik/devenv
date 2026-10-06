@@ -25,6 +25,7 @@ describe('git undo public API', () => {
 
     function initializeRepository(): void {
         execFileSync('git', ['init', '-b', 'main', root]);
+        execFileSync('git', ['-C', root, 'config', 'core.autocrlf', 'false']);
         execFileSync('git', ['-C', root, 'config', 'user.name', 'Test User']);
         execFileSync('git', ['-C', root, 'config', 'user.email', 'test@example.com']);
     }

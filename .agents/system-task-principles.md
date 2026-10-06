@@ -88,7 +88,8 @@ These principles are active from their recorded date and apply to future work in
 - **Source:** User instruction
 - **Applies to:** Ongoing work, after it has been under way for a while (at the same stable points as the P-008 gate).
 - **Rule:** Consider whether the work has produced knowledge worth recording at the outer (meta) level, such as improvements to the SC-NN numbering and concern conventions, or the realization that the same thing has been done repeatedly in different shapes. If so, make a note on the meta level.
-- **Practice:** Record the note in `design/problem-inquiry-system/concerns.md` under "Meta Notes". Notes are observations and proposals, not decisions; raise consequential ones with the user.
+- **Practice:** Record the note in `design/problem-inquiry-system/concerns.md` under "Meta Notes", numbered `Meta-NNN` in the order added (introduced 2026-10-06, same 3-digit style as `SC-NNN`/`P-NNN`). Notes are observations and proposals, not decisions; raise consequential ones with the user.
+- **Meta-meta cadence (recorded 2026-10-06):** This whole project is a learning sandbox, not only a system being built. After roughly every 10 implemented feature slices (real code, tests, and a commit — not documentation-only or principle-only changes), step up a level beyond per-slice Meta Notes: evaluate whether the accumulated principles, conventions, and register are still serving that learning purpose, and report the evaluation to the user rather than only acting on it silently. Track the count toward 10 in the session database; reset it after each such evaluation.
 
 ### P-011 — Identify the Referenced Concern in Commit Messages
 

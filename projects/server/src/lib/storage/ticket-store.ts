@@ -3,9 +3,11 @@ import type {
     NewProblemTicket,
     ProblemTicketId,
     StoredTicket,
-    TicketChangeEvent,
     TicketChangeOutcome,
     TicketCommand,
+    TicketContent,
+    TicketEditOutcome,
+    TicketHistoryEvent,
     User,
 } from '@shared';
 
@@ -20,5 +22,6 @@ export interface TicketStore {
         actor: User,
         expectedVersion: number,
     ): Promise<TicketChangeOutcome>;
-    history(id: ProblemTicketId): Promise<TicketChangeEvent[]>;
+    edit(id: ProblemTicketId, content: TicketContent, actor: User, expectedVersion: number): Promise<TicketEditOutcome>;
+    history(id: ProblemTicketId): Promise<TicketHistoryEvent[]>;
 }

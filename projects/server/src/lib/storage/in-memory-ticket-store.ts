@@ -4,11 +4,14 @@ import type {
     NewProblemTicket,
     ProblemTicketId,
     StoredTicket,
-    TicketChangeEvent,
     TicketChangeOutcome,
     TicketCommand,
+    TicketContent,
+    TicketEditOutcome,
+    TicketHistoryEvent,
     User,
 } from '@shared';
+import { applyTicketEdit } from '../domain/ticket-edit';
 import { applyTicketCommand } from '../domain/ticket-lifecycle';
 import type { TicketStore } from './ticket-store';
 
@@ -20,12 +23,12 @@ export interface InMemoryTicketStoreOptions {
 
 export interface TicketStoreSnapshot {
     tickets: StoredTicket[];
-    events: Record<ProblemTicketId, TicketChangeEvent[]>;
+    events: Record<ProblemTicketId, TicketHistoryEvent[]>;
 }
 
 export class InMemoryTicketStore implements TicketStore {
     private readonly tickets = new Map<ProblemTicketId, StoredTicket>();
-    private readonly events = new Map<ProblemTicketId, TicketChangeEvent[]>();
+    private readonly events = new Map<ProblemTicketId, TicketHistoryEvent[]>();
     private readonly newId: () => ProblemTicketId;
     private readonly now: () => string;
 
@@ -92,7 +95,39 @@ export class InMemoryTicketStore implements TicketStore {
         return { ok: true, ticket: structuredClone(updated), event: structuredClone(result.event) };
     }
 
-    async history(id: ProblemTicketId): Promise<TicketChangeEvent[]> {
+    async edit(
+        id: ProblemTicketId,
+        content: TicketContent,
+        actor: User,
+        expectedVersion: number,
+    ): Promise<TicketEditOutcome> {
+        const current = this.tickets.get(id);
+        if (!current) {
+            return { ok: false, kind: 'not-found' };
+        }
+        if (current.version !== expectedVersion) {
+            return { ok: false, kind: 'stale', current: structuredClone(current) };
+        }
+
+        const { title, report, problem, scope, estimate } = current;
+        const result = applyTicketEdit(
+            structuredClone({ title, report, problem, scope, estimate }),
+            structuredClone(content),
+            actor,
+            this.now(),
+        );
+        if (!result.ok) {
+            return { ok: false, kind: 'refused', reason: result.reason };
+        }
+
+        const { estimate: _replaced, ...rest } = current;
+        const updated: StoredTicket = { ...rest, ...result.event.after, version: current.version + 1 };
+        this.tickets.set(id, updated);
+        this.events.set(id, [...(this.events.get(id) ?? []), result.event]);
+        return { ok: true, ticket: structuredClone(updated), event: structuredClone(result.event) };
+    }
+
+    async history(id: ProblemTicketId): Promise<TicketHistoryEvent[]> {
         return structuredClone(this.events.get(id) ?? []);
     }
 }

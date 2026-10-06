@@ -190,6 +190,21 @@ describe('BackendService', () => {
             expect(history).toEqual([changed.event]);
         });
 
+        it('edits a ticket and lists the edit in its history', async () => {
+            const created = await firstValueFrom(service.createTicket(newTicket));
+            const { title: _title, ...rest } = newTicket;
+
+            const edited = await firstValueFrom(service.editTicket(
+                created.id,
+                { title: 'Better title', report: rest.report, problem: rest.problem, scope: rest.scope },
+                created.version,
+            ));
+            const history = await firstValueFrom(service.getTicketHistory(created.id));
+
+            expect(edited.ticket).toMatchObject({ title: 'Better title', version: 2 });
+            expect(history).toEqual([edited.event]);
+            expect(history[0].kind).toBe('edit');
+        });
         it('defaults new tickets to sample data', async () => {
             const created = await firstValueFrom(service.createTicket(newTicket));
 

@@ -20,7 +20,8 @@ Tickets are stored on the server behind the `TicketStore` port (SC-028 in `desig
 | `GET /tickets` | List stored tickets. |
 | `POST /tickets` | Body `{ ticket, dataKind? }` (`sample` by default, or `real`). Creates an open, version 1 ticket. Returns 201. |
 | `POST /tickets/:id/changes` | Body `{ command, expectedVersion }`. 200 with `{ ticket, event }`; 404 unknown ticket; 409 stale version (the current ticket is in `error.current`); 422 refused by the lifecycle; 400 malformed. |
-| `GET /tickets/:id/history` | Change events for a ticket. |
+| `POST /tickets/:id/edits` | Body `{ content, expectedVersion }`, where content is the title, report, problem frame, scope, and optional estimate (it replaces all of them). Same answers as `changes`; 422 also for blank text or an edit that changes nothing. |
+| `GET /tickets/:id/history` | State changes and content edits for a ticket, in order. An edit has `kind: 'edit'` with the content before and after. |
 
 The actor of a change is the authenticated principal, or `anonymous` when no authentication is configured.
 

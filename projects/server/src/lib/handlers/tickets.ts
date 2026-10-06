@@ -1,8 +1,9 @@
 import { Router, type Request, type Response } from 'express';
-import type { DataKind, NewProblemTicket, TicketCommand, User } from '@shared';
+import type { DataKind, NewProblemTicket, TicketCommand, TicketContent, TicketChangeOutcome, TicketEditOutcome, User } from '@shared';
 import type { TicketStore } from '../storage/ticket-store';
 
 const dataKinds: DataKind[] = ['sample', 'real'];
+const scopeLevels = ['operation', 'workflow', 'system', 'cross-system'];
 
 function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null;
@@ -14,6 +15,38 @@ function isRating(value: unknown): boolean {
 
 function isValidEstimate(value: unknown): boolean {
     return isObject(value) && ['impact', 'urgency', 'effort'].every(key => isRating(value[key]));
+}
+
+function isText(value: unknown): boolean {
+    return typeof value === 'string';
+}
+
+function isValidContent(value: unknown): boolean {
+    if (!isObject(value) || !isText(value['title']) || !isText(value['report'])) {
+        return false;
+    }
+    const { problem, scope, estimate } = value;
+    return isObject(problem)
+        && ['condition', 'affected', 'impact'].every(key => isText(problem[key]))
+        && isObject(scope)
+        && scopeLevels.includes(scope['level'] as string)
+        && isText(scope['label'])
+        && (estimate === undefined || isValidEstimate(estimate));
+}
+
+function respond(response: Response, outcome: TicketChangeOutcome | TicketEditOutcome): void {
+    if (outcome.ok) {
+        return void response.json({ data: { ticket: outcome.ticket, event: outcome.event } });
+    }
+    if (outcome.kind === 'not-found') {
+        return void response.status(404).json({ error: { message: 'Ticket not found.' } });
+    }
+    if (outcome.kind === 'stale') {
+        return void response.status(409).json({
+            error: { message: 'The ticket changed since you loaded it.', current: outcome.current },
+        });
+    }
+    response.status(422).json({ error: { message: outcome.reason } });
 }
 
 function actorOf(response: Response): User {
@@ -75,18 +108,29 @@ export function createTicketsRouter(store: TicketStore): Router {
                 actorOf(response),
                 expectedVersion,
             );
-            if (outcome.ok) {
-                return void response.json({ data: { ticket: outcome.ticket, event: outcome.event } });
+            respond(response, outcome);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    router.post('/tickets/:id/edits', async (request: Request, response, next) => {
+        try {
+            const { content, expectedVersion } = (request.body ?? {}) as Record<string, unknown>;
+            if (!isValidContent(content)) {
+                return badRequest(
+                    response,
+                    'Content needs a title, report, problem frame, scope, and optionally a valid estimate.',
+                );
             }
-            if (outcome.kind === 'not-found') {
-                return void response.status(404).json({ error: { message: 'Ticket not found.' } });
+            if (typeof expectedVersion !== 'number') {
+                return badRequest(response, 'The expected version is required.');
             }
-            if (outcome.kind === 'stale') {
-                return void response.status(409).json({
-                    error: { message: 'The ticket changed since you loaded it.', current: outcome.current },
-                });
-            }
-            response.status(422).json({ error: { message: outcome.reason } });
+
+            respond(
+                response,
+                await store.edit(String(request.params['id']), content as unknown as TicketContent, actorOf(response), expectedVersion),
+            );
         } catch (error) {
             next(error);
         }

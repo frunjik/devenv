@@ -6,9 +6,11 @@ import type {
     NewProblemTicket,
     ProblemTicketId,
     StoredTicket,
-    TicketChangeEvent,
     TicketChangeOutcome,
     TicketCommand,
+    TicketContent,
+    TicketEditOutcome,
+    TicketHistoryEvent,
     User,
 } from '@shared';
 import { InMemoryTicketStore, type TicketStoreSnapshot } from './in-memory-ticket-store';
@@ -59,7 +61,21 @@ export class FileTicketStore implements TicketStore {
         return outcome;
     }
 
-    async history(id: ProblemTicketId): Promise<TicketChangeEvent[]> {
+    async edit(
+        id: ProblemTicketId,
+        content: TicketContent,
+        actor: User,
+        expectedVersion: number,
+    ): Promise<TicketEditOutcome> {
+        const store = await this.open();
+        const outcome = await store.edit(id, content, actor, expectedVersion);
+        if (outcome.ok) {
+            await this.save(store);
+        }
+        return outcome;
+    }
+
+    async history(id: ProblemTicketId): Promise<TicketHistoryEvent[]> {
         return (await this.open()).history(id);
     }
 

@@ -16,6 +16,9 @@ import type {
     StoredTicket,
     TicketChangeEvent,
     TicketCommand,
+    TicketContent,
+    TicketEditEvent,
+    TicketHistoryEvent,
     SuccessResponseBody,
     TestOutputStream,
     TestRunCacheStatus,
@@ -117,9 +120,20 @@ export class BackendService {
             `tickets/${encodeURIComponent(id)}/changes`, { command, expectedVersion });
     }
 
-    getTicketHistory(id: ProblemTicketId): Observable<TicketChangeEvent[]> {
-        return this.get<TicketChangeEvent[]>(`tickets/${encodeURIComponent(id)}/history`);
+    editTicket(
+        id: ProblemTicketId,
+        content: TicketContent,
+        expectedVersion: number,
+    ): Observable<{ ticket: StoredTicket; event: TicketEditEvent }> {
+        return this.post<{ ticket: StoredTicket; event: TicketEditEvent },
+            { content: TicketContent; expectedVersion: number }>(
+            `tickets/${encodeURIComponent(id)}/edits`, { content, expectedVersion });
     }
+
+    getTicketHistory(id: ProblemTicketId): Observable<TicketHistoryEvent[]> {
+        return this.get<TicketHistoryEvent[]>(`tickets/${encodeURIComponent(id)}/history`);
+    }
+
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
         return this.get<TestRunCacheStatus>('tests/cache/status');
     }

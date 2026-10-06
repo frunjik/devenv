@@ -67,6 +67,7 @@ describe('ticket routes', () => {
         expect(valid.body.data.estimate).toEqual(estimate);
         expect([incomplete.status, outOfRange.status, fractional.status, notAnObject.status]).toEqual([400, 400, 400, 400]);
     });
+
     it('changes a ticket and records the server-known actor in the history', async () => {
         const app = appWithStore();
         await request(app).post('/tickets').send({ ticket: newTicket });
@@ -127,6 +128,70 @@ describe('ticket routes', () => {
         expect(noVersion.status).toBe(400);
     });
 
+    describe('editing content', () => {
+        const edited = {
+            title: 'Pick list sends pickers to the wrong aisle',
+            report: newTicket.report,
+            problem: newTicket.problem,
+            scope: newTicket.scope,
+            estimate: { impact: 4, urgency: 5, effort: 2 },
+        };
+
+        it('edits the content, bumps the version, and shows the edit in the history', async () => {
+            const app = appWithStore();
+            await request(app).post('/tickets').send({ ticket: newTicket });
+
+            const response = await request(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
+            const history = await request(app).get('/tickets/T-1/history');
+
+            expect(response.status).toBe(200);
+            expect(response.body.data.ticket).toMatchObject({ ...edited, version: 2 });
+            expect(history.body.data).toHaveLength(1);
+            expect(history.body.data[0]).toMatchObject({
+                kind: 'edit',
+                actor: { id: 'anonymous' },
+                before: { title: newTicket.title },
+                after: { title: edited.title },
+            });
+        });
+
+        it('answers 404, 409 and 422 for unknown, stale and refused edits', async () => {
+            const app = appWithStore();
+            await request(app).post('/tickets').send({ ticket: newTicket });
+            await request(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
+
+            const unknown = await request(app).post('/tickets/nope/edits').send({ content: edited, expectedVersion: 1 });
+            const stale = await request(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
+            const refused = await request(app)
+                .post('/tickets/T-1/edits')
+                .send({ content: { ...edited, title: ' ' }, expectedVersion: 2 });
+
+            expect(unknown.status).toBe(404);
+            expect(stale.status).toBe(409);
+            expect(stale.body.error.current.version).toBe(2);
+            expect(refused.status).toBe(422);
+            expect(refused.body.error.message).toContain('cannot be blank');
+        });
+
+        it('rejects malformed edits', async () => {
+            const app = appWithStore();
+            const send = (body: unknown) => request(app).post('/tickets/T-1/edits').send(body as object);
+
+            const responses = await Promise.all([
+                send({ expectedVersion: 1 }),
+                send({ content: edited }),
+                send({ content: { ...edited, title: 5 }, expectedVersion: 1 }),
+                send({ content: { ...edited, report: undefined }, expectedVersion: 1 }),
+                send({ content: { ...edited, problem: { condition: 'x' } }, expectedVersion: 1 }),
+                send({ content: { ...edited, scope: { level: 'galaxy', label: 'x' } }, expectedVersion: 1 }),
+                send({ content: { ...edited, scope: { level: 'system' } }, expectedVersion: 1 }),
+                send({ content: { ...edited, estimate: { impact: 9, urgency: 1, effort: 1 } }, expectedVersion: 1 }),
+                request(app).post('/tickets/T-1/edits'),
+            ]);
+
+            expect(responses.map(response => response.status)).toEqual([400, 400, 400, 400, 400, 400, 400, 400, 400]);
+        });
+    });
     it('uses its own in-memory store when none is supplied', async () => {
         const app = createApp('./');
 
@@ -173,6 +238,7 @@ describe('ticket routes', () => {
             list: () => Promise.reject(failure),
             get: () => Promise.reject(failure),
             change: () => Promise.reject(failure),
+            edit: () => Promise.reject(failure),
             history: () => Promise.reject(failure),
         };
         const app = createApp('./', { ticketStore: failing });
@@ -184,9 +250,10 @@ describe('ticket routes', () => {
             request(app).get('/tickets'),
             request(app).post('/tickets').send({ ticket: newTicket }),
             request(app).post('/tickets/T-1/changes').send({ command: { kind: 'resolve' }, expectedVersion: 1 }),
+            request(app).post('/tickets/T-1/edits').send({ content: newTicket, expectedVersion: 1 }),
             request(app).get('/tickets/T-1/history'),
         ]);
 
-        expect(responses.map(response => response.status)).toEqual([500, 500, 500, 500]);
+        expect(responses.map(response => response.status)).toEqual([500, 500, 500, 500, 500]);
     });
 });

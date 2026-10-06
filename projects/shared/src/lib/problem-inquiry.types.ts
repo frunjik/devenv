@@ -33,6 +33,29 @@ export type TicketCommandResult =
     | { ok: true; status: TicketStatus; event: TicketChangeEvent }
     | { ok: false; reason: string };
 
+// The framed content a ticket owner may edit after creation. An edit replaces all of it, so an
+// absent estimate in the new content removes the estimate.
+export type TicketContent = Pick<ProblemTicket, 'title' | 'report' | 'problem' | 'scope' | 'estimate'>;
+
+export interface TicketEditEvent {
+    kind: 'edit';
+    actor: User;
+    at: string;
+    before: TicketContent;
+    after: TicketContent;
+}
+
+export type TicketHistoryEvent = TicketChangeEvent | TicketEditEvent;
+
+export type TicketEditResult =
+    | { ok: true; event: TicketEditEvent }
+    | { ok: false; reason: string };
+
+export type TicketEditOutcome =
+    | { ok: true; ticket: StoredTicket; event: TicketEditEvent }
+    | { ok: false; kind: 'not-found' }
+    | { ok: false; kind: 'stale'; current: StoredTicket }
+    | { ok: false; kind: 'refused'; reason: string };
 export type DataKind = 'sample' | 'real';
 
 export type NewProblemTicket = Omit<ProblemTicket, 'id'>;

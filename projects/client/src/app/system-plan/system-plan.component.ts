@@ -525,7 +525,7 @@ export class SystemPlanComponent {
             kind: 'Design',
             status: 'In progress',
             dependsOn: ['SC-021', 'SC-015'],
-            summary: '"Depends on" decided as a real, directed, many-to-many relation distinct from duplicate-of; data model and rendering still open.',
+            summary: 'dependsOnTicketIds field added and shown on cards; no way to set it yet, no cycle checks, rendering still open.',
         },
         {
             id: 'SC-048',

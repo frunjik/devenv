@@ -214,6 +214,17 @@
                             }
                         </section>
 
+                        @if (ticket.dependsOnTicketIds?.length) {
+                            <section class="depends-on" aria-label="Depends on">
+                                <h4>Depends on</h4>
+                                <ul>
+                                    @for (dependsOnId of ticket.dependsOnTicketIds ?? []; track dependsOnId) {
+                                        <li>{{ dependsOnId }}</li>
+                                    }
+                                </ul>
+                            </section>
+                        }
+
                         <footer>
                             <p>Reported by {{ ticket.reportedBy }}</p>
                             <p>Created <time [attr.datetime]="ticket.reportedAt">{{ ticket.reportedAt }}</time></p>

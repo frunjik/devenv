@@ -122,6 +122,9 @@ export interface ProblemTicket {
     reportedBy: string;
     reportedAt: string;
     estimate?: TicketEstimate;
+    // Tickets this one depends on (blocking, not the same problem as "duplicate of", SC-021/SC-047).
+    // Directed, many-to-many; existence and cycles are not checked yet.
+    dependsOnTicketIds?: ProblemTicketId[];
 }
 
 export type SourceOrigin =

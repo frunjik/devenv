@@ -86,6 +86,19 @@ describe('FramedTicketsListComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('No accepted note references recorded.');
     });
 
+    it('shows a ticket\'s dependencies when present, and nothing when absent', () => {
+        fixture.componentRef.setInput('tickets', [
+            { ...makeTicket('ticket-6', 'Has dependencies', undefined), dependsOnTicketIds: ['ticket-1', 'ticket-2'] },
+            makeTicket('ticket-7', 'No dependencies', undefined),
+        ]);
+        fixture.detectChanges();
+
+        const sections = fixture.nativeElement.querySelectorAll('.depends-on');
+        expect(sections.length).toBe(1);
+        expect(sections[0].textContent).toContain('ticket-1');
+        expect(sections[0].textContent).toContain('ticket-2');
+    });
+
     it('shows empty work-context categories without inventing entries', () => {
         fixture.componentRef.setInput('tickets', [
             makeTicket('ticket-6', 'Ticket with sparse context', ['note-1'], true),

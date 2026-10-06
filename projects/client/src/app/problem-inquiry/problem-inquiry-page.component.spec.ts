@@ -237,6 +237,19 @@ describe('ProblemInquiryPageComponent', () => {
             .toContain('could not be saved');
     });
 
+    it('shows the server\'s refusal reason when a new ticket is rejected', () => {
+        createResult = () => throwError(() => new HttpErrorResponse({
+            status: 400,
+            error: { error: { message: 'A ticket is required.' } },
+        }));
+
+        fixture.componentInstance.addTicket(makeTicket('local-1', undefined));
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.storage-error').textContent)
+            .toContain('A ticket is required.');
+    });
+
     it('says so when stored tickets cannot be loaded', () => {
         listResult = () => throwError(() => new Error('down'));
         fixture = TestBed.createComponent(ProblemInquiryPageComponent);
@@ -291,6 +304,7 @@ describe('ProblemInquiryPageComponent', () => {
 
             expect(badges()).toEqual(['Open', 'Open']);
             expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be assigned');
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('No.');
         });
     });
 
@@ -338,6 +352,7 @@ describe('ProblemInquiryPageComponent', () => {
 
             expect(titles()).toEqual([stored[0].title, stored[1].title]);
             expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be saved');
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('No.');
         });
     });
     describe('state actions', () => {
@@ -377,6 +392,7 @@ describe('ProblemInquiryPageComponent', () => {
             resolve();
 
             expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be changed');
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('No.');
         });
     });
     describe('history', () => {

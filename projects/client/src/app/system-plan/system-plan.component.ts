@@ -379,9 +379,9 @@ export class SystemPlanComponent {
             id: 'SC-029',
             title: 'Assign problem tickets',
             kind: 'Behavior',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-021', 'SC-028'],
-            summary: 'Let a user assign a framed ticket; model assignee, lifecycle step, and persistence first.',
+            summary: 'Assign, lifecycle actions, sort by assignee built; refusals now show the server reason; team/role and who-may-assign still open.',
         },
         {
             id: 'SC-030',

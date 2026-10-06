@@ -65,7 +65,7 @@ export class ProblemInquiryPageComponent implements OnInit {
                 this.storageError = '';
                 this.tickets = [...this.tickets, stored];
             },
-            error: () => this.storageError = 'The ticket could not be saved.',
+            error: (error: HttpErrorResponse) => this.storageError = withReason('The ticket could not be saved.', error),
         });
     }
 
@@ -104,7 +104,7 @@ export class ProblemInquiryPageComponent implements OnInit {
                     this.replaceTicket(current);
                     this.storageError = 'The ticket changed in the meantime; the latest version is shown.';
                 } else {
-                    this.storageError = `The ticket could not be ${verb}.`;
+                    this.storageError = withReason(`The ticket could not be ${verb}.`, error);
                 }
             },
         });
@@ -134,4 +134,11 @@ export class ProblemInquiryPageComponent implements OnInit {
             || sourceOrigin === 'direct-observation'
             || sourceOrigin === 'system-artifact';
     }
+}
+
+// Appends the server's refusal reason to a generic message when one was sent, so the user
+// sees why a request failed instead of only that it failed.
+function withReason(message: string, error: HttpErrorResponse): string {
+    const reason = error.error?.error?.message as string | undefined;
+    return reason ? `${message} ${reason}` : message;
 }

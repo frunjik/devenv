@@ -543,6 +543,14 @@ export class SystemPlanComponent {
             dependsOn: [],
             summary: 'Explore making the Principles, Glossary, and conventions (the "Rule Set") a portable, versioned artifact another system could import.',
         },
+        {
+            id: 'SC-050',
+            title: 'Client dev server errors on @shared after each change, then recovers',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'Observed transient error on each rebuild; likely dist/shared not rebuilt when the client watcher fires, since client and server run independent watch processes.',
+        },
     ];
 
     get validatedCount(): number {

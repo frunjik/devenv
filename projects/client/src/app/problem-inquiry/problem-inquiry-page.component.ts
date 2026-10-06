@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket, TicketContent, TicketHistoryEvent } from '@shared';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent } from '@shared';
 import { BackendService } from '../backend.service';
 import { FramedTicketsListComponent } from './framed-tickets-list/framed-tickets-list.component';
 import { ImportedNotesListComponent } from './imported-notes-list/imported-notes-list.component';
@@ -40,6 +40,7 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
                 [notes]="visibleNotes"
                 (assignRequested)="assign($event)"
                 (editRequested)="edit($event)"
+                (commandRequested)="change($event)"
                 (historyRequested)="loadHistory($event)"
                 [histories]="histories"
             />
@@ -143,6 +144,10 @@ export class ProblemInquiryPageComponent implements OnInit {
 
     assign({ ticket, assigneeId }: { ticket: StoredTicket; assigneeId: string }): void {
         this.applyChange(this.backend.changeTicket(ticket.id, { kind: 'assign', assigneeId }, ticket.version), 'assigned');
+    }
+
+    change({ ticket, command }: { ticket: StoredTicket; command: TicketCommand }): void {
+        this.applyChange(this.backend.changeTicket(ticket.id, command, ticket.version), 'changed');
     }
 
     edit({ ticket, content }: { ticket: StoredTicket; content: TicketContent }): void {

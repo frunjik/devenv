@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImportedNote, ProblemTicket, StoredTicket, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
+import { ImportedNote, ProblemTicket, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 import { FramedTicketsListComponent } from './framed-tickets-list.component';
 
 describe('FramedTicketsListComponent', () => {
@@ -643,6 +643,106 @@ describe('FramedTicketsListComponent', () => {
             toggle();
 
             expect(fixture.nativeElement.querySelector('.history')).toBeNull();
+        });
+    });
+    describe('state actions', () => {
+        function stored(id: string, status: TicketStatus): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 3, dataKind: 'real' };
+        }
+
+        function show(status: TicketStatus): StoredTicket {
+            const ticket = stored('a', status);
+            fixture.componentRef.setInput('tickets', [ticket]);
+            fixture.detectChanges();
+            return ticket;
+        }
+
+        function actions(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.state-action') as NodeListOf<HTMLElement>)
+                .map(button => button.textContent!.trim());
+        }
+
+        function commands(): { ticket: StoredTicket; command: TicketCommand }[] {
+            const requests: { ticket: StoredTicket; command: TicketCommand }[] = [];
+            fixture.componentInstance.commandRequested.subscribe(request => requests.push(request));
+            return requests;
+        }
+
+        it('offers the actions each state allows', () => {
+            const expected: [TicketStatus, string[]][] = [
+                [{ state: 'open' }, []],
+                [{ state: 'assigned', assigneeId: 'u' }, ['Unassign', 'Resolve']],
+                [{ state: 'resolved', assigneeId: 'u' }, ['Close', 'Reopen']],
+                [{ state: 'closed', assigneeId: 'u' }, ['Reopen']],
+                [{ state: 'duplicate', duplicateOfId: 'x' }, ['Reopen']],
+            ];
+
+            expect(expected.map(([status]) => { show(status); return actions(); })).toEqual(expected.map(([, names]) => names));
+        });
+
+        it('asks for each action with its command', () => {
+            const requests = commands();
+            const ticket = show({ state: 'assigned', assigneeId: 'u' });
+
+            for (const name of ['Unassign', 'Resolve']) {
+                const button = Array.from(fixture.nativeElement.querySelectorAll('.state-action') as NodeListOf<HTMLElement>)
+                    .find(candidate => candidate.textContent!.trim() === name)!;
+                button.click();
+            }
+
+            expect(requests).toEqual([
+                { ticket, command: { kind: 'unassign' } },
+                { ticket, command: { kind: 'resolve' } },
+            ]);
+        });
+
+        it('asks for the remaining commands', () => {
+            const requests = commands();
+            const resolved = show({ state: 'resolved', assigneeId: 'u' });
+            for (const button of Array.from(fixture.nativeElement.querySelectorAll('.state-action') as NodeListOf<HTMLElement>)) {
+                button.click();
+            }
+
+            expect(requests).toEqual([
+                { ticket: resolved, command: { kind: 'close' } },
+                { ticket: resolved, command: { kind: 'reopen' } },
+            ]);
+        });
+
+        function markDuplicate(original: string): void {
+            const form = fixture.nativeElement.querySelector('.duplicate-form') as HTMLFormElement;
+            (form.querySelector('input') as HTMLInputElement).value = original;
+            form.dispatchEvent(new Event('submit'));
+            fixture.detectChanges();
+        }
+
+        it('marks a ticket as a duplicate of the trimmed original id and clears the box', () => {
+            const requests = commands();
+            const ticket = show({ state: 'open' });
+
+            markDuplicate('  T-9 ');
+
+            expect(requests).toEqual([{ ticket, command: { kind: 'mark-duplicate', duplicateOfId: 'T-9' } }]);
+            expect((fixture.nativeElement.querySelector('.duplicate-form input') as HTMLInputElement).value).toBe('');
+        });
+
+        it('does not mark a duplicate without an original id', () => {
+            const requests = commands();
+            show({ state: 'closed' });
+
+            markDuplicate('   ');
+
+            expect(requests).toEqual([]);
+        });
+
+        it('offers no duplicate form for a duplicate or an unstored ticket', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('d', { state: 'duplicate', duplicateOfId: 'x' }),
+                makeTicket('local', 'Local', undefined),
+            ]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelector('.duplicate-form')).toBeNull();
         });
     });
     describe('state badge', () => {

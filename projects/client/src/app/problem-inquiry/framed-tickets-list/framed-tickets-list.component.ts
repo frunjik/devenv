@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { calculateMetric, METRIC_METHODS, MetricMethod } from '../ticket-metrics';
-import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
+import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 
 @Component({
     selector: 'app-framed-tickets-list',
@@ -122,6 +122,22 @@ import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, 
                                             }
                                             <button type="submit">Save changes</button>
                                             <button type="button" class="edit-cancel" (click)="editingId = undefined">Cancel</button>
+                                        </form>
+                                    }
+                                }
+                                @if (isStored(ticket)) {
+                                    <div class="state-actions">
+                                        @for (action of actionsFor(ticket); track action.kind) {
+                                            <button type="button" class="state-action" (click)="requestCommand(ticket, { kind: action.kind })">{{ action.label }}</button>
+                                        }
+                                    </div>
+                                    @if (ticket.status.state !== 'duplicate') {
+                                        <form class="duplicate-form" (submit)="requestDuplicate($event, ticket, original)">
+                                            <label>
+                                                Duplicate of
+                                                <input #original type="text" autocomplete="off" placeholder="Original ticket id">
+                                            </label>
+                                            <button type="submit">Mark duplicate</button>
                                         </form>
                                     }
                                 }
@@ -272,6 +288,13 @@ import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, 
             font-weight: 700;
         }
 
+        .state-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-block: 0.5rem;
+        }
+
+        .duplicate-form,
         .assign-form {
             display: flex;
             flex-wrap: wrap;
@@ -401,6 +424,7 @@ export class FramedTicketsListComponent {
     metricMethod: MetricMethod = 'impact-urgency';
 
     @Input() histories: Readonly<Record<string, readonly TicketHistoryEvent[]>> = {};
+    @Output() readonly commandRequested = new EventEmitter<{ ticket: StoredTicket; command: TicketCommand }>();
     @Output() readonly historyRequested = new EventEmitter<StoredTicket>();
     @Output() readonly editRequested = new EventEmitter<{ ticket: StoredTicket; content: TicketContent }>();
     @Output() readonly assignRequested = new EventEmitter<{ ticket: StoredTicket; assigneeId: string }>();
@@ -470,6 +494,33 @@ export class FramedTicketsListComponent {
             JSON.stringify(before.estimate) !== JSON.stringify(after.estimate) && 'estimate',
         ].filter(Boolean);
         return `Edited ${changed.join(', ')}`;
+    }
+
+    actionsFor(ticket: StoredTicket): { kind: 'unassign' | 'resolve' | 'close' | 'reopen'; label: string }[] {
+        switch (ticket.status.state) {
+            case 'assigned':
+                return [{ kind: 'unassign', label: 'Unassign' }, { kind: 'resolve', label: 'Resolve' }];
+            case 'resolved':
+                return [{ kind: 'close', label: 'Close' }, { kind: 'reopen', label: 'Reopen' }];
+            case 'closed':
+            case 'duplicate':
+                return [{ kind: 'reopen', label: 'Reopen' }];
+            default:
+                return [];
+        }
+    }
+
+    requestCommand(ticket: StoredTicket, command: TicketCommand): void {
+        this.commandRequested.emit({ ticket, command });
+    }
+
+    requestDuplicate(event: Event, ticket: StoredTicket, input: HTMLInputElement): void {
+        event.preventDefault();
+        const duplicateOfId = input.value.trim();
+        if (duplicateOfId) {
+            this.requestCommand(ticket, { kind: 'mark-duplicate', duplicateOfId });
+            input.value = '';
+        }
     }
 
     isStored(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {

@@ -414,6 +414,8 @@ Let a user assign a framed problem ticket to someone from the problem-solving ap
 **Vocabulary candidates (P-009, not yet agreed):** "assign", "assignee", "owner".
 
 **First slice built (user choice 2026-10-06):** An assignee is a person, typed as a name or id in a text box on each open or assigned ticket card (one assignee; reassigning is allowed and the history keeps every change). The page sends an assign change with the ticket's version; a conflict (409) shows the latest ticket and a message, any other failure shows an error. Client suite: 214 tests, 100% coverage on both components. Still open: team or role, who may assign (needs login), and filter or sort by assignee.
+
+**Second slice built (user choice 2026-10-06):** Stored ticket cards show the other lifecycle actions as buttons for the states that allow them: Unassign and Resolve (assigned), Close and Reopen (resolved), Reopen (closed or duplicate). Any ticket that is not a duplicate has a 'Duplicate of' box for the original ticket's id, so the person types the id; there is no picker yet. Every action sends the ticket's version; a conflict shows the latest ticket, a refusal says the ticket could not be changed. Client suite 252 tests, 100% coverage on both components.
 
 ### SC-030 — Define a calm, consistent color system
 

@@ -318,6 +318,45 @@ describe('ProblemInquiryPageComponent', () => {
             expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be saved');
         });
     });
+    describe('state actions', () => {
+        beforeEach(() => {
+            stored = [{ ...storedTicket(makeTicket('x', undefined), 'real', 'T-1'), status: { state: 'assigned', assigneeId: 'u' } }];
+            fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+            fixture.detectChanges();
+        });
+
+        function resolve(): void {
+            (fixture.nativeElement.querySelector('.state-action') as HTMLElement).click();
+            fixture.detectChanges();
+        }
+
+        function resolveByName(name: string): void {
+            const button = Array.from(fixture.nativeElement.querySelectorAll('.state-action') as NodeListOf<HTMLElement>)
+                .find(candidate => candidate.textContent!.trim() === name)!;
+            button.click();
+            fixture.detectChanges();
+        }
+
+        it('sends the command with the ticket version and shows the stored result', () => {
+            changeResult = (id, command, version) => of({
+                ticket: { ...stored[0], version: version + 1, status: { state: 'resolved', assigneeId: 'u' } },
+                event: {} as TicketChangeEvent,
+            });
+
+            resolveByName('Resolve');
+
+            expect(fixture.nativeElement.querySelector('.ticket-state').textContent).toContain('Resolved by u');
+            expect(fixture.nativeElement.querySelector('.storage-error')).toBeNull();
+        });
+
+        it('says so when the command is refused', () => {
+            changeResult = () => throwError(() => new HttpErrorResponse({ status: 422, error: { error: { message: 'No.' } } }));
+
+            resolve();
+
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be changed');
+        });
+    });
     describe('history', () => {
         const event: TicketHistoryEvent = {
             kind: 'assign',

@@ -48,6 +48,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Coding tasks that reach a validated, stable state.
 - **Rule:** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
 - **Exception:** Do not commit past an explicit user review; pause for that review instead. Keep the commit scoped to the completed work and follow the repository's commit-message conventions.
+- **Message approval (recorded 2026-10-06):** Before running `git commit`, present the drafted commit message to the user and let them approve it, edit it, or choose among alternatives, rather than committing it unilaterally. Applies to every commit, including regular feature work, not only meta/process changes. Default to a short, subject-only message (no body) unless the user asks for more detail on a given commit.
 
 ### P-006 — Ask Before Changing Surrounding Code
 

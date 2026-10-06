@@ -31,6 +31,7 @@ npm run dev:client
 The client is served by Angular CLI; `npm start` remains an alias for the client command. The API process uses `tsx watch` and restarts when server source files change.
 
 The client opens the System Plan by default: `/` redirects to `/system-plan`. The file browser remains available at `/browse`.
+The System Plan link is in the meta toolbar and is hidden when the meta layer is disabled; this does not change the default route.
 
 Client and server release versions are maintained in `projects/client/package.json` and `projects/server/package.json`.
 The status toolbar displays both versions, and the API exposes the server version at `GET /version`.

@@ -24,7 +24,9 @@ describe('NavigationToolbarComponent', () => {
         expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
         expect(text).not.toContain('Meta');
         expect(text).toContain('glossary');
-        expect(text.toLowerCase()).not.toContain('system plan');
+        const systemPlanLink = fixture.nativeElement.querySelector('a[href="/system-plan"]') as HTMLAnchorElement;
+        expect(systemPlanLink).not.toBeNull();
+        expect(systemPlanLink.textContent?.trim()).toBe('System plan');
     });
 
     it('requests a commit and reflects the committing state', () => {

@@ -97,6 +97,8 @@ describe('AppComponent', () => {
         expect(fixture.nativeElement.querySelector('app-navigation-toolbar .meta-badge').textContent.trim())
             .toBe('DevEnv');
         expect(fixture.nativeElement.querySelector('.inner-app').classList).toContain('framed');
+        expect(fixture.nativeElement.querySelector('app-navigation-toolbar a[href="/system-plan"]')).not.toBeNull();
+        expect(fixture.nativeElement.querySelector('.inner-nav a[href="/system-plan"]')).toBeNull();
     });
 
     it('places the meta layer toggle in the problem app menu', () => {
@@ -115,8 +117,9 @@ describe('AppComponent', () => {
 
         const links = Array.from(fixture.nativeElement.querySelectorAll('.inner-app nav a') as NodeListOf<HTMLAnchorElement>);
 
-        expect(links.map(link => link.textContent?.trim())).toEqual(['Problem inquiry', 'System plan']);
-        expect(links.map(link => link.getAttribute('href'))).toEqual(['/problem-inquiry', '/system-plan']);
+        expect(links.map(link => link.textContent?.trim())).toEqual(['Problem inquiry']);
+        expect(links.map(link => link.getAttribute('href'))).toEqual(['/problem-inquiry']);
+        expect(fixture.nativeElement.querySelector('a[href="/system-plan"]')).toBeNull();
         expect(fixture.nativeElement.querySelector('app-navigation-toolbar')).toBeNull();
     });
 

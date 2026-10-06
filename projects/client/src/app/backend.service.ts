@@ -13,6 +13,7 @@ import type {
     FolderEntry,
     NewProblemTicket,
     ProblemTicketId,
+    RgrPhase,
     StoredTicket,
     TicketChangeEvent,
     TicketCommand,
@@ -30,6 +31,7 @@ export type {
     GitLogEntry,
     GitStatus,
     LastTestRun,
+    RgrPhase,
     TestOutputStream,
     TestRunCacheStatus,
 } from '@shared';
@@ -91,6 +93,10 @@ export class BackendService {
 
     getCurrentEntry(): Observable<string | null> {
         return this.get<string | null>('current');
+    }
+
+    getRgrPhase(): Observable<RgrPhase | null> {
+        return this.get<RgrPhase | null>('rgr-phase');
     }
 
     getGlossary(): Observable<string[]> {

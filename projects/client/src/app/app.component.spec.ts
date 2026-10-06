@@ -67,6 +67,7 @@ describe('AppComponent', () => {
             },
         }));
         http.match('http://localhost:3000/current').forEach(request => request.flush({ data: null }));
+        http.match('http://localhost:3000/rgr-phase').forEach(request => request.flush({ data: null }));
         http.match('http://localhost:3000/git/status').forEach(request => request.flush({
             data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
         }));

@@ -10,6 +10,7 @@ import { CommitMessageDialogComponent } from './commit-message-dialog/commit-mes
 import { CurrentEntryService } from './current-entry.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
+import { RgrPhaseService } from './rgr-phase.service';
 import { TestRunCacheStatusService } from './test-run-cache-status.service';
 import { NavigationToolbarComponent } from './navigation-toolbar/navigation-toolbar.component';
 import { StatusToolbarComponent } from './status-toolbar/status-toolbar.component';
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy {
     readonly meta = inject(MetaLayerService);
     readonly currentEntry = inject(CurrentEntryService);
     readonly testRunCacheStatus = inject(TestRunCacheStatusService);
+    readonly rgrPhase = inject(RgrPhaseService);
     private gitLogRefresh = inject(GitLogRefreshService);
     private snackbar = inject(MatSnackBar);
     private dialog = inject(MatDialog);
@@ -47,12 +49,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.gitStatus.startPolling();
         this.currentEntry.startPolling();
         this.testRunCacheStatus.startPolling();
+        this.rgrPhase.startPolling();
     }
 
     ngOnDestroy(): void {
         this.gitStatus.stopPolling();
         this.currentEntry.stopPolling();
         this.testRunCacheStatus.stopPolling();
+        this.rgrPhase.stopPolling();
     }
 
     commitChanges(): void {

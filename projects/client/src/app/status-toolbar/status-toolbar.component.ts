@@ -9,6 +9,7 @@ import clientPackage from '../../../package.json';
 import { BackendService } from '../backend.service';
 import { CurrentEntryService } from '../current-entry.service';
 import { GitStatusService } from '../git-status.service';
+import { RgrPhaseService } from '../rgr-phase.service';
 import { TestRunCacheStatusService } from '../test-run-cache-status.service';
 import { BusyIndicatorService } from '../busy-indicator.service';
 
@@ -23,6 +24,7 @@ export class StatusToolbarComponent implements OnInit {
     @Input({ required: true }) gitStatus!: GitStatusService;
     @Input({ required: true }) currentEntry!: CurrentEntryService;
     @Input({ required: true }) testRunCacheStatus!: TestRunCacheStatusService;
+    @Input({ required: true }) rgrPhase!: RgrPhaseService;
     readonly busyIndicator = inject(BusyIndicatorService);
     readonly clientVersion = clientPackage.version;
     serverVersion = 'loading';

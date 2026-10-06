@@ -397,7 +397,7 @@ export class SystemPlanComponent {
             kind: 'Design',
             status: 'In progress',
             dependsOn: ['SC-024'],
-            summary: 'Make the current Red, Green, or Refactor phase visible in the meta layer; decide whether it is derived or recorded.',
+            summary: 'Show the explicitly recorded Red, Green, or Refactor phase next to the current task; history and per-task scoping still open.',
         },
         {
             id: 'SC-032',

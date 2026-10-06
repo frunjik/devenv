@@ -93,6 +93,18 @@ describe('BackendService', () => {
         await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
     });
 
+    it('loads the recorded Red-Green-Refactor phase from the API', async () => {
+        await writeFile(join(root, '.rgr-phase'), 'refactor\n');
+
+        await expect(service.getRgrPhase().toPromise()).resolves.toBe('refactor');
+    });
+
+    it('returns null from the API when the phase file is missing', async () => {
+        await rm(join(root, '.rgr-phase'), { force: true });
+
+        await expect(service.getRgrPhase().toPromise()).resolves.toBeNull();
+    });
+
     it('loads the cached test result status through the public API', async () => {
         const status = (await service.getTestRunCacheStatus().toPromise())!;
 

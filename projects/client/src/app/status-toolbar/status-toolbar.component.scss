@@ -17,6 +17,46 @@
     font-size: 0.75rem;
 }
 
+.current-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rgr-phase {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.35rem;
+    background: rgba(174, 187, 176, 0.08);
+    color: #aebbb0;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.rgr-phase-red {
+    color: #d69a90;
+    background: rgba(214, 154, 144, 0.14);
+}
+
+.rgr-phase-green {
+    color: #88b791;
+    background: rgba(136, 183, 145, 0.14);
+}
+
+.rgr-phase-refactor {
+    color: #9db4cf;
+    background: rgba(157, 180, 207, 0.14);
+}
+
+.rgr-phase-error {
+    color: #d69a90;
+}
+
 .current-entry {
     display: flex;
     align-items: center;
@@ -131,9 +171,15 @@
 
     .toolbar-spacer { display: none; }
 
-    .current-entry {
+    .current-row {
         grid-area: current;
         width: 100%;
+        min-width: 0;
+    }
+
+    .current-entry {
+        flex: 1 1 auto;
+        width: auto;
         max-width: none;
         min-width: 0;
         box-sizing: border-box;

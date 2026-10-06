@@ -69,3 +69,9 @@ export interface TestRunCacheStatus {
     finishedAt: string | null;
     exitCode: number | null;
 }
+
+// The current Red-Green-Refactor phase (P-001), recorded explicitly by whoever is working
+// rather than derived from test results, so Refactor can be distinguished from Green.
+export type RgrPhase = 'red' | 'green' | 'refactor';
+
+export const RGR_PHASES: readonly RgrPhase[] = ['red', 'green', 'refactor'];

@@ -72,19 +72,38 @@
         matTooltipPosition="above"
     >Client v{{ clientVersion }} | Server v{{ serverVersion }}</span>
     <span class="toolbar-spacer"></span>
-    <button
-        type="button"
-        class="current-entry"
-        aria-label="Refresh current task"
-        [matTooltip]="currentEntry.entry || currentEntry.errorMessage"
-        matTooltipClass="current-entry-tooltip"
-        matTooltipPosition="above"
-        [matTooltipShowDelay]="250"
-        (click)="currentEntry.refresh()"
-    >
-        <span class="current-entry-label">Current task</span>
-        <span class="current-entry-summary">
-            {{ currentEntry.summary || currentEntry.errorMessage }}
-        </span>
-    </button>
+    <div class="current-row">
+        <span
+            class="rgr-phase"
+            role="status"
+            [ngClass]="{
+                'rgr-phase-red': rgrPhase.phase === 'red',
+                'rgr-phase-green': rgrPhase.phase === 'green',
+                'rgr-phase-refactor': rgrPhase.phase === 'refactor',
+                'rgr-phase-error': !!rgrPhase.errorMessage
+            }"
+            [attr.aria-label]="'Red-Green-Refactor phase: ' + (rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'not set'))"
+            [matTooltip]="rgrPhase.errorMessage
+                ? 'Could not load the current phase: ' + rgrPhase.errorMessage
+                : rgrPhase.phase
+                    ? 'Current phase: ' + rgrPhase.phase
+                    : 'No phase recorded in .rgr-phase'"
+            matTooltipPosition="above"
+        >{{ rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'not set') }}</span>
+        <button
+            type="button"
+            class="current-entry"
+            aria-label="Refresh current task"
+            [matTooltip]="currentEntry.entry || currentEntry.errorMessage"
+            matTooltipClass="current-entry-tooltip"
+            matTooltipPosition="above"
+            [matTooltipShowDelay]="250"
+            (click)="currentEntry.refresh()"
+        >
+            <span class="current-entry-label">Current task</span>
+            <span class="current-entry-summary">
+                {{ currentEntry.summary || currentEntry.errorMessage }}
+            </span>
+        </button>
+    </div>
 </mat-toolbar>

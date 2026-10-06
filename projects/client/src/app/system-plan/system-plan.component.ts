@@ -411,7 +411,7 @@ export class SystemPlanComponent {
             id: 'SC-033',
             title: 'Fix the meta toolbar scrollbar and oversized text',
             kind: 'Behavior',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: ['SC-024'],
             summary: 'Make the host toolbar a compact bar without scrollbars; measured overflow and button size are recorded.',
         },

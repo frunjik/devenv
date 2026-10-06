@@ -438,7 +438,7 @@ Show the current task in the meta toolbar (the host layer's top bar), so it is v
 
 ### SC-033 — Fix the meta toolbar scrollbar and oversized text
 
-**Kind:** Behavior · **Status:** Ready · **Depends on:** SC-024
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-024
 
 The host (meta) toolbar shows a scrollbar and its text looks far too big. Make it a compact bar without scrollbars at normal widths.
 
@@ -447,7 +447,8 @@ The host (meta) toolbar shows a scrollbar and its text looks far too big. Make i
 - A vertical scrollbar is present at every width: the `nav` has `overflow-x: auto`, which also makes it scroll vertically, and its Material buttons (about 42 px tall with their own padding) do not fit its 36 px content box inside the 48 px toolbar.
 - A horizontal scrollbar appears at 768 px and below (content 800 px in a 481 px area; 266 px at 320 px).
 - Fonts measure 12.8 px for the menu buttons and 13.6 px for the brand text, against a 14 px body, so the perceived size comes mostly from the Material button height, padding, and the "|" separators between items rather than the font size alone.
-**Open questions:** Should the menu wrap onto two rows, collapse into an overflow ("more") menu on narrow screens, or keep a scrollable row with the scrollbar hidden (hidden scrollbars hurt discoverability)? Should buttons be replaced with plain links styled like the inner nav so both bars match? Should the "|" separators go away in favor of spacing? What is the target text size (for example the 0.8–0.85 rem used in the inner nav)? Does the commit button stay in the bar? This relates to the colors work in SC-030 and the toolbar content in SC-031 and SC-032.
+**Decisions (agent, 2026-10-06, user said "fix first" without answering the open questions; revisit if wrong):** The menu wraps onto extra rows instead of scrolling or hiding; the Material text buttons stay but are compacted (28 px high, 0.5 rem padding, 0.8 rem text, the invisible 48 px touch target switched off); the "|" separators are removed in favor of spacing; the toolbar grows to fit wrapped rows (minimum 40 px) instead of using a fixed height; the commit button stays in the bar.
+**Validation evidence:** In the browser at 1440, 1024, 768, and 320 px neither the menu nor the toolbar scrolls and no item overflows the toolbar (toolbar 40, 40, 59, and 124 px high), and the page has no horizontal overflow. Root causes fixed: the menu's `overflow-x: auto` (which also scrolled vertically) is gone and the Material button touch target plus 40 px button height no longer exceed the toolbar. Full client suite (201 tests) and build pass. Not changed: the host menu items, routes, and the navigation-toolbar spec. Relates to the colors work in SC-030 and the toolbar content in SC-031 and SC-032.
 
 The dependency order does not authorize building both components together.
 

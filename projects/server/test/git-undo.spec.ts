@@ -1,88 +1,93 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import type { ExecFileException, ExecFileOptions } from 'node:child_process';
 import express from 'express';
 import type { ErrorRequestHandler } from 'express';
 import request from 'supertest';
 import { createApp } from '../src/public-api';
 import { createGitUndoHandler } from '../src/lib/handlers/git-undo';
 
+const mockExecFile = jest.fn<(
+    command: string,
+    args: string[],
+    options: ExecFileOptions,
+    callback: (error: ExecFileException | null, stdout: string, stderr: string) => void,
+) => void>();
+
+jest.mock('node:child_process', () => {
+    const actual = jest.requireActual<typeof import('node:child_process')>('node:child_process');
+    return {
+        ...actual,
+        execFile: (...args: Parameters<typeof mockExecFile>) => mockExecFile(...args),
+    };
+});
+
 describe('git undo public API', () => {
-    let root: string;
+    const root = process.cwd();
     const handleError: ErrorRequestHandler = (_error, _request, response, _next) => {
         response.status(500).end();
     };
 
-    beforeEach(async () => {
-        root = await mkdtemp(join(tmpdir(), 'devenv-git-undo-test-'));
+    beforeEach(() => {
+        mockExecFile.mockReset().mockImplementation((_command, _args, _options, callback) => {
+            callback(null, '', '');
+        });
     });
 
-    afterEach(async () => {
-        await rm(root, { recursive: true, force: true });
-    });
-
-    function initializeRepository(): void {
-        execFileSync('git', ['init', '-b', 'main', root]);
-        execFileSync('git', ['-C', root, 'config', 'core.autocrlf', 'false']);
-        execFileSync('git', ['-C', root, 'config', 'user.name', 'Test User']);
-        execFileSync('git', ['-C', root, 'config', 'user.email', 'test@example.com']);
-    }
-
-    async function commitFile(path: string, content: string, message: string): Promise<void> {
-        await writeFile(path, content);
-        execFileSync('git', ['-C', root, 'add', '--all']);
-        execFileSync('git', ['-C', root, 'commit', '-m', message]);
-    }
-
-    it('reverts the latest commit without rewriting commit history', async () => {
-        initializeRepository();
-        await commitFile(join(root, 'tracked.txt'), 'initial content\n', 'Initial commit');
-        await commitFile(join(root, 'tracked.txt'), 'latest content\n', 'Latest change');
+    it('requests a revert of the latest commit without history-rewriting commands', async () => {
+        const output = '[main abc123] Revert "Latest change"\n';
+        mockExecFile
+            .mockImplementationOnce((_command, _args, _options, callback) => callback(null, '', ''))
+            .mockImplementationOnce((_command, _args, _options, callback) => callback(null, output, ''));
 
         const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(200);
-        expect(response.body.data.stdout).toContain('Latest change');
-        expect(execFileSync('git', ['-C', root, 'show', 'HEAD:tracked.txt'], { encoding: 'utf8' }))
-            .toBe('initial content\n');
-        expect(execFileSync('git', ['-C', root, 'rev-list', '--count', 'HEAD'], { encoding: 'utf8' }).trim())
-            .toBe('3');
-        expect(execFileSync('git', ['-C', root, 'show', '--format=%s', '--no-patch'], { encoding: 'utf8' }).trim())
-            .toBe('Revert "Latest change"');
+        expect(response.body).toEqual({ data: { stdout: output, stderr: '' } });
+        expect(mockExecFile.mock.calls.map(([command, args, options]) => [command, args, options])).toEqual([
+            ['git', ['status', '--porcelain=v1'], { cwd: root, encoding: 'utf8', windowsHide: true }],
+            ['git', ['revert', '--no-edit', 'HEAD'], { cwd: root, encoding: 'utf8', windowsHide: true }],
+        ]);
     });
 
     it('refuses to undo while tracked or untracked changes are present', async () => {
-        initializeRepository();
-        await commitFile(join(root, 'tracked.txt'), 'initial content\n', 'Initial commit');
-        await writeFile(join(root, 'tracked.txt'), 'local changes\n');
-        await writeFile(join(root, 'untracked.txt'), 'untracked changes\n');
+        mockExecFile.mockImplementationOnce((_command, _args, _options, callback) => {
+            callback(null, ' M tracked.txt\n?? untracked.txt\n', '');
+        });
 
         const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(409);
         expect(response.body.error.message).toContain('uncommitted changes');
-        expect(execFileSync('git', ['-C', root, 'show', '--format=%s', '--no-patch'], { encoding: 'utf8' }).trim())
-            .toBe('Initial commit');
-        expect(execFileSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' })).toContain('tracked.txt');
+        expect(mockExecFile).toHaveBeenCalledTimes(1);
+        expect(mockExecFile.mock.calls[0][1]).toEqual(['status', '--porcelain=v1']);
     });
 
     it('returns git errors when the working directory is not a repository', async () => {
+        mockExecFile.mockImplementationOnce((_command, _args, _options, callback) => {
+            callback(new Error('git status failed'), 'partial status', 'fatal: not a git repository');
+        });
         const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(500);
         expect(`${response.body.error.stdout}${response.body.error.stderr}`.toLowerCase())
             .toContain('not a git repository');
+        expect(response.body.error.stdout).toBe('partial status');
+        expect(mockExecFile).toHaveBeenCalledTimes(1);
     });
 
     it('returns git errors when the repository has no commits', async () => {
-        initializeRepository();
+        mockExecFile
+            .mockImplementationOnce((_command, _args, _options, callback) => callback(null, '', ''))
+            .mockImplementationOnce((_command, _args, _options, callback) => {
+                callback(new Error('git revert failed'), '', 'fatal: bad revision HEAD');
+            });
 
         const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(500);
         expect(response.body.error.message).toBeTruthy();
+        expect(response.body.error.stderr).toBe('fatal: bad revision HEAD');
+        expect(mockExecFile).toHaveBeenCalledTimes(2);
     });
 
     it('does not register the git undo route in production', async () => {
@@ -92,6 +97,7 @@ describe('git undo public API', () => {
         try {
             const response = await request(createApp(root)).post('/git/undo');
             expect(response.status).toBe(404);
+            expect(mockExecFile).not.toHaveBeenCalled();
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];
@@ -101,8 +107,12 @@ describe('git undo public API', () => {
         }
     });
 
-    it('defaults the undo route working directory to the current directory', () => {
-        expect(createGitUndoHandler()).toBeDefined();
+    it('defaults the undo route working directory to the current directory', async () => {
+        const app = express();
+        app.post('/git/undo', createGitUndoHandler());
+
+        expect((await request(app).post('/git/undo')).status).toBe(200);
+        expect(mockExecFile.mock.calls.map(([, , options]) => options.cwd)).toEqual([process.cwd(), process.cwd()]);
     });
 
     it('rejects concurrent undo requests', async () => {
@@ -136,6 +146,28 @@ describe('git undo public API', () => {
 
         await firstRequest;
         expect(firstStatus).toBe(200);
+    });
+
+    it.each(['dirty worktree', 'command failure'])('allows a new undo after %s', async failure => {
+        mockExecFile.mockImplementationOnce((_command, _args, _options, callback) => {
+            if (failure === 'command failure') {
+                callback(new Error('git status failed'), '', 'status failure');
+            } else {
+                callback(null, ' M tracked.txt\n', '');
+            }
+        });
+        const app = createApp(root, { gitCommitCwd: root });
+
+        const refused = await request(app).post('/git/undo');
+        const retried = await request(app).post('/git/undo');
+
+        expect(refused.status).toBe(failure === 'command failure' ? 500 : 409);
+        expect(retried.status).toBe(200);
+        expect(mockExecFile.mock.calls.map(([, args]) => args)).toEqual([
+            ['status', '--porcelain=v1'],
+            ['status', '--porcelain=v1'],
+            ['revert', '--no-edit', 'HEAD'],
+        ]);
     });
 
     it('returns the executor error and captured output', async () => {

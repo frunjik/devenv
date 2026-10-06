@@ -1,5 +1,4 @@
 import { describe, expect, it } from '@jest/globals';
-import { applyTicketCommand } from '../../shared/src/lib/ticket-lifecycle';
 import type { NewProblemTicket, User } from '@shared';
 import { InMemoryTicketStore } from '../src/lib/storage/in-memory-ticket-store';
 import { describeTicketStore } from './ticket-store.contract';
@@ -19,7 +18,6 @@ const newTicket: NewProblemTicket = {
 describeTicketStore('InMemoryTicketStore', () => {
     let counter = 0;
     return new InMemoryTicketStore({
-        apply: applyTicketCommand,
         newId: () => `T-${++counter}`,
         now: () => '2026-10-06T12:00:00.000Z',
     });
@@ -27,7 +25,7 @@ describeTicketStore('InMemoryTicketStore', () => {
 
 describe('InMemoryTicketStore defaults', () => {
     it('creates its own ids and timestamps when none are injected', async () => {
-        const store = new InMemoryTicketStore({ apply: applyTicketCommand });
+        const store = new InMemoryTicketStore();
 
         const first = await store.create(newTicket, 'real');
         const second = await store.create(newTicket, 'real');

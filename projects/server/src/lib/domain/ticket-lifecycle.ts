@@ -1,10 +1,10 @@
-import {
+import type {
     ProblemTicketId,
     TicketCommand,
     TicketCommandResult,
     TicketStatus,
     User,
-} from './problem-inquiry.types';
+} from '@shared';
 
 function nextStatus(
     ticketId: ProblemTicketId,

@@ -19,6 +19,7 @@ module.exports = {
         'projects/server/src/lib/filesystem/filesystem.ts',
         'projects/server/src/lib/handlers/**/*.ts',
         'projects/server/src/lib/storage/**/*.ts',
+        'projects/server/src/lib/domain/**/*.ts',
     ],
     coverageDirectory: '<rootDir>/coverage/server',
     coverageReporters: ['text', 'lcov'],

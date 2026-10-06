@@ -1,5 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
-import { TicketStatus, TicketChangeEvent, User, applyTicketCommand } from '@shared';
+import type { TicketStatus, TicketChangeEvent, User } from '@shared';
+import { applyTicketCommand } from '../src/lib/domain/ticket-lifecycle';
 
 const actor: User = { id: 'user-1', name: 'Ada' };
 const anonymous: User = { id: 'user-2' };

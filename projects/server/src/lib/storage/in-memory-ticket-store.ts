@@ -9,10 +9,10 @@ import type {
     TicketCommand,
     User,
 } from '@shared';
-import type { ApplyTicketCommand, TicketStore } from './ticket-store';
+import { applyTicketCommand } from '../domain/ticket-lifecycle';
+import type { TicketStore } from './ticket-store';
 
 export interface InMemoryTicketStoreOptions {
-    apply: ApplyTicketCommand;
     newId?: () => ProblemTicketId;
     now?: () => string;
 }
@@ -20,12 +20,10 @@ export interface InMemoryTicketStoreOptions {
 export class InMemoryTicketStore implements TicketStore {
     private readonly tickets = new Map<ProblemTicketId, StoredTicket>();
     private readonly events = new Map<ProblemTicketId, TicketChangeEvent[]>();
-    private readonly apply: ApplyTicketCommand;
     private readonly newId: () => ProblemTicketId;
     private readonly now: () => string;
 
-    constructor({ apply, newId = randomUUID, now = () => new Date().toISOString() }: InMemoryTicketStoreOptions) {
-        this.apply = apply;
+    constructor({ newId = randomUUID, now = () => new Date().toISOString() }: InMemoryTicketStoreOptions = {}) {
         this.newId = newId;
         this.now = now;
     }
@@ -64,7 +62,7 @@ export class InMemoryTicketStore implements TicketStore {
             return { ok: false, kind: 'stale', current: structuredClone(current) };
         }
 
-        const result = this.apply(id, current.status, command, actor, this.now());
+        const result = applyTicketCommand(id, current.status, command, actor, this.now());
         if (!result.ok) {
             return { ok: false, kind: 'refused', reason: result.reason };
         }

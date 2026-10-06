@@ -6,8 +6,6 @@ import type {
     TicketChangeEvent,
     TicketChangeOutcome,
     TicketCommand,
-    TicketCommandResult,
-    TicketStatus,
     User,
 } from '@shared';
 
@@ -24,11 +22,3 @@ export interface TicketStore {
     ): Promise<TicketChangeOutcome>;
     history(id: ProblemTicketId): Promise<TicketChangeEvent[]>;
 }
-
-export type ApplyTicketCommand = (
-    ticketId: ProblemTicketId,
-    status: TicketStatus,
-    command: TicketCommand,
-    actor: User,
-    at: string,
-) => TicketCommandResult;

@@ -458,6 +458,8 @@ The host (meta) toolbar shows a scrollbar and its text looks far too big. Make i
 
 The pre-existing host menu (the navigation toolbar with Browse, Test, and so on) should take on the styling of the "META LAYER · hosts the problem-solving app" bar below it, and, if possible, that lower bar should be removed so the meta layer is a single bar.
 
+**As reported by the user (2026-10-06, from what is seen on screen):** the top bar ("DevEnv - http://localhost:3000/", Browse, Test…) is the meta app's bar; the "META LAYER" bar underneath is the one whose style should be taken over by the top bar, after which the lower bar can go.
+
 **Working boundary:** Presentation first; the host menu items and routes stay unchanged. The change touches the navigation toolbar and the label in the app shell (P-006: confirm before changing anything beyond those two).
 **Open questions:** If the label bar goes, how does the user still see that this is the meta layer (a short "Meta" badge in the menu, the shared color alone, or nothing)? Is the "hosts the problem-solving app" wording worth keeping anywhere (P-009)? Which label-bar styles carry over (dark green background, muted text, small uppercase lettering)? Does the Material toolbar keep its own elevation or take the flat label look? Does the single bar still fit at 320 px, where the menu wraps (SC-033)? This also decides where SC-031 and SC-032 display their information, and it relates to the palette in SC-030.
 **Vocabulary candidates (P-009, not yet agreed):** "meta menu", "label bar".

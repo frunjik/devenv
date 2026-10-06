@@ -12,6 +12,9 @@ import { createGitStatusHandler } from './handlers/git-status';
 import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createLinesHandler } from './handlers/lines';
+import { createTicketsRouter } from './handlers/tickets';
+import { InMemoryTicketStore } from './storage/in-memory-ticket-store';
+import type { TicketStore } from './storage/ticket-store';
 import {
     createAuthenticationMiddleware,
     getDevelopmentAuthenticationService,
@@ -29,6 +32,7 @@ export interface CreateAppOptions {
     gitCommitCwd?: string;
     testRunCacheDirectory?: string;
     authenticationService?: AuthenticationService;
+    ticketStore?: TicketStore;
 }
 
 export function createApp(root: string, options: CreateAppOptions = {}): Express {
@@ -37,6 +41,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
         gitCommitCwd = process.cwd(),
         testRunCacheDirectory,
         authenticationService,
+        ticketStore = new InMemoryTicketStore(),
     } = options;
     const app = express();
 
@@ -56,6 +61,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/folders', getFolders as RequestHandler);
     app.get('/current', createCurrentEntryHandler(root));
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
+    app.use(createTicketsRouter(ticketStore));
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
@@ -78,6 +84,7 @@ export type {
     TestRunCacheStatus,
 } from './handlers/test-runner';
 export type { AuthenticatedPrincipal, AuthenticationService } from './authentication';
+export type { TicketStore } from './storage/ticket-store';
 export type { GitStatus, GitStatusFile } from './handlers/git-status';
 
 export interface ServerListener {

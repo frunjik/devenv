@@ -17,86 +17,8 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
         TicketFramingComponent,
         FramedTicketsListComponent,
     ],
-    template: `
-        <main>
-            <h1>Problem inquiry</h1>
-            <label class="sample-data-toggle">
-                <input
-                    id="sample-data-toggle"
-                    type="checkbox"
-                    [checked]="showSamples"
-                    (change)="toggleSamples()"
-                >
-                Include sample data
-            </label>
-            @if (storageError) {
-                <p class="storage-error" role="alert">{{ storageError }}</p>
-            }
-            <app-input-converter (noteAccepted)="addNote($event)" />
-            <app-imported-notes-list [notes]="visibleNotes" />
-            <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
-            <app-framed-tickets-list
-                [tickets]="visibleTickets"
-                [notes]="visibleNotes"
-                (assignRequested)="assign($event)"
-                (editRequested)="edit($event)"
-                (commandRequested)="change($event)"
-                (historyRequested)="loadHistory($event)"
-                [histories]="histories"
-            />
-        </main>
-    `,
-    styles: `
-        :host {
-            display: block;
-            min-width: 0;
-        }
-
-        main {
-            box-sizing: border-box;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr);
-            gap: 1.5rem;
-            width: min(100%, 100rem);
-            margin-inline: auto;
-            padding: 1rem;
-        }
-
-        h1,
-        .sample-data-toggle {
-            margin: 0;
-        }
-
-        .sample-data-toggle {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .storage-error {
-            margin: 0;
-            color: #d69a90;
-        }
-
-        .sample-data-toggle input {
-            width: auto;
-        }
-
-        @media (min-width: 70rem) {
-            main {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                column-gap: 2rem;
-                row-gap: 2rem;
-                padding: 2rem;
-            }
-
-            h1,
-            .sample-data-toggle,
-            .storage-error {
-                grid-column: 1 / -1;
-            }
-        }
-    `,
+    templateUrl: './problem-inquiry-page.component.html',
+    styleUrl: './problem-inquiry-page.component.scss',
 })
 export class ProblemInquiryPageComponent implements OnInit {
     private readonly backend = inject(BackendService);

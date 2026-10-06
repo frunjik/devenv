@@ -1,0 +1,217 @@
+<section class="framed-tickets" aria-labelledby="framed-tickets-heading">
+    <h2 id="framed-tickets-heading">Framed problem tickets</h2>
+
+    @if (tickets.length === 0) {
+        <p class="empty-state">No framed problem tickets yet.</p>
+    } @else {
+        <div class="ticket-controls">
+            <label>
+                Search tickets
+                <input type="search" [value]="query" (input)="query = $any($event.target).value">
+            </label>
+            <label>
+                Sort by
+                <select [value]="sortProperty" (change)="changeSortProperty($any($event.target).value)">
+                    @for (option of sortOptions; track option.value) {
+                        <option [value]="option.value" [selected]="option.value === sortProperty">{{ option.label }}</option>
+                    }
+                </select>
+            </label>
+            <label class="metric-method">
+                Metric
+                <select [value]="metricMethod" (change)="metricMethod = $any($event.target).value">
+                    @for (method of metricMethods; track method.id) {
+                        <option [value]="method.id" [selected]="method.id === metricMethod">{{ method.label }}</option>
+                    }
+                </select>
+            </label>
+            <button type="button" class="sort-direction" (click)="toggleDirection()">{{ directionLabel }}</button>
+        </div>
+    }
+
+    @if (tickets.length > 0 && displayedTickets.length === 0) {
+        <p class="empty-state">No matching tickets.</p>
+    } @else if (tickets.length > 0) {
+        <ul class="ticket-list">
+            @for (ticket of displayedTickets; track ticket.id) {
+                <li>
+                    <article class="ticket-card" [attr.aria-label]="'Problem ticket ' + ticket.id">
+                        <header>
+                            <p class="ticket-id">{{ ticket.id }}</p>
+                            @if (statusOf(ticket); as status) {
+                                <p class="ticket-state" [attr.data-state]="status.state">{{ stateLabel(status) }}</p>
+                            }
+                            <h3>{{ ticket.title }}</h3>
+                            <p class="ticket-metric">{{ metricLabel }}: {{ metricOf(ticket) ?? 'no estimate' }}</p>
+                        </header>
+
+                        @if (canAssign(ticket)) {
+                            <form class="assign-form" (submit)="requestAssign($event, ticket, assignee)">
+                                <label>
+                                    Assignee
+                                    <input #assignee type="text" autocomplete="off">
+                                </label>
+                                <button type="submit">{{ isAssigned(ticket) ? 'Reassign' : 'Assign' }}</button>
+                            </form>
+                        }
+
+                        @if (isStored(ticket)) {
+                            <button type="button" class="history-toggle" (click)="toggleHistory(ticket)">
+                                {{ historyId === ticket.id ? 'Hide history' : 'History' }}
+                            </button>
+                            @if (historyId === ticket.id) {
+                                <section class="history" aria-label="Ticket history">
+                                    @if (histories[ticket.id]; as events) {
+                                        <ol>
+                                            @for (event of events; track $index) {
+                                                <li class="history-entry">
+                                                    {{ actorName(event) }}: {{ describeEvent(event) }}
+                                                    <time [attr.datetime]="event.at">{{ event.at }}</time>
+                                                </li>
+                                            } @empty {
+                                                <li>No changes yet.</li>
+                                            }
+                                        </ol>
+                                    } @else {
+                                        <p>Loading history…</p>
+                                    }
+                                </section>
+                            }
+                        }
+                        @if (isStored(ticket)) {
+                            <button type="button" class="edit-toggle" (click)="toggleEdit(ticket.id)">
+                                {{ editingId === ticket.id ? 'Close editor' : 'Edit' }}
+                            </button>
+                            @if (editingId === ticket.id) {
+                                <form class="edit-form" (submit)="requestEdit($event, ticket)">
+                                    <label>Title <input name="title" type="text" [value]="ticket.title"></label>
+                                    <label>Report <textarea name="report" [value]="ticket.report"></textarea></label>
+                                    <label>Undesirable condition <textarea name="condition" [value]="ticket.problem.condition"></textarea></label>
+                                    <label>Who or what is affected <input name="affected" type="text" [value]="ticket.problem.affected"></label>
+                                    <label>Why it matters <textarea name="impact" [value]="ticket.problem.impact"></textarea></label>
+                                    <label>
+                                        Scope level
+                                        <select name="scopeLevel">
+                                            @for (level of scopeLevels; track level) {
+                                                <option [value]="level" [selected]="level === ticket.scope.level">{{ level }}</option>
+                                            }
+                                        </select>
+                                    </label>
+                                    <label>Scope description <input name="scopeLabel" type="text" [value]="ticket.scope.label"></label>
+                                    @for (rating of ratingFields; track rating.name) {
+                                        <label>
+                                            {{ rating.label }} (1 to 5)
+                                            <select [name]="rating.name">
+                                                <option value="" [selected]="!ticket.estimate">Not rated</option>
+                                                @for (value of ratingValues; track value) {
+                                                    <option [value]="value" [selected]="ticket.estimate?.[rating.key] === value">{{ value }}</option>
+                                                }
+                                            </select>
+                                        </label>
+                                    }
+                                    @if (editError) {
+                                        <p role="alert">{{ editError }}</p>
+                                    }
+                                    <button type="submit">Save changes</button>
+                                    <button type="button" class="edit-cancel" (click)="editingId = undefined">Cancel</button>
+                                </form>
+                            }
+                        }
+                        @if (isStored(ticket)) {
+                            <div class="state-actions">
+                                @for (action of actionsFor(ticket); track action.kind) {
+                                    <button type="button" class="state-action" (click)="requestCommand(ticket, { kind: action.kind })">{{ action.label }}</button>
+                                }
+                            </div>
+                            @if (ticket.status.state !== 'duplicate') {
+                                <form class="duplicate-form" (submit)="requestDuplicate($event, ticket, original)">
+                                    <label>
+                                        Duplicate of
+                                        <input #original type="text" autocomplete="off" placeholder="Original ticket id">
+                                    </label>
+                                    <button type="submit">Mark duplicate</button>
+                                </form>
+                            }
+                        }
+                        <p><strong>Report</strong>: {{ ticket.report }}</p>
+
+                        <section aria-label="Problem frame">
+                            <h4>Problem frame</h4>
+                            <dl>
+                                <dt>Condition</dt>
+                                <dd>{{ ticket.problem.condition }}</dd>
+                                <dt>Affected</dt>
+                                <dd>{{ ticket.problem.affected }}</dd>
+                                <dt>Impact</dt>
+                                <dd>{{ ticket.problem.impact }}</dd>
+                            </dl>
+                        </section>
+
+                        <section aria-label="Scope and work context">
+                            <h4>Scope and work context</h4>
+                            <p>{{ ticket.scope.level }}: {{ ticket.scope.label }}</p>
+                            <dl class="context-list">
+                                <dt>People</dt>
+                                <dd>
+                                    <ul>
+                                        @for (person of ticket.context.people; track $index) {
+                                            <li>{{ person }}</li>
+                                        } @empty {
+                                            <li>No people recorded.</li>
+                                        }
+                                    </ul>
+                                </dd>
+                                <dt>Places</dt>
+                                <dd>
+                                    <ul>
+                                        @for (place of ticket.context.places; track $index) {
+                                            <li>{{ place }}</li>
+                                        } @empty {
+                                            <li>No places recorded.</li>
+                                        }
+                                    </ul>
+                                </dd>
+                                <dt>Things</dt>
+                                <dd>
+                                    <ul>
+                                        @for (thing of ticket.context.things; track $index) {
+                                            <li>{{ thing }}</li>
+                                        } @empty {
+                                            <li>No things recorded.</li>
+                                        }
+                                    </ul>
+                                </dd>
+                            </dl>
+                        </section>
+
+                        <section aria-label="Accepted note references">
+                            <h4>Accepted note references</h4>
+                            @if (ticket.sourceNoteIds?.length) {
+                                <ul class="source-notes">
+                                    @for (noteId of ticket.sourceNoteIds ?? []; track noteId) {
+                                        <li>
+                                            <strong>{{ noteId }}</strong>
+                                            @if (findNote(noteId); as note) {
+                                                <p>{{ note.proposal.sourceText }}</p>
+                                                <p>{{ note.proposal.interpretation }}</p>
+                                            } @else {
+                                                <p>Note is not currently available.</p>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            } @else {
+                                <p class="no-note-references">No accepted note references recorded.</p>
+                            }
+                        </section>
+
+                        <footer>
+                            <p>Reported by {{ ticket.reportedBy }}</p>
+                            <p>Created <time [attr.datetime]="ticket.reportedAt">{{ ticket.reportedAt }}</time></p>
+                        </footer>
+                    </article>
+                </li>
+            }
+        </ul>
+    }
+</section>

@@ -1,0 +1,27 @@
+<main>
+    <h1>Problem inquiry</h1>
+    <label class="sample-data-toggle">
+        <input
+            id="sample-data-toggle"
+            type="checkbox"
+            [checked]="showSamples"
+            (change)="toggleSamples()"
+        >
+        Include sample data
+    </label>
+    @if (storageError) {
+        <p class="storage-error" role="alert">{{ storageError }}</p>
+    }
+    <app-input-converter (noteAccepted)="addNote($event)" />
+    <app-imported-notes-list [notes]="visibleNotes" />
+    <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
+    <app-framed-tickets-list
+        [tickets]="visibleTickets"
+        [notes]="visibleNotes"
+        (assignRequested)="assign($event)"
+        (editRequested)="edit($event)"
+        (commandRequested)="change($event)"
+        (historyRequested)="loadHistory($event)"
+        [histories]="histories"
+    />
+</main>

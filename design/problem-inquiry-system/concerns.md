@@ -718,15 +718,18 @@ All work in this session is self-assessed by the same agent that performs it: te
 
 ### SC-053 — Avoid filesystem writes from tests
 
-**Kind:** Quality · **Status:** Ready · **Depends on:** None
+**Kind:** Quality · **Status:** In progress · **Depends on:** None
 
 Tests should not write to the real filesystem, including temporary fixture files and directories; reading existing files is allowed. The system-plan route tests currently create and overwrite temporary concern registers, then delete them during cleanup. Other tests also mutate the filesystem directly or through subprocesses such as Git.
 
 **Direction (user, 2026-10-06):** Avoid filesystem writes from tests; reads are fine.
-**Working boundary:** Use simple Boundary Mocks at filesystem or subprocess boundaries while keeping the actual parsing and application behavior under test. For the system-plan route, an injectable text-file reader can supply fixture Markdown or a read error without writing fixture files. Do not mock internal domain collaborators or silently remove coverage of persistence and Git behavior. This concern records the requested direction; no test or production implementation is changed in this step.
-**Open questions:** How should persistence and real-Git adapter tests verify write behavior without performing filesystem mutations? Does the rule also include test-runner artifacts such as coverage reports and caches, or only test setup, cleanup, and code exercised by tests? What enforcement can detect direct writes and subprocess-induced mutations?
+**Decision (user, 2026-10-06):** The rule covers test setup, cleanup, and application/subprocess behavior exercised by tests. The test runner itself may write coverage reports and caches. Recorded as P-014 and in project guidance.
+**Working boundary:** Use simple Boundary Mocks at filesystem or subprocess boundaries while keeping the actual parsing and application behavior under test. Prefer mocking an existing external boundary to changing production code solely for testability. Do not mock internal domain collaborators or silently remove coverage of persistence and Git behavior.
+**Open questions:** How should persistence and real-Git adapter tests verify write behavior without performing filesystem mutations? What enforcement can detect direct writes and subprocess-induced mutations?
 **Vocabulary and Type review:** "Boundary Mock" is the user's term for a simple replacement at an external/system boundary, consistent with P-004; it is not yet a Glossary entry. Consider documenting it separately from internal mocks. Reuse existing I/O ports where available; a text-file reader function is a candidate boundary contract, not a reason to introduce a general filesystem abstraction.
 **Validation evidence:** Reviewed `projects/server/test/system-plan.spec.ts`: fixture tests use `mkdtemp`, `mkdir`, `writeFile`, and `rm`; the final integration test reads the repository register without writing it. Implementation and enforcement remain unstarted.
+**First migration slice (2026-10-06):** Replaced temporary fixture writes and cleanup in `system-plan.spec.ts` with a Boundary Mock of the existing `readFile` function. Parser and Express route remain real; the integration test still reads the real register, but no longer assumes exactly 22 validated concerns or that every disposition stays Pending. Added a read-failure test and verified the requested path and UTF-8 encoding. Five targeted tests pass; the system-plan handler retains 100% statement, branch, function, and line coverage, and the focused server TypeScript check passes. No production-code changes or new Types were needed.
+**Remaining migration:** Server fixtures and subprocess tests in `git-undo`, `git-commit`, `git-diff`, `git-log`, `git-status`, `rgr-phase`, `file-ticket-store`, `files-folders`, `lists`, `test-runner`, `authentication`, and `server-startup`, plus client tests that exercise server/filesystem behavior. This inventory is a starting point, not proof that unlisted tests are write-free. Repository-wide enforcement is not built yet.
 
 ## Working Sequence
 

@@ -116,6 +116,15 @@ These principles are active from their recorded date and apply to future work in
 
 - **Recorded:** 2026-10-06; retired 2026-10-06. Originally "Verify User-Suggested Names for Consistency and Sense" — the user pointed out, while asking for an honest evaluation of the pace of recent principle additions, that this was the same topic as P-012 split across two entries. Merged into P-012 rather than deleted, so the record of the change stays visible.
 
+### P-014 — Keep Tests Free of Filesystem Mutations
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction; SC-053
+- **Applies to:** Test setup, cleanup, and application/subprocess behavior exercised by tests.
+- **Rule:** Do not write to or otherwise mutate the real filesystem from tests, including temporary fixtures. Reads are allowed. Use simple Boundary Mocks at filesystem or subprocess boundaries, retaining actual application/domain behavior under test.
+- **Exception (user, 2026-10-06):** The test runner may write coverage reports and caches.
+- **Migration:** Existing suites that perform mutations are tracked in SC-053. Migrate them in bounded slices without silently dropping persistence or Git behavior coverage.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

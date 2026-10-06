@@ -8,10 +8,13 @@
     right: 0;
     bottom: 0;
     left: 0;
-    height: 48px;
-    min-height: 48px;
+    height: 44px;
+    min-height: 44px;
     padding-inline: 1rem;
-    box-shadow: 0 -3px 12px rgb(0 0 0 / 24%);
+    border-top: 1px solid #37443b;
+    background: #1d2922;
+    color: #aebbb0;
+    font-size: 0.75rem;
 }
 
 .current-entry {
@@ -19,27 +22,33 @@
     align-items: center;
     gap: 0.65rem;
     max-width: min(50vw, 48rem);
-    padding: 0.35rem 0.75rem;
-    border: 1px solid rgb(224 235 226 / 28%);
+    padding: 0.2rem 0.65rem;
+    border: 1px solid #37443b;
     border-radius: 0.35rem;
-    background: rgb(224 235 226 / 10%);
-    color: inherit;
+    background: #26332b;
+    color: #dce6dd;
     font-family: inherit;
+    font-size: 0.75rem;
     text-align: right;
     opacity: 1;
     cursor: pointer;
     transition: background-color 120ms ease, border-color 120ms ease;
 
     &:hover {
-        background: rgb(224 235 226 / 18%);
-        border-color: rgb(224 235 226 / 55%);
+        background: #2d3b33;
+        border-color: #596b5d;
+    }
+
+    &:focus-visible {
+        outline: 2px solid #a8c4ae;
+        outline-offset: 2px;
     }
 }
 
 .current-entry-label {
     flex: 0 0 auto;
-    color: #d8e5d9;
-    font-size: 0.68rem;
+    color: #aebbb0;
+    font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -47,7 +56,7 @@
 
 .current-entry-summary {
     overflow: hidden;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -81,17 +90,17 @@
     min-width: auto;
     padding-inline: 0.5rem;
     color: #aebbb0;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
 }
 
 .test-run-status-failed,
 .test-run-status-error {
-    color: #d7a29a;
+    color: #d69a90;
 }
 
 .version-info {
-    color: #aebbb0;
-    font-size: 0.65rem;
+    color: #8b998e;
+    font-size: 0.7rem;
     white-space: nowrap;
 }
 

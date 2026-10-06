@@ -101,21 +101,17 @@ These principles are active from their recorded date and apply to future work in
   - A word for `XX` renames the whole category, not one entry: reflect it everywhere that prefix's meaning is documented or used as a literal pattern — at minimum the Concern Record format/legend in `concerns.md`, the "Three ID schemes" Meta Note, and this principle itself.
   Do not pre-assign such words unprompted; this stays an option the user invokes, not a default naming step.
 
-### P-012 — Surface Type/Term Candidate Moments for User Review
+### P-012 — Review Naming Decisions From Either Direction
 
-- **Recorded:** 2026-10-06
+- **Recorded:** 2026-10-06; merged with the former P-013 on 2026-10-06 after the user flagged the two as one topic split across separate entries.
 - **Source:** User instruction
-- **Applies to:** Moments during P-002 (Type review) or P-009 (vocabulary review) reasoning where a new Type or Term name is considered as a candidate for something in the domain or system, then set aside as "not yet agreed" rather than committed.
-- **Rule:** Do not only record such a candidate silently in the artifact (a concern's "Vocabulary candidates" line, a Meta Note, etc.). When the moment arises, pause and ask the user directly whether they want to weigh in, suggest a different name, or leave it as an open candidate.
-- **Practice:** This targets candidate Type/Term *names* arising mid-reasoning, not every passing word already noted throughout the register; keep the question focused and use the `ask_user` tool rather than only stating it in prose. Applies going forward; it does not require revisiting every already-recorded candidate.
+- **Applies to:** Moments where a name for a new Type, Term, or other mapping/identifier is being considered or proposed, whichever side raises it.
+- **Rule:** When a candidate name surfaces — whether I consider it mid-reasoning (per P-002/P-009) or the user proposes it directly — do not silently accept it or only record it in the artifact. Check it against existing names in `.glossary`, the shared Types, and the principle register for consistency (style, collisions with an existing meaning), then either ask the user for their view (if I raised the candidate) or report my honest assessment (if they raised it) before it is adopted.
+- **Practice:** Keep this to genuine candidate Type/Term *names*, not every passing word already noted in the register. Use the `ask_user` tool when I raise a candidate; report findings plainly when the user raises one. Final agreement on any name still rests with the user; this is a check-and-surface step, not a veto.
 
-### P-013 — Verify User-Suggested Names for Consistency and Sense
+### P-013 — *(retired, merged into P-012)*
 
-- **Recorded:** 2026-10-06
-- **Source:** User instruction
-- **Applies to:** Moments where the user proposes a name for a new Type, Term, or other mapping/identifier (for example a word for `XX` or `NN` per P-011, or a candidate like "Rule Set" per P-002/P-009).
-- **Rule:** Before adopting a user-suggested name, check it against existing names in `.glossary`, the shared Types, and the principle register for consistency (style, collisions with an existing meaning) and give an honest assessment of whether it makes sense, rather than silently accepting it.
-- **Practice:** Report findings plainly — a collision, a style mismatch, or a genuine fit — and ask the user to confirm or reconsider if a real concern is found. Final agreement on the name still rests with the user; this is a check-and-report step, not a veto.
+- **Recorded:** 2026-10-06; retired 2026-10-06. Originally "Verify User-Suggested Names for Consistency and Sense" — the user pointed out, while asking for an honest evaluation of the pace of recent principle additions, that this was the same topic as P-012 split across two entries. Merged into P-012 rather than deleted, so the record of the change stays visible.
 
 ## Applying the Register
 

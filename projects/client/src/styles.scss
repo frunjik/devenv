@@ -90,6 +90,11 @@ nav button[mat-button] {
     --mat-toolbar-container-text-color: #dce6dd;
 }
 
+.mat-toolbar.meta-toolbar {
+    --mat-toolbar-container-background-color: #1d2922;
+    --mat-toolbar-container-text-color: #aebbb0;
+}
+
 .mat-mdc-button:not(:disabled) {
     --mat-text-button-label-text-color: #b2cbb8;
 }

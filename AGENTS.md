@@ -46,6 +46,7 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 - Inspect nearby components before editing. Angular components use external `.html` templates via `templateUrl` and external `.scss` styles via `styleUrl`, not inline `template` or `styles` in TypeScript. Existing inline templates/styles are not evidence of the preferred convention; migrate them only within agreed scope.
 - Reuse the shared palette variables in `projects/client/src/styles.scss` for matching visual roles instead of duplicating their color literals. Keep feature layouts and intentional color variants local.
 - Use the opt-in `.accent-card` class for matching dark card surfaces with an accent border; keep padding, corner radius, and layout in the component stylesheet.
+- Material meta toolbars opt into `.meta-toolbar` for their shared background and text colors through Material theme variables; keep layout, sizing, and responsive rules in the component stylesheet.
 - Native text controls can opt into the global `.form-field` label/control layout and `.form-control` appearance. Keep feature spacing local; do not apply these classes indiscriminately to Material controls, radios, or specialized editor controls.
 - Prefer shared API contracts in `projects/shared` and import them from `@shared`.
 - When changing API behavior, check both its server implementation and related client/shared callers and tests.

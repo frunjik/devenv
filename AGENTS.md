@@ -15,7 +15,7 @@ Keep changes scoped to the relevant project and follow the existing patterns in 
 Install dependencies from the repository root with `npm install`. Run the client and API in separate terminals:
 
 ```bash
-npm start
+npm run dev:client
 npm run dev:server
 ```
 

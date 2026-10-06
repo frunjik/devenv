@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "dev:client": "ng serve",
     "dev:server": "tsx watch projects/server/dev.ts",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",

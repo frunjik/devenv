@@ -487,6 +487,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-015'],
             summary: 'Show scores calculated from ticket fields, with one global switch to compare calculation methods.',
         },
+        {
+            id: 'SC-043',
+            title: 'Show aggregate metrics across the ticket set',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-015', 'SC-021', 'SC-028'],
+            summary: 'Summarize the ticket set as a whole (counts by state, age, throughput), distinct from per-ticket scores.',
+        },
     ];
 
     get validatedCount(): number {

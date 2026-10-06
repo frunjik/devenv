@@ -1,10 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { ErrorRequestHandler } from 'express';
 import request from 'supertest';
 import { createApp } from '../src/public-api';
+
+jest.mock('node:fs/promises', () => {
+    const actual = jest.requireActual<typeof import('node:fs/promises')>('node:fs/promises');
+    return { ...actual, readFile: jest.fn() };
+});
+
+const fileReader = jest.mocked(readFile);
 
 describe('RGR phase', () => {
     let root: string;
@@ -13,26 +19,25 @@ describe('RGR phase', () => {
         response.status(500).end();
     };
 
-    beforeEach(async () => {
-        root = await mkdtemp(join(tmpdir(), 'devenv-server-test-'));
+    beforeEach(() => {
+        root = process.cwd();
+        fileReader.mockReset();
+        fileReader.mockRejectedValue(Object.assign(new Error('File not found'), { code: 'ENOENT' }));
         app = createApp(root);
         app.use(handleError);
     });
 
-    afterEach(async () => {
-        await rm(root, { recursive: true, force: true });
-    });
-
     it('returns the last recorded phase from the phase file', async () => {
-        await writeFile(join(root, '.rgr-phase'), 'red\ngreen\n');
+        fileReader.mockResolvedValue('red\ngreen\n');
 
         const response = await request(app).get('/rgr-phase');
 
         expect(response.body).toEqual({ data: 'green' });
+        expect(fileReader).toHaveBeenCalledWith(join(root, '.rgr-phase'), 'utf8');
     });
 
     it('returns null for an unrecognized phase value', async () => {
-        await writeFile(join(root, '.rgr-phase'), 'purple');
+        fileReader.mockResolvedValue('purple');
 
         const response = await request(app).get('/rgr-phase');
 
@@ -40,7 +45,7 @@ describe('RGR phase', () => {
     });
 
     it('returns null when the phase file is empty', async () => {
-        await writeFile(join(root, '.rgr-phase'), ' \n\n');
+        fileReader.mockResolvedValue(' \n\n');
 
         const response = await request(app).get('/rgr-phase');
 
@@ -54,7 +59,7 @@ describe('RGR phase', () => {
     });
 
     it('forwards phase file read errors to Express', async () => {
-        await mkdir(join(root, '.rgr-phase'));
+        fileReader.mockRejectedValue(Object.assign(new Error('Not a file'), { code: 'EISDIR' }));
 
         const response = await request(app).get('/rgr-phase');
 
@@ -62,7 +67,7 @@ describe('RGR phase', () => {
     });
 
     it('accepts refactor as a recorded phase', async () => {
-        await writeFile(join(root, '.rgr-phase'), 'refactor');
+        fileReader.mockResolvedValue('refactor');
 
         const response = await request(app).get('/rgr-phase');
 

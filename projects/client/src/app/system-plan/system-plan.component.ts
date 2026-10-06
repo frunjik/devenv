@@ -551,6 +551,14 @@ export class SystemPlanComponent {
             dependsOn: [],
             summary: 'Observed transient error on each rebuild; likely dist/shared not rebuilt when the client watcher fires, since client and server run independent watch processes.',
         },
+        {
+            id: 'SC-051',
+            title: 'Add a hidden keyboard shortcut to toggle the meta layer',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-024'],
+            summary: 'An anticipated SC-024 refinement; 10 candidates brainstormed, user prefers the Konami Code and Shift+F2, not yet narrowed to one.',
+        },
     ];
 
     get validatedCount(): number {

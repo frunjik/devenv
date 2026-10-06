@@ -78,6 +78,16 @@ export interface ProblemFrame {
     impact: string;
 }
 
+export type EstimateRating = 1 | 2 | 3 | 4 | 5;
+
+// Optional on a ticket: a reporter may not be able to estimate yet.
+// Each rating runs from 1 (lowest) to 5 (highest); a higher effort means more work.
+export interface TicketEstimate {
+    impact: EstimateRating;
+    urgency: EstimateRating;
+    effort: EstimateRating;
+}
+
 export interface ProblemTicket {
     id: ProblemTicketId;
     title: string;
@@ -88,6 +98,7 @@ export interface ProblemTicket {
     context: WorkContext;
     reportedBy: string;
     reportedAt: string;
+    estimate?: TicketEstimate;
 }
 
 export type SourceOrigin =

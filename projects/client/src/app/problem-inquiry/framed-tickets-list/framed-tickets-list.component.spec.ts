@@ -372,6 +372,40 @@ describe('FramedTicketsListComponent', () => {
         });
     });
 
+    describe('metrics', () => {
+        function estimated(id: string): ProblemTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), estimate: { impact: 4, urgency: 5, effort: 2 } };
+        }
+
+        function metrics(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-metric') as NodeListOf<HTMLElement>).map(
+                element => element.textContent?.trim() ?? '',
+            );
+        }
+
+        function chooseMethod(method: string): void {
+            const select = fixture.nativeElement.querySelector('.metric-method select') as HTMLSelectElement;
+            select.value = method;
+            select.dispatchEvent(new Event('change'));
+            fixture.detectChanges();
+        }
+
+        it('shows impact times urgency by default and says so when a ticket has no estimate', () => {
+            fixture.componentRef.setInput('tickets', [estimated('a'), makeTicket('b', 'Title b', undefined)]);
+            fixture.detectChanges();
+
+            expect(metrics()).toEqual(['Impact × urgency: 20', 'Impact × urgency: no estimate']);
+        });
+
+        it('shows every ticket under another method when the switch changes', () => {
+            fixture.componentRef.setInput('tickets', [estimated('a'), makeTicket('b', 'Title b', undefined)]);
+            fixture.detectChanges();
+
+            chooseMethod('wsjf');
+
+            expect(metrics()).toEqual(['Weighted shortest job first: 4.5', 'Weighted shortest job first: no estimate']);
+        });
+    });
     describe('state badge', () => {
         function stored(id: string, status: TicketStatus): StoredTicket {
             return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };

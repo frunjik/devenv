@@ -553,6 +553,9 @@ Tickets carry no calculated numbers, so there is nothing to rank or compare them
 **Open questions:** Which methods first, and which ticket fields feed them (today a ticket has a problem, scope, and context but no impact or effort estimate)? Is the switch remembered per user, like the meta layer toggle? Where do the calculations live (pure functions in the client, or server-side with the ticket store, SC-028)? Does a metric ever replace human judgement of priority (see the ad hoc priority meta note)?
 The dependency order does not authorize building both components together.
 
+**First slice built (user choice 2026-10-06):** A ticket gets an optional estimate (impact, urgency, effort, each rated 1 to 5; new shared Type, P-002). Two methods, as pure functions in the client: impact × urgency, and weighted shortest job first (impact plus urgency, divided by effort, two decimals). The ticket list has a Metric switch that applies to every ticket card; a ticket without an estimate shows 
+o estimate. The switch is not remembered between visits. Client suite: 221 tests, 100% coverage on both new modules. **Not built yet:** a way to enter estimates (the framing form and the stored ticket's server validation need a P-006 permission and a decision on who estimates), remembering the switch, and the ranking/ordering that this concern excludes.
+
 ## Working Sequence
 
 1. Resolve enough of SC-001–SC-005 to define the converter boundary and observable behavior.

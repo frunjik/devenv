@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { calculateMetric, METRIC_METHODS, MetricMethod } from '../ticket-metrics';
 import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } from '@shared';
 
 @Component({
@@ -24,6 +25,14 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
                             }
                         </select>
                     </label>
+                    <label class="metric-method">
+                        Metric
+                        <select [value]="metricMethod" (change)="metricMethod = $any($event.target).value">
+                            @for (method of metricMethods; track method.id) {
+                                <option [value]="method.id" [selected]="method.id === metricMethod">{{ method.label }}</option>
+                            }
+                        </select>
+                    </label>
                     <button type="button" class="sort-direction" (click)="toggleDirection()">{{ directionLabel }}</button>
                 </div>
             }
@@ -41,6 +50,7 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
                                         <p class="ticket-state" [attr.data-state]="status.state">{{ stateLabel(status) }}</p>
                                     }
                                     <h3>{{ ticket.title }}</h3>
+                                    <p class="ticket-metric">{{ metricLabel }}: {{ metricOf(ticket) ?? 'no estimate' }}</p>
                                 </header>
 
                                 @if (canAssign(ticket)) {
@@ -214,6 +224,12 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
             font-weight: 600;
         }
 
+        .ticket-metric {
+            margin: 0.2rem 0;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
         .ticket-state {
             display: inline-block;
             margin: 0;
@@ -287,6 +303,9 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
 export class FramedTicketsListComponent {
     @Input() tickets: readonly (ProblemTicket | StoredTicket)[] = [];
     @Input() notes: readonly ImportedNote[] = [];
+    readonly metricMethods = METRIC_METHODS;
+    metricMethod: MetricMethod = 'impact-urgency';
+
     @Output() readonly assignRequested = new EventEmitter<{ ticket: StoredTicket; assigneeId: string }>();
 
     readonly sortOptions: readonly { value: SortProperty; label: string }[] = [
@@ -320,6 +339,14 @@ export class FramedTicketsListComponent {
 
     toggleDirection(): void {
         this.ascending = !this.ascending;
+    }
+
+    get metricLabel(): string {
+        return this.metricMethods.filter(method => method.id === this.metricMethod)[0].label;
+    }
+
+    metricOf(ticket: ProblemTicket | StoredTicket): number | undefined {
+        return calculateMetric(this.metricMethod, ticket.estimate);
     }
 
     canAssign(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {

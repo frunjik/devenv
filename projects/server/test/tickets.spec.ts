@@ -68,6 +68,27 @@ describe('ticket routes', () => {
         expect([incomplete.status, outOfRange.status, fractional.status, notAnObject.status]).toEqual([400, 400, 400, 400]);
     });
 
+    it('creates a ticket that depends on existing tickets, and rejects one that depends on an unknown id', async () => {
+        const app = appWithStore();
+        const original = await request(app).post('/tickets').send({ ticket: newTicket });
+
+        const valid = await request(app)
+            .post('/tickets')
+            .send({ ticket: { ...newTicket, dependsOnTicketIds: [original.body.data.id] } });
+        const unknown = await request(app)
+            .post('/tickets')
+            .send({ ticket: { ...newTicket, dependsOnTicketIds: ['missing'] } });
+        const notAnArray = await request(app)
+            .post('/tickets')
+            .send({ ticket: { ...newTicket, dependsOnTicketIds: 'T-1' } });
+
+        expect(valid.status).toBe(201);
+        expect(valid.body.data.dependsOnTicketIds).toEqual([original.body.data.id]);
+        expect(unknown.status).toBe(400);
+        expect(unknown.body.error.message).toContain('missing');
+        expect(notAnArray.status).toBe(400);
+    });
+
     it('changes a ticket and records the server-known actor in the history', async () => {
         const app = appWithStore();
         await request(app).post('/tickets').send({ ticket: newTicket });

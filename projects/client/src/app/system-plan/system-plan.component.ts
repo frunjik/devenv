@@ -525,7 +525,7 @@ export class SystemPlanComponent {
             kind: 'Design',
             status: 'In progress',
             dependsOn: ['SC-021', 'SC-015'],
-            summary: 'Settable via a free-text field in ticket framing and shown on cards; no existence/cycle checks, rendering still open.',
+            summary: 'Settable via a free-text field in ticket framing and shown on cards; existence now checked at creation; no cycle checks, rendering still open.',
         },
         {
             id: 'SC-048',

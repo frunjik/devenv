@@ -21,6 +21,10 @@ function isText(value: unknown): boolean {
     return typeof value === 'string';
 }
 
+function isValidDependsOn(value: unknown): value is string[] {
+    return Array.isArray(value) && value.every(isText);
+}
+
 function isValidContent(value: unknown): boolean {
     if (!isObject(value) || !isText(value['title']) || !isText(value['report'])) {
         return false;
@@ -62,6 +66,12 @@ function badRequest(response: Response, message: string): void {
     response.status(400).json({ error: { message } });
 }
 
+// A ticket must only depend on tickets the store already knows about.
+async function missingDependencies(store: TicketStore, ids: string[]): Promise<string[]> {
+    const found = await Promise.all(ids.map(id => store.get(id)));
+    return ids.filter((_id, index) => found[index] === undefined);
+}
+
 export function createTicketsRouter(store: TicketStore): Router {
     const router = Router();
 
@@ -84,6 +94,15 @@ export function createTicketsRouter(store: TicketStore): Router {
             }
             if (ticket['estimate'] !== undefined && !isValidEstimate(ticket['estimate'])) {
                 return badRequest(response, 'An estimate needs impact, urgency, and effort, each from 1 to 5.');
+            }
+            if (ticket['dependsOnTicketIds'] !== undefined) {
+                if (!isValidDependsOn(ticket['dependsOnTicketIds'])) {
+                    return badRequest(response, 'dependsOnTicketIds must be a list of ticket ids.');
+                }
+                const missing = await missingDependencies(store, ticket['dependsOnTicketIds']);
+                if (missing.length > 0) {
+                    return badRequest(response, `A ticket cannot depend on a ticket that does not exist: ${missing.join(', ')}.`);
+                }
             }
             const created = await store.create(ticket as unknown as NewProblemTicket, dataKind as DataKind);
             response.status(201).json({ data: created });

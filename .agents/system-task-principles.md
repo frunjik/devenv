@@ -48,7 +48,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Coding tasks that reach a validated, stable state.
 - **Rule:** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
 - **Exception:** Do not commit past an explicit user review; pause for that review instead. Keep the commit scoped to the completed work and follow the repository's commit-message conventions.
-- **Message approval (recorded 2026-10-06):** Before running `git commit`, present the drafted commit message to the user and let them approve it, edit it, or choose among alternatives, rather than committing it unilaterally. Applies to every commit, including regular feature work, not only meta/process changes. Default to a short, subject-only message (no body) unless the user asks for more detail on a given commit.
+- **Message approval (recorded 2026-10-06):** Before running `git commit`, present the drafted commit message to the user and let them approve it, edit it, or choose among alternatives, rather than committing it unilaterally. Applies to every commit, including regular feature work, not only meta/process changes. The current default is short and subject-only, but this is a revisable preference, not a fixed rule — the user may change it at any point, and a past choice of style is not binding on later commits.
 
 ### P-006 — Ask Before Changing Surrounding Code
 
@@ -117,3 +117,5 @@ These principles are active from their recorded date and apply to future work in
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.
+
+Stylistic and naming choices the user makes within these principles (for example a commit-message length, a word for `XX`/`NN` per P-011, or a candidate Term per P-012) are current preferences, not permanent commitments. Treat them as part of an ongoing experiment: it is fine, and expected, for the user to revisit any of them later without needing special justification, and a past choice does not bind a future one.

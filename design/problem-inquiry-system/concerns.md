@@ -651,6 +651,8 @@ No ticket-to-ticket "depends on" relation exists yet; the only current relation 
 
 **Third slice built (2026-10-06):** `POST /tickets` now refuses to create a ticket whose `dependsOnTicketIds` names a ticket id the store does not know, with a 400 listing the missing id(s), mirroring the existence check SC-029's duplicate-of now has. The check runs before `store.create`, so no partially-dependent ticket is ever stored; the existing refusal-reason surfacing (SC-029's fourth slice) already shows this message to the user without further client changes. Server suite 165 tests, 100% coverage; client suite unaffected (293 tests). Cycle detection and a multi-select picker are still open; a dependency can still only be set at creation time, not via the edit form.
 
+**Insight, not a slice (2026-10-06):** With the existence check above, a cycle is currently impossible to create: `dependsOnTicketIds` can only be set at ticket creation (no edit-form support yet), ids are server-assigned only once a ticket is created, and a dependency must already exist in the store. So a new ticket can only depend on strictly earlier tickets — the dependency graph is a DAG by construction, and self-dependency is equally impossible (a ticket cannot name its own id before the server has assigned one). Cycle detection has no bug to guard against today; it only becomes a live question if `dependsOnTicketIds` becomes editable after creation (at which point two already-existing tickets could be pointed at each other). Left as an open item for that future slice, not built now.
+
 ### SC-048 — Validate the layout and style of every route
 
 **Kind:** Behavior · **Status:** Ready · **Depends on:** None

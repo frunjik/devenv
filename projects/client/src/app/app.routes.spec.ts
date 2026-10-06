@@ -4,10 +4,10 @@ import { SystemPlanComponent } from './system-plan/system-plan.component';
 import { routes } from './app.routes';
 
 describe('routes', () => {
-    it('redirects only the empty path to the system plan', () => {
+    it('redirects only the empty path to problem inquiry', () => {
         expect(routes.find(route => route.path === '')).toEqual({
             path: '',
-            redirectTo: '/system-plan',
+            redirectTo: '/problem-inquiry',
             pathMatch: 'full',
         });
     });

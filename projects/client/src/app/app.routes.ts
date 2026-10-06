@@ -10,7 +10,7 @@ import { SystemPlanComponent } from './system-plan/system-plan.component';
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: '/system-plan',
+        redirectTo: '/problem-inquiry',
         pathMatch: 'full',
     },
     {

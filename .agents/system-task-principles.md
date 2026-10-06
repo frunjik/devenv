@@ -101,6 +101,7 @@ These principles are active from their recorded date and apply to future work in
 - **User override option:** The user may, at their own discretion and at any time, redefine `NN`, `XX` (the prefix shared by a whole category, for example all of `SC`), or both. The two scopes are written down differently:
   - A word for one concern's `NN` is local to that concern: record it in that concern's own entry in `concerns.md` and use it in that concern's subsequent commit subjects.
   - A word for `XX` renames the whole category, not one entry: reflect it everywhere that prefix's meaning is documented or used as a literal pattern — at minimum the Concern Record format/legend in `concerns.md`, the "Three ID schemes" Meta Note, and this principle itself.
+- **Standing default (recorded 2026-10-06):** For now, always use `SystemConcern-NN` (PascalCase, no space or underscore) as the commit-subject prefix in place of `SC-NN`, without asking each time — the user settled on this after trying several styles live (Meta-008, Meta-017). This is still a current preference, not a permanent rule (see "Applying the Register" below); revisit if the user says otherwise.
   Do not pre-assign such words unprompted; this stays an option the user invokes, not a default naming step.
 
 ### P-012 — Review Naming Decisions From Either Direction

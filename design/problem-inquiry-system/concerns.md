@@ -427,6 +427,8 @@ type Assignee =
   | { kind: 'role'; role: string };    // fixed enum vs free text undefined
 ```
 Blocking questions before this could be built: what defines a Team and where is membership managed? Is a Role a closed set or free text? Does "Resolved by" (today shows one specific person) still make sense for a team/role assignment? Revisit only if a concrete scenario needs it.
+
+**Third slice built (2026-10-06):** Sort by assignee added to the ticket list's existing sort control, alongside creation time, title, scope, and reporter. Sorts ascending A-to-Z by default; tickets with no current assignee (unstored, or a state that carries none) sort last in either direction, same rule as the other sortable fields. Assignee is not added to the free-text search, consistent with SC-026's existing decision to keep reporter out of search too. Client suite 285 tests, 100% coverage on the touched component; build passes. Still open: team or role (see Type review above, not yet justified) and who may assign (blocked on login, SC-028).
 
 ### SC-030 — Define a calm, consistent color system
 
@@ -673,6 +675,16 @@ SC-024 left this as an explicitly anticipated future refinement ("a keyboard sho
 **Candidates considered (10 brainstormed, 2026-10-06):** The Konami Code (`↑↑↓↓←→←→BA`), The Meta Combo (`Alt+Shift+M`), The Console Key (`` Ctrl+` ``), The Dev Unlock (`Ctrl+Alt+Shift+D`), The Spellcast (type `m`,`e`,`t`,`a` in sequence), The Long Shift (hold `Shift` 3s), The Dot Toggle (`Ctrl+.`), The Double Escape (press `Esc` twice), The Function Flip (`Shift+F2`), The Corner Tap (`Alt+Click` the toggle 3× fast).
 **User's preferred pair (2026-10-06):** **The Konami Code** and **The Function Flip** (`Shift+F2`); not yet narrowed to one.
 **Open questions:** One trigger or both? Does a key-sequence listener (Konami Code) need to ignore input-field focus (so typing "up up down down..." in a text box doesn't accidentally fire it), and does `Shift+F2` collide with any existing browser, OS, or in-app binding (Monaco editor's own shortcuts, for instance)? Should activating it show any feedback (a toast, a brief flash), or stay completely silent so it is genuinely hidden? Does it only show the layer (one-way reveal) or also hide it again (toggle both ways)? Where does the listener live — a new small service parallel to `MetaLayerService`, or inside the existing service/component?
+
+### SC-052 — Should a review agent periodically check this agent's own work?
+
+**Kind:** Evaluation · **Status:** Ready · **Depends on:** None (related to SC-039)
+
+All work in this session is self-assessed by the same agent that performs it: tests green, 100% coverage, a build that passes, then a commit — with no independent second opinion. Consider whether a separate review agent (this environment offers read-only `code-review` and `rubber-duck` agent types, among others) should periodically check recent work — a diff, a slice, or a batch of commits — as a check distinct from self-reported test and coverage results.
+
+**Working boundary:** Decide the model (cadence, trigger, what it may flag or require) before building any automation; this is a process/evaluation concern, not a code change.
+**Open questions:** Triggered on a schedule (tied to the meta-meta cadence in P-010, every ~10 feature slices) or only on demand when asked? Does the review agent only report findings (as a one-off, like the SC-039 trial) or can it require fixes before a commit proceeds? Does it review the diff since the last review, a single slice, or specific concerns? How does this relate to SC-039 (mutation testing) — both are "a different angle on checking this agent's own self-grading"; worth doing together, or is one redundant given the other? Do review findings get folded back into `concerns.md` reliably, or risk being lost the way the QA findings were the first time (Meta-010)?
+**Vocabulary candidates (P-009, not yet agreed):** "review agent", "agent-agent review", "second opinion".
 
 ## Working Sequence
 

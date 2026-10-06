@@ -209,6 +209,27 @@ describe('FramedTicketsListComponent', () => {
             expect(ids()).toEqual(['a1', 'z1', 'z2']);
         });
 
+        it('sorts by assignee, putting unassigned or unstored tickets last', () => {
+            function assignedTo(id: string, assigneeId: string): StoredTicket {
+                return { ...ticket(id), status: { state: 'assigned', assigneeId }, version: 1, dataKind: 'real' };
+            }
+
+            function openNoAssignee(id: string): StoredTicket {
+                return { ...ticket(id), status: { state: 'open' }, version: 1, dataKind: 'real' };
+            }
+
+            setTickets([
+                assignedTo('zed', 'zed'),
+                assignedTo('ann', 'ann'),
+                ticket('unstored'),
+                openNoAssignee('open-no-assignee'),
+            ]);
+
+            sortBy('assignee');
+
+            expect(ids()).toEqual(['ann', 'zed', 'unstored', 'open-no-assignee']);
+        });
+
         it('puts tickets with missing values last in either direction', () => {
             setTickets([
                 ticket('none', { reportedBy: '' }),

@@ -45,6 +45,7 @@ export class FramedTicketsListComponent {
         { value: 'title', label: 'Title' },
         { value: 'scope', label: 'Scope level' },
         { value: 'reporter', label: 'Reporter' },
+        { value: 'assignee', label: 'Assignee' },
     ];
 
     readonly stateFilterOptions: readonly { value: TicketStateFilter; label: string }[] = [
@@ -246,7 +247,7 @@ export class FramedTicketsListComponent {
     }
 }
 
-type SortProperty = 'created' | 'title' | 'scope' | 'reporter';
+type SortProperty = 'created' | 'title' | 'scope' | 'reporter' | 'assignee';
 type TicketStateFilter = 'all' | TicketStatus['state'];
 
 const STATE_SUMMARY_ORDER: readonly { key: TicketStateTallyKey; label: string }[] = [
@@ -265,6 +266,7 @@ const DIRECTION_LABELS: Record<SortProperty, { ascending: string; descending: st
     title: { ascending: 'A to Z', descending: 'Z to A' },
     scope: { ascending: 'Narrowest first', descending: 'Widest first' },
     reporter: { ascending: 'A to Z', descending: 'Z to A' },
+    assignee: { ascending: 'A to Z', descending: 'Z to A' },
 };
 
 function normalize(text: string): string {
@@ -281,6 +283,17 @@ function searchableText(ticket: ProblemTicket): string {
     ].join('\n'));
 }
 
+// Returns the current assigneeId for a stored ticket in a state that carries one, else undefined.
+function assigneeOf(ticket: ProblemTicket): string | undefined {
+    const status = (ticket as Partial<StoredTicket>).status;
+    if (!status) {
+        return undefined;
+    }
+    return status.state === 'assigned' || status.state === 'resolved' || status.state === 'closed'
+        ? status.assigneeId
+        : undefined;
+}
+
 // Returns undefined for a missing value so such tickets sort last in either direction.
 function sortKey(ticket: ProblemTicket, property: SortProperty): string | number | undefined {
     switch (property) {
@@ -294,5 +307,7 @@ function sortKey(ticket: ProblemTicket, property: SortProperty): string | number
             return SCOPE_ORDER.indexOf(ticket.scope.level);
         case 'reporter':
             return ticket.reportedBy.trim() ? ticket.reportedBy : undefined;
+        case 'assignee':
+            return assigneeOf(ticket);
     }
 }

@@ -559,6 +559,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-024'],
             summary: 'An anticipated SC-024 refinement; 10 candidates brainstormed, user prefers the Konami Code and Shift+F2, not yet narrowed to one.',
         },
+        {
+            id: 'SC-052',
+            title: "Should a review agent periodically check this agent's own work?",
+            kind: 'Evaluation',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'Consider an independent code-review/rubber-duck pass as a check distinct from self-reported tests and coverage.',
+        },
     ];
 
     get validatedCount(): number {

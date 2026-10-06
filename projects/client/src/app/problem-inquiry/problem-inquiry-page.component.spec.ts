@@ -65,6 +65,28 @@ describe('ProblemInquiryPageComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('unreviewed');
     });
 
+    it('records a rejected or deferred proposal without adding it to the accepted-note list', () => {
+        setText('#source-text', 'A report that turns out not to describe a real condition.');
+        setText('#interpretation', 'A tentative interpretation.');
+        submitForm();
+        fixture.nativeElement.querySelector('#reject-proposal').click();
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.reviewedProposals).toHaveLength(1);
+        expect(fixture.componentInstance.reviewedProposals[0].decision.outcome).toBe('rejected');
+        expect(fixture.nativeElement.textContent).toContain('No accepted notes yet.');
+        expect(fixture.nativeElement.textContent).not.toContain('A report that turns out not to describe a real condition.');
+
+        setText('#source-text', 'A second report, deferred for later.');
+        setText('#interpretation', 'Another tentative interpretation.');
+        submitForm();
+        fixture.nativeElement.querySelector('#defer-proposal').click();
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.reviewedProposals).toHaveLength(2);
+        expect(fixture.componentInstance.reviewedProposals[1].decision.outcome).toBe('deferred');
+    });
+
     it('creates and lists a ticket only after explicit framing from an accepted note', () => {
         setText('#source-text', 'The scan timed out and may have been applied.');
         setText('#interpretation', 'The operation outcome is uncertain.');

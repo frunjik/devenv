@@ -181,6 +181,41 @@ describe('InputConverterComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('Revised interpretation.');
     });
 
+    it('rejects a proposal, recording an optional reason and the time, and returns to the form', () => {
+        const reviewed: { proposal: NoteProposal; decision: { outcome: string; reason?: string; decidedAt: string } }[] = [];
+        fixture.componentInstance.proposalReviewed.subscribe(entry => reviewed.push(entry));
+        enterText('#source-text', 'A source report.');
+        enterText('#interpretation', 'An interpretation.');
+        submitForm();
+
+        enterText('#review-reason', 'Does not describe a real condition.');
+        fixture.nativeElement.querySelector('#reject-proposal').click();
+        fixture.detectChanges();
+
+        expect(reviewed).toHaveLength(1);
+        expect(reviewed[0].proposal).toMatchObject({ sourceText: 'A source report.' });
+        expect(reviewed[0].decision.outcome).toBe('rejected');
+        expect(reviewed[0].decision.reason).toBe('Does not describe a real condition.');
+        expect(Number.isNaN(Date.parse(reviewed[0].decision.decidedAt))).toBe(false);
+        expect(fixture.nativeElement.querySelector('#accept-note')).toBeNull();
+        expect(fixture.nativeElement.querySelector('#source-text')).not.toBeNull();
+    });
+
+    it('defers a proposal without a reason, leaving reason undefined', () => {
+        const reviewed: { proposal: NoteProposal; decision: { outcome: string; reason?: string } }[] = [];
+        fixture.componentInstance.proposalReviewed.subscribe(entry => reviewed.push(entry));
+        enterText('#source-text', 'A source report.');
+        enterText('#interpretation', 'An interpretation.');
+        submitForm();
+
+        fixture.nativeElement.querySelector('#defer-proposal').click();
+        fixture.detectChanges();
+
+        expect(reviewed).toHaveLength(1);
+        expect(reviewed[0].decision.outcome).toBe('deferred');
+        expect(reviewed[0].decision.reason).toBeUndefined();
+    });
+
     function enterText(selector: string, value: string): void {
         const input = fixture.nativeElement.querySelector(
             selector,

@@ -12,7 +12,7 @@
     @if (storageError) {
         <p class="storage-error" role="alert">{{ storageError }}</p>
     }
-    <app-input-converter (noteAccepted)="addNote($event)" />
+    <app-input-converter (noteAccepted)="addNote($event)" (proposalReviewed)="reviewProposal($event)" />
     <app-imported-notes-list [notes]="visibleNotes" />
     <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
     <app-framed-tickets-list

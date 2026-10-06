@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { ImportedNote, NoteProposal, SourceOrigin, SourceReference } from '@shared';
+import { ImportedNote, NoteProposal, NoteReviewDecision, SourceOrigin, SourceReference } from '@shared';
 
 @Component({
     selector: 'app-input-converter',
@@ -63,6 +63,11 @@ import { ImportedNote, NoteProposal, SourceOrigin, SourceReference } from '@shar
                 </ul>
                 <button id="edit-proposal" type="button" (click)="editProposal()">Edit proposal</button>
                 <button id="accept-note" type="button" (click)="acceptProposal(proposal)">Accept note</button>
+
+                <label for="review-reason">Reason (optional, for reject or defer)</label>
+                <textarea id="review-reason" #reviewReason></textarea>
+                <button id="reject-proposal" type="button" (click)="reviewProposal(proposal, 'rejected', reviewReason.value)">Reject</button>
+                <button id="defer-proposal" type="button" (click)="reviewProposal(proposal, 'deferred', reviewReason.value)">Defer</button>
             </section>
         }
     `,
@@ -128,6 +133,7 @@ import { ImportedNote, NoteProposal, SourceOrigin, SourceReference } from '@shar
 export class InputConverterComponent {
     @Output() readonly proposalCreated = new EventEmitter<NoteProposal>();
     @Output() readonly noteAccepted = new EventEmitter<ImportedNote>();
+    @Output() readonly proposalReviewed = new EventEmitter<{ proposal: NoteProposal; decision: NoteReviewDecision }>();
     validationMessage = '';
     pendingProposal: NoteProposal | null = null;
     private sourceOrigin: SourceOrigin = 'unknown';
@@ -180,6 +186,19 @@ export class InputConverterComponent {
             id: `note-${this.nextNoteNumber++}`,
             proposal,
             acceptedAt: new Date().toISOString(),
+        });
+        this.pendingProposal = null;
+    }
+
+    reviewProposal(proposal: NoteProposal, outcome: 'rejected' | 'deferred', reasonText: string): void {
+        const reason = reasonText.trim();
+        this.proposalReviewed.emit({
+            proposal,
+            decision: {
+                outcome,
+                ...(reason ? { reason } : {}),
+                decidedAt: new Date().toISOString(),
+            },
         });
         this.pendingProposal = null;
     }

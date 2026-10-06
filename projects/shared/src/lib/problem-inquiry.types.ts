@@ -153,6 +153,23 @@ export interface ImportedNote {
     acceptedAt: string;
 }
 
+// A decision to reject or defer a note proposal, distinct from acceptance (ImportedNote).
+// Kept (not discarded) so the decision and its reasoning remain visible later (2026-10-06, agent
+// choice per SC-020, revisable): a rejected proposal is terminal for this slice, a deferred one may
+// be revisited. A reason is optional, consistent with this system's other optional free-text fields.
+export type NoteReviewOutcome = 'rejected' | 'deferred';
+
+export interface NoteReviewDecision {
+    outcome: NoteReviewOutcome;
+    reason?: string;
+    decidedAt: string;
+}
+
+export interface ReviewedNoteProposal {
+    proposal: NoteProposal;
+    decision: NoteReviewDecision;
+}
+
 export interface ProblemSet {
     id: string;
     title: string;

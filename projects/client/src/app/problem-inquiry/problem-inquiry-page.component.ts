@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent } from '@shared';
+import { DataKind, ImportedNote, NewProblemTicket, NoteProposal, NoteReviewDecision, ProblemTicket, ReviewedNoteProposal, SourceOrigin, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent } from '@shared';
 import { BackendService } from '../backend.service';
 import { FramedTicketsListComponent } from './framed-tickets-list/framed-tickets-list.component';
 import { ImportedNotesListComponent } from './imported-notes-list/imported-notes-list.component';
@@ -24,6 +24,7 @@ export class ProblemInquiryPageComponent implements OnInit {
     private readonly backend = inject(BackendService);
 
     notes: readonly ImportedNote[] = [];
+    reviewedProposals: readonly ReviewedNoteProposal[] = [];
     tickets: readonly (ProblemTicket | StoredTicket)[] = [];
     histories: Readonly<Record<string, readonly TicketHistoryEvent[]>> = {};
     showSamples = true;
@@ -51,6 +52,10 @@ export class ProblemInquiryPageComponent implements OnInit {
 
     addNote(note: ImportedNote): void {
         this.notes = [...this.notes, note];
+    }
+
+    reviewProposal({ proposal, decision }: { proposal: NoteProposal; decision: NoteReviewDecision }): void {
+        this.reviewedProposals = [...this.reviewedProposals, { proposal, decision }];
     }
 
     addTicket(ticket: ProblemTicket): void {

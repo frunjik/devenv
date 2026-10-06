@@ -307,9 +307,9 @@ export class SystemPlanComponent {
             id: 'SC-020',
             title: 'Record note review decisions',
             kind: 'Domain',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-006'],
-            summary: 'Decide whether rejecting or deferring a note proposal is recorded, and what a decision records.',
+            summary: 'Reject/Defer buttons record a decision (kept, optional reason); no history view shown yet.',
         },
         {
             id: 'SC-021',

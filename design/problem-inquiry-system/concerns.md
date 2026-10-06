@@ -294,12 +294,14 @@ Clarify the meaning and purpose of a “concern” in the system plan, including
 
 ### SC-020 — Record note review decisions
 
-**Kind:** Domain · **Status:** Ready · **Depends on:** SC-006
+**Kind:** Domain · **Status:** In progress · **Depends on:** SC-006
 
 Decide whether rejecting or deferring a note proposal is recorded, and what a decision records (outcome, reason, time). Today only acceptance exists.
 
 **Working boundary:** Decide the policy first; do not add a review-decision Type until its fields are agreed.
 **Open questions:** Are rejected proposals kept or discarded? Is a reason required? Can a deferred proposal be revisited?
+**Policy decided (agent, 2026-10-06; exploratory, revisable):** Kept, not discarded — consistent with this system's general habit of not silently losing records (SC-002's provenance stance; even a duplicate ticket is kept, not deleted). A reason is optional free text, not required, matching the light-touch style of the rest of this form. Rejection is terminal for this slice; deferral is meant to be revisited later, though no revisit flow is built yet (only the decision is recorded).
+**First slice built (2026-10-06):** New shared Types `NoteReviewOutcome` (`'rejected' | 'deferred'`), `NoteReviewDecision` (outcome, optional reason, decidedAt), and `ReviewedNoteProposal` (the proposal plus its decision). The pending-proposal review screen gained a reason field and Reject/Defer buttons alongside Accept and Edit; choosing either emits the decision and returns to the entry form, the same way Accept does. The page stores reviewed proposals in a new in-memory `reviewedProposals` list; per SC-007's existing boundary, there is no history view yet — the list exists but is not displayed anywhere. Client suite 288 tests, 100% coverage on the touched files; build passes.
 
 ### SC-021 — Define ticket lifecycle
 

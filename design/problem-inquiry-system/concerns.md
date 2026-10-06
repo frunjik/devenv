@@ -437,13 +437,15 @@ This app is meant to be looked at for long periods. Define a small, deliberate p
 
 ### SC-031 — Show the Red-Green-Refactor cycle in the meta app
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-024
+**Kind:** Design · **Status:** In progress · **Depends on:** SC-024
 
 Make the current Red-Green-Refactor phase (P-001) visible in the meta (host) layer, so it is clear at a glance whether the work is in Red (a failing test), Green (passing), or Refactor, and what the last test run showed.
 
 **Working boundary:** Exploration and decision first; no new behavior until the source of the phase is agreed. The meta layer already shows the last test run result (passed, failed, error) and the current task in the status toolbar; this concern decides whether the phase is derived from that or recorded explicitly.
 **Open questions:** Is the phase derived from test results (failing means Red, passing after Red means Green) or set explicitly by whoever is working? How is Refactor detected, since a passing run looks the same as Green? Does it show per task or per concern (SC-NN)? Where does it appear (status toolbar, a small indicator next to the current task, or a history of cycles)? Is a history of phase changes kept (and where, see SC-028)? Does it also show P-004 coverage and the other principle gates?
 **Vocabulary candidates (P-009, not yet agreed):** "phase", "cycle", "Red", "Green", "Refactor".
+
+**Mechanical slice built (user choice 2026-10-06, keeping the existing display fresh):** The status toolbar's "Tests: passed/failed/error" indicator (already derived from the last cached test run) loaded once on page load; it now polls every 30 seconds through `TestRunCacheStatusService.startPolling()`/`stopPolling()`, the same timer pattern as the Git status and current-task indicators, wired into the app shell's `ngOnInit`/`ngOnDestroy`. This keeps today's passed/failed/error display live after a run finishes elsewhere, without resolving this concern's open design questions (deriving Red versus Refactor, placement, history, or showing coverage/other gates). Client suite 267 tests, 100% coverage on the touched service and app component; build passes.
 
 ### SC-032 — Show the current task in the meta toolbar
 

@@ -395,7 +395,7 @@ export class SystemPlanComponent {
             id: 'SC-031',
             title: 'Show the Red-Green-Refactor cycle in the meta app',
             kind: 'Design',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-024'],
             summary: 'Make the current Red, Green, or Refactor phase visible in the meta layer; decide whether it is derived or recorded.',
         },

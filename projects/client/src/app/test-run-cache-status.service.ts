@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription, timer } from 'rxjs';
 import { BackendService, type TestRunCacheStatus } from './backend.service';
 
 @Injectable({ providedIn: 'root' })
@@ -8,7 +9,22 @@ export class TestRunCacheStatusService {
     error = '';
     isLoading = false;
 
+    private polling?: Subscription;
+
     constructor(private backend: BackendService) {}
+
+    startPolling(): void {
+        if (this.polling) {
+            return;
+        }
+        this.refresh();
+        this.polling = timer(30_000, 30_000).subscribe(() => this.refresh());
+    }
+
+    stopPolling(): void {
+        this.polling?.unsubscribe();
+        this.polling = undefined;
+    }
 
     refresh(): void {
         this.isLoading = true;

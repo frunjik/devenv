@@ -46,12 +46,13 @@ export class AppComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.gitStatus.startPolling();
         this.currentEntry.startPolling();
-        this.testRunCacheStatus.refresh();
+        this.testRunCacheStatus.startPolling();
     }
 
     ngOnDestroy(): void {
         this.gitStatus.stopPolling();
         this.currentEntry.stopPolling();
+        this.testRunCacheStatus.stopPolling();
     }
 
     commitChanges(): void {

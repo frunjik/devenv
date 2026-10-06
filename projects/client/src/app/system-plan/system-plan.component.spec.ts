@@ -21,8 +21,8 @@ describe('SystemPlanComponent', () => {
 
         expect(text).toContain('System plan');
         expect(text).toContain('21 validated');
-        expect(text).toContain('6 in progress');
-        expect(text).toContain('16 ready');
+        expect(text).toContain('7 in progress');
+        expect(text).toContain('15 ready');
         expect(text).toContain('Distinguish input from ticket');
         expect(text).toContain('Visualize the current system plan');
         expect(text).toContain('Define note-to-ticket relationships');

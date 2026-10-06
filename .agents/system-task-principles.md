@@ -89,6 +89,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Consider whether the work has produced knowledge worth recording at the outer (meta) level, such as improvements to the SC-NN numbering and concern conventions, or the realization that the same thing has been done repeatedly in different shapes. If so, make a note on the meta level.
 - **Practice:** Record the note in `design/problem-inquiry-system/concerns.md` under "Meta Notes". Notes are observations and proposals, not decisions; raise consequential ones with the user.
 
+### P-011 — Identify the Referenced Concern in Commit Messages
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction
+- **Applies to:** Commit messages for changes that implement, extend, or register a System Concern (SC-NN).
+- **Rule:** When a commit's primary subject is one or more SC-NN concerns, start the commit subject with the identifier(s) followed by a colon and a short phrase describing what this commit contributes. That phrase describes this change, not the concern as a whole: a concern's Title in `concerns.md` is stable across every slice built toward it, while the commit phrase is specific to the current slice and will differ between commits against the same SC-NN.
+- **Practice:** Prefer existing, already-understood vocabulary (a commit subject line) over inventing a new proprietary term for this pairing; the "Three ID schemes" meta note already flags the risk of home-grown naming unrelated to external conventions. When a commit touches several concerns, either lead with the most central one or list them (for example "Add SC-045 and SC-046: export to and import from external systems").
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

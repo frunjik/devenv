@@ -17,6 +17,14 @@
                     }
                 </select>
             </label>
+            <label class="state-filter">
+                Filter by state
+                <select [value]="stateFilter" (change)="stateFilter = $any($event.target).value">
+                    @for (option of stateFilterOptions; track option.value) {
+                        <option [value]="option.value" [selected]="option.value === stateFilter">{{ option.label }}</option>
+                    }
+                </select>
+            </label>
             <label class="metric-method">
                 Metric
                 <select [value]="metricMethod" (change)="metricMethod = $any($event.target).value">

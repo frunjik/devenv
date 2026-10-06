@@ -330,6 +330,102 @@ describe('FramedTicketsListComponent', () => {
         });
     });
 
+    describe('filtering by lifecycle state', () => {
+        function stored(id: string, status: TicketStatus): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };
+        }
+
+        function ids(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-id') as NodeListOf<HTMLElement>)
+                .map(element => element.textContent?.trim() ?? '');
+        }
+
+        function filterByState(state: string): void {
+            const select = fixture.nativeElement.querySelector('.state-filter select') as HTMLSelectElement;
+            select.value = state;
+            select.dispatchEvent(new Event('change'));
+            fixture.detectChanges();
+        }
+
+        function search(text: string): void {
+            const input = fixture.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+            input.value = text;
+            input.dispatchEvent(new Event('input'));
+            fixture.detectChanges();
+        }
+
+        it('shows every ticket, stored or not, under the default "All states" filter', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('open', { state: 'open' }),
+                stored('assigned', { state: 'assigned', assigneeId: 'user-1' }),
+                makeTicket('unstored', 'Not yet saved', undefined),
+            ]);
+            fixture.detectChanges();
+
+            expect(ids()).toEqual(['open', 'assigned', 'unstored']);
+        });
+
+        it('narrows the list to tickets in the chosen state', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('open', { state: 'open' }),
+                stored('assigned', { state: 'assigned', assigneeId: 'user-1' }),
+                stored('resolved', { state: 'resolved', assigneeId: 'user-1' }),
+                stored('closed', { state: 'closed' }),
+                stored('duplicate', { state: 'duplicate', duplicateOfId: 'open' }),
+            ]);
+            fixture.detectChanges();
+
+            filterByState('assigned');
+            expect(ids()).toEqual(['assigned']);
+
+            filterByState('resolved');
+            expect(ids()).toEqual(['resolved']);
+
+            filterByState('closed');
+            expect(ids()).toEqual(['closed']);
+
+            filterByState('duplicate');
+            expect(ids()).toEqual(['duplicate']);
+        });
+
+        it('excludes a ticket that is not yet stored from every specific state', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('open', { state: 'open' }),
+                makeTicket('unstored', 'Not yet saved', undefined),
+            ]);
+            fixture.detectChanges();
+
+            filterByState('open');
+
+            expect(ids()).toEqual(['open']);
+        });
+
+        it('combines the state filter with search', () => {
+            fixture.componentRef.setInput('tickets', [
+                { ...stored('open-a', { state: 'open' }), report: 'Barcode scanner froze.' },
+                { ...stored('open-b', { state: 'open' }), report: 'Unrelated matter.' },
+                { ...stored('closed-a', { state: 'closed' }), report: 'Barcode scanner froze.' },
+            ]);
+            fixture.detectChanges();
+
+            filterByState('open');
+            search('scanner');
+
+            expect(ids()).toEqual(['open-a']);
+        });
+
+        it('shows a no-match message when the state filter leaves nothing, without altering the tickets', () => {
+            const tickets = [stored('open', { state: 'open' })];
+            fixture.componentRef.setInput('tickets', tickets);
+            fixture.detectChanges();
+
+            filterByState('closed');
+
+            expect(fixture.nativeElement.textContent).toContain('No matching tickets.');
+            expect(tickets.length).toBe(1);
+        });
+    });
+
     describe('assigning', () => {
         function stored(id: string, status: TicketStatus): StoredTicket {
             return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 3, dataKind: 'real' };

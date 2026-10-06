@@ -46,15 +46,25 @@ export class FramedTicketsListComponent {
         { value: 'reporter', label: 'Reporter' },
     ];
 
+    readonly stateFilterOptions: readonly { value: TicketStateFilter; label: string }[] = [
+        { value: 'all', label: 'All states' },
+        { value: 'open', label: 'Open' },
+        { value: 'assigned', label: 'Assigned' },
+        { value: 'resolved', label: 'Resolved' },
+        { value: 'closed', label: 'Closed' },
+        { value: 'duplicate', label: 'Duplicate' },
+    ];
+
     query = '';
     sortProperty: SortProperty = 'created';
     ascending = false;
+    stateFilter: TicketStateFilter = 'all';
 
     get displayedTickets(): readonly ProblemTicket[] {
         const needle = normalize(this.query.trim());
-        const matching = needle
-            ? this.tickets.filter(ticket => searchableText(ticket).includes(needle))
-            : [...this.tickets];
+        const matching = this.tickets
+            .filter(ticket => !needle || searchableText(ticket).includes(needle))
+            .filter(ticket => this.matchesStateFilter(ticket));
         return matching.sort((a, b) => this.compare(a, b));
     }
 
@@ -196,6 +206,10 @@ export class FramedTicketsListComponent {
         return 'status' in ticket ? ticket.status : undefined;
     }
 
+    private matchesStateFilter(ticket: ProblemTicket | StoredTicket): boolean {
+        return this.stateFilter === 'all' || this.statusOf(ticket)?.state === this.stateFilter;
+    }
+
     stateLabel(status: TicketStatus): string {
         switch (status.state) {
             case 'open': return 'Open';
@@ -224,6 +238,7 @@ export class FramedTicketsListComponent {
 }
 
 type SortProperty = 'created' | 'title' | 'scope' | 'reporter';
+type TicketStateFilter = 'all' | TicketStatus['state'];
 
 const SCOPE_ORDER: readonly ScopeLevel[] = ['operation', 'workflow', 'system', 'cross-system'];
 

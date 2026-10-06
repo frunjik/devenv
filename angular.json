@@ -58,6 +58,7 @@
               "outputHashing": "all"
             },
             "development": {
+              "tsConfig": "projects/client/tsconfig.app.dev.json",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true

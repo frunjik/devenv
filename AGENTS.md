@@ -19,6 +19,8 @@ npm run dev:client
 npm run dev:server
 ```
 
+Client development resolves `@shared` from source through `projects/client/tsconfig.app.dev.json`; no separate shared build/watch process is required. Production builds still use the packaged library.
+
 ## Build and test
 
 Build shared contracts before the client that consumes them:

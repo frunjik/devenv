@@ -18,6 +18,7 @@ npm start
 ```
 
 `npm run dev:server` executes `tsx watch projects/server/dev.ts`. `npm start` runs the local Angular CLI development server.
+The client development configuration uses `projects/client/tsconfig.app.dev.json` to resolve `@shared` from its source public API. Angular watches shared source in the same build graph as the client; a separate shared watcher or initial shared build is unnecessary. Production builds retain the packaged-library mapping and build order below.
 
 ## Build
 

@@ -1,6 +1,5 @@
-import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import fs from 'fs';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
@@ -12,6 +11,13 @@ import {
     type ServerListener,
 } from '../src/public-api';
 
+jest.mock('fs', () => {
+    const actual = jest.requireActual<typeof import('fs')>('fs');
+    return { ...actual, promises: { ...actual.promises, readFile: jest.fn() } };
+});
+
+const fileReader = jest.mocked(fs.promises.readFile);
+
 describe('authentication public API', () => {
     let root: string;
     let app: ReturnType<typeof createApp>;
@@ -19,17 +25,13 @@ describe('authentication public API', () => {
         response.status(500).end();
     };
 
-    beforeEach(async () => {
-        root = await mkdtemp(join(tmpdir(), 'devenv-server-test-'));
-        await mkdir(join(root, 'nested'));
-        await writeFile(join(root, 'sample.txt'), 'initial');
+    beforeEach(() => {
+        root = process.cwd();
+        fileReader.mockReset();
+        fileReader.mockResolvedValue('initial');
         app = createApp(root);
         app.set('env', 'production');
         app.use(handleError);
-    });
-
-    afterEach(async () => {
-        await rm(root, { recursive: true, force: true });
     });
 
     it('allows unauthenticated requests with the development authentication service', async () => {
@@ -42,6 +44,7 @@ describe('authentication public API', () => {
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual({ data: 'initial' });
+            expect(fileReader).toHaveBeenCalledWith(join(root, 'sample.txt'), 'utf-8');
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];
@@ -95,6 +98,7 @@ describe('authentication public API', () => {
 
             expect(response.status).toBe(401);
             expect(response.body).toEqual({ error: { message: 'Authentication required' } });
+            expect(fileReader).not.toHaveBeenCalled();
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];
@@ -119,6 +123,7 @@ describe('authentication public API', () => {
             const response = await request(authenticatedApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(503);
+            expect(fileReader).not.toHaveBeenCalled();
         } finally {
             if (originalNodeEnv === undefined) {
                 delete process.env['NODE_ENV'];

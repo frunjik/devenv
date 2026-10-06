@@ -527,6 +527,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-021', 'SC-015'],
             summary: 'Decide whether a ticket "depends on" relation exists before weighing Graphviz, D2, a web graph library, or Three.js to render it.',
         },
+        {
+            id: 'SC-048',
+            title: 'Validate the layout and style of every route',
+            kind: 'Behavior',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'Systematically check every route at standard widths; 4 of 7 routes have no recorded check yet.',
+        },
     ];
 
     get validatedCount(): number {

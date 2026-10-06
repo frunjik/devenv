@@ -314,6 +314,64 @@ describe('FramedTicketsListComponent', () => {
         });
     });
 
+    describe('assigning', () => {
+        function stored(id: string, status: TicketStatus): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 3, dataKind: 'real' };
+        }
+
+        function assign(card: number, value: string): void {
+            const form = fixture.nativeElement.querySelectorAll('.assign-form')[card] as HTMLFormElement;
+            const input = form.querySelector('input') as HTMLInputElement;
+            input.value = value;
+            input.dispatchEvent(new Event('input'));
+            form.dispatchEvent(new Event('submit'));
+            fixture.detectChanges();
+        }
+
+        it('emits the ticket and the trimmed assignee when an open ticket is assigned', () => {
+            const requests: { ticket: StoredTicket; assigneeId: string }[] = [];
+            fixture.componentInstance.assignRequested.subscribe(request => requests.push(request));
+            const ticket = stored('a', { state: 'open' });
+            fixture.componentRef.setInput('tickets', [ticket]);
+            fixture.detectChanges();
+
+            assign(0, '  user-2 ');
+
+            expect(requests).toEqual([{ ticket, assigneeId: 'user-2' }]);
+            expect((fixture.nativeElement.querySelector('.assign-form input') as HTMLInputElement).value).toBe('');
+        });
+
+        it('does not emit for a blank assignee', () => {
+            const requests: unknown[] = [];
+            fixture.componentInstance.assignRequested.subscribe(request => requests.push(request));
+            fixture.componentRef.setInput('tickets', [stored('a', { state: 'open' })]);
+            fixture.detectChanges();
+
+            assign(0, '   ');
+
+            expect(requests).toEqual([]);
+        });
+
+        it('offers reassigning an assigned ticket', () => {
+            fixture.componentRef.setInput('tickets', [stored('a', { state: 'assigned', assigneeId: 'user-2' })]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelector('.assign-form button').textContent).toContain('Reassign');
+        });
+
+        it('offers no assignment for resolved, closed, duplicate, or unstored tickets', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('r', { state: 'resolved', assigneeId: 'u' }),
+                stored('c', { state: 'closed', assigneeId: 'u' }),
+                stored('d', { state: 'duplicate', duplicateOfId: 'x' }),
+                makeTicket('local', 'Local', undefined),
+            ]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelector('.assign-form')).toBeNull();
+        });
+    });
+
     describe('state badge', () => {
         function stored(id: string, status: TicketStatus): StoredTicket {
             return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };

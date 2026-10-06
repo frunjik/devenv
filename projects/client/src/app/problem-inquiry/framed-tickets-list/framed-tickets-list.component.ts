@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } from '@shared';
 
 @Component({
@@ -42,6 +42,16 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
                                     }
                                     <h3>{{ ticket.title }}</h3>
                                 </header>
+
+                                @if (canAssign(ticket)) {
+                                    <form class="assign-form" (submit)="requestAssign($event, ticket, assignee)">
+                                        <label>
+                                            Assignee
+                                            <input #assignee type="text" autocomplete="off">
+                                        </label>
+                                        <button type="submit">{{ isAssigned(ticket) ? 'Reassign' : 'Assign' }}</button>
+                                    </form>
+                                }
 
                                 <p><strong>Report</strong>: {{ ticket.report }}</p>
 
@@ -190,6 +200,20 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
             font-weight: 700;
         }
 
+        .assign-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 0.5rem;
+            margin-block: 0.5rem;
+        }
+
+        .assign-form label {
+            display: grid;
+            gap: 0.2rem;
+            font-weight: 600;
+        }
+
         .ticket-state {
             display: inline-block;
             margin: 0;
@@ -263,6 +287,7 @@ import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } f
 export class FramedTicketsListComponent {
     @Input() tickets: readonly (ProblemTicket | StoredTicket)[] = [];
     @Input() notes: readonly ImportedNote[] = [];
+    @Output() readonly assignRequested = new EventEmitter<{ ticket: StoredTicket; assigneeId: string }>();
 
     readonly sortOptions: readonly { value: SortProperty; label: string }[] = [
         { value: 'created', label: 'Creation time' },
@@ -295,6 +320,24 @@ export class FramedTicketsListComponent {
 
     toggleDirection(): void {
         this.ascending = !this.ascending;
+    }
+
+    canAssign(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {
+        const status = this.statusOf(ticket);
+        return status?.state === 'open' || status?.state === 'assigned';
+    }
+
+    isAssigned(ticket: ProblemTicket | StoredTicket): boolean {
+        return this.statusOf(ticket)?.state === 'assigned';
+    }
+
+    requestAssign(event: Event, ticket: ProblemTicket | StoredTicket, input: HTMLInputElement): void {
+        event.preventDefault();
+        const assigneeId = input.value.trim();
+        if (assigneeId && this.canAssign(ticket)) {
+            this.assignRequested.emit({ ticket, assigneeId });
+            input.value = '';
+        }
     }
 
     statusOf(ticket: ProblemTicket | StoredTicket): TicketStatus | undefined {

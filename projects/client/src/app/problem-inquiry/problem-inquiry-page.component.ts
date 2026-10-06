@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin } from '@shared';
+import { HttpErrorResponse } from '@angular/common/http';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket } from '@shared';
 import { BackendService } from '../backend.service';
 import { FramedTicketsListComponent } from './framed-tickets-list/framed-tickets-list.component';
 import { ImportedNotesListComponent } from './imported-notes-list/imported-notes-list.component';
@@ -33,7 +34,11 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
             <app-input-converter (noteAccepted)="addNote($event)" />
             <app-imported-notes-list [notes]="visibleNotes" />
             <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
-            <app-framed-tickets-list [tickets]="visibleTickets" [notes]="visibleNotes" />
+            <app-framed-tickets-list
+                [tickets]="visibleTickets"
+                [notes]="visibleNotes"
+                (assignRequested)="assign($event)"
+            />
         </main>
     `,
     styles: `
@@ -92,7 +97,7 @@ export class ProblemInquiryPageComponent implements OnInit {
     private readonly backend = inject(BackendService);
 
     notes: readonly ImportedNote[] = [];
-    tickets: readonly ProblemTicket[] = [];
+    tickets: readonly (ProblemTicket | StoredTicket)[] = [];
     showSamples = true;
     storageError = '';
 
@@ -100,7 +105,7 @@ export class ProblemInquiryPageComponent implements OnInit {
         return this.showSamples ? this.notes : this.notes.filter(note => this.isKnownReal(note.proposal.sourceOrigin));
     }
 
-    get visibleTickets(): readonly ProblemTicket[] {
+    get visibleTickets(): readonly (ProblemTicket | StoredTicket)[] {
         if (this.showSamples) {
             return this.tickets;
         }
@@ -131,8 +136,30 @@ export class ProblemInquiryPageComponent implements OnInit {
         });
     }
 
+    assign({ ticket, assigneeId }: { ticket: StoredTicket; assigneeId: string }): void {
+        this.backend.changeTicket(ticket.id, { kind: 'assign', assigneeId }, ticket.version).subscribe({
+            next: ({ ticket: changed }) => {
+                this.storageError = '';
+                this.replaceTicket(changed);
+            },
+            error: (error: HttpErrorResponse) => {
+                const current = error.status === 409 ? (error.error?.error?.current as StoredTicket | undefined) : undefined;
+                if (current) {
+                    this.replaceTicket(current);
+                    this.storageError = 'The ticket changed in the meantime; the latest version is shown.';
+                } else {
+                    this.storageError = 'The ticket could not be assigned.';
+                }
+            },
+        });
+    }
+
     toggleSamples(): void {
         this.showSamples = !this.showSamples;
+    }
+
+    private replaceTicket(changed: StoredTicket): void {
+        this.tickets = this.tickets.map(ticket => ticket.id === changed.id ? changed : ticket);
     }
 
     private dataKindOf(ticket: ProblemTicket): DataKind {

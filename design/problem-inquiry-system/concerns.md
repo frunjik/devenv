@@ -412,6 +412,8 @@ Let a user assign a framed problem ticket to someone from the problem-solving ap
 **Working boundary:** Decide the model before building. Assignment is likely a lifecycle step (SC-021) and meaningless without persistence (SC-028).
 **Open questions:** Is an assignee a person, a team, or a role, and is that a new Type (P-002)? One assignee or several? Does assigning mean "responsible for resolving" or "asked to investigate"? Who may assign, and is real user identity needed or are names enough for now? Can tickets be reassigned, and is the history kept? Should the list (SC-026) filter or sort by assignee?
 **Vocabulary candidates (P-009, not yet agreed):** "assign", "assignee", "owner".
+
+**First slice built (user choice 2026-10-06):** An assignee is a person, typed as a name or id in a text box on each open or assigned ticket card (one assignee; reassigning is allowed and the history keeps every change). The page sends an assign change with the ticket's version; a conflict (409) shows the latest ticket and a message, any other failure shows an error. Client suite: 214 tests, 100% coverage on both components. Still open: team or role, who may assign (needs login), and filter or sort by assignee.
 
 ### SC-030 — Define a calm, consistent color system
 

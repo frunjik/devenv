@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket } from '@shared';
+import { HttpErrorResponse } from '@angular/common/http';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket, TicketCommand, TicketChangeEvent } from '@shared';
 import { BackendService } from '../backend.service';
 import { ProblemInquiryPageComponent } from './problem-inquiry-page.component';
 
@@ -11,13 +12,19 @@ describe('ProblemInquiryPageComponent', () => {
     let created: { ticket: NewProblemTicket; dataKind: DataKind }[];
     let createResult: (ticket: NewProblemTicket, dataKind: DataKind) => Observable<StoredTicket>;
     let listResult: () => Observable<StoredTicket[]>;
+    let changeResult: (id: string, command: TicketCommand, version: number) => Observable<{ ticket: StoredTicket; event: TicketChangeEvent }>;
 
     beforeEach(async () => {
         stored = [];
         created = [];
         listResult = () => of(stored);
         createResult = (ticket, dataKind) => of(storedTicket(ticket, dataKind, 'T-1'));
+        changeResult = (id, command, version) => of({
+            ticket: { ...stored.find(ticket => ticket.id === id)!, version: version + 1, status: { state: 'assigned', assigneeId: (command as { assigneeId: string }).assigneeId } },
+            event: {} as TicketChangeEvent,
+        });
         const backend = {
+            changeTicket: jest.fn((id: string, command: TicketCommand, version: number) => changeResult(id, command, version)),
             listTickets: jest.fn(() => listResult()),
             createTicket: jest.fn((ticket: NewProblemTicket, dataKind: DataKind) => {
                 created.push({ ticket, dataKind });
@@ -206,6 +213,54 @@ describe('ProblemInquiryPageComponent', () => {
 
         expect(fixture.nativeElement.querySelector('.storage-error').textContent)
             .toContain('could not be loaded');
+    });
+
+    describe('assigning', () => {
+        beforeEach(() => {
+            stored = [storedTicket(makeTicket('x', undefined), 'real', 'T-1'), storedTicket(makeTicket('y', undefined), 'real', 'T-2')];
+            fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+            fixture.detectChanges();
+        });
+
+        function assign(card: number, value: string): void {
+            const form = fixture.nativeElement.querySelectorAll('.assign-form')[card] as HTMLFormElement;
+            const input = form.querySelector('input') as HTMLInputElement;
+            input.value = value;
+            input.dispatchEvent(new Event('input'));
+            form.dispatchEvent(new Event('submit'));
+            fixture.detectChanges();
+        }
+
+        function badges(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-state') as NodeListOf<HTMLElement>)
+                .map(badge => badge.textContent!.trim());
+        }
+
+        it('assigns through the server and replaces only that ticket with the stored result', () => {
+            assign(1, 'user-2');
+
+            expect(badges()).toEqual(['Open', 'Assigned to user-2']);
+            expect(fixture.nativeElement.querySelector('.storage-error')).toBeNull();
+        });
+
+        it('shows the latest ticket and says so when the ticket changed in the meantime', () => {
+            const current = { ...stored[0], version: 5, status: { state: 'assigned', assigneeId: 'someone' } } as StoredTicket;
+            changeResult = () => throwError(() => new HttpErrorResponse({ status: 409, error: { error: { current } } }));
+
+            assign(0, 'user-2');
+
+            expect(badges()).toEqual(['Assigned to someone', 'Open']);
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('changed');
+        });
+
+        it('says so when the assignment is refused or fails', () => {
+            changeResult = () => throwError(() => new HttpErrorResponse({ status: 422, error: { error: { message: 'No.' } } }));
+
+            assign(0, 'user-2');
+
+            expect(badges()).toEqual(['Open', 'Open']);
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be assigned');
+        });
     });
 
     function storedTicket(ticket: NewProblemTicket, dataKind: DataKind, id: string): StoredTicket {

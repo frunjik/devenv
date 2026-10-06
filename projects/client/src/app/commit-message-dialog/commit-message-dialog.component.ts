@@ -9,37 +9,8 @@ import { MatInputModule } from '@angular/material/input';
     selector: 'app-commit-message-dialog',
     standalone: true,
     imports: [FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule],
-    template: `
-        <h2 mat-dialog-title>Commit changes</h2>
-        <mat-dialog-content>
-            <mat-form-field appearance="outline">
-                <mat-label>Commit message</mat-label>
-                <textarea
-                    matInput
-                    [(ngModel)]="message"
-                    rows="8"
-                    maxlength="5000"
-                    aria-label="Commit message"
-                    (keydown)="onMessageKeydown($event)"
-                ></textarea>
-            </mat-form-field>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-            <button type="button" mat-button mat-dialog-close>Cancel</button>
-            <button type="button" mat-flat-button color="primary" [disabled]="!message.trim()" (click)="submit()">
-                Commit
-            </button>
-        </mat-dialog-actions>
-    `,
-    styles: [`
-        mat-form-field {
-            width: 100%;
-        }
-
-        mat-dialog-content {
-            padding-top: 0.5rem;
-        }
-    `],
+    templateUrl: './commit-message-dialog.component.html',
+    styleUrl: './commit-message-dialog.component.scss',
 })
 export class CommitMessageDialogComponent {
     message = '';

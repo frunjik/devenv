@@ -1,0 +1,11 @@
+<section class="glossary">
+    <h1>Glossary</h1>
+    <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+    <p *ngIf="!errorMessage && entries.length === 0">No terms yet.</p>
+    <dl *ngIf="entries.length > 0" class="glossary-list">
+        <div *ngFor="let entry of entries" class="glossary-entry">
+            <dt class="glossary-term">{{ entry.term }}</dt>
+            <dd *ngFor="let definition of entry.definitions" class="glossary-definition">{{ definition }}</dd>
+        </div>
+    </dl>
+</section>

@@ -3,12 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'lib-shared',
   imports: [],
-  template: `
-    <p>
-      shared works!
-    </p>
-  `,
-  styles: ``
+  templateUrl: './shared.component.html',
+  styleUrl: './shared.component.scss'
 })
 export class SharedComponent {
 

@@ -1,0 +1,40 @@
+<section aria-labelledby="imported-notes-heading">
+    <h2 id="imported-notes-heading">Imported notes</h2>
+    @if (notes.length === 0) {
+        <p>No accepted notes yet.</p>
+    } @else {
+        <ul>
+            @for (note of notes; track $index) {
+                <li>
+                    <h3>{{ note.proposal.interpretation }}</h3>
+                    <p><strong>Accepted as a note</strong></p>
+                    <p>Original text: {{ note.proposal.sourceText }}</p>
+                    @if (note.proposal.sourceReference.artifact || note.proposal.sourceReference.locator) {
+                        <p>
+                            Source artifact:
+                            {{ note.proposal.sourceReference.artifact || 'Not recorded' }}
+                        </p>
+                        @if (note.proposal.sourceReference.locator) {
+                            <p>Source location: {{ note.proposal.sourceReference.locator }}</p>
+                        }
+                    } @else {
+                        <p>Source reference not recorded.</p>
+                    }
+                    <p>Origin: {{ note.proposal.sourceOrigin }}</p>
+                    <p>Verification: {{ note.proposal.verificationStatus }}</p>
+                    @if (note.proposal.openQuestions.length > 0) {
+                        <h4>Open questions</h4>
+                        <ul>
+                            @for (question of note.proposal.openQuestions; track $index) {
+                                <li>{{ question }}</li>
+                            }
+                        </ul>
+                    } @else {
+                        <p>No open questions recorded.</p>
+                    }
+                    <p>Accepted: <time [attr.datetime]="note.acceptedAt">{{ note.acceptedAt }}</time></p>
+                </li>
+            }
+        </ul>
+    }
+</section>

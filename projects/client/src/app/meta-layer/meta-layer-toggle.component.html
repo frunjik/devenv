@@ -1,0 +1,8 @@
+<button
+    type="button"
+    [class.active]="meta.enabled()"
+    [attr.aria-pressed]="meta.enabled()"
+    [attr.aria-label]="meta.enabled() ? 'Hide meta layer' : 'Show meta layer'"
+    [title]="meta.enabled() ? 'Hide meta layer' : 'Show meta layer'"
+    (click)="meta.toggle()"
+>◈</button>

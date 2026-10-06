@@ -11,7 +11,7 @@ import { AppComponent } from './app.component';
 @Component({
     selector: 'app-test-git-log-route',
     standalone: true,
-    template: '',
+    templateUrl: './test-git-log-route.component.html',
 })
 class TestGitLogRouteComponent {}
 

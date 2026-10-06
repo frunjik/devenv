@@ -1,0 +1,41 @@
+.ticket-framing {
+    max-width: 52rem;
+    margin-block: 2rem;
+}
+
+form,
+.ticket-fields,
+.problem-frame,
+.scope,
+.work-context,
+.estimate {
+    display: grid;
+    gap: 0.75rem;
+}
+
+fieldset {
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+}
+
+input,
+select,
+textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.65rem;
+    font: inherit;
+}
+
+textarea {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.work-context p,
+.estimate p,
+.empty-notes {
+    margin-block: 0;
+}

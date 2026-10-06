@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImportedNote, ProblemTicket } from '@shared';
+import { ImportedNote, ProblemTicket, StoredTicket, TicketStatus } from '@shared';
 import { FramedTicketsListComponent } from './framed-tickets-list.component';
 
 describe('FramedTicketsListComponent', () => {
@@ -311,6 +311,51 @@ describe('FramedTicketsListComponent', () => {
             search('scan');
 
             expect(ids()).toEqual(['a', 'b']);
+        });
+    });
+
+    describe('state badge', () => {
+        function stored(id: string, status: TicketStatus): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };
+        }
+
+        function badges(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-state') as NodeListOf<HTMLElement>)
+                .map(badge => badge.textContent!.replace(/\s+/g, ' ').trim());
+        }
+
+        it('shows the lifecycle state of stored tickets, with the assignee or original when there is one', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'open' }),
+                stored('b', { state: 'assigned', assigneeId: 'user-2' }),
+                stored('c', { state: 'resolved', assigneeId: 'user-2' }),
+                stored('d', { state: 'closed', assigneeId: 'user-2' }),
+                stored('e', { state: 'duplicate', duplicateOfId: 'T-1' }),
+            ]);
+            fixture.detectChanges();
+
+            expect(badges()).toEqual([
+                'Open',
+                'Assigned to user-2',
+                'Resolved by user-2',
+                'Closed',
+                'Duplicate of T-1',
+            ]);
+        });
+
+        it('marks the badge with its state so it can be styled', () => {
+            fixture.componentRef.setInput('tickets', [stored('a', { state: 'assigned', assigneeId: 'u' })]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelector('.ticket-state').getAttribute('data-state'))
+                .toBe('assigned');
+        });
+
+        it('shows no badge for tickets that have not been stored yet', () => {
+            fixture.componentRef.setInput('tickets', [makeTicket('local', 'Local ticket', undefined)]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelector('.ticket-state')).toBeNull();
         });
     });
 

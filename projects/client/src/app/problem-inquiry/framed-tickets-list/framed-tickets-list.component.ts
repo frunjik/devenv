@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ImportedNote, ProblemTicket, ScopeLevel } from '@shared';
+import { ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketStatus } from '@shared';
 
 @Component({
     selector: 'app-framed-tickets-list',
@@ -37,6 +37,9 @@ import { ImportedNote, ProblemTicket, ScopeLevel } from '@shared';
                             <article class="ticket-card" [attr.aria-label]="'Problem ticket ' + ticket.id">
                                 <header>
                                     <p class="ticket-id">{{ ticket.id }}</p>
+                                    @if (statusOf(ticket); as status) {
+                                        <p class="ticket-state" [attr.data-state]="status.state">{{ stateLabel(status) }}</p>
+                                    }
                                     <h3>{{ ticket.title }}</h3>
                                 </header>
 
@@ -187,6 +190,28 @@ import { ImportedNote, ProblemTicket, ScopeLevel } from '@shared';
             font-weight: 700;
         }
 
+        .ticket-state {
+            display: inline-block;
+            margin: 0;
+            border: 1px solid #94a3b8;
+            border-radius: 999px;
+            padding: 0.05rem 0.6rem;
+            color: #334155;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .ticket-state[data-state='assigned'] {
+            border-color: #2563eb;
+            color: #1d4ed8;
+        }
+
+        .ticket-state[data-state='resolved'],
+        .ticket-state[data-state='closed'] {
+            border-color: #15803d;
+            color: #166534;
+        }
+
         dl {
             display: grid;
             grid-template-columns: minmax(7rem, auto) 1fr;
@@ -236,7 +261,7 @@ import { ImportedNote, ProblemTicket, ScopeLevel } from '@shared';
     `,
 })
 export class FramedTicketsListComponent {
-    @Input() tickets: readonly ProblemTicket[] = [];
+    @Input() tickets: readonly (ProblemTicket | StoredTicket)[] = [];
     @Input() notes: readonly ImportedNote[] = [];
 
     readonly sortOptions: readonly { value: SortProperty; label: string }[] = [
@@ -270,6 +295,20 @@ export class FramedTicketsListComponent {
 
     toggleDirection(): void {
         this.ascending = !this.ascending;
+    }
+
+    statusOf(ticket: ProblemTicket | StoredTicket): TicketStatus | undefined {
+        return 'status' in ticket ? ticket.status : undefined;
+    }
+
+    stateLabel(status: TicketStatus): string {
+        switch (status.state) {
+            case 'open': return 'Open';
+            case 'assigned': return `Assigned to ${status.assigneeId}`;
+            case 'resolved': return `Resolved by ${status.assigneeId}`;
+            case 'closed': return 'Closed';
+            case 'duplicate': return `Duplicate of ${status.duplicateOfId}`;
+        }
     }
 
     findNote(noteId: string): ImportedNote | undefined {

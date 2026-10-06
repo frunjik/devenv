@@ -14,6 +14,7 @@ import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createRgrPhaseHandler } from './handlers/rgr-phase';
 import { createLinesHandler } from './handlers/lines';
+import { createSystemPlanHandler } from './handlers/system-plan';
 import { createTicketsRouter } from './handlers/tickets';
 import { FileTicketStore } from './storage/file-ticket-store';
 import { InMemoryTicketStore } from './storage/in-memory-ticket-store';
@@ -67,6 +68,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
     app.use(createTicketsRouter(ticketStore));
     app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
+    app.get('/system-plan', createSystemPlanHandler(root));
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));

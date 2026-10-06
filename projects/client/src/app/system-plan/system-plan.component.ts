@@ -1,16 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
-type ConcernStatus = 'In progress' | 'Ready' | 'Validated';
-
-interface PlanConcern {
-    readonly id: string;
-    readonly title: string;
-    readonly kind: string;
-    readonly status: ConcernStatus;
-    readonly dependsOn: readonly string[];
-    readonly summary: string;
-}
+import type { SystemPlanConcern } from '@shared';
+import { BackendService } from '../backend.service';
 
 @Component({
     selector: 'app-system-plan',
@@ -30,23 +21,29 @@ interface PlanConcern {
             </header>
 
             <section class="progress-summary" aria-labelledby="progress-heading">
-                <div class="progress-header">
-                    <div>
-                        <h2 id="progress-heading">Plan progress</h2>
-                        <p class="progress-caption">Validated concerns across the current plan</p>
+                @if (loading) {
+                    <p>Loading plan progress…</p>
+                } @else if (loadError) {
+                    <p role="alert">Could not load the system plan.</p>
+                } @else {
+                    <div class="progress-header">
+                        <div>
+                            <h2 id="progress-heading">Plan progress</h2>
+                            <p class="progress-caption">Validated concerns across the current plan</p>
+                        </div>
+                        <p class="progress-count"><strong>{{ validatedCount }}</strong><span>of {{ concerns.length }}</span></p>
                     </div>
-                    <p class="progress-count"><strong>{{ validatedCount }}</strong><span>of {{ concerns.length }}</span></p>
-                </div>
-                <progress
-                    [value]="validatedCount"
-                    [max]="concerns.length"
-                    aria-label="Plan completion"
-                ></progress>
-                <ul class="plan-stats">
-                    <li><span class="stat-dot validated" aria-hidden="true"></span><strong>{{ validatedCount }}</strong> validated</li>
-                    <li><span class="stat-dot in-progress" aria-hidden="true"></span><strong>{{ inProgressCount }}</strong> in progress</li>
-                    <li><strong>{{ readyCount }}</strong> ready</li>
-                </ul>
+                    <progress
+                        [value]="validatedCount"
+                        [max]="concerns.length"
+                        aria-label="Plan completion"
+                    ></progress>
+                    <ul class="plan-stats">
+                        <li><span class="stat-dot validated" aria-hidden="true"></span><strong>{{ validatedCount }}</strong> validated</li>
+                        <li><span class="stat-dot in-progress" aria-hidden="true"></span><strong>{{ inProgressCount }}</strong> in progress</li>
+                        <li><strong>{{ readyCount }}</strong> ready</li>
+                    </ul>
+                }
             </section>
 
             <section class="concerns-section" aria-labelledby="concerns-heading">
@@ -57,39 +54,46 @@ interface PlanConcern {
                     </div>
                     <span class="concern-total">{{ concerns.length }} concerns</span>
                 </div>
-                <ul class="concern-list" aria-label="System concerns">
-                    @for (concern of concerns; track concern.id) {
-                        <li>
-                            <article class="concern-card" [attr.data-status]="concern.status">
-                                <header class="concern-card__header">
-                                    <div class="concern-card__identity">
-                                        <span class="concern-id">{{ concern.id }}</span>
-                                        <span class="kind">{{ concern.kind }}</span>
+                @if (loading) {
+                    <p>Loading system concerns…</p>
+                } @else if (loadError) {
+                    <p role="alert">Could not load the system plan.</p>
+                } @else if (concerns.length === 0) {
+                    <p>No system concerns are registered.</p>
+                } @else {
+                    <ul class="concern-list" aria-label="System concerns">
+                        @for (concern of concerns; track concern.id) {
+                            <li>
+                                <article class="concern-card" [attr.data-status]="concern.status">
+                                    <header class="concern-card__header">
+                                        <div class="concern-card__identity">
+                                            <span class="concern-id">{{ concern.id }}</span>
+                                            <span class="kind">{{ concern.kind }}</span>
+                                        </div>
+                                        <span class="status" [attr.data-status]="concern.status" role="status">
+                                            {{ concern.status }}
+                                        </span>
+                                    </header>
+                                    <h3>{{ concern.title }}</h3>
+                                    <p class="concern-summary">{{ concern.summary }}</p>
+                                    <div class="dependencies">
+                                        <span class="dependencies__label">Prerequisites</span>
+                                        <span class="dependencies__value">
+                                            {{ concern.dependsOn.length ? concern.dependsOn.join(', ') : 'None' }}
+                                        </span>
                                     </div>
-                                    <span class="status" [attr.data-status]="concern.status" role="status">
-                                        {{ concern.status }}
-                                    </span>
-                                </header>
-                                <h3>{{ concern.title }}</h3>
-                                <p class="concern-summary">{{ concern.summary }}</p>
-                                <div class="dependencies">
-                                    <span class="dependencies__label">Prerequisites</span>
-                                    <span class="dependencies__value">
-                                        {{ concern.dependsOn.length ? concern.dependsOn.join(', ') : 'None' }}
-                                    </span>
-                                </div>
-                            </article>
-                        </li>
-                    }
-                </ul>
+                                </article>
+                            </li>
+                        }
+                    </ul>
+                }
             </section>
 
             <aside class="data-notice" aria-label="Plan data source">
                 <p>
-                    <strong>Snapshot, not live data.</strong>
-                    This view is manually synchronized with
-                    <code>design/problem-inquiry-system/concerns.md</code>. Update both together;
-                    this view does not edit or infer concern status.
+                    Live data from
+                    <code>design/problem-inquiry-system/concerns.md</code>.
+                    This view does not edit or infer concern status.
                 </p>
             </aside>
         </main>
@@ -149,425 +153,24 @@ interface PlanConcern {
         }
     `],
 })
-export class SystemPlanComponent {
-    readonly concerns: readonly PlanConcern[] = [
-        {
-            id: 'SC-001',
-            title: 'Distinguish input from ticket',
-            kind: 'Domain',
-            status: 'Validated',
-            dependsOn: [],
-            summary: 'Clarify the difference between raw input, an imported note, and a Problem Ticket.',
-        },
-        {
-            id: 'SC-002',
-            title: 'Preserve source provenance',
-            kind: 'Behavior',
-            status: 'In progress',
-            dependsOn: ['SC-001'],
-            summary: 'Keep interpretations traceable to their original artifacts and relevant wording.',
-        },
-        {
-            id: 'SC-003',
-            title: 'Represent uncertain conversion',
-            kind: 'Behavior',
-            status: 'In progress',
-            dependsOn: ['SC-001', 'SC-002'],
-            summary: 'Preserve ambiguity, missing information, and alternative interpretations.',
-        },
-        {
-            id: 'SC-004',
-            title: 'Define human review',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-003'],
-            summary: 'Define proposal review and distinguish acceptance from truth or ticket promotion.',
-        },
-        {
-            id: 'SC-005',
-            title: 'Preserve sample provenance',
-            kind: 'Quality',
-            status: 'In progress',
-            dependsOn: ['SC-002'],
-            summary: 'Keep synthetic examples distinguishable from observed or verified reports.',
-        },
-        {
-            id: 'SC-006',
-            title: 'Build the input converter',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-003', 'SC-004', 'SC-005'],
-            summary: 'Convert manually entered text into a local proposal with explicit acceptance.',
-        },
-        {
-            id: 'SC-007',
-            title: 'Define the converted-items list',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-004', 'SC-005'],
-            summary: 'Show accepted notes and keep their source, verification, and open questions visible.',
-        },
-        {
-            id: 'SC-008',
-            title: 'Build the converted-items list',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-007'],
-            summary: 'Implement the accepted-notes list as a separate component.',
-        },
-        {
-            id: 'SC-009',
-            title: 'Connect the vertical slice',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-006', 'SC-008'],
-            summary: 'Connect proposal acceptance to the in-memory list and expose the inquiry page.',
-        },
-        {
-            id: 'SC-010',
-            title: 'Visualize the current system plan',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: [],
-            summary: 'Provide a read-only view of concern status, dependencies, and overall progress.',
-        },
-        {
-            id: 'SC-011',
-            title: 'Define note-to-ticket relationships',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-001', 'SC-004'],
-            summary: 'Require explicit human ticket framing from accepted notes; support one-to-many and many-to-one links.',
-        },
-        {
-            id: 'SC-012',
-            title: 'Collect complete ticket framing',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-001', 'SC-011'],
-            summary: 'Collect the complete current ProblemTicket fields without inferring values from source notes.',
-        },
-        {
-            id: 'SC-013',
-            title: 'Add identity and provenance links',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-011'],
-            summary: 'Give in-memory accepted notes identities so tickets can cite one or more sources.',
-        },
-        {
-            id: 'SC-014',
-            title: 'Build the ticket-framing component',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-012', 'SC-013'],
-            summary: 'Select accepted notes and explicitly frame a ticket with all required fields.',
-        },
-        {
-            id: 'SC-015',
-            title: 'Build the framed-ticket list',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-012', 'SC-013'],
-            summary: 'Display framed tickets and their linked accepted notes.',
-        },
-        {
-            id: 'SC-016',
-            title: 'Connect note framing to ticket review',
-            kind: 'Implementation',
-            status: 'Validated',
-            dependsOn: ['SC-014', 'SC-015'],
-            summary: 'Connect accepted notes, explicit ticket creation, and the framed-ticket list.',
-        },
-        {
-            id: 'SC-017',
-            title: 'Toggle sample and real data',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-005', 'SC-016'],
-            summary: 'Switch between showing sample and real data together and showing only real data.',
-        },
-        {
-            id: 'SC-018',
-            title: 'Explore a wide-screen inquiry layout',
-            kind: 'Design',
-            status: 'Validated',
-            dependsOn: ['SC-016'],
-            summary: 'Evaluate a responsive grid-based arrangement against the current stacked page.',
-        },
-        {
-            id: 'SC-019',
-            title: 'Clarify what a system concern is',
-            kind: 'Domain',
-            status: 'Validated',
-            dependsOn: [],
-            summary: 'Define how a concern differs from a Work Item and whether it belongs in the Glossary.',
-        },
-        {
-            id: 'SC-020',
-            title: 'Record note review decisions',
-            kind: 'Domain',
-            status: 'In progress',
-            dependsOn: ['SC-006'],
-            summary: 'Reject/Defer buttons record a decision (kept, optional reason); no history view shown yet.',
-        },
-        {
-            id: 'SC-021',
-            title: 'Define ticket lifecycle',
-            kind: 'Domain',
-            status: 'In progress',
-            dependsOn: ['SC-016'],
-            summary: 'Decide whether a framed ticket can be edited, closed, or marked duplicate, and by whom.',
-        },
-        {
-            id: 'SC-022',
-            title: 'Improve glossary screen layout and styling',
-            kind: 'Design',
-            status: 'Validated',
-            dependsOn: [],
-            summary: 'Evaluate readability and responsive layout of the existing glossary screen.',
-        },
-        {
-            id: 'SC-023',
-            title: 'Quick glossary search from anywhere',
-            kind: 'Behavior',
-            status: 'Ready',
-            dependsOn: ['SC-022'],
-            summary: 'Find a way to look up a glossary term quickly from any screen.',
-        },
-        {
-            id: 'SC-024',
-            title: 'Integrate the problem-solving app into the host app shell',
-            kind: 'Design',
-            status: 'Validated',
-            dependsOn: [],
-            summary: 'High priority. Make the problem-solving app look docked into or included by the host app.',
-        },
-        {
-            id: 'SC-025',
-            title: 'Explore an AI chatbot inside the meta app',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-024'],
-            summary: 'Explore purpose, data exposure, and placement of an AI chatbot in the meta layer.',
-        },
-        {
-            id: 'SC-026',
-            title: 'Sort and search the problem ticket list',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-015', 'SC-017'],
-            summary: 'Sort framed tickets by different properties and search, filter by state, and filter by assignee.',
-        },
-        {
-            id: 'SC-027',
-            title: 'Scope glossary terms by domain level',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-019', 'SC-022'],
-            summary: 'Decide between separate glossaries or a level marking on a global glossary.',
-        },
-        {
-            id: 'SC-028',
-            title: 'Persist notes and tickets across reloads',
-            kind: 'Design',
-            status: 'In progress',
-            dependsOn: ['SC-021'],
-            summary: 'Decide how accepted notes, decisions, and framed tickets are stored.',
-        },
-        {
-            id: 'SC-029',
-            title: 'Assign problem tickets',
-            kind: 'Behavior',
-            status: 'In progress',
-            dependsOn: ['SC-021', 'SC-028'],
-            summary: 'Assign, lifecycle actions, sort by assignee, a duplicate-original picker built; refusals show the server reason; duplicate existence checked; team/role, who-may-assign still open.',
-        },
-        {
-            id: 'SC-030',
-            title: 'Define a calm, consistent color system',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-024'],
-            summary: 'Replace scattered hex values with a small palette of tokens suited to long viewing; fix light and indigo outliers.',
-        },
-        {
-            id: 'SC-031',
-            title: 'Show the Red-Green-Refactor cycle in the meta app',
-            kind: 'Design',
-            status: 'In progress',
-            dependsOn: ['SC-024'],
-            summary: 'Show the explicitly recorded Red, Green, or Refactor phase next to the current task; history and per-task scoping still open.',
-        },
-        {
-            id: 'SC-032',
-            title: 'Show the current task in the meta toolbar',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-024'],
-            summary: 'Decide whether and how the current task appears in the top meta toolbar, and how it gets set.',
-        },
-        {
-            id: 'SC-033',
-            title: 'Fix the meta toolbar scrollbar and oversized text',
-            kind: 'Behavior',
-            status: 'Validated',
-            dependsOn: ['SC-024'],
-            summary: 'Make the host toolbar a compact bar without scrollbars; measured overflow and button size are recorded.',
-        },
-        {
-            id: 'SC-034',
-            title: 'Give the meta menu the label bar styling and drop the label bar',
-            kind: 'Design',
-            status: 'Validated',
-            dependsOn: ['SC-024', 'SC-033'],
-            summary: 'Style the host menu like the META LAYER bar and, if possible, remove that lower bar.',
-        },
-        {
-            id: 'SC-035',
-            title: 'Generate the system-plan dashboard from the concern register',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Remove the hand-synchronized duplicate of the register by generating the dashboard data.',
-        },
-        {
-            id: 'SC-036',
-            title: 'Separate agent-verified from user-accepted status',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Distinguish concerns the agent measured from concerns the user accepted.',
-        },
-        {
-            id: 'SC-037',
-            title: 'Limit concerns that are Ready but not started',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Decide a cap on unstarted Ready concerns and how to prune or merge the rest.',
-        },
-        {
-            id: 'SC-038',
-            title: 'Keep dated, superseded decisions in concerns',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Record decision changes as dated, superseded entries instead of editing in place.',
-        },
-        {
-            id: 'SC-039',
-            title: 'Check test quality beyond 100% coverage with mutation testing',
-            kind: 'Evaluation',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Try mutation testing on one module to see whether 100% coverage hides weak tests.',
-        },
-        {
-            id: 'SC-040',
-            title: 'Add an appetite to concerns',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Give each concern a size limit and an optional design step before it starts.',
-        },
-        {
-            id: 'SC-041',
-            title: 'Tie glossary terms to the code',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-022'],
-            summary: 'Check that terms in the glossary and names in the code do not drift apart.',
-        },
-        {
-            id: 'SC-042',
-            title: 'Show calculated metrics on tickets',
-            kind: 'Design',
-            status: 'In progress',
-            dependsOn: ['SC-015'],
-            summary: 'Show scores calculated from ticket fields, with one global switch to compare calculation methods.',
-        },
-        {
-            id: 'SC-043',
-            title: 'Show aggregate metrics across the ticket set',
-            kind: 'Design',
-            status: 'In progress',
-            dependsOn: ['SC-015', 'SC-021', 'SC-028'],
-            summary: 'Counts by lifecycle state shown above the list; age and throughput aggregates still open.',
-        },
-        {
-            id: 'SC-044',
-            title: "Reconsider the problem-inquiry route's layout as the page grows",
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-018'],
-            summary: 'Revisit the paired-column grid now the framed-ticket list has many more controls; weigh a tabsheet against another grid.',
-        },
-        {
-            id: 'SC-045',
-            title: 'Export system contents to an external system',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-028', 'SC-002'],
-            summary: 'Decide what leaves the system, in what shape, for an external destination to receive.',
-        },
-        {
-            id: 'SC-046',
-            title: 'Import from an external, unknown-quality source',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-001', 'SC-002', 'SC-003', 'SC-006'],
-            summary: 'Decide how content of unknown trustworthiness enters the system without skipping review or provenance.',
-        },
-        {
-            id: 'SC-047',
-            title: 'Visualize ticket dependencies as a graph',
-            kind: 'Design',
-            status: 'In progress',
-            dependsOn: ['SC-021', 'SC-015'],
-            summary: 'Settable via a free-text field in ticket framing and shown on cards; existence now checked at creation; no cycle checks, rendering still open.',
-        },
-        {
-            id: 'SC-048',
-            title: 'Validate the layout and style of every route',
-            kind: 'Behavior',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Systematically check every route at standard widths; 4 of 7 routes have no recorded check yet.',
-        },
-        {
-            id: 'SC-049',
-            title: 'Export, hydrate, and persist the accumulated Rule Set',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Explore making the Principles, Glossary, and conventions (the "Rule Set") a portable, versioned artifact another system could import.',
-        },
-        {
-            id: 'SC-050',
-            title: 'Client dev server errors on @shared after each change, then recovers',
-            kind: 'Behavior',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Observed transient error on each rebuild; likely dist/shared not rebuilt when the client watcher fires, since client and server run independent watch processes.',
-        },
-        {
-            id: 'SC-051',
-            title: 'Add a hidden keyboard shortcut to toggle the meta layer',
-            kind: 'Design',
-            status: 'Ready',
-            dependsOn: ['SC-024'],
-            summary: 'An anticipated SC-024 refinement; 10 candidates brainstormed, user prefers the Konami Code and Shift+F2, not yet narrowed to one.',
-        },
-        {
-            id: 'SC-052',
-            title: "Should a review agent periodically check this agent's own work?",
-            kind: 'Evaluation',
-            status: 'Ready',
-            dependsOn: [],
-            summary: 'Consider an independent code-review/rubber-duck pass as a check distinct from self-reported tests and coverage.',
-        },
-    ];
+export class SystemPlanComponent implements OnInit {
+    private readonly backend = inject(BackendService);
+    concerns: readonly SystemPlanConcern[] = [];
+    loading = true;
+    loadError = false;
+
+    ngOnInit(): void {
+        this.backend.getSystemPlan().subscribe({
+            next: concerns => {
+                this.concerns = concerns;
+                this.loading = false;
+            },
+            error: () => {
+                this.loadError = true;
+                this.loading = false;
+            },
+        });
+    }
 
     get validatedCount(): number {
         return this.concerns.filter(concern => concern.status === 'Validated').length;

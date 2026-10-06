@@ -305,7 +305,9 @@ Decide whether rejecting or deferring a note proposal is recorded, and what a de
 
 ### SC-021 — Define ticket lifecycle
 
-**Kind:** Domain · **Status:** In progress · **Depends on:** SC-016 can be edited, closed, or marked duplicate after creation, and who may do so. Tickets are currently immutable once framed.
+**Kind:** Domain · **Status:** In progress · **Depends on:** SC-016
+
+Decide whether a framed ticket can be edited, closed, or marked duplicate after creation, and who may do so. Tickets are currently immutable once framed.
 
 **Working boundary:** Decide the policy first; do not collapse note, verification, and ticket lifecycles.
 **Decisions (user, 2026-10-06):** States are Open, Assigned, Resolved, Closed, and Duplicate. Flow is forward (Open → Assigned → Resolved → Closed); reopening is allowed from Resolved or Closed. A ticket marked Duplicate must reference the ticket it duplicates. Framed content (title, report, problem frame, scope) may be edited after creation, and the edit history is kept. Anyone may change state or edit for now; every change records who made it (by user id and optional name, see SC-028) and when.
@@ -511,14 +513,15 @@ The pre-existing host menu (the navigation toolbar with Browse, Test, and so on)
 **Decisions (agent, 2026-10-06, user said "SC-034" without answering the open questions; revisit if wrong):** The label bar is removed. The meta menu takes its colors (background `#1d2922`, text `#aebbb0`) and a small outlined uppercase "DevEnv" badge in front of the host address identifies the layer (the user then said DevEnv == meta, so the word "Meta" is not shown anywhere). The "hosts the problem-solving app" wording is dropped (the frame and the problem-solving menu already show the nesting). The Material toolbar stays, flat, in the same compact form as SC-033.
 **Validation evidence:** In the browser the toolbar background is `rgb(29, 41, 34)` at 1440, 768, and 320 px, there is no `.meta-layer-label`, the toolbar is 40, 59, and 129 px high with no scrolling or horizontal overflow. Full client suite and build pass.
 
-### SC-035 — Generate the system-plan dashboard from the concern register
+### SC-035 — Serve the system-plan dashboard from the concern register
 
-**Kind:** Design · **Status:** Ready · **Depends on:** None
+**Kind:** Design · **Status:** Validated · **Depends on:** None
 
-The dashboard in `system-plan.component.ts` duplicates `concerns.md` by hand, and each concern change needs three synchronized edits (register, dashboard data, spec counts). Evaluate generating the dashboard data from the register so there is one source of truth.
+The system-plan dashboard duplicated `concerns.md` in `system-plan.component.ts`, requiring synchronized edits to the register, dashboard data, and spec counts.
 
-**Working boundary:** Evaluation first; the register stays authoritative and the dashboard stays read-only (SC-010).
-**Open questions:** Parse at build time or at runtime through the server? What register format is stable enough to parse (headings and the Kind/Status/Depends line)? What do the dashboard tests assert once counts are no longer hard-coded? Source: workflow review of 2026-10-06 (docs-as-code, single source of truth).
+**Decision (user, 2026-10-06):** Read and parse the Markdown register at runtime through a server endpoint; do not generate or store a second dashboard snapshot.
+**Working boundary:** The register remains authoritative and the dashboard remains read-only (SC-010). The endpoint exposes each concern's id, title, kind, status, dependencies, and opening description. A malformed register is reported as a server error rather than presented as valid data.
+**Validation evidence:** `GET /system-plan` reads and parses the current register; client derives all counts and cards from its response, with loading, empty, and error states. Server tests cover fixture parsing, malformed input, and the repository register without a fixed count. Server suite: 169 tests, 100% statement, branch, function, and line coverage. Client suite: 33 suites, 100% coverage on all metrics. Shared and client builds pass. The client and API share `SystemPlanConcern`/`SystemPlanStatus` contracts.
 
 ### SC-036 — Separate agent-verified from user-accepted status
 
@@ -729,7 +732,7 @@ Do not combine component implementation slices. Keep AI and persistence outside 
 
 ## Type Review
 
-Implemented Types: `NoteProposal`, `SourceReference`, `SourceOrigin`, `VerificationStatus`, and `ImportedNote` (accepted proposal plus acceptance time). The page holds a readonly collection of `ImportedNote`s and replaces it on acceptance; this append-only slice does not require a new collection or identity Type. No additional list Type is needed: the view consumes accepted notes. The plan UI uses a local `PlanConcern` view Type and `ConcernStatus` union to keep the displayed status explicit; these are projections of the Markdown register, not a new domain source of truth. Optional identity-bearing `SourceFragment` and a review-decision record remain open. A stable `ImportedNoteId` is not yet justified for this append-only, in-memory slice; revisit if editing, deduplication, or persistence is introduced. Do not collapse proposal, accepted note, verification, and Problem Ticket lifecycles.
+Implemented Types: `NoteProposal`, `SourceReference`, `SourceOrigin`, `VerificationStatus`, and `ImportedNote` (accepted proposal plus acceptance time). The page holds a readonly collection of `ImportedNote`s and replaces it on acceptance; this append-only slice does not require a new collection or identity Type. No additional list Type is needed: the view consumes accepted notes. The plan UI previously used a local `PlanConcern` view Type; SC-035 now uses the shared `SystemPlanConcern` API contract and `SystemPlanStatus` union so the runtime endpoint and Angular client agree on the projection shape. This is a justified cross-boundary Type, not a new domain source of truth. Optional identity-bearing `SourceFragment` and a review-decision record remain open. A stable `ImportedNoteId` is not yet justified for this append-only, in-memory slice; revisit if editing, deduplication, or persistence is introduced. Do not collapse proposal, accepted note, verification, and Problem Ticket lifecycles.
 
 Review this register as examples reveal missing concerns. Add entries rather than silently folding distinct concerns together; record decisions and validation evidence when they become available.
 

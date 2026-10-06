@@ -40,6 +40,17 @@ export interface SuccessResponseBody<T> {
     data: T;
 }
 
+export type SystemPlanStatus = 'In progress' | 'Ready' | 'Validated';
+
+export interface SystemPlanConcern {
+    id: string;
+    title: string;
+    kind: string;
+    status: SystemPlanStatus;
+    dependsOn: string[];
+    summary: string;
+}
+
 export interface FailureResponseBody {
     error: {
         message: string;

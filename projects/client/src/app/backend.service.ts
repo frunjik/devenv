@@ -21,6 +21,7 @@ import type {
     TicketEditEvent,
     TicketHistoryEvent,
     SuccessResponseBody,
+    SystemPlanConcern,
     TestOutputStream,
     TestRunCacheStatus,
 } from '@shared';
@@ -101,6 +102,10 @@ export class BackendService {
 
     getGlossary(): Observable<string[]> {
         return this.get<string[]>('glossary');
+    }
+
+    getSystemPlan(): Observable<SystemPlanConcern[]> {
+        return this.get<SystemPlanConcern[]>('system-plan');
     }
 
     getServerVersion(): Observable<string> {

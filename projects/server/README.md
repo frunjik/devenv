@@ -4,7 +4,7 @@ The Express API behind DevEnv. `createApp(root, options)` builds the app; `start
 
 ## Layout
 
-- `src/lib/handlers/`: one file per route group (files, git, tests, glossary, tickets).
+- `src/lib/handlers/`: one file per route group (files, git, tests, glossary, system plan, tickets).
 - `src/lib/domain/`: pure domain rules with no I/O. `ticket-lifecycle.ts` holds `applyTicketCommand`, the ticket state machine (open, assigned, resolved, closed, duplicate).
 - `src/lib/storage/`: the `TicketStore` port with `InMemoryTicketStore` (tests, and `createApp` by default) and `FileTicketStore` (one JSON file; `startServer` uses it at `<root>/.tickets.json`, or the path in `TICKETS_FILE`). The file store suits one server process only.
 - `test/`: Jest specs. `ticket-store.contract.ts` is a reusable contract that every `TicketStore` implementation must pass.
@@ -24,6 +24,12 @@ Tickets are stored on the server behind the `TicketStore` port (SC-028 in `desig
 | `GET /tickets/:id/history` | State changes and content edits for a ticket, in order. An edit has `kind: 'edit'` with the content before and after. |
 
 The actor of a change is the authenticated principal, or `anonymous` when no authentication is configured.
+
+## System plan API
+
+| Route | Purpose |
+|-------|---------|
+| `GET /system-plan` | Reads and parses the concern register at `design/problem-inquiry-system/concerns.md`; returns each concern's id, title, kind, status, prerequisites, and opening description in `{ data }`. |
 
 ## Tests
 

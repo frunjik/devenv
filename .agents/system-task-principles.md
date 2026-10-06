@@ -101,6 +101,14 @@ These principles are active from their recorded date and apply to future work in
   - A word for `XX` renames the whole category, not one entry: reflect it everywhere that prefix's meaning is documented or used as a literal pattern — at minimum the Concern Record format/legend in `concerns.md`, the "Three ID schemes" Meta Note, and this principle itself.
   Do not pre-assign such words unprompted; this stays an option the user invokes, not a default naming step.
 
+### P-012 — Surface Type/Term Candidate Moments for User Review
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction
+- **Applies to:** Moments during P-002 (Type review) or P-009 (vocabulary review) reasoning where a new Type or Term name is considered as a candidate for something in the domain or system, then set aside as "not yet agreed" rather than committed.
+- **Rule:** Do not only record such a candidate silently in the artifact (a concern's "Vocabulary candidates" line, a Meta Note, etc.). When the moment arises, pause and ask the user directly whether they want to weigh in, suggest a different name, or leave it as an open candidate.
+- **Practice:** This targets candidate Type/Term *names* arising mid-reasoning, not every passing word already noted throughout the register; keep the question focused and use the `ask_user` tool rather than only stating it in prose. Applies going forward; it does not require revisiting every already-recorded candidate.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

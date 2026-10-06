@@ -418,6 +418,15 @@ Let a user assign a framed problem ticket to someone from the problem-solving ap
 **First slice built (user choice 2026-10-06):** An assignee is a person, typed as a name or id in a text box on each open or assigned ticket card (one assignee; reassigning is allowed and the history keeps every change). The page sends an assign change with the ticket's version; a conflict (409) shows the latest ticket and a message, any other failure shows an error. Client suite: 214 tests, 100% coverage on both components. Still open: team or role, who may assign (needs login), and filter or sort by assignee.
 
 **Second slice built (user choice 2026-10-06):** Stored ticket cards show the other lifecycle actions as buttons for the states that allow them: Unassign and Resolve (assigned), Close and Reopen (resolved), Reopen (closed or duplicate). Any ticket that is not a duplicate has a 'Duplicate of' box for the original ticket's id, so the person types the id; there is no picker yet. Every action sends the ticket's version; a conflict shows the latest ticket, a refusal says the ticket could not be changed. Client suite 252 tests, 100% coverage on both components.
+
+**Type review (agent, 2026-10-06; exploratory, no concrete scenario yet, per user choice):** Considered widening `assigneeId: UserId` into an `Assignee` union covering a person, a team, or a role. Conclusion: not yet justified. A Team (a named group with membership that changes over time) and a Role (a position different people occupy over time, not a group at all) are genuinely distinct from a Person and from each other, but neither has any supporting infrastructure in this system — no team management, no membership model, no role registry, no admin UI for either. Widening the Type is the easy part; the real complexity (how a team is created, who is in it, how a role is held) is a much larger feature hiding behind what looks like a one-field change — exactly the over-engineering P-002 warns against. Recorded as a candidate, not built:
+```ts
+type Assignee =
+  | { kind: 'user'; userId: UserId }
+  | { kind: 'team'; teamId: TeamId }   // TeamId/Team undefined, no membership model
+  | { kind: 'role'; role: string };    // fixed enum vs free text undefined
+```
+Blocking questions before this could be built: what defines a Team and where is membership managed? Is a Role a closed set or free text? Does "Resolved by" (today shows one specific person) still make sense for a team/role assignment? Revisit only if a concrete scenario needs it.
 
 ### SC-030 — Define a calm, consistent color system
 

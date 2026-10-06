@@ -467,6 +467,69 @@ The pre-existing host menu (the navigation toolbar with Browse, Test, and so on)
 **Decisions (agent, 2026-10-06, user said "SC-034" without answering the open questions; revisit if wrong):** The label bar is removed. The meta menu takes its colors (background `#1d2922`, text `#aebbb0`) and a small outlined uppercase "DevEnv" badge in front of the host address identifies the layer (the user then said DevEnv == meta, so the word "Meta" is not shown anywhere). The "hosts the problem-solving app" wording is dropped (the frame and the problem-solving menu already show the nesting). The Material toolbar stays, flat, in the same compact form as SC-033.
 **Validation evidence:** In the browser the toolbar background is `rgb(29, 41, 34)` at 1440, 768, and 320 px, there is no `.meta-layer-label`, the toolbar is 40, 59, and 129 px high with no scrolling or horizontal overflow. Full client suite and build pass.
 
+### SC-035 — Generate the system-plan dashboard from the concern register
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+The dashboard in `system-plan.component.ts` duplicates `concerns.md` by hand, and each concern change needs three synchronized edits (register, dashboard data, spec counts). Evaluate generating the dashboard data from the register so there is one source of truth.
+
+**Working boundary:** Evaluation first; the register stays authoritative and the dashboard stays read-only (SC-010).
+**Open questions:** Parse at build time or at runtime through the server? What register format is stable enough to parse (headings and the Kind/Status/Depends line)? What do the dashboard tests assert once counts are no longer hard-coded? Source: workflow review of 2026-10-06 (docs-as-code, single source of truth).
+
+### SC-036 — Separate agent-verified from user-accepted status
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+"Validated" currently covers both "the agent measured it" and "the user accepted it", so concerns whose open questions the agent decided itself (SC-033, SC-034) still read as Validated. Consider separate states or a marker (for example Verified and Accepted).
+
+**Working boundary:** Vocabulary and register format first; existing concerns are re-labeled only after agreement.
+**Open questions:** New states or a separate "accepted by" field? Which existing concerns would drop back to Verified? How does the dashboard count them (SC-035)? Relates to P-009 (vocabulary review).
+
+### SC-037 — Limit concerns that are Ready but not started
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+Many concerns sit Ready with no limit, which grows stale context and carrying cost (YAGNI, Kanban WIP limits). Decide whether to cap Ready-but-unstarted concerns and how to prune or merge the rest.
+
+**Working boundary:** A rule proposal only; no concern is removed or merged without agreement.
+**Open questions:** What cap (for example 5)? Is there a separate "Parked" state? Who chooses what leaves the Ready list? Does the cap apply to the dashboard order (see the ad hoc priority meta note)?
+
+### SC-038 — Keep dated, superseded decisions in concerns
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+Decisions in concerns are edited in place, which loses why they changed (SC-034 now carries both a "Meta badge" decision and a later "DevEnv" change in one entry). Evaluate dated decision entries that are marked superseded instead of rewritten, in the spirit of Architecture Decision Records.
+
+**Working boundary:** Format proposal only; existing entries stay as they are until agreed.
+**Open questions:** Decision lines inside each concern, or separate decision files? How does it interact with the "entries growing into logs" meta note and the ADR suggestion already recorded there?
+
+### SC-039 — Check test quality beyond 100% coverage with mutation testing
+
+**Kind:** Evaluation · **Status:** Ready · **Depends on:** None
+
+P-004 requires 100% coverage, but coverage does not show that tests would catch faults, and an agent can satisfy the number with weak tests. Try mutation testing (for example Stryker) on one module to see how many mutants survive.
+
+**Working boundary:** One module, one trial run; no new tooling stays without agreement (P-006).
+**Open questions:** Which module (the ticket lifecycle function is small and pure)? What score is acceptable? Does it become a periodic check or a principle?
+
+### SC-040 — Add an appetite to concerns
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+Concerns have no stated size limit, so a slice can grow while being built. Evaluate an "appetite" field (how much effort the concern is worth, as in Shape Up), plus an optional short design step between Ready and In progress.
+
+**Working boundary:** Register format only.
+**Open questions:** Appetite in time, in slices, or in tests? Is it checked at the three-minute gate (P-008)? Which concerns need a design step (those that change Types or several components)? Relates to SC-037.
+
+### SC-041 — Tie glossary terms to the code
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-022
+
+The glossary is a free-standing file, so the words in the code (Types, components) can drift from it. Evaluate a check that links terms to code symbols, or at least reports Type names that have no glossary entry.
+
+**Working boundary:** Evaluation first; the glossary content and its data source stay unchanged (SC-022 boundary).
+**Open questions:** Which terms map to symbols and which are only concepts? A test, a lint rule, or a report? Relates to P-009 (vocabulary review) and SC-027 (levels).
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

@@ -22,7 +22,7 @@ describe('SystemPlanComponent', () => {
         expect(text).toContain('System plan');
         expect(text).toContain('21 validated');
         expect(text).toContain('4 in progress');
-        expect(text).toContain('9 ready');
+        expect(text).toContain('16 ready');
         expect(text).toContain('Distinguish input from ticket');
         expect(text).toContain('Visualize the current system plan');
         expect(text).toContain('Define note-to-ticket relationships');
@@ -35,9 +35,9 @@ describe('SystemPlanComponent', () => {
             .toEqual(['SC-001', 'SC-002', 'SC-003', 'SC-004', 'SC-005',
                 'SC-006', 'SC-007', 'SC-008', 'SC-009', 'SC-010', 'SC-011',
                 'SC-012', 'SC-013', 'SC-014', 'SC-015', 'SC-016', 'SC-017', 'SC-018',
-                'SC-019', 'SC-020', 'SC-021',                 'SC-022', 'SC-023',                                 'SC-024', 'SC-025', 'SC-026', 'SC-027', 'SC-028', 'SC-029', 'SC-030', 'SC-031', 'SC-032', 'SC-033', 'SC-034']);
+                'SC-019', 'SC-020', 'SC-021',                 'SC-022', 'SC-023',                                 'SC-024', 'SC-025', 'SC-026', 'SC-027', 'SC-028', 'SC-029', 'SC-030', 'SC-031', 'SC-032', 'SC-033', 'SC-034', 'SC-035', 'SC-036', 'SC-037', 'SC-038', 'SC-039', 'SC-040', 'SC-041']);
         expect(fixture.nativeElement.querySelector('progress').value).toBe(21);
-                        expect(fixture.nativeElement.querySelector('progress').max).toBe(34);
+                        expect(fixture.nativeElement.querySelector('progress').max).toBe(41);
         expect(fixture.nativeElement.querySelector('header a').getAttribute('href'))
             .toBe('/problem-inquiry');
     });
@@ -57,9 +57,9 @@ describe('SystemPlanComponent', () => {
 
         expect(list.tagName).toBe('UL');
         expect(fixture.nativeElement.querySelector('ol.concern-list')).toBeNull();
-        expect(identifiers.length).toBe(34);
+        expect(identifiers.length).toBe(41);
         expect(identifiers[0].textContent.trim()).toBe('SC-001');
-        expect(identifiers[33].textContent.trim()).toBe('SC-034');
-        expect(fixture.nativeElement.querySelectorAll('.concern-card').length).toBe(34);
+        expect(identifiers[40].textContent.trim()).toBe('SC-041');
+        expect(fixture.nativeElement.querySelectorAll('.concern-card').length).toBe(41);
     });
 });

@@ -76,6 +76,12 @@ import { BackendService } from '../backend.service';
                                     </header>
                                     <h3>{{ concern.title }}</h3>
                                     <p class="concern-summary">{{ concern.summary }}</p>
+                                    @if (concern.status === 'Validated' && concern.userAcceptance) {
+                                        <div class="dependencies">
+                                            <span class="dependencies__label">User acceptance</span>
+                                            <span class="dependencies__value">{{ concern.userAcceptance }}</span>
+                                        </div>
+                                    }
                                     <div class="dependencies">
                                         <span class="dependencies__label">Prerequisites</span>
                                         <span class="dependencies__value">

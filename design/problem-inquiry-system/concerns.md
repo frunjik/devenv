@@ -21,13 +21,15 @@ Validation evidence: ...
 
 `dependsOn` names actual prerequisites, not merely related work. A concern can remain open while a dependent concern is explored, but implementation should not assume its unresolved decisions.
 
+For `Validated` concerns, append `User acceptance: Pending`, `Accepted`, or `Rejected` to the metadata line. Do not add user acceptance to `Ready` or `In progress` concerns. Acceptance is independent of work status; recording rejection does not undo verification. Only an explicit user acceptance/rejection decision changes the disposition, not permission to implement or commit.
+
 ## Initial Register
 
 The entries below are design concerns, not implementation commitments. Status reflects current progress.
 
 ### SC-001 — Distinguish input from ticket
 
-**Kind:** Domain · **Status:** Validated · **Depends on:** None
+**Kind:** Domain · **Status:** Validated · **Depends on:** None · **User acceptance:** Pending
 
 Distinguish raw text, an imported note, and a Problem Ticket. Decide when an imported note qualifies as a ticket; do not assume one-to-one conversion.
 
@@ -101,7 +103,7 @@ Treat conversion as a proposal that can retain ambiguity, missing information, a
 
 ### SC-004 — Define human review
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-003
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-003 · **User acceptance:** Pending
 
 Decide how a person reviews, edits, accepts, defers, or rejects a conversion before it appears in the converted-items list.
 
@@ -133,7 +135,7 @@ Keep synthetic examples distinguishable from observed or verified WMS reports du
 
 ### SC-006 — Build the input converter
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-003, SC-004, SC-005
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-003, SC-004, SC-005 · **User acceptance:** Pending
 
 First slice: manually entered source text becomes a local, reviewable proposal. After explicit acceptance, the component emits an imported note. No AI call, file-system access, persistence, or Problem Ticket promotion. Keep source text, optional artifact/location, origin, and open questions; verification remains `unreviewed`.
 
@@ -143,7 +145,7 @@ First slice: manually entered source text becomes a local, reviewable proposal. 
 
 ### SC-007 — Define the converted-items list
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-004, SC-005
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-004, SC-005 · **User acceptance:** Pending
 
 Decide which converted items appear and how review status, source, and unresolved fields are shown.
 
@@ -164,7 +166,7 @@ Decide which converted items appear and how review status, source, and unresolve
 
 ### SC-008 — Build the converted-items list
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-007
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-007 · **User acceptance:** Pending
 
 Build and test one list component against the agreed display behavior. Treat it as a separate slice from the converter.
 
@@ -173,7 +175,7 @@ Build and test one list component against the agreed display behavior. Treat it 
 
 ### SC-009 — Connect the vertical slice
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-006, SC-008
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-006, SC-008 · **User acceptance:** Pending
 
 Connect converter and list while preserving the source-to-result link and review outcome.
 
@@ -183,7 +185,7 @@ Connect converter and list while preserving the source-to-result link and review
 
 ### SC-010 — Visualize the current system plan
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** None
+**Kind:** Implementation · **Status:** Validated · **Depends on:** None · **User acceptance:** Pending
 
 Provide a read-only client view of the current concern plan, including concern status, dependencies, and overall progress. Keep it separate from the note-conversion workflow.
 
@@ -193,7 +195,7 @@ Provide a read-only client view of the current concern plan, including concern s
 
 ### SC-011 — Define note-to-ticket relationships
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-001, SC-004
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-001, SC-004 · **User acceptance:** Pending
 
 Define whether note acceptance creates a ticket and how tickets retain the notes that informed them.
 
@@ -206,7 +208,7 @@ Define whether note acceptance creates a ticket and how tickets retain the notes
 
 ### SC-012 — Collect complete ticket framing
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-001, SC-011
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-001, SC-011 · **User acceptance:** Pending
 
 Define what a human must supply when framing a ticket from accepted notes.
 
@@ -221,7 +223,7 @@ Define what a human must supply when framing a ticket from accepted notes.
 
 ### SC-013 — Add identity and provenance links
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-011
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-011 · **User acceptance:** Pending
 
 Give locally accepted notes identities so a ticket can cite one or more notes and the same note can be reused. Ticket source-note links are optional only to preserve direct-import records that were not created by the framing workflow; tickets created through that workflow must cite one or more accepted notes.
 
@@ -231,7 +233,7 @@ Give locally accepted notes identities so a ticket can cite one or more notes an
 
 ### SC-014 — Build the ticket-framing component
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-012, SC-013
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-012, SC-013 · **User acceptance:** Pending
 
 Build a separate component that selects accepted notes and explicitly frames one ticket with every required field.
 
@@ -241,7 +243,7 @@ Build a separate component that selects accepted notes and explicitly frames one
 
 ### SC-015 — Build the framed-ticket list
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-012, SC-013
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-012, SC-013 · **User acceptance:** Pending
 
 Build a separate view of explicitly created Problem Tickets and their linked accepted notes.
 
@@ -251,7 +253,7 @@ Build a separate view of explicitly created Problem Tickets and their linked acc
 
 ### SC-016 — Connect note framing to ticket review
 
-**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-014, SC-015
+**Kind:** Implementation · **Status:** Validated · **Depends on:** SC-014, SC-015 · **User acceptance:** Pending
 
 Connect accepted notes, explicit ticket framing, and the framed-ticket list without collapsing their separate lifecycles.
 
@@ -261,7 +263,7 @@ Connect accepted notes, explicit ticket framing, and the framed-ticket list with
 
 ### SC-017 — Toggle sample and real data
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-005, SC-016
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-005, SC-016 · **User acceptance:** Pending
 
 Add a toggle to the inquiry data views. In the combined mode, show sample and real data together; when switched, show only real data. Switching back restores the combined view. Filtering changes visibility only and must not modify or delete records.
 
@@ -272,7 +274,7 @@ Add a toggle to the inquiry data views. In the combined mode, show sample and re
 
 ### SC-018 — Explore a wide-screen inquiry layout
 
-**Kind:** Design · **Status:** Validated · **Depends on:** SC-016
+**Kind:** Design · **Status:** Validated · **Depends on:** SC-016 · **User acceptance:** Pending
 
 Evaluate how the inquiry workflow can use wide displays more effectively. Compare the current stacked arrangement with a responsive grid-based alternative, considering how the converter, accepted-note list, ticket-framing form, and framed-ticket list relate.
 
@@ -283,7 +285,7 @@ Evaluate how the inquiry workflow can use wide displays more effectively. Compar
 
 ### SC-019 — Clarify what a system concern is
 
-**Kind:** Domain · **Status:** Validated · **Depends on:** None
+**Kind:** Domain · **Status:** Validated · **Depends on:** None · **User acceptance:** Pending
 
 Clarify the meaning and purpose of a “concern” in the system plan, including how it differs from a `Work Item` and whether it should be defined in the project Glossary.
 
@@ -318,7 +320,7 @@ Decide whether a framed ticket can be edited, closed, or marked duplicate after 
 
 ### SC-024 — Integrate the problem-solving app into the host app shell
 
-**Kind:** Design · **Status:** Validated · **Priority:** High · **Depends on:** None
+**Kind:** Design · **Status:** Validated · **Priority:** High · **Depends on:** None · **User acceptance:** Pending
 
 The system plan and problem-inquiry pages belong to the "solving problems with AI" domain, while the existing menu and screens belong to the host (meta) application layer. Find a way for the host to visibly "dock" or include the problem-solving app so they read as one coherent product rather than two mixed-in sets of screens.
 
@@ -333,7 +335,7 @@ The system plan and problem-inquiry pages belong to the "solving problems with A
 
 ### SC-022 — Improve glossary screen layout and styling
 
-**Kind:** Design · **Status:** Validated · **Depends on:** None
+**Kind:** Design · **Status:** Validated · **Depends on:** None · **User acceptance:** Pending
 
 Evaluate the existing glossary screen's layout and styling for readability: term/definition hierarchy, spacing, long definitions, and behavior from 320 px to wide screens.
 
@@ -363,7 +365,7 @@ Explore whether an AI chatbot can live inside the meta (host) layer, so it is av
 
 ### SC-026 — Sort and search the problem ticket list
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-015, SC-017
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-015, SC-017 · **User acceptance:** Pending
 
 Let the user sort the list of framed problem tickets on different properties and find tickets with a search field that matches their description.
 
@@ -486,7 +488,7 @@ Show the current task in the meta toolbar (the host layer's top bar), so it is v
 
 ### SC-033 — Fix the meta toolbar scrollbar and oversized text
 
-**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-024
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-024 · **User acceptance:** Pending
 
 The host (meta) toolbar shows a scrollbar and its text looks far too big. Make it a compact bar without scrollbars at normal widths.
 
@@ -500,7 +502,7 @@ The host (meta) toolbar shows a scrollbar and its text looks far too big. Make i
 
 ### SC-034 — Give the meta menu the label bar's styling and drop the label bar
 
-**Kind:** Design · **Status:** Validated · **Depends on:** SC-024, SC-033
+**Kind:** Design · **Status:** Validated · **Depends on:** SC-024, SC-033 · **User acceptance:** Pending
 
 The pre-existing host menu (the navigation toolbar with Browse, Test, and so on) should take on the styling of the "META LAYER · hosts the problem-solving app" bar below it, and, if possible, that lower bar should be removed so the meta layer is a single bar.
 
@@ -515,7 +517,7 @@ The pre-existing host menu (the navigation toolbar with Browse, Test, and so on)
 
 ### SC-035 — Serve the system-plan dashboard from the concern register
 
-**Kind:** Design · **Status:** Validated · **Depends on:** None
+**Kind:** Design · **Status:** Validated · **Depends on:** None · **User acceptance:** Pending
 
 The system-plan dashboard duplicated `concerns.md` in `system-plan.component.ts`, requiring synchronized edits to the register, dashboard data, and spec counts.
 
@@ -525,12 +527,16 @@ The system-plan dashboard duplicated `concerns.md` in `system-plan.component.ts`
 
 ### SC-036 — Separate agent-verified from user-accepted status
 
-**Kind:** Design · **Status:** Ready · **Depends on:** None
+**Kind:** Design · **Status:** In progress · **Depends on:** SC-035
 
 "Validated" currently covers both "the agent measured it" and "the user accepted it", so concerns whose open questions the agent decided itself (SC-033, SC-034) still read as Validated. Consider separate states or a marker (for example Verified and Accepted).
 
-**Working boundary:** Vocabulary and register format first; existing concerns are re-labeled only after agreement.
-**Open questions:** New states or a separate "accepted by" field? Which existing concerns would drop back to Verified? How does the dashboard count them (SC-035)? Relates to P-009 (vocabulary review).
+**Decisions (user, 2026-10-06):** Keep `Ready`, `In progress`, and `Validated` as work-progress statuses. Add a separate user-acceptance disposition with `Pending`, `Accepted`, and `Rejected`; it applies only to concerns whose work status is `Validated`, not to work that is still `Ready` or `In progress`. Rejection does not change the work status: preserve `Validated` and record `Rejected` independently. Classify all existing validated concerns as `Pending`; do not infer historical acceptance or rejection from tests, implementation choices, or commit approval.
+**Type review:** `ConcernAcceptanceStatus` is the constrained disposition union, distinct from `SystemPlanStatus` and note-review outcomes. `SystemPlanConcern` now discriminates on work status: validated concerns require user acceptance, and unfinished concerns cannot carry it. Compile-time regression checks verify both constraints; runtime parser validation protects the same boundary.
+**Working boundary:** Treat verification/work progress and user acceptance as separate facts. Preserve the register as authoritative; update the live dashboard (SC-035) to display the additional disposition.
+**Open questions:** Should the disposition record who accepted/rejected and when, beyond the current Git history of the register? How should the dashboard summarize validated concerns by disposition? Relates to P-009 (vocabulary review); “user acceptance” is distinct from the existing `Acceptance Criterion` glossary term.
+**First slice built (2026-10-06):** Added `ConcernAcceptanceStatus` (`Pending | Accepted | Rejected`) as an optional shared API field present only for `Validated` concerns. Existing validated register entries start at `Pending`; non-validated concerns have no disposition. The parser rejects invalid dispositions, missing disposition on validated entries, and disposition on unfinished work. The read-only dashboard shows the disposition on each validated concern without changing its work-status count. Repository now has 22 validated concerns, all pending. Full server suite: 169 tests, 100% statement, branch, function, and line coverage. Full client suite: 299 tests, 100% on all four metrics; `system-plan.component.ts` is 100% on all four. Shared and client builds pass. The server production type-check reports only the existing unrelated `ticket-store.contract.ts` estimate type error.
+**Stable checkpoint (2026-10-06):** Strengthened the shared contract to the discriminated Type described above. Server suite: 170 tests; client suite: 299 tests; both retain 100% coverage on all four metrics. Shared/client builds pass. This completes the per-concern acceptance slice; attribution/date and aggregate acceptance counts remain separate follow-up decisions, so SC-036 stays In progress. SC-053 records the filesystem-write concern without implementing that migration here.
 
 ### SC-037 — Limit concerns that are Ready but not started
 
@@ -709,6 +715,18 @@ All work in this session is self-assessed by the same agent that performs it: te
 **Working boundary:** Decide the model (cadence, trigger, what it may flag or require) before building any automation; this is a process/evaluation concern, not a code change.
 **Open questions:** Triggered on a schedule (tied to the meta-meta cadence in P-010, every ~10 feature slices) or only on demand when asked? Does the review agent only report findings (as a one-off, like the SC-039 trial) or can it require fixes before a commit proceeds? Does it review the diff since the last review, a single slice, or specific concerns? How does this relate to SC-039 (mutation testing) — both are "a different angle on checking this agent's own self-grading"; worth doing together, or is one redundant given the other? Do review findings get folded back into `concerns.md` reliably, or risk being lost the way the QA findings were the first time (Meta-010)?
 **Vocabulary candidates (P-009, not yet agreed):** "review agent", "agent-agent review", "second opinion".
+
+### SC-053 — Avoid filesystem writes from tests
+
+**Kind:** Quality · **Status:** Ready · **Depends on:** None
+
+Tests should not write to the real filesystem, including temporary fixture files and directories; reading existing files is allowed. The system-plan route tests currently create and overwrite temporary concern registers, then delete them during cleanup. Other tests also mutate the filesystem directly or through subprocesses such as Git.
+
+**Direction (user, 2026-10-06):** Avoid filesystem writes from tests; reads are fine.
+**Working boundary:** Use simple Boundary Mocks at filesystem or subprocess boundaries while keeping the actual parsing and application behavior under test. For the system-plan route, an injectable text-file reader can supply fixture Markdown or a read error without writing fixture files. Do not mock internal domain collaborators or silently remove coverage of persistence and Git behavior. This concern records the requested direction; no test or production implementation is changed in this step.
+**Open questions:** How should persistence and real-Git adapter tests verify write behavior without performing filesystem mutations? Does the rule also include test-runner artifacts such as coverage reports and caches, or only test setup, cleanup, and code exercised by tests? What enforcement can detect direct writes and subprocess-induced mutations?
+**Vocabulary and Type review:** "Boundary Mock" is the user's term for a simple replacement at an external/system boundary, consistent with P-004; it is not yet a Glossary entry. Consider documenting it separately from internal mocks. Reuse existing I/O ports where available; a text-file reader function is a candidate boundary contract, not a reason to introduce a general filesystem abstraction.
+**Validation evidence:** Reviewed `projects/server/test/system-plan.spec.ts`: fixture tests use `mkdtemp`, `mkdir`, `writeFile`, and `rm`; the final integration test reads the repository register without writing it. Implementation and enforcement remain unstarted.
 
 ## Working Sequence
 

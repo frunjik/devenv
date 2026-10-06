@@ -14,6 +14,7 @@ const concerns: SystemPlanConcern[] = [
         status: 'Validated',
         dependsOn: [],
         summary: 'Clarify the difference between raw input and a Problem Ticket.',
+        userAcceptance: 'Pending',
     },
     {
         id: 'SC-002',
@@ -30,6 +31,24 @@ const concerns: SystemPlanConcern[] = [
         status: 'Ready',
         dependsOn: ['SC-001', 'SC-002'],
         summary: 'Implement the accepted-notes list.',
+    },
+    {
+        id: 'SC-004',
+        title: 'Review design',
+        kind: 'Design',
+        status: 'Validated',
+        dependsOn: [],
+        summary: 'Review the proposed design.',
+        userAcceptance: 'Accepted',
+    },
+    {
+        id: 'SC-005',
+        title: 'Review alternative',
+        kind: 'Design',
+        status: 'Validated',
+        dependsOn: [],
+        summary: 'Record the alternative for reconsideration.',
+        userAcceptance: 'Rejected',
     },
 ];
 
@@ -58,12 +77,16 @@ describe('SystemPlanComponent', () => {
 
         const text = fixture.nativeElement.textContent as string;
         expect(text).toContain('System plan');
-        expect(text).toContain('1 validated');
+        expect(text).toContain('3 validated');
         expect(text).toContain('1 in progress');
         expect(text).toContain('1 ready');
         expect(text).toContain('Preserve source provenance');
-        expect(fixture.nativeElement.querySelector('progress').value).toBe(1);
-        expect(fixture.nativeElement.querySelector('progress').max).toBe(3);
+        expect(text).toContain('User acceptance');
+        expect(text).toContain('Pending');
+        expect(text).toContain('Accepted');
+        expect(text).toContain('Rejected');
+        expect(fixture.nativeElement.querySelector('progress').value).toBe(3);
+        expect(fixture.nativeElement.querySelector('progress').max).toBe(5);
         expect(fixture.nativeElement.querySelector('header a').getAttribute('href'))
             .toBe('/problem-inquiry');
     });
@@ -89,8 +112,8 @@ describe('SystemPlanComponent', () => {
         expect(list.tagName).toBe('UL');
         expect(fixture.nativeElement.querySelector('ol.concern-list')).toBeNull();
         expect(Array.from(identifiers).map((identifier: HTMLElement) => identifier.textContent?.trim()))
-            .toEqual(['SC-001', 'SC-002', 'SC-003']);
-        expect(fixture.nativeElement.querySelectorAll('.concern-card')).toHaveLength(3);
+            .toEqual(['SC-001', 'SC-002', 'SC-003', 'SC-004', 'SC-005']);
+        expect(fixture.nativeElement.querySelectorAll('.concern-card')).toHaveLength(5);
     });
 
     it('shows loading and empty-register states', () => {

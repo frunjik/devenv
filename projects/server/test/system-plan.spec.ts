@@ -22,7 +22,7 @@ describe('system plan route', () => {
             '',
             '### SC-001 — Distinguish input from ticket',
             '',
-            '**Kind:** Domain · **Status:** Validated · **Depends on:** None',
+            '**Kind:** Domain · **Status:** Validated · **Depends on:** None · **User acceptance:** Pending',
             '',
             'Distinguish raw input from a Problem Ticket.',
             '',
@@ -37,6 +37,18 @@ describe('system plan route', () => {
             '**Kind:** Implementation · **Status:** Ready · **Depends on:** SC-001, SC-002',
             '',
             'Show accepted notes in a reviewable list.',
+            '',
+            '### SC-004 — Review design',
+            '',
+            '**Kind:** Design · **Status:** Validated · **Depends on:** None · **User acceptance:** Accepted',
+            '',
+            'Review the proposed design.',
+            '',
+            '### SC-005 — Review alternative',
+            '',
+            '**Kind:** Design · **Status:** Validated · **Depends on:** None · **User acceptance:** Rejected',
+            '',
+            'Record the alternative for reconsideration.',
         ].join('\n'));
 
         const response = await request(createApp(root)).get('/system-plan');
@@ -50,6 +62,7 @@ describe('system plan route', () => {
                 status: 'Validated',
                 dependsOn: [],
                 summary: 'Distinguish raw input from a Problem Ticket.',
+                userAcceptance: 'Pending',
             },
             {
                 id: 'SC-002',
@@ -66,6 +79,24 @@ describe('system plan route', () => {
                 status: 'Ready',
                 dependsOn: ['SC-001', 'SC-002'],
                 summary: 'Show accepted notes in a reviewable list.',
+            },
+            {
+                id: 'SC-004',
+                title: 'Review design',
+                kind: 'Design',
+                status: 'Validated',
+                dependsOn: [],
+                summary: 'Review the proposed design.',
+                userAcceptance: 'Accepted',
+            },
+            {
+                id: 'SC-005',
+                title: 'Review alternative',
+                kind: 'Design',
+                status: 'Validated',
+                dependsOn: [],
+                summary: 'Record the alternative for reconsideration.',
+                userAcceptance: 'Rejected',
             },
         ]);
     });
@@ -92,6 +123,9 @@ describe('system plan route', () => {
             '### SC-001 — Missing metadata\n\nA description without metadata.',
             '### SC-001 — Invalid status\n\n**Kind:** Domain · **Status:** Unknown · **Depends on:** None\n\nA description.',
             '### SC-001 — Invalid dependency\n\n**Kind:** Domain · **Status:** Ready · **Depends on:** not-an-id\n\nA description.',
+            '### SC-001 — Invalid acceptance\n\n**Kind:** Domain · **Status:** Validated · **Depends on:** None · **User acceptance:** Deferred\n\nA description.',
+            '### SC-001 — Acceptance on unfinished work\n\n**Kind:** Domain · **Status:** In progress · **Depends on:** None · **User acceptance:** Pending\n\nA description.',
+            '### SC-001 — Validated without acceptance\n\n**Kind:** Domain · **Status:** Validated · **Depends on:** None\n\nA description.',
             '### SC-001 — Missing description\n\n**Kind:** Domain · **Status:** Ready · **Depends on:** None\n\n',
         ];
 
@@ -109,5 +143,8 @@ describe('system plan route', () => {
         expect(response.body.data.find((concern: { id: string }) => concern.id === 'SC-021'))
             .toMatchObject({ dependsOn: ['SC-016'] });
         expect(response.body.data.map((concern: { id: string }) => concern.id)).toContain('SC-052');
+        const validated = response.body.data.filter((concern: { status: string }) => concern.status === 'Validated');
+        expect(validated).toHaveLength(22);
+        expect(validated.every((concern: { userAcceptance: string }) => concern.userAcceptance === 'Pending')).toBe(true);
     });
 });

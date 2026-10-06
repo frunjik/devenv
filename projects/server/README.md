@@ -29,7 +29,7 @@ The actor of a change is the authenticated principal, or `anonymous` when no aut
 
 | Route | Purpose |
 |-------|---------|
-| `GET /system-plan` | Reads and parses the concern register at `design/problem-inquiry-system/concerns.md`; returns each concern's id, title, kind, status, prerequisites, and opening description in `{ data }`. |
+| `GET /system-plan` | Reads and parses the concern register at `design/problem-inquiry-system/concerns.md`; returns each concern's id, title, kind, status, prerequisites, and opening description, plus user acceptance for validated concerns, in `{ data }`. |
 
 ## Tests
 

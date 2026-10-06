@@ -41,15 +41,18 @@ export interface SuccessResponseBody<T> {
 }
 
 export type SystemPlanStatus = 'In progress' | 'Ready' | 'Validated';
+export type ConcernAcceptanceStatus = 'Pending' | 'Accepted' | 'Rejected';
 
-export interface SystemPlanConcern {
+export type SystemPlanConcern = {
     id: string;
     title: string;
     kind: string;
-    status: SystemPlanStatus;
     dependsOn: string[];
     summary: string;
-}
+} & (
+    | { status: 'Validated'; userAcceptance: ConcernAcceptanceStatus }
+    | { status: Exclude<SystemPlanStatus, 'Validated'>; userAcceptance?: never }
+);
 
 export interface FailureResponseBody {
     error: {

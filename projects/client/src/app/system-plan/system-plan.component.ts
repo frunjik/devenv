@@ -535,6 +535,14 @@ export class SystemPlanComponent {
             dependsOn: [],
             summary: 'Systematically check every route at standard widths; 4 of 7 routes have no recorded check yet.',
         },
+        {
+            id: 'SC-049',
+            title: 'Export, hydrate, and persist the accumulated rule set',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: [],
+            summary: 'Explore making the Principles, Glossary, and conventions a portable, versioned artifact another system could import.',
+        },
     ];
 
     get validatedCount(): number {

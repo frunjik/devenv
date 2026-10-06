@@ -96,6 +96,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Commit messages for changes that implement, extend, or register a System Concern (SC-NN).
 - **Rule:** When a commit's primary subject is one or more SC-NN concerns, start the commit subject with the identifier(s) followed by a colon and a short phrase describing what this commit contributes. That phrase describes this change, not the concern as a whole: a concern's Title in `concerns.md` is stable across every slice built toward it, while the commit phrase is specific to the current slice and will differ between commits against the same SC-NN.
 - **Practice:** Prefer existing, already-understood vocabulary (a commit subject line) over inventing a new proprietary term for this pairing; the "Three ID schemes" meta note already flags the risk of home-grown naming unrelated to external conventions. When a commit touches several concerns, either lead with the most central one or list them (for example "Add SC-045 and SC-046: export to and import from external systems").
+- **User override option:** The user may, at their own discretion and at any time, assign a short canonical word for a specific SC-NN (redefining what its NN "is" beyond the sequence number). When they do, record that word in the concern's own entry in `concerns.md` so it persists, and use it in that concern's subsequent commit subjects as they direct. Do not pre-assign such words unprompted; this stays an option the user invokes, not a default naming step.
 
 ## Applying the Register
 

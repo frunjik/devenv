@@ -33,6 +33,11 @@ The client is served by Angular CLI. The API process uses `tsx watch` and restar
 Client and server release versions are maintained in `projects/client/package.json` and `projects/server/package.json`.
 The status toolbar displays both versions, and the API exposes the server version at `GET /version`.
 
+
+## Server API
+
+See [projects/server/README.md](projects/server/README.md) for the server layout and the ticket API.
+
 ## Build
 
 Build the shared library before the client that consumes its API contracts:

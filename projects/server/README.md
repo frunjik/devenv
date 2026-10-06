@@ -1,7 +1,37 @@
 # Server
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
+The Express API behind DevEnv. `createApp(root, options)` builds the app; `startServer` listens on it.
 
+## Layout
+
+- `src/lib/handlers/`: one file per route group (files, git, tests, glossary, tickets).
+- `src/lib/domain/`: pure domain rules with no I/O. `ticket-lifecycle.ts` holds `applyTicketCommand`, the ticket state machine (open, assigned, resolved, closed, duplicate).
+- `src/lib/storage/`: the `TicketStore` port and `InMemoryTicketStore`. Tickets are lost on restart until a database store exists.
+- `test/`: Jest specs. `ticket-store.contract.ts` is a reusable contract that every `TicketStore` implementation must pass.
+
+Server code imports only types from `@shared`; the shared package re-exports Angular services, so runtime logic belongs here.
+
+## Ticket API
+
+Tickets are stored on the server behind the `TicketStore` port (SC-028 in `design/problem-inquiry-system/concerns.md`). Responses wrap results as `{ data }` or `{ error: { message } }`.
+
+| Route | Purpose |
+|-------|---------|
+| `GET /tickets` | List stored tickets. |
+| `POST /tickets` | Body `{ ticket, dataKind? }` (`sample` by default, or `real`). Creates an open, version 1 ticket. Returns 201. |
+| `POST /tickets/:id/changes` | Body `{ command, expectedVersion }`. 200 with `{ ticket, event }`; 404 unknown ticket; 409 stale version (the current ticket is in `error.current`); 422 refused by the lifecycle; 400 malformed. |
+| `GET /tickets/:id/history` | Change events for a ticket. |
+
+The actor of a change is the authenticated principal, or `anonymous` when no authentication is configured.
+
+## Tests
+
+```bash
+npm run test:server
+npm run test:server:coverage
+```
+
+Coverage is held at 100% (principle P-004).
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

@@ -1,6 +1,7 @@
 import express, { type Express, type RequestHandler } from 'express';
 import cors from 'cors';
 import type { Server } from 'node:http';
+import { join } from 'node:path';
 import serverPackage from '../../package.json';
 import { FileSystem } from './filesystem/filesystem';
 import { getFiles, postFiles } from './handlers/files';
@@ -13,6 +14,7 @@ import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createLinesHandler } from './handlers/lines';
 import { createTicketsRouter } from './handlers/tickets';
+import { FileTicketStore } from './storage/file-ticket-store';
 import { InMemoryTicketStore } from './storage/in-memory-ticket-store';
 import type { TicketStore } from './storage/ticket-store';
 import {
@@ -108,6 +110,7 @@ export function startServer(
     port = Number(process.env['PORT'] ?? 3000),
     listener: ServerListener = httpServerListener,
     authenticationService?: AuthenticationService,
+    ticketStore: TicketStore = new FileTicketStore(process.env['TICKETS_FILE'] ?? join(root, '.tickets.json')),
 ): Promise<Server> {
-    return listener.listen(createApp(root, { authenticationService }), port);
+    return listener.listen(createApp(root, { authenticationService, ticketStore }), port);
 }

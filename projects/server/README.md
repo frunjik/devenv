@@ -6,7 +6,7 @@ The Express API behind DevEnv. `createApp(root, options)` builds the app; `start
 
 - `src/lib/handlers/`: one file per route group (files, git, tests, glossary, tickets).
 - `src/lib/domain/`: pure domain rules with no I/O. `ticket-lifecycle.ts` holds `applyTicketCommand`, the ticket state machine (open, assigned, resolved, closed, duplicate).
-- `src/lib/storage/`: the `TicketStore` port and `InMemoryTicketStore`. Tickets are lost on restart until a database store exists.
+- `src/lib/storage/`: the `TicketStore` port with `InMemoryTicketStore` (tests, and `createApp` by default) and `FileTicketStore` (one JSON file; `startServer` uses it at `<root>/.tickets.json`, or the path in `TICKETS_FILE`). The file store suits one server process only.
 - `test/`: Jest specs. `ticket-store.contract.ts` is a reusable contract that every `TicketStore` implementation must pass.
 
 Server code imports only types from `@shared`; the shared package re-exports Angular services, so runtime logic belongs here.

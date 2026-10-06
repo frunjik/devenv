@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
@@ -41,6 +41,53 @@ describe('server startup public API', () => {
 
         expect(response.status).toBe(200);
         expect(response.body.data).toMatch(/^\d+\.\d+\.\d+/);
+    });
+
+    describe('ticket persistence', () => {
+        const ticket = {
+            title: 'Pick list is wrong',
+            report: 'Pickers get the wrong aisle.',
+            problem: { condition: 'Wrong aisle', affected: 'Pickers', impact: 'Delays' },
+            scope: { level: 'workflow', label: 'Picking' },
+            context: { people: [], places: [], things: [] },
+            reportedBy: 'Ada',
+            reportedAt: '2026-10-06T10:00:00.000Z',
+        };
+
+        async function startedApp(): Promise<ReturnType<typeof createApp>> {
+            let started: ReturnType<typeof createApp> | undefined;
+            await startServer(root, 0, { listen: (application) => {
+                started = application;
+                return Promise.resolve(createServer());
+            } });
+            return started!;
+        }
+
+        it('keeps tickets in a file under the root by default', async () => {
+            const started = await startedApp();
+
+            await request(started).post('/tickets').send({ ticket });
+
+            const saved = JSON.parse(await readFile(join(root, '.tickets.json'), 'utf8'));
+            expect(saved.tickets).toHaveLength(1);
+            expect((await request(await startedApp()).get('/tickets')).body.data).toHaveLength(1);
+        });
+
+        it('keeps tickets in the file named by TICKETS_FILE when it is set', async () => {
+            const original = process.env['TICKETS_FILE'];
+            process.env['TICKETS_FILE'] = join(root, 'elsewhere.json');
+            try {
+                await request(await startedApp()).post('/tickets').send({ ticket });
+
+                expect(JSON.parse(await readFile(join(root, 'elsewhere.json'), 'utf8')).tickets).toHaveLength(1);
+            } finally {
+                if (original === undefined) {
+                    delete process.env['TICKETS_FILE'];
+                } else {
+                    process.env['TICKETS_FILE'] = original;
+                }
+            }
+        });
     });
 
     it('uses the default root and port when no startup arguments are supplied', async () => {

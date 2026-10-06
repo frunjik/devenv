@@ -401,6 +401,8 @@ Accepted notes, review decisions, and framed tickets currently live in memory an
 
 **Fourth slice built (page uses the store):** The inquiry page loads stored tickets on start and saves each newly framed ticket through the server (the server issues its id). A ticket is flagged real only when all its linked notes are known-real, otherwise sample; in real-only mode stored tickets are filtered by that stored flag, so they stay correct after a reload when the notes are gone. A failed load or save shows an error and never lists an unsaved ticket. Verified in the browser against the running server. Client suite: 204 tests, build passes. Notes are still in memory only. Remaining: persisting beyond the in-memory store, and a user id/name for the actor.
 
+**Fifth slice built (file store, user choice 2026-10-06):** The engine is a JSON file, chosen as the simplest option; it is not safe for several server processes or concurrent users, so the 'shared by several users' decision will need a real database later (the port and contract tests make that a swap). FileTicketStore loads lazily, writes atomically (temporary file then rename) through a queue, refuses to start from a corrupt file without overwriting it, and forgets a ticket whose save failed. startServer uses it by default at <root>/.tickets.json (git-ignored), or the path in TICKETS_FILE; createApp still defaults to the in-memory store. Server suite: 140 tests, 100% coverage; client suite 204. Remaining: a user id/name for the actor, and a real database when several users are needed.
+
 ### SC-029 — Assign problem tickets
 
 **Kind:** Behavior · **Status:** Ready · **Depends on:** SC-021, SC-028

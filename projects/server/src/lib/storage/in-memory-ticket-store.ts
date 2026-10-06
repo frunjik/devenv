@@ -15,6 +15,12 @@ import type { TicketStore } from './ticket-store';
 export interface InMemoryTicketStoreOptions {
     newId?: () => ProblemTicketId;
     now?: () => string;
+    snapshot?: TicketStoreSnapshot;
+}
+
+export interface TicketStoreSnapshot {
+    tickets: StoredTicket[];
+    events: Record<ProblemTicketId, TicketChangeEvent[]>;
 }
 
 export class InMemoryTicketStore implements TicketStore {
@@ -23,9 +29,22 @@ export class InMemoryTicketStore implements TicketStore {
     private readonly newId: () => ProblemTicketId;
     private readonly now: () => string;
 
-    constructor({ newId = randomUUID, now = () => new Date().toISOString() }: InMemoryTicketStoreOptions = {}) {
+    constructor({ newId = randomUUID, now = () => new Date().toISOString(), snapshot }: InMemoryTicketStoreOptions = {}) {
+        for (const ticket of snapshot?.tickets ?? []) {
+            this.tickets.set(ticket.id, ticket);
+        }
+        for (const [id, events] of Object.entries(snapshot?.events ?? {})) {
+            this.events.set(id, events);
+        }
         this.newId = newId;
         this.now = now;
+    }
+
+    snapshot(): TicketStoreSnapshot {
+        return structuredClone({
+            tickets: [...this.tickets.values()],
+            events: Object.fromEntries(this.events),
+        });
     }
 
     async create(ticket: NewProblemTicket, dataKind: DataKind): Promise<StoredTicket> {

@@ -772,6 +772,7 @@ Find System Concerns in the client System Plan by ID, title, or displayed descri
 **Decision (user, 2026-10-07):** Search those three fields; keep totals based on the full register.
 **Working boundary:** View-only, case-insensitive substring search with surrounding whitespace ignored. Preserve register order; clearing the query restores all concerns. Search state is local to the page, not persisted. Status, kind, acceptance, and prerequisites are not searched.
 **Validation evidence:** Public-interface tests cover each searchable field, casing, whitespace, multiple matches, excluded metadata, no-match feedback, clearing, and unchanged overall totals, alongside loading/error/empty states. All 14 component tests pass with 100% coverage on all four metrics; shared/client builds pass. Reuse `SystemPlanConcern`; no new domain Type or Glossary term is needed.
+**Search styling (2026-10-07):** Added external SCSS for label/input spacing, a full-width dark input, placeholder contrast, keyboard focus, and disabled feedback. Browser checks at 320, 768, and 1440 px confirm the input fits its container and keyboard focus is visible. Existing concern cards overflow at 320 px; that is separate from this search change. All 14 tests pass with 100% component coverage. The production build succeeds but reports the component stylesheet 467 bytes over its 4 kB warning budget. The user chose to retain the styling and record the warning; no budget was raised.
 
 ## Working Sequence
 

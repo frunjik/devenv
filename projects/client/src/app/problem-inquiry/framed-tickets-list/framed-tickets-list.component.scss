@@ -17,8 +17,12 @@
     min-width: 0;
 }
 
-.ticket-controls input,
-.ticket-controls select {
+input,
+select,
+textarea,
+button {
+    min-width: 44px;
+    min-height: 44px;
     max-width: 100%;
     box-sizing: border-box;
 }
@@ -39,6 +43,12 @@
     border: 1px solid #cbd5e1;
     border-radius: 0.65rem;
     background: #fff;
+    color: #334155;
+}
+
+.ticket-card h3,
+.ticket-card h4 {
+    color: #334155;
 }
 
 .ticket-card header,
@@ -63,6 +73,7 @@ p {
 
 .state-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     margin-block: 0.5rem;
 }
@@ -80,6 +91,11 @@ p {
     display: grid;
     gap: 0.2rem;
     font-weight: 600;
+}
+
+.assign-form label,
+.duplicate-form label {
+    min-width: 0;
 }
 
 .edit-form {

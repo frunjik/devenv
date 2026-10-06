@@ -509,7 +509,7 @@ Decisions in concerns are edited in place, which loses why they changed (SC-034 
 
 P-004 requires 100% coverage, but coverage does not show that tests would catch faults, and an agent can satisfy the number with weak tests. Try mutation testing (for example Stryker) on one module to see how many mutants survive.
 
-**Working boundary:** One module, one trial run; no new tooling stays without agreement (P-006).
+**Working boundary:** One module, one trial run; no new tooling stays without agreement (P-006). P-004 (100% coverage) is not under review: the user values it for keeping code clean and for surfacing unexpected side effects of changes (2026-10-06). The trial only measures what coverage cannot, whether the tests would catch a fault.
 **Open questions:** Which module (the ticket lifecycle function is small and pure)? What score is acceptable? Does it become a periodic check or a principle?
 
 ### SC-040 — Add an appetite to concerns

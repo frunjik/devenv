@@ -1,5 +1,13 @@
 @use '@angular/material/prebuilt-themes/pink-bluegrey.css';
 
+:root {
+    --surface-card: #1e2821;
+    --border-default: #37443b;
+    --border-accent: #596b5d;
+    --text-heading: #dce6dd;
+    --text-secondary: #b1bdb3;
+}
+
 html,
 body {
     height: 100%;

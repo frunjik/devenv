@@ -18,6 +18,7 @@ module.exports = {
         'projects/server/src/lib/authentication.ts',
         'projects/server/src/lib/filesystem/filesystem.ts',
         'projects/server/src/lib/handlers/**/*.ts',
+        'projects/server/src/lib/storage/**/*.ts',
     ],
     coverageDirectory: '<rootDir>/coverage/server',
     coverageReporters: ['text', 'lcov'],

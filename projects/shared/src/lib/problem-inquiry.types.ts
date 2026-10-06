@@ -32,6 +32,22 @@ export interface TicketChangeEvent {
 export type TicketCommandResult =
     | { ok: true; status: TicketStatus; event: TicketChangeEvent }
     | { ok: false; reason: string };
+
+export type DataKind = 'sample' | 'real';
+
+export type NewProblemTicket = Omit<ProblemTicket, 'id'>;
+
+export interface StoredTicket extends ProblemTicket {
+    status: TicketStatus;
+    version: number;
+    dataKind: DataKind;
+}
+
+export type TicketChangeOutcome =
+    | { ok: true; ticket: StoredTicket; event: TicketChangeEvent }
+    | { ok: false; kind: 'not-found' }
+    | { ok: false; kind: 'stale'; current: StoredTicket }
+    | { ok: false; kind: 'refused'; reason: string };
 export type ImportedNoteId = string;
 export type EvidenceId = string;
 export type FindingId = string;

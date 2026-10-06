@@ -382,15 +382,18 @@ Terms in the glossary may come from different domains (the WMS problem domain, t
 
 ### SC-028 — Persist notes and tickets across reloads
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-021
+**Kind:** Design · **Status:** In progress · **Depends on:** SC-021
 
-Accepted notes, review decisions, and framed tickets currently live in memory and are lost on reload. Decide how they are stored.
+Accepted notes, review decisions, and framed tickets currently live in memory and are lost on reload. Decide how they are stored. and framed tickets currently live in memory and are lost on reload. Decide how they are stored.
 
 **Working boundary:** Decide the storage approach before building. Options to compare: browser storage behind a small service (as in SC-024), the existing server with a database, or exported/imported files.
 **Decisions (user, 2026-10-06):** Storage lives on the server, with a database. The specific database is not chosen yet: first define a storage interface (port) that the server and tests use, and pick the engine later. Data is shared by several users from the start. Only framed tickets and their change history (SC-021) are stored first; notes later. Each ticket carries a data-kind flag (sample or real) and the existing toggle (SC-017) filters on it. Concurrent changes use a per-ticket version number: a stale change is rejected and the current version is shown.
 **Decisions (user, 2026-10-06, identity):** A user is identified by a unique id plus an optional display name. The server issues the id on first use and the browser remembers it; there is no login yet. The user may set or change the name later; change history records the id and the name as it was at that time. This refines SC-021, where "by name" now means by user id with the optional name. A browser that loses its remembered id becomes a new user (accepted limitation until real login exists).
 **Settled (user, 2026-10-06):** The client talks to the existing Express API with minimal operations (list, create, change). The stored ticket is the shared `ProblemTicket` plus state, assignee, version, and data kind. The server creates ticket ids. An in-memory implementation of the storage interface is the first one, until the database engine is chosen. The user is a new shared Type (id, optional name). An assignee (SC-029) is a user id.
 **Open questions:** None that block design; the first build slice is the shared Types plus the storage interface with its in-memory implementation (P-002 Type review applies).
+
+**First slice built (agent, 2026-10-06):** New shared Types `DataKind`, `NewProblemTicket` (a ticket without its id), `StoredTicket` (the `ProblemTicket` plus `status`, `version`, `dataKind`), and `TicketChangeOutcome` (ok, not-found, stale with the current ticket, or refused with a reason). The server has the `TicketStore` port (create, list, get, change, history) and an `InMemoryTicketStore`. The lifecycle function is injected into the store rather than imported, so the store stays a plain server module. A reusable contract test (`ticket-store.contract.ts`) defines what any implementation, including a future database, must do. Server suite 102 tests, 100% coverage. Not built yet: the Express routes, the user-id issuing, the client service, and wiring the store into `createApp`.
+**New open question:** `@shared` re-exports Angular services, so the server cannot import its runtime code (such as `applyTicketCommand`) from `@shared` without pulling Angular in; the tests import the pure file by relative path. Before wiring the routes, decide how the server gets the lifecycle function (for example a Node-safe entry point in the shared package, or moving it).
 
 ### SC-029 — Assign problem tickets
 

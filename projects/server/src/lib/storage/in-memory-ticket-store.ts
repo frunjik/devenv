@@ -1,0 +1,81 @@
+import { randomUUID } from 'node:crypto';
+import type {
+    DataKind,
+    NewProblemTicket,
+    ProblemTicketId,
+    StoredTicket,
+    TicketChangeEvent,
+    TicketChangeOutcome,
+    TicketCommand,
+    User,
+} from '@shared';
+import type { ApplyTicketCommand, TicketStore } from './ticket-store';
+
+export interface InMemoryTicketStoreOptions {
+    apply: ApplyTicketCommand;
+    newId?: () => ProblemTicketId;
+    now?: () => string;
+}
+
+export class InMemoryTicketStore implements TicketStore {
+    private readonly tickets = new Map<ProblemTicketId, StoredTicket>();
+    private readonly events = new Map<ProblemTicketId, TicketChangeEvent[]>();
+    private readonly apply: ApplyTicketCommand;
+    private readonly newId: () => ProblemTicketId;
+    private readonly now: () => string;
+
+    constructor({ apply, newId = randomUUID, now = () => new Date().toISOString() }: InMemoryTicketStoreOptions) {
+        this.apply = apply;
+        this.newId = newId;
+        this.now = now;
+    }
+
+    async create(ticket: NewProblemTicket, dataKind: DataKind): Promise<StoredTicket> {
+        const stored: StoredTicket = {
+            ...structuredClone(ticket),
+            id: this.newId(),
+            status: { state: 'open' },
+            version: 1,
+            dataKind,
+        };
+        this.tickets.set(stored.id, stored);
+        return structuredClone(stored);
+    }
+
+    async list(): Promise<StoredTicket[]> {
+        return structuredClone([...this.tickets.values()]);
+    }
+
+    async get(id: ProblemTicketId): Promise<StoredTicket | undefined> {
+        return structuredClone(this.tickets.get(id));
+    }
+
+    async change(
+        id: ProblemTicketId,
+        command: TicketCommand,
+        actor: User,
+        expectedVersion: number,
+    ): Promise<TicketChangeOutcome> {
+        const current = this.tickets.get(id);
+        if (!current) {
+            return { ok: false, kind: 'not-found' };
+        }
+        if (current.version !== expectedVersion) {
+            return { ok: false, kind: 'stale', current: structuredClone(current) };
+        }
+
+        const result = this.apply(id, current.status, command, actor, this.now());
+        if (!result.ok) {
+            return { ok: false, kind: 'refused', reason: result.reason };
+        }
+
+        const updated: StoredTicket = { ...current, status: result.status, version: current.version + 1 };
+        this.tickets.set(id, updated);
+        this.events.set(id, [...(this.events.get(id) ?? []), result.event]);
+        return { ok: true, ticket: structuredClone(updated), event: structuredClone(result.event) };
+    }
+
+    async history(id: ProblemTicketId): Promise<TicketChangeEvent[]> {
+        return structuredClone(this.events.get(id) ?? []);
+    }
+}

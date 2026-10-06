@@ -39,10 +39,7 @@
             "styles": [
               "projects/client/src/styles.scss"
             ],
-            "scripts": [],
-            "allowedCommonJsDependencies": [
-                "rubico"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {

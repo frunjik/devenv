@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket, TicketContent } from '@shared';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, SourceOrigin, StoredTicket, TicketContent, TicketHistoryEvent } from '@shared';
 import { BackendService } from '../backend.service';
 import { FramedTicketsListComponent } from './framed-tickets-list/framed-tickets-list.component';
 import { ImportedNotesListComponent } from './imported-notes-list/imported-notes-list.component';
@@ -40,6 +40,8 @@ import { TicketFramingComponent } from './ticket-framing/ticket-framing.componen
                 [notes]="visibleNotes"
                 (assignRequested)="assign($event)"
                 (editRequested)="edit($event)"
+                (historyRequested)="loadHistory($event)"
+                [histories]="histories"
             />
         </main>
     `,
@@ -100,6 +102,7 @@ export class ProblemInquiryPageComponent implements OnInit {
 
     notes: readonly ImportedNote[] = [];
     tickets: readonly (ProblemTicket | StoredTicket)[] = [];
+    histories: Readonly<Record<string, readonly TicketHistoryEvent[]>> = {};
     showSamples = true;
     storageError = '';
 
@@ -146,6 +149,17 @@ export class ProblemInquiryPageComponent implements OnInit {
         this.applyChange(this.backend.editTicket(ticket.id, content, ticket.version), 'saved');
     }
 
+    loadHistory(ticket: StoredTicket): void {
+        this.backend.getTicketHistory(ticket.id).subscribe({
+            next: events => {
+                this.histories = { ...this.histories, [ticket.id]: events };
+            },
+            error: () => {
+                this.storageError = 'The ticket history could not be loaded.';
+            },
+        });
+    }
+
     private applyChange(request: Observable<{ ticket: StoredTicket }>, verb: string): void {
         request.subscribe({
             next: ({ ticket: changed }) => {
@@ -169,6 +183,9 @@ export class ProblemInquiryPageComponent implements OnInit {
 
     private replaceTicket(changed: StoredTicket): void {
         this.tickets = this.tickets.map(ticket => ticket.id === changed.id ? changed : ticket);
+        if (this.histories[changed.id]) {
+            this.loadHistory(changed);
+        }
     }
 
     private dataKindOf(ticket: ProblemTicket): DataKind {

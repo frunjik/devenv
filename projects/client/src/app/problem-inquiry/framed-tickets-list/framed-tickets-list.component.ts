@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { calculateMetric, METRIC_METHODS, MetricMethod } from '../ticket-metrics';
-import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketContent, TicketStatus } from '@shared';
+import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 
 @Component({
     selector: 'app-framed-tickets-list',
@@ -63,6 +63,29 @@ import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, 
                                     </form>
                                 }
 
+                                @if (isStored(ticket)) {
+                                    <button type="button" class="history-toggle" (click)="toggleHistory(ticket)">
+                                        {{ historyId === ticket.id ? 'Hide history' : 'History' }}
+                                    </button>
+                                    @if (historyId === ticket.id) {
+                                        <section class="history" aria-label="Ticket history">
+                                            @if (histories[ticket.id]; as events) {
+                                                <ol>
+                                                    @for (event of events; track $index) {
+                                                        <li class="history-entry">
+                                                            {{ actorName(event) }}: {{ describeEvent(event) }}
+                                                            <time [attr.datetime]="event.at">{{ event.at }}</time>
+                                                        </li>
+                                                    } @empty {
+                                                        <li>No changes yet.</li>
+                                                    }
+                                                </ol>
+                                            } @else {
+                                                <p>Loading history…</p>
+                                            }
+                                        </section>
+                                    }
+                                }
                                 @if (isStored(ticket)) {
                                     <button type="button" class="edit-toggle" (click)="toggleEdit(ticket.id)">
                                         {{ editingId === ticket.id ? 'Close editor' : 'Edit' }}
@@ -275,6 +298,16 @@ import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, 
             font-weight: 600;
         }
 
+        .history ol {
+            margin-block: 0.5rem;
+            padding-inline-start: 1.25rem;
+        }
+
+        .history time {
+            color: #475569;
+            font-size: 0.85rem;
+        }
+
         .ticket-metric {
             margin: 0.2rem 0;
             color: #475569;
@@ -362,10 +395,13 @@ export class FramedTicketsListComponent {
         { name: 'estimateUrgency', key: 'urgency', label: 'Urgency' },
         { name: 'estimateEffort', key: 'effort', label: 'Effort' },
     ] as const;
+    historyId?: string;
     editingId?: string;
     editError = '';
     metricMethod: MetricMethod = 'impact-urgency';
 
+    @Input() histories: Readonly<Record<string, readonly TicketHistoryEvent[]>> = {};
+    @Output() readonly historyRequested = new EventEmitter<StoredTicket>();
     @Output() readonly editRequested = new EventEmitter<{ ticket: StoredTicket; content: TicketContent }>();
     @Output() readonly assignRequested = new EventEmitter<{ ticket: StoredTicket; assigneeId: string }>();
 
@@ -408,6 +444,32 @@ export class FramedTicketsListComponent {
 
     metricOf(ticket: ProblemTicket | StoredTicket): number | undefined {
         return calculateMetric(this.metricMethod, ticket.estimate);
+    }
+
+    toggleHistory(ticket: StoredTicket): void {
+        this.historyId = this.historyId === ticket.id ? undefined : ticket.id;
+        if (this.historyId) {
+            this.historyRequested.emit(ticket);
+        }
+    }
+
+    actorName(event: TicketHistoryEvent): string {
+        return event.actor.name ?? event.actor.id;
+    }
+
+    describeEvent(event: TicketHistoryEvent): string {
+        if (event.kind !== 'edit') {
+            return `${this.stateLabel(event.before)} → ${this.stateLabel(event.after)}`;
+        }
+        const { before, after } = event;
+        const changed = [
+            before.title !== after.title && 'title',
+            before.report !== after.report && 'report',
+            JSON.stringify(before.problem) !== JSON.stringify(after.problem) && 'problem frame',
+            JSON.stringify(before.scope) !== JSON.stringify(after.scope) && 'scope',
+            JSON.stringify(before.estimate) !== JSON.stringify(after.estimate) && 'estimate',
+        ].filter(Boolean);
+        return `Edited ${changed.join(', ')}`;
     }
 
     isStored(ticket: ProblemTicket | StoredTicket): ticket is StoredTicket {

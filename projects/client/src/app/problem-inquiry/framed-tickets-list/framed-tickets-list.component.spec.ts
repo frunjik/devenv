@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImportedNote, ProblemTicket, StoredTicket, TicketContent, TicketStatus } from '@shared';
+import { ImportedNote, ProblemTicket, StoredTicket, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 import { FramedTicketsListComponent } from './framed-tickets-list.component';
 
 describe('FramedTicketsListComponent', () => {
@@ -561,6 +561,88 @@ describe('FramedTicketsListComponent', () => {
             click('.edit-toggle');
 
             expect(fixture.nativeElement.querySelector('.edit-form')).toBeNull();
+        });
+    });
+    describe('history', () => {
+        const ada = { id: 'user-1', name: 'Ada' };
+        const at = '2026-10-06T10:00:00.000Z';
+        const assignEvent: TicketHistoryEvent = {
+            kind: 'assign', actor: ada, at, before: { state: 'open' }, after: { state: 'assigned', assigneeId: 'user-2' },
+        };
+
+        function stored(id: string): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status: { state: 'open' }, version: 1, dataKind: 'real' };
+        }
+
+        function toggle(): void {
+            (fixture.nativeElement.querySelector('.history-toggle') as HTMLElement).click();
+            fixture.detectChanges();
+        }
+
+        function entries(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.history-entry') as NodeListOf<HTMLElement>)
+                .map(entry => entry.textContent!.replace(/\s+/g, ' ').trim());
+        }
+
+        it('offers history only on stored tickets and asks for it when opened', () => {
+            const requests: StoredTicket[] = [];
+            fixture.componentInstance.historyRequested.subscribe(ticket => requests.push(ticket));
+            const ticket = stored('a');
+            fixture.componentRef.setInput('tickets', [ticket, makeTicket('local', 'Local', undefined)]);
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.querySelectorAll('.history-toggle').length).toBe(1);
+            toggle();
+
+            expect(requests).toEqual([ticket]);
+            expect(fixture.nativeElement.querySelector('.history').textContent).toContain('Loading history');
+        });
+
+        it('says so when a ticket has no history', () => {
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.componentRef.setInput('histories', { a: [] });
+            fixture.detectChanges();
+
+            toggle();
+
+            expect(fixture.nativeElement.querySelector('.history').textContent).toContain('No changes yet.');
+        });
+
+        it('lists state changes and edits with who and when', () => {
+            const edit: TicketHistoryEvent = {
+                kind: 'edit',
+                actor: { id: 'user-2' },
+                at,
+                before: { title: 'Old', report: 'r', problem: { condition: 'c', affected: 'a', impact: 'i' }, scope: { level: 'system', label: 'l' } },
+                after: {
+                    title: 'New',
+                    report: 'r2',
+                    problem: { condition: 'c', affected: 'a', impact: 'changed' },
+                    scope: { level: 'workflow', label: 'l' },
+                    estimate: { impact: 1, urgency: 1, effort: 1 },
+                },
+            };
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.componentRef.setInput('histories', { a: [assignEvent, edit] });
+            fixture.detectChanges();
+
+            toggle();
+
+            expect(entries()).toEqual([
+                `Ada: Open → Assigned to user-2 ${at}`,
+                `user-2: Edited title, report, problem frame, scope, estimate ${at}`,
+            ]);
+        });
+
+        it('hides the history when the toggle is used again', () => {
+            fixture.componentRef.setInput('tickets', [stored('a')]);
+            fixture.componentRef.setInput('histories', { a: [assignEvent] });
+            fixture.detectChanges();
+
+            toggle();
+            toggle();
+
+            expect(fixture.nativeElement.querySelector('.history')).toBeNull();
         });
     });
     describe('state badge', () => {

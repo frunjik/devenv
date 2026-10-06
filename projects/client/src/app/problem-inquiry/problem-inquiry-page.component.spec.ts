@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket, TicketCommand, TicketChangeEvent, TicketContent, TicketEditEvent } from '@shared';
+import { DataKind, ImportedNote, NewProblemTicket, ProblemTicket, StoredTicket, TicketCommand, TicketChangeEvent, TicketContent, TicketEditEvent, TicketHistoryEvent } from '@shared';
 import { BackendService } from '../backend.service';
 import { ProblemInquiryPageComponent } from './problem-inquiry-page.component';
 
@@ -13,6 +13,7 @@ describe('ProblemInquiryPageComponent', () => {
     let createResult: (ticket: NewProblemTicket, dataKind: DataKind) => Observable<StoredTicket>;
     let listResult: () => Observable<StoredTicket[]>;
     let editResult: (id: string, content: TicketContent, version: number) => Observable<{ ticket: StoredTicket; event: TicketEditEvent }>;
+    let historyResult: (id: string) => Observable<TicketHistoryEvent[]>;
     let changeResult: (id: string, command: TicketCommand, version: number) => Observable<{ ticket: StoredTicket; event: TicketChangeEvent }>;
 
     beforeEach(async () => {
@@ -28,7 +29,9 @@ describe('ProblemInquiryPageComponent', () => {
             ticket: { ...stored.find(ticket => ticket.id === id)!, ...content, version: version + 1 },
             event: {} as TicketEditEvent,
         });
+        historyResult = () => of([]);
         const backend = {
+            getTicketHistory: jest.fn((id: string) => historyResult(id)),
             editTicket: jest.fn((id: string, content: TicketContent, version: number) => editResult(id, content, version)),
             changeTicket: jest.fn((id: string, command: TicketCommand, version: number) => changeResult(id, command, version)),
             listTickets: jest.fn(() => listResult()),
@@ -313,6 +316,58 @@ describe('ProblemInquiryPageComponent', () => {
 
             expect(titles()).toEqual([stored[0].title, stored[1].title]);
             expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('could not be saved');
+        });
+    });
+    describe('history', () => {
+        const event: TicketHistoryEvent = {
+            kind: 'assign',
+            actor: { id: 'user-1' },
+            at: '2026-10-06T10:00:00.000Z',
+            before: { state: 'open' },
+            after: { state: 'assigned', assigneeId: 'user-2' },
+        };
+
+        beforeEach(() => {
+            stored = [storedTicket(makeTicket('x', undefined), 'real', 'T-1')];
+            fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+            fixture.detectChanges();
+        });
+
+        function openHistory(): void {
+            (fixture.nativeElement.querySelector('.history-toggle') as HTMLElement).click();
+            fixture.detectChanges();
+        }
+
+        function entries(): number {
+            return fixture.nativeElement.querySelectorAll('.history-entry').length;
+        }
+
+        it('loads the history of a ticket when it is opened', () => {
+            historyResult = () => of([event]);
+
+            openHistory();
+
+            expect(entries()).toBe(1);
+        });
+
+        it('says so when the history cannot be loaded', () => {
+            historyResult = () => throwError(() => new HttpErrorResponse({ status: 500 }));
+
+            openHistory();
+
+            expect(fixture.nativeElement.querySelector('.storage-error').textContent).toContain('history could not be loaded');
+        });
+
+        it('reloads an open history after the ticket changes', () => {
+            historyResult = () => of([]);
+            openHistory();
+            historyResult = () => of([event]);
+            const form = fixture.nativeElement.querySelector('.assign-form') as HTMLFormElement;
+            (form.querySelector('input') as HTMLInputElement).value = 'user-2';
+            form.dispatchEvent(new Event('submit'));
+            fixture.detectChanges();
+
+            expect(entries()).toBe(1);
         });
     });
     function storedTicket(ticket: NewProblemTicket, dataKind: DataKind, id: string): StoredTicket {

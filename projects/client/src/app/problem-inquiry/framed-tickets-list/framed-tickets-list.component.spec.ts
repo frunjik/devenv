@@ -2,17 +2,33 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ImportedNote, ProblemTicket, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 import { FramedTicketsListComponent } from './framed-tickets-list.component';
+import { METRIC_METHOD_STORAGE, MetricMethodStorage } from '../metric-method.service';
+
+class FakeMetricMethodStorage implements MetricMethodStorage {
+    readonly values = new Map<string, string>();
+
+    getItem(key: string): string | null {
+        return this.values.get(key) ?? null;
+    }
+
+    setItem(key: string, value: string): void {
+        this.values.set(key, value);
+    }
+}
 
 describe('FramedTicketsListComponent', () => {
     let fixture: ComponentFixture<FramedTicketsListComponent>;
+    let metricMethodStorage: FakeMetricMethodStorage;
     const notes = [
         makeNote('note-1', 'The scanner timed out before showing a result.'),
         makeNote('note-2', 'A retry may repeat the submission.'),
     ];
 
     beforeEach(async () => {
+        metricMethodStorage = new FakeMetricMethodStorage();
         await TestBed.configureTestingModule({
             imports: [FramedTicketsListComponent],
+            providers: [{ provide: METRIC_METHOD_STORAGE, useValue: metricMethodStorage }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(FramedTicketsListComponent);
@@ -404,6 +420,30 @@ describe('FramedTicketsListComponent', () => {
             chooseMethod('wsjf');
 
             expect(metrics()).toEqual(['Weighted shortest job first: 4.5', 'Weighted shortest job first: no estimate']);
+        });
+
+        it('remembers the chosen metric method so it survives a reload', () => {
+            fixture.componentRef.setInput('tickets', [estimated('a')]);
+            fixture.detectChanges();
+
+            chooseMethod('wsjf');
+
+            expect(metricMethodStorage.getItem('metric-method')).toBe('wsjf');
+        });
+
+        it('restores a previously chosen metric method on reload', () => {
+            metricMethodStorage.setItem('metric-method', 'wsjf');
+            TestBed.resetTestingModule();
+            TestBed.configureTestingModule({
+                imports: [FramedTicketsListComponent],
+                providers: [{ provide: METRIC_METHOD_STORAGE, useValue: metricMethodStorage }],
+            });
+            fixture = TestBed.createComponent(FramedTicketsListComponent);
+            fixture.componentRef.setInput('notes', notes);
+            fixture.componentRef.setInput('tickets', [estimated('a')]);
+            fixture.detectChanges();
+
+            expect(metrics()).toEqual(['Weighted shortest job first: 4.5']);
         });
     });
     describe('editing', () => {

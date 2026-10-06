@@ -547,7 +547,7 @@ The glossary is a free-standing file, so the words in the code (Types, component
 
 ### SC-042 — Show calculated metrics on tickets
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-015
+**Kind:** Design · **Status:** In progress · **Depends on:** SC-015
 
 Tickets carry no calculated numbers, so there is nothing to rank or compare them by. Show metrics calculated from a ticket's own fields (for example an impact, urgency, or effort score) on each ticket, with a single global switch to choose the calculation method (for example impact × urgency, weighted shortest job first, or RICE) and see the same tickets under another method.
 
@@ -559,6 +559,8 @@ The dependency order does not authorize building both components together.
 o estimate. The switch is not remembered between visits. Client suite: 221 tests, 100% coverage on both new modules. **Not built yet from that slice:** remembering the switch, and the ranking/ordering that this concern excludes.
 
 **Second slice built (user choice 2026-10-06, P-006 permission given for the framing form):** The framing form has an optional Estimate group with three 1 to 5 ratings; all three or none (a partial estimate is refused with a message). The server refuses a create request whose estimate is not an object with three integer ratings from 1 to 5 (400). Estimates are entered when the ticket is framed; editing them later waits for content editing (SC-021). Client suite 225 tests, server suite 141 tests, both at 100% coverage.
+
+**Third slice built (user choice 2026-10-06, remembering the switch):** A `MetricMethodService` (the same injectable-storage pattern as `MetaLayerService`, SC-024) reads and writes the chosen metric method under its own `localStorage` key; the ticket list's Metric switch now reads and sets the method through that service instead of a plain field, so the choice survives a reload. Client suite 259 tests, 100% coverage on the new service and the touched component.
 
 ## Working Sequence
 

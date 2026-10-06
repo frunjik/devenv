@@ -483,7 +483,7 @@ export class SystemPlanComponent {
             id: 'SC-042',
             title: 'Show calculated metrics on tickets',
             kind: 'Design',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-015'],
             summary: 'Show scores calculated from ticket fields, with one global switch to compare calculation methods.',
         },

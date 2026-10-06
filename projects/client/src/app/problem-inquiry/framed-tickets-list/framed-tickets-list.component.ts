@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { calculateMetric, METRIC_METHODS, MetricMethod } from '../ticket-metrics';
+import { MetricMethodService } from '../metric-method.service';
 import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 
 @Component({
@@ -22,7 +23,15 @@ export class FramedTicketsListComponent {
     historyId?: string;
     editingId?: string;
     editError = '';
-    metricMethod: MetricMethod = 'impact-urgency';
+    private readonly metricMethodService = inject(MetricMethodService);
+
+    get metricMethod(): MetricMethod {
+        return this.metricMethodService.method();
+    }
+
+    set metricMethod(method: MetricMethod) {
+        this.metricMethodService.setMethod(method);
+    }
 
     @Input() histories: Readonly<Record<string, readonly TicketHistoryEvent[]>> = {};
     @Output() readonly commandRequested = new EventEmitter<{ ticket: StoredTicket; command: TicketCommand }>();

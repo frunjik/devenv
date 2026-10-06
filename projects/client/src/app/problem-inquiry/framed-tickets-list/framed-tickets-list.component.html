@@ -4,6 +4,7 @@
     @if (tickets.length === 0) {
         <p class="empty-state">No framed problem tickets yet.</p>
     } @else {
+        <p class="state-summary">{{ stateSummary }}</p>
         <div class="ticket-controls">
             <label>
                 Search tickets

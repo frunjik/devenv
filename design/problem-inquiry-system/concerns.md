@@ -582,12 +582,14 @@ o estimate. The switch is not remembered between visits. Client suite: 221 tests
 
 ### SC-043 — Show aggregate metrics across the ticket set
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-015, SC-021, SC-028
+**Kind:** Design · **Status:** In progress · **Depends on:** SC-015, SC-021, SC-028
 
 SC-042 shows a calculated score on each ticket individually; nothing yet summarizes the ticket set as a whole. Show aggregate, dashboard-style numbers over the current (filtered) set of tickets, for example counts by lifecycle state (SC-021), counts by data kind (sample versus real, SC-017), average age or time-in-state, and throughput (tickets resolved or closed per period).
 
 **Working boundary:** Display only, derived from existing stored-ticket fields (status, version/history, dataKind, created/changed times); no new ticket input fields, no stored aggregate values, and no change to per-ticket metrics (SC-042) or to the list's filtering/sorting behavior. Decide which aggregates matter and where they are computed before building either; do not build more than one aggregate in the same slice.
 **Open questions:** Which aggregates first, and which of the ticket's own or history fields do they read (today's `StoredTicket`/`TicketHistoryEvent` carry status, version, dataKind, and change events, but no explicit created/resolved timestamps for age or throughput)? Where is the summary shown (above the ticket list, in the status toolbar, or a separate dashboard view, distinct from the System plan dashboard in SC-010/SC-035)? Does it respect the current search/sort filters and the sample/real toggle (SC-017), or always summarize every stored ticket? Are the aggregates computed client-side from the already-loaded list, or does the server provide them (relevant once the ticket set is large or shared across users, SC-028)? Is this summary remembered or recomputed fresh each time, unlike the SC-042 switch?
+
+**First slice built (user choice 2026-10-06):** Counts by lifecycle state (Open, Assigned, Resolved, Closed, Duplicate, plus "not yet saved" for tickets without a status). Shown as a plain-text summary line above the ticket-list controls, e.g. "2 open · 1 resolved" — states with zero tickets are omitted. A pure `tallyByState` function in `ticket-state-tally.ts` does the counting; the component's `stateSummary` getter formats it in a fixed order. Per user decision, it reflects every ticket passed to the list (after the page's sample/real toggle, SC-017) and does not change when the list's own search text or state filter (SC-026) changes, so it stays a stable overview rather than chasing the current view. Client suite 284 tests, 100% coverage on the touched files; build passes.
 **Vocabulary candidates (P-009, not yet agreed):** "aggregate", "dashboard", "throughput", "time-in-state".
 
 ### SC-044 — Reconsider the problem-inquiry route's layout as the page grows

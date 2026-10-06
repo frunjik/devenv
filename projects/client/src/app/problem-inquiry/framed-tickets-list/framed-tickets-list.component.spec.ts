@@ -426,6 +426,59 @@ describe('FramedTicketsListComponent', () => {
         });
     });
 
+    describe('state count summary', () => {
+        function stored(id: string, status: TicketStatus): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };
+        }
+
+        function summaryText(): string {
+            return (fixture.nativeElement.querySelector('.state-summary') as HTMLElement | null)?.textContent?.trim() ?? '';
+        }
+
+        it('counts tickets by lifecycle state, in a fixed order, omitting states with no tickets', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'open' }),
+                stored('b', { state: 'open' }),
+                stored('c', { state: 'resolved', assigneeId: 'user-1' }),
+            ]);
+            fixture.detectChanges();
+
+            expect(summaryText()).toBe('2 open · 1 resolved');
+        });
+
+        it('counts a ticket with no status as not yet saved', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'open' }),
+                makeTicket('unstored', 'Not yet saved', undefined),
+            ]);
+            fixture.detectChanges();
+
+            expect(summaryText()).toBe('1 open · 1 not yet saved');
+        });
+
+        it('reflects every ticket passed in, not the current search or state filter', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'open' }),
+                stored('b', { state: 'closed' }),
+            ]);
+            fixture.detectChanges();
+
+            const select = fixture.nativeElement.querySelector('.state-filter select') as HTMLSelectElement;
+            select.value = 'open';
+            select.dispatchEvent(new Event('change'));
+            const input = fixture.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+            input.value = 'nothing matches this';
+            input.dispatchEvent(new Event('input'));
+            fixture.detectChanges();
+
+            expect(summaryText()).toBe('1 open · 1 closed');
+        });
+
+        it('shows no summary while there are no tickets', () => {
+            expect(fixture.nativeElement.querySelector('.state-summary')).toBeNull();
+        });
+    });
+
     describe('assigning', () => {
         function stored(id: string, status: TicketStatus): StoredTicket {
             return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 3, dataKind: 'real' };

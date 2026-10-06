@@ -491,9 +491,9 @@ export class SystemPlanComponent {
             id: 'SC-043',
             title: 'Show aggregate metrics across the ticket set',
             kind: 'Design',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-015', 'SC-021', 'SC-028'],
-            summary: 'Summarize the ticket set as a whole (counts by state, age, throughput), distinct from per-ticket scores.',
+            summary: 'Counts by lifecycle state shown above the list; age and throughput aggregates still open.',
         },
         {
             id: 'SC-044',

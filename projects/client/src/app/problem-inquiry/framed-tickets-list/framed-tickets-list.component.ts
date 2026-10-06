@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { calculateMetric, METRIC_METHODS, MetricMethod } from '../ticket-metrics';
 import { MetricMethodService } from '../metric-method.service';
+import { tallyByState, TicketStateTallyKey } from '../ticket-state-tally';
 import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, StoredTicket, TicketCommand, TicketContent, TicketHistoryEvent, TicketStatus } from '@shared';
 
 @Component({
@@ -66,6 +67,14 @@ export class FramedTicketsListComponent {
             .filter(ticket => !needle || searchableText(ticket).includes(needle))
             .filter(ticket => this.matchesStateFilter(ticket));
         return matching.sort((a, b) => this.compare(a, b));
+    }
+
+    get stateSummary(): string {
+        const tally = tallyByState(this.tickets);
+        return STATE_SUMMARY_ORDER
+            .filter(({ key }) => (tally[key] ?? 0) > 0)
+            .map(({ key, label }) => `${tally[key]} ${label}`)
+            .join(' · ');
     }
 
     get directionLabel(): string {
@@ -239,6 +248,15 @@ export class FramedTicketsListComponent {
 
 type SortProperty = 'created' | 'title' | 'scope' | 'reporter';
 type TicketStateFilter = 'all' | TicketStatus['state'];
+
+const STATE_SUMMARY_ORDER: readonly { key: TicketStateTallyKey; label: string }[] = [
+    { key: 'open', label: 'open' },
+    { key: 'assigned', label: 'assigned' },
+    { key: 'resolved', label: 'resolved' },
+    { key: 'closed', label: 'closed' },
+    { key: 'duplicate', label: 'duplicate' },
+    { key: 'unsaved', label: 'not yet saved' },
+];
 
 const SCOPE_ORDER: readonly ScopeLevel[] = ['operation', 'workflow', 'system', 'cross-system'];
 

@@ -537,11 +537,11 @@ export class SystemPlanComponent {
         },
         {
             id: 'SC-049',
-            title: 'Export, hydrate, and persist the accumulated rule set',
+            title: 'Export, hydrate, and persist the accumulated Rule Set',
             kind: 'Design',
             status: 'Ready',
             dependsOn: [],
-            summary: 'Explore making the Principles, Glossary, and conventions a portable, versioned artifact another system could import.',
+            summary: 'Explore making the Principles, Glossary, and conventions (the "Rule Set") a portable, versioned artifact another system could import.',
         },
     ];
 

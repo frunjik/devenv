@@ -415,6 +415,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-024'],
             summary: 'Make the host toolbar a compact bar without scrollbars; measured overflow and button size are recorded.',
         },
+        {
+            id: 'SC-034',
+            title: 'Give the meta menu the label bar styling and drop the label bar',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-024', 'SC-033'],
+            summary: 'Style the host menu like the META LAYER bar and, if possible, remove that lower bar.',
+        },
     ];
 
     get validatedCount(): number {

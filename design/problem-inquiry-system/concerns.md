@@ -452,6 +452,16 @@ The host (meta) toolbar shows a scrollbar and its text looks far too big. Make i
 **Decisions (agent, 2026-10-06, user said "fix first" without answering the open questions; revisit if wrong):** The menu wraps onto extra rows instead of scrolling or hiding; the Material text buttons stay but are compacted (28 px high, 0.5 rem padding, 0.8 rem text, the invisible 48 px touch target switched off); the "|" separators are removed in favor of spacing; the toolbar grows to fit wrapped rows (minimum 40 px) instead of using a fixed height; the commit button stays in the bar.
 **Validation evidence:** In the browser at 1440, 1024, 768, and 320 px neither the menu nor the toolbar scrolls and no item overflows the toolbar (toolbar 40, 40, 59, and 124 px high), and the page has no horizontal overflow. Root causes fixed: the menu's `overflow-x: auto` (which also scrolled vertically) is gone and the Material button touch target plus 40 px button height no longer exceed the toolbar. Full client suite (201 tests) and build pass. Not changed: the host menu items, routes, and the navigation-toolbar spec. Relates to the colors work in SC-030 and the toolbar content in SC-031 and SC-032.
 
+### SC-034 — Give the meta menu the label bar's styling and drop the label bar
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-024, SC-033
+
+The pre-existing host menu (the navigation toolbar with Browse, Test, and so on) should take on the styling of the "META LAYER · hosts the problem-solving app" bar below it, and, if possible, that lower bar should be removed so the meta layer is a single bar.
+
+**Working boundary:** Presentation first; the host menu items and routes stay unchanged. The change touches the navigation toolbar and the label in the app shell (P-006: confirm before changing anything beyond those two).
+**Open questions:** If the label bar goes, how does the user still see that this is the meta layer (a short "Meta" badge in the menu, the shared color alone, or nothing)? Is the "hosts the problem-solving app" wording worth keeping anywhere (P-009)? Which label-bar styles carry over (dark green background, muted text, small uppercase lettering)? Does the Material toolbar keep its own elevation or take the flat label look? Does the single bar still fit at 320 px, where the menu wraps (SC-033)? This also decides where SC-031 and SC-032 display their information, and it relates to the palette in SC-030.
+**Vocabulary candidates (P-009, not yet agreed):** "meta menu", "label bar".
+
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

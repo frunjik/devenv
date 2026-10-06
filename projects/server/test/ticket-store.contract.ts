@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { NewProblemTicket, User } from '@shared';
+import type { NewProblemTicket, TicketEstimate, User } from '@shared';
 import type { TicketStore } from '../src/lib/storage/ticket-store';
 
 const ada: User = { id: 'user-1', name: 'Ada' };
@@ -140,7 +140,7 @@ export function describeTicketStore(name: string, createStore: () => TicketStore
             const store = createStore();
             const ticket = await store.create(newTicket, 'real');
             const content = { title: ticket.title, report: ticket.report, problem: ticket.problem, scope: ticket.scope };
-            const estimate = { impact: 4, urgency: 5, effort: 2 };
+            const estimate: TicketEstimate = { impact: 4, urgency: 5, effort: 2 };
 
             const added = await store.edit(ticket.id, { ...content, estimate }, ada, 1);
             const removed = await store.edit(ticket.id, content, ada, 2);

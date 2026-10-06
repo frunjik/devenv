@@ -479,6 +479,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-022'],
             summary: 'Check that terms in the glossary and names in the code do not drift apart.',
         },
+        {
+            id: 'SC-042',
+            title: 'Show calculated metrics on tickets',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-015'],
+            summary: 'Show scores calculated from ticket fields, with one global switch to compare calculation methods.',
+        },
     ];
 
     get validatedCount(): number {

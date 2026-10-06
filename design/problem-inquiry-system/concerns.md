@@ -535,6 +535,14 @@ The glossary is a free-standing file, so the words in the code (Types, component
 **Working boundary:** Evaluation first; the glossary content and its data source stay unchanged (SC-022 boundary).
 **Open questions:** Which terms map to symbols and which are only concepts? A test, a lint rule, or a report? Relates to P-009 (vocabulary review) and SC-027 (levels).
 
+### SC-042 — Show calculated metrics on tickets
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-015
+
+Tickets carry no calculated numbers, so there is nothing to rank or compare them by. Show metrics calculated from a ticket's own fields (for example an impact, urgency, or effort score) on each ticket, with a single global switch to choose the calculation method (for example impact × urgency, weighted shortest job first, or RICE) and see the same tickets under another method.
+
+**Working boundary:** Display only, derived from existing ticket fields; no stored scores, no ordering or filtering by metric, and no new ticket input fields until the first method is chosen.
+**Open questions:** Which methods first, and which ticket fields feed them (today a ticket has a problem, scope, and context but no impact or effort estimate)? Is the switch remembered per user, like the meta layer toggle? Where do the calculations live (pure functions in the client, or server-side with the ticket store, SC-028)? Does a metric ever replace human judgement of priority (see the ad hoc priority meta note)?
 The dependency order does not authorize building both components together.
 
 ## Working Sequence

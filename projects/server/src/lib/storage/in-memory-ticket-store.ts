@@ -88,6 +88,9 @@ export class InMemoryTicketStore implements TicketStore {
         if (!result.ok) {
             return { ok: false, kind: 'refused', reason: result.reason };
         }
+        if (command.kind === 'mark-duplicate' && !this.tickets.has(command.duplicateOfId)) {
+            return { ok: false, kind: 'refused', reason: 'The original ticket does not exist.' };
+        }
 
         const updated: StoredTicket = { ...current, status: result.status, version: current.version + 1 };
         this.tickets.set(id, updated);

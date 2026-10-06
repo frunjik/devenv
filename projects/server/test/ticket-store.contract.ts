@@ -92,6 +92,27 @@ export function describeTicketStore(name: string, createStore: () => TicketStore
             expect(await store.history('missing')).toEqual([]);
         });
 
+        it('refuses to mark a ticket as a duplicate of an original that does not exist', async () => {
+            const store = createStore();
+            const ticket = await store.create(newTicket, 'real');
+
+            const outcome = await store.change(ticket.id, { kind: 'mark-duplicate', duplicateOfId: 'missing' }, ada, 1);
+
+            expect(outcome).toMatchObject({ ok: false, kind: 'refused', reason: 'The original ticket does not exist.' });
+            expect((await store.get(ticket.id))?.version).toBe(1);
+            expect(await store.history(ticket.id)).toEqual([]);
+        });
+
+        it('marks a ticket as a duplicate of an original that does exist', async () => {
+            const store = createStore();
+            const ticket = await store.create(newTicket, 'real');
+            const original = await store.create(newTicket, 'real');
+
+            const outcome = await store.change(ticket.id, { kind: 'mark-duplicate', duplicateOfId: original.id }, ada, 1);
+
+            expect(outcome).toMatchObject({ ok: true, ticket: { status: { state: 'duplicate', duplicateOfId: original.id } } });
+        });
+
         it('edits the content, raises the version, and records an edit event beside the changes', async () => {
             const store = createStore();
             const ticket = await store.create(newTicket, 'real');

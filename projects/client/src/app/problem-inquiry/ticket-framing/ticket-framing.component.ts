@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ImportedNote, ProblemTicket, ScopeLevel } from '@shared';
+import { EstimateRating, ImportedNote, ProblemTicket, ScopeLevel, TicketEstimate } from '@shared';
 
 interface TicketFormValues {
     title: string;
@@ -14,7 +14,12 @@ interface TicketFormValues {
     contextThings: string;
     reportedBy: string;
     reportedAt: string;
+    estimateImpact: string;
+    estimateUrgency: string;
+    estimateEffort: string;
 }
+
+const ratings = new Map<string, EstimateRating>([['1', 1], ['2', 2], ['3', 3], ['4', 4], ['5', 5]]);
 
 const scopeLevels = new Map<string, ScopeLevel>([
     ['operation', 'operation'],
@@ -50,7 +55,10 @@ const scopeLevels = new Map<string, ScopeLevel>([
                     contextPlaces: contextPlaces.value,
                     contextThings: contextThings.value,
                     reportedBy: reportedBy.value,
-                    reportedAt: reportedAt.value
+                    reportedAt: reportedAt.value,
+                    estimateImpact: estimateImpact.value,
+                    estimateUrgency: estimateUrgency.value,
+                    estimateEffort: estimateEffort.value
                 },
                 $event
             )">
@@ -111,6 +119,27 @@ const scopeLevels = new Map<string, ScopeLevel>([
                         <textarea id="context-things" #contextThings name="contextThings"></textarea>
                     </fieldset>
 
+                    <fieldset class="estimate">
+                        <legend>Estimate (optional)</legend>
+                        <p>Rate each from 1 (lowest) to 5 (highest), or leave all three blank. A higher effort means more work.</p>
+                        <label for="estimate-impact">Impact</label>
+                        <select id="estimate-impact" #estimateImpact name="estimateImpact">
+                            <option value="">Not rated</option>
+                            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+
+                        <label for="estimate-urgency">Urgency</label>
+                        <select id="estimate-urgency" #estimateUrgency name="estimateUrgency">
+                            <option value="">Not rated</option>
+                            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+
+                        <label for="estimate-effort">Effort</label>
+                        <select id="estimate-effort" #estimateEffort name="estimateEffort">
+                            <option value="">Not rated</option>
+                            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+                    </fieldset>
                     <label for="reported-by">Reported by</label>
                     <input id="reported-by" #reportedBy name="reportedBy" type="text" required>
 
@@ -136,7 +165,8 @@ const scopeLevels = new Map<string, ScopeLevel>([
         .ticket-fields,
         .problem-frame,
         .scope,
-        .work-context {
+        .work-context,
+        .estimate {
             display: grid;
             gap: 0.75rem;
         }
@@ -163,6 +193,7 @@ const scopeLevels = new Map<string, ScopeLevel>([
         }
 
         .work-context p,
+        .estimate p,
         .empty-notes {
             margin-block: 0;
         }
@@ -214,6 +245,12 @@ export class TicketFramingComponent {
             return;
         }
 
+        const estimate = this.toEstimate(values);
+        if (estimate === 'invalid') {
+            this.validationMessage = 'Rate impact, urgency, and effort, or leave all three blank.';
+            return;
+        }
+
         this.validationMessage = '';
         const ticket: ProblemTicket = {
             id: `ticket-${this.nextTicketNumber++}`,
@@ -236,8 +273,18 @@ export class TicketFramingComponent {
             },
             reportedBy: values.reportedBy.trim(),
             reportedAt: reportedAt.toISOString(),
+            ...(estimate ? { estimate } : {}),
         };
         this.ticketCreated.emit(ticket);
+    }
+
+    private toEstimate(values: TicketFormValues): TicketEstimate | undefined | 'invalid' {
+        const chosen = [values.estimateImpact, values.estimateUrgency, values.estimateEffort];
+        if (chosen.every(value => value === '')) {
+            return undefined;
+        }
+        const [impact, urgency, effort] = chosen.map(value => ratings.get(value));
+        return impact && urgency && effort ? { impact, urgency, effort } : 'invalid';
     }
 
     private toEntries(value: string): string[] {

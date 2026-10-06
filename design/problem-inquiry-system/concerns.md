@@ -554,7 +554,9 @@ Tickets carry no calculated numbers, so there is nothing to rank or compare them
 The dependency order does not authorize building both components together.
 
 **First slice built (user choice 2026-10-06):** A ticket gets an optional estimate (impact, urgency, effort, each rated 1 to 5; new shared Type, P-002). Two methods, as pure functions in the client: impact × urgency, and weighted shortest job first (impact plus urgency, divided by effort, two decimals). The ticket list has a Metric switch that applies to every ticket card; a ticket without an estimate shows 
-o estimate. The switch is not remembered between visits. Client suite: 221 tests, 100% coverage on both new modules. **Not built yet:** a way to enter estimates (the framing form and the stored ticket's server validation need a P-006 permission and a decision on who estimates), remembering the switch, and the ranking/ordering that this concern excludes.
+o estimate. The switch is not remembered between visits. Client suite: 221 tests, 100% coverage on both new modules. **Not built yet from that slice:** remembering the switch, and the ranking/ordering that this concern excludes.
+
+**Second slice built (user choice 2026-10-06, P-006 permission given for the framing form):** The framing form has an optional Estimate group with three 1 to 5 ratings; all three or none (a partial estimate is refused with a message). The server refuses a create request whose estimate is not an object with three integer ratings from 1 to 5 (400). Estimates are entered when the ticket is framed; editing them later waits for content editing (SC-021). Client suite 225 tests, server suite 141 tests, both at 100% coverage.
 
 ## Working Sequence
 

@@ -8,6 +8,14 @@ function isObject(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null;
 }
 
+function isRating(value: unknown): boolean {
+    return Number.isInteger(value) && (value as number) >= 1 && (value as number) <= 5;
+}
+
+function isValidEstimate(value: unknown): boolean {
+    return isObject(value) && ['impact', 'urgency', 'effort'].every(key => isRating(value[key]));
+}
+
 function actorOf(response: Response): User {
     const principal = response.locals['principal'] as { id?: string; name?: unknown } | undefined;
     const actor: User = { id: principal?.id ?? 'anonymous' };
@@ -40,6 +48,9 @@ export function createTicketsRouter(store: TicketStore): Router {
             }
             if (!dataKinds.includes(dataKind as DataKind)) {
                 return badRequest(response, 'The data kind must be sample or real.');
+            }
+            if (ticket['estimate'] !== undefined && !isValidEstimate(ticket['estimate'])) {
+                return badRequest(response, 'An estimate needs impact, urgency, and effort, each from 1 to 5.');
             }
             const created = await store.create(ticket as unknown as NewProblemTicket, dataKind as DataKind);
             response.status(201).json({ data: created });

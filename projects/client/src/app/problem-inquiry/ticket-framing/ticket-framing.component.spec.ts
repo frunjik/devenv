@@ -124,6 +124,62 @@ describe('TicketFramingComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('Enter a valid creation time.');
     });
 
+    it('adds an estimate when impact, urgency, and effort are all rated', () => {
+        const tickets: ProblemTicket[] = [];
+        fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));
+        selectNotes(['note-1']);
+        enterTicketFields();
+        setValue('#estimate-impact', '4');
+        setValue('#estimate-urgency', '5');
+        setValue('#estimate-effort', '2');
+
+        submitForm();
+
+        expect(tickets[0].estimate).toEqual({ impact: 4, urgency: 5, effort: 2 });
+    });
+
+    it('leaves the estimate out when no rating is chosen', () => {
+        const tickets: ProblemTicket[] = [];
+        fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));
+        selectNotes(['note-1']);
+        enterTicketFields();
+
+        submitForm();
+
+        expect(tickets[0]).not.toHaveProperty('estimate');
+    });
+
+    it('does not emit a ticket with only some of the estimate rated', () => {
+        const tickets: ProblemTicket[] = [];
+        fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));
+        selectNotes(['note-1']);
+        enterTicketFields();
+        setValue('#estimate-impact', '4');
+
+        submitForm();
+
+        expect(tickets).toEqual([]);
+        expect(fixture.nativeElement.textContent).toContain('Rate impact, urgency, and effort, or leave all three blank.');
+    });
+
+    it('does not emit a ticket with an estimate outside 1 to 5', () => {
+        const tickets: ProblemTicket[] = [];
+        fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));
+        selectNotes(['note-1']);
+        enterTicketFields();
+        for (const id of ['impact', 'urgency', 'effort']) {
+            const select = fixture.nativeElement.querySelector(`#estimate-${id}`) as HTMLSelectElement;
+            const option = document.createElement('option');
+            option.value = '9';
+            select.append(option);
+            select.value = '9';
+        }
+
+        submitForm();
+
+        expect(tickets).toEqual([]);
+        expect(fixture.nativeElement.textContent).toContain('Rate impact, urgency, and effort, or leave all three blank.');
+    });
     it('prompts for an accepted note when there are no notes to select', () => {
         fixture.componentRef.setInput('notes', []);
         fixture.detectChanges();

@@ -49,6 +49,24 @@ describe('ticket routes', () => {
         expect(badKind.status).toBe(400);
     });
 
+    it('stores a valid estimate and rejects one that is incomplete or out of range', async () => {
+        const app = appWithStore();
+        const estimate = { impact: 4, urgency: 5, effort: 2 };
+
+        const valid = await request(app).post('/tickets').send({ ticket: { ...newTicket, estimate } });
+        const incomplete = await request(app).post('/tickets').send({ ticket: { ...newTicket, estimate: { impact: 4 } } });
+        const outOfRange = await request(app)
+            .post('/tickets')
+            .send({ ticket: { ...newTicket, estimate: { ...estimate, effort: 6 } } });
+        const fractional = await request(app)
+            .post('/tickets')
+            .send({ ticket: { ...newTicket, estimate: { ...estimate, effort: 2.5 } } });
+        const notAnObject = await request(app).post('/tickets').send({ ticket: { ...newTicket, estimate: 3 } });
+
+        expect(valid.status).toBe(201);
+        expect(valid.body.data.estimate).toEqual(estimate);
+        expect([incomplete.status, outOfRange.status, fractional.status, notAnObject.status]).toEqual([400, 400, 400, 400]);
+    });
     it('changes a ticket and records the server-known actor in the history', async () => {
         const app = appWithStore();
         await request(app).post('/tickets').send({ ticket: newTicket });

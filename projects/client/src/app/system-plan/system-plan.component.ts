@@ -495,6 +495,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-015', 'SC-021', 'SC-028'],
             summary: 'Summarize the ticket set as a whole (counts by state, age, throughput), distinct from per-ticket scores.',
         },
+        {
+            id: 'SC-044',
+            title: "Reconsider the problem-inquiry route's layout as the page grows",
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-018'],
+            summary: 'Revisit the paired-column grid now the framed-ticket list has many more controls; weigh a tabsheet against another grid.',
+        },
     ];
 
     get validatedCount(): number {

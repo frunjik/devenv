@@ -576,6 +576,16 @@ SC-042 shows a calculated score on each ticket individually; nothing yet summari
 **Open questions:** Which aggregates first, and which of the ticket's own or history fields do they read (today's `StoredTicket`/`TicketHistoryEvent` carry status, version, dataKind, and change events, but no explicit created/resolved timestamps for age or throughput)? Where is the summary shown (above the ticket list, in the status toolbar, or a separate dashboard view, distinct from the System plan dashboard in SC-010/SC-035)? Does it respect the current search/sort filters and the sample/real toggle (SC-017), or always summarize every stored ticket? Are the aggregates computed client-side from the already-loaded list, or does the server provide them (relevant once the ticket set is large or shared across users, SC-028)? Is this summary remembered or recomputed fresh each time, unlike the SC-042 switch?
 **Vocabulary candidates (P-009, not yet agreed):** "aggregate", "dashboard", "throughput", "time-in-state".
 
+### SC-044 — Reconsider the problem-inquiry route's layout as the page grows
+
+**Kind:** Design · **Status:** Ready · **Depends on:** SC-018
+
+SC-018 validated a paired-column grid (converter beside accepted notes, ticket-framing form beside the framed-ticket list) that stacks into one column below 70rem. Since then the framed-ticket list alone has grown a search field, a sort control, a state filter (SC-026), a metric switch (SC-042), and, per stored ticket, lifecycle action buttons, an assign form, a duplicate-marking box, an edit form, and a history view (SC-021, SC-029). Revisit whether that grid still serves the page well, or whether a tabsheet (or another grid arrangement) organizes these growing sections more clearly.
+
+**Working boundary:** This is a layout exploration, not a commitment to tabs. Keep the page usable on narrow screens and do not reduce discoverability (hiding a control behind a tab it was previously always visible from) without weighing that tradeoff explicitly. Changing the existing grid requires permission under P-006 before any implementation.
+**Open questions:** Does a tabsheet fit a workflow that is meant to be read top-to-bottom (notes inform tickets), or does it suit switching between largely independent concerns (for example "Convert input," "Review notes," "Frame a ticket," "Browse tickets")? Would tabs hide the framed-ticket list's growing controls from view when working in another tab, and is that acceptable? Is a grid-only revision (for example separating the ticket list's own controls from its cards, or giving the list more width) sufficient without introducing tabs at all? Should the comparison also weigh keyboard/screen-reader navigation between tabs versus a single scrollable document? Does this interact with the wide-screen inquiry layout decision (SC-018) or the host-vs-problem-solving-app framing (SC-024)?
+**Vocabulary candidates (P-009, not yet agreed):** "tabsheet", "panel", "section" (as used for a route's layout regions, distinct from a ticket's `scope`).
+
 ## Working Sequence
 
 1. Resolve enough of SC-001–SC-005 to define the converter boundary and observable behavior.

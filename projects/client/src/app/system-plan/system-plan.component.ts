@@ -519,6 +519,14 @@ export class SystemPlanComponent {
             dependsOn: ['SC-001', 'SC-002', 'SC-003', 'SC-006'],
             summary: 'Decide how content of unknown trustworthiness enters the system without skipping review or provenance.',
         },
+        {
+            id: 'SC-047',
+            title: 'Visualize ticket dependencies as a graph',
+            kind: 'Design',
+            status: 'Ready',
+            dependsOn: ['SC-021', 'SC-015'],
+            summary: 'Decide whether a ticket "depends on" relation exists before weighing Graphviz, D2, a web graph library, or Three.js to render it.',
+        },
     ];
 
     get validatedCount(): number {

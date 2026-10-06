@@ -109,6 +109,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Do not only record such a candidate silently in the artifact (a concern's "Vocabulary candidates" line, a Meta Note, etc.). When the moment arises, pause and ask the user directly whether they want to weigh in, suggest a different name, or leave it as an open candidate.
 - **Practice:** This targets candidate Type/Term *names* arising mid-reasoning, not every passing word already noted throughout the register; keep the question focused and use the `ask_user` tool rather than only stating it in prose. Applies going forward; it does not require revisiting every already-recorded candidate.
 
+### P-013 — Verify User-Suggested Names for Consistency and Sense
+
+- **Recorded:** 2026-10-06
+- **Source:** User instruction
+- **Applies to:** Moments where the user proposes a name for a new Type, Term, or other mapping/identifier (for example a word for `XX` or `NN` per P-011, or a candidate like "Rule Set" per P-002/P-009).
+- **Rule:** Before adopting a user-suggested name, check it against existing names in `.glossary`, the shared Types, and the principle register for consistency (style, collisions with an existing meaning) and give an honest assessment of whether it makes sense, rather than silently accepting it.
+- **Practice:** Report findings plainly — a collision, a style mismatch, or a genuine fit — and ask the user to confirm or reconsider if a real concern is found. Final agreement on the name still rests with the user; this is a check-and-report step, not a veto.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

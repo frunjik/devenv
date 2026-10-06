@@ -746,6 +746,18 @@ Consider a small filesystem interface exposing `readFile` and `writeFile` that p
 **Open questions:** Should the interface represent text-file operations only? Where should it be supplied so the filesystem adapter and direct-read handlers use a consistent boundary? Do directory listing, metadata, and persistence operations need separate boundaries or justify extending this one? How would existing Jest boundary replacements migrate without losing coverage?
 **Vocabulary and Type review:** An explicit filesystem boundary contract is a Type candidate, not an agreed Type or name. Compare it with the existing `FileSystem` adapter and other I/O contracts before choosing a name or adding it. "Boundary Mock" retains the meaning discussed in SC-053; no new Glossary definition is established here.
 
+### SC-055 — Evaluate coupling between problem-app and meta-tool API access
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+The client `BackendService` combines problem-app API access, such as ticket storage and lifecycle operations, with meta-tool API access, such as filesystem browsing, Git, test execution, and the System Plan. This is workable now, but may become a coupling hotspot as either layer evolves.
+
+**Direction (user, 2026-10-06):** Record this architectural concern for consideration; no service split is decided.
+**Working boundary:** Evaluate responsibilities and actual callers before proposing a separation. Preserve shared transport configuration, response handling, error reporting, and existing behavior; do not duplicate those concerns merely to separate feature APIs.
+**Open questions:** Would separate problem-app and meta-tool API services reduce meaningful coupling? Which transport responsibilities should remain shared? Can the problem app operate independently of meta-tool API access, and what evidence would justify the refactoring?
+**Vocabulary and Type review:** Reuse the existing problem-app/meta-layer distinction. No new domain Term or Type is established here; review candidate service or boundary names against existing contracts before adoption.
+**Validation evidence:** The health analysis on 2026-10-06 identified both responsibilities in `projects/client/src/app/backend.service.ts`. This is an architectural risk to evaluate, not a demonstrated runtime defect.
+
 ## Working Sequence
 
 1. Resolve enough of SC-001–SC-005 to define the converter boundary and observable behavior.

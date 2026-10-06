@@ -98,6 +98,14 @@ describe('AppComponent', () => {
         expect(fixture.nativeElement.querySelector('.inner-app').classList).toContain('framed');
     });
 
+    it('places the meta layer toggle in the problem app menu', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('.inner-nav app-meta-layer-toggle button')).not.toBeNull();
+        expect(fixture.nativeElement.querySelectorAll('app-meta-layer-toggle').length).toBe(1);
+    });
+
     it('keeps only problem-domain navigation visible when the meta layer is hidden', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();

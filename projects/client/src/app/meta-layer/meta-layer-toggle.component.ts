@@ -16,39 +16,38 @@ import { MetaLayerService } from './meta-layer.service';
     `,
     styles: `
         :host {
-            position: fixed;
-            z-index: 1100;
-            right: 0.5rem;
-            bottom: 3.5rem;
+            display: inline-flex;
         }
 
         button {
-            width: 1.75rem;
-            height: 1.75rem;
+            width: 1.5rem;
+            height: 1.5rem;
             padding: 0;
-            border: 1px solid rgb(0 0 0 / 25%);
+            border: 1px solid #37443b;
             border-radius: 50%;
-            background: rgb(255 255 255 / 70%);
-            color: #555;
-            font-size: 0.9rem;
+            background: transparent;
+            color: #8b998e;
+            font-size: 0.8rem;
             line-height: 1;
-            opacity: 0.55;
             cursor: pointer;
+            transition: color 120ms ease, border-color 120ms ease, background-color 120ms ease;
         }
 
         button:hover,
-        button:focus-visible,
-        button.active {
-            opacity: 1;
+        button:focus-visible {
+            border-color: #596b5d;
+            color: #aebbb0;
+        }
+
+        button:focus-visible {
+            outline: 2px solid #a8c4ae;
+            outline-offset: 2px;
         }
 
         button.active {
-            background: #3f51b5;
-            color: #fff;
-        }
-
-        @media (max-width: 42rem) {
-            :host { bottom: 5.75rem; }
+            border-color: #596b5d;
+            background: #26332b;
+            color: #a8c4ae;
         }
     `,
 })

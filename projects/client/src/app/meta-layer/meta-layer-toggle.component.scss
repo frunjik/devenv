@@ -6,7 +6,7 @@ button {
     width: 1.5rem;
     height: 1.5rem;
     padding: 0;
-    border: 1px solid #37443b;
+    border: 1px solid var(--border-default);
     border-radius: 50%;
     background: transparent;
     color: #8b998e;
@@ -18,7 +18,7 @@ button {
 
 button:hover,
 button:focus-visible {
-    border-color: #596b5d;
+    border-color: var(--border-accent);
     color: #aebbb0;
 }
 
@@ -28,7 +28,7 @@ button:focus-visible {
 }
 
 button.active {
-    border-color: #596b5d;
+    border-color: var(--border-accent);
     background: #26332b;
     color: #a8c4ae;
 }

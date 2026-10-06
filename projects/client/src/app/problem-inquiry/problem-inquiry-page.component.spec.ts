@@ -49,6 +49,71 @@ describe('ProblemInquiryPageComponent', () => {
         fixture.detectChanges();
     });
 
+    it('opens Notes by default and preserves drafts when switching panels', () => {
+        const notesTab = fixture.nativeElement.querySelector('#inquiry-notes-tab') as HTMLButtonElement;
+        const ticketsTab = fixture.nativeElement.querySelector('#inquiry-tickets-tab') as HTMLButtonElement;
+        expect(notesTab).not.toBeNull();
+        expect(notesTab.getAttribute('aria-selected')).toBe('true');
+        expect(fixture.nativeElement.querySelector('#inquiry-tickets-panel').hidden).toBe(true);
+        setText('#source-text', 'An unfinished source report.');
+        ticketsTab.click();
+        fixture.detectChanges();
+        expect(ticketsTab.getAttribute('aria-selected')).toBe('true');
+        expect(notesTab.tabIndex).toBe(-1);
+        expect(fixture.nativeElement.querySelector('#inquiry-notes-panel').hidden).toBe(true);
+        setText('#ticket-title', 'An unfinished ticket.');
+        notesTab.click();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('#source-text').value).toBe('An unfinished source report.');
+        ticketsTab.click();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('#ticket-title').value).toBe('An unfinished ticket.');
+    });
+
+    it('selects and focuses tabs with wrapping arrow keys, Home, and End', () => {
+        const notes = fixture.nativeElement.querySelector('#inquiry-notes-tab') as HTMLButtonElement;
+        const tickets = fixture.nativeElement.querySelector('#inquiry-tickets-tab') as HTMLButtonElement;
+        const steps: readonly [HTMLButtonElement, string, HTMLButtonElement][] = [
+            [notes, 'ArrowRight', tickets], [tickets, 'ArrowRight', notes],
+            [notes, 'ArrowLeft', tickets], [tickets, 'ArrowLeft', notes],
+            [notes, 'End', tickets], [tickets, 'End', tickets],
+            [tickets, 'Home', notes], [notes, 'Home', notes],
+        ];
+        for (const [source, key, destination] of steps) {
+            const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+            source.dispatchEvent(event);
+            fixture.detectChanges();
+            expect(event.defaultPrevented).toBe(true);
+            expect(destination.getAttribute('aria-selected')).toBe('true');
+            expect(document.activeElement).toBe(destination);
+        }
+        const event = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+        notes.dispatchEvent(event);
+        expect(event.defaultPrevented).toBe(false);
+    });
+
+    it('preserves ticket filters and an open editor while visiting Notes', () => {
+        stored = [storedTicket(makeTicket('x', undefined), 'real', 'T-1')];
+        fixture = TestBed.createComponent(ProblemInquiryPageComponent);
+        fixture.detectChanges();
+        const notes = fixture.nativeElement.querySelector('#inquiry-notes-tab') as HTMLButtonElement;
+        const tickets = fixture.nativeElement.querySelector('#inquiry-tickets-tab') as HTMLButtonElement;
+        tickets.click();
+        fixture.detectChanges();
+        setText('input[type="search"]', 'Title');
+        fixture.detectChanges();
+        fixture.nativeElement.querySelector('.edit-toggle').click();
+        fixture.detectChanges();
+        setText('.edit-form input[name="title"]', 'Unsaved edit');
+        notes.click();
+        fixture.detectChanges();
+        tickets.click();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('input[type="search"]').value).toBe('Title');
+        expect(fixture.nativeElement.querySelector('.edit-form input[name="title"]').value).toBe('Unsaved edit');
+        expect(fixture.nativeElement.querySelector('#sample-data-toggle').closest('[role="tabpanel"]')).toBeNull();
+    });
+
     it('adds a note to the list only after explicit acceptance', () => {
         setText('#source-text', 'The scan timed out and may have been applied.');
         setText('#interpretation', 'The operation outcome is uncertain.');
@@ -60,6 +125,7 @@ describe('ProblemInquiryPageComponent', () => {
         fixture.nativeElement.querySelector('#accept-note').click();
         fixture.detectChanges();
 
+        expect(fixture.nativeElement.querySelector('#inquiry-notes-tab').getAttribute('aria-selected')).toBe('true');
         expect(fixture.nativeElement.textContent).toContain('The operation outcome is uncertain.');
         expect(fixture.nativeElement.textContent).not.toContain('No accepted notes yet.');
         expect(fixture.nativeElement.textContent).toContain('unreviewed');
@@ -95,6 +161,8 @@ describe('ProblemInquiryPageComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.textContent).toContain('No framed problem tickets yet.');
+        fixture.nativeElement.querySelector('#inquiry-tickets-tab').click();
+        fixture.detectChanges();
         const sourceNotes = fixture.nativeElement.querySelector('#source-note-ids') as HTMLSelectElement;
         expect(sourceNotes.options.length).toBe(1);
         sourceNotes.options[0].selected = true;
@@ -120,6 +188,7 @@ describe('ProblemInquiryPageComponent', () => {
         expect(content).toContain('note-1');
         expect(content).toContain('The scan timed out and may have been applied.');
         expect(content).toContain('The operation outcome is uncertain.');
+        expect(fixture.nativeElement.querySelector('#inquiry-tickets-tab').getAttribute('aria-selected')).toBe('true');
     });
 
     it('toggles between all notes and known-real notes without changing the records', () => {

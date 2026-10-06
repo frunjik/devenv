@@ -12,16 +12,42 @@
     @if (storageError) {
         <p class="storage-error" role="alert">{{ storageError }}</p>
     }
-    <app-input-converter (noteAccepted)="addNote($event)" (proposalReviewed)="reviewProposal($event)" />
-    <app-imported-notes-list [notes]="visibleNotes" />
-    <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
-    <app-framed-tickets-list
-        [tickets]="visibleTickets"
-        [notes]="visibleNotes"
-        (assignRequested)="assign($event)"
-        (editRequested)="edit($event)"
-        (commandRequested)="change($event)"
-        (historyRequested)="loadHistory($event)"
-        [histories]="histories"
-    />
+    <div class="inquiry-tabs" role="tablist" aria-label="Inquiry workflow">
+        <button #notesTab type="button" role="tab" id="inquiry-notes-tab"
+            aria-controls="inquiry-notes-panel"
+            [attr.aria-selected]="activeTab === 'notes'"
+            [tabIndex]="activeTab === 'notes' ? 0 : -1"
+            (click)="activeTab = 'notes'"
+            (keydown.arrowright)="ticketsTab.click(); ticketsTab.focus(); $event.preventDefault()"
+            (keydown.arrowleft)="ticketsTab.click(); ticketsTab.focus(); $event.preventDefault()"
+            (keydown.home)="notesTab.click(); notesTab.focus(); $event.preventDefault()"
+            (keydown.end)="ticketsTab.click(); ticketsTab.focus(); $event.preventDefault()">Notes</button>
+        <button #ticketsTab type="button" role="tab" id="inquiry-tickets-tab"
+            aria-controls="inquiry-tickets-panel"
+            [attr.aria-selected]="activeTab === 'tickets'"
+            [tabIndex]="activeTab === 'tickets' ? 0 : -1"
+            (click)="activeTab = 'tickets'"
+            (keydown.arrowright)="notesTab.click(); notesTab.focus(); $event.preventDefault()"
+            (keydown.arrowleft)="notesTab.click(); notesTab.focus(); $event.preventDefault()"
+            (keydown.home)="notesTab.click(); notesTab.focus(); $event.preventDefault()"
+            (keydown.end)="ticketsTab.click(); ticketsTab.focus(); $event.preventDefault()">Tickets</button>
+    </div>
+    <div class="inquiry-panel" id="inquiry-notes-panel" role="tabpanel"
+        aria-labelledby="inquiry-notes-tab" [hidden]="activeTab !== 'notes'">
+        <app-input-converter (noteAccepted)="addNote($event)" (proposalReviewed)="reviewProposal($event)" />
+        <app-imported-notes-list [notes]="visibleNotes" />
+    </div>
+    <div class="inquiry-panel" id="inquiry-tickets-panel" role="tabpanel"
+        aria-labelledby="inquiry-tickets-tab" [hidden]="activeTab !== 'tickets'">
+        <app-ticket-framing [notes]="visibleNotes" (ticketCreated)="addTicket($event)" />
+        <app-framed-tickets-list
+            [tickets]="visibleTickets"
+            [notes]="visibleNotes"
+            (assignRequested)="assign($event)"
+            (editRequested)="edit($event)"
+            (commandRequested)="change($event)"
+            (historyRequested)="loadHistory($event)"
+            [histories]="histories"
+        />
+    </div>
 </main>

@@ -29,6 +29,7 @@ export class ProblemInquiryPageComponent implements OnInit {
     histories: Readonly<Record<string, readonly TicketHistoryEvent[]>> = {};
     showSamples = true;
     storageError = '';
+    activeTab: 'notes' | 'tickets' = 'notes';
 
     get visibleNotes(): readonly ImportedNote[] {
         return this.showSamples ? this.notes : this.notes.filter(note => this.isKnownReal(note.proposal.sourceOrigin));

@@ -615,13 +615,21 @@ SC-042 shows a calculated score on each ticket individually; nothing yet summari
 
 ### SC-044 — Reconsider the problem-inquiry route's layout as the page grows
 
-**Kind:** Design · **Status:** Ready · **Depends on:** SC-018
+**Kind:** Design · **Status:** Validated · **Depends on:** SC-018 · **User acceptance:** Pending
 
 SC-018 validated a paired-column grid (converter beside accepted notes, ticket-framing form beside the framed-ticket list) that stacks into one column below 70rem. Since then the framed-ticket list alone has grown a search field, a sort control, a state filter (SC-026), a metric switch (SC-042), and, per stored ticket, lifecycle action buttons, an assign form, a duplicate-marking box, an edit form, and a history view (SC-021, SC-029). Revisit whether that grid still serves the page well, or whether a tabsheet (or another grid arrangement) organizes these growing sections more clearly.
 
 **Working boundary:** This is a layout exploration, not a commitment to tabs. Keep the page usable on narrow screens and do not reduce discoverability (hiding a control behind a tab it was previously always visible from) without weighing that tradeoff explicitly. Changing the existing grid requires permission under P-006 before any implementation.
 **Open questions:** Does a tabsheet fit a workflow that is meant to be read top-to-bottom (notes inform tickets), or does it suit switching between largely independent concerns (for example "Convert input," "Review notes," "Frame a ticket," "Browse tickets")? Would tabs hide the framed-ticket list's growing controls from view when working in another tab, and is that acceptable? Is a grid-only revision (for example separating the ticket list's own controls from its cards, or giving the list more width) sufficient without introducing tabs at all? Should the comparison also weigh keyboard/screen-reader navigation between tabs versus a single scrollable document? Does this interact with the wide-screen inquiry layout decision (SC-018) or the host-vs-problem-solving-app framing (SC-024)?
 **Vocabulary candidates (P-009, not yet agreed):** "tabsheet", "panel", "section" (as used for a route's layout regions, distinct from a ticket's `scope`).
+
+**Decision (user, 2026-10-07):** Compared the existing grid, a full-width ticket-list row, four independent tabs, and two paired tabs. Chose **Notes** (convert input and accepted notes) and **Tickets** (frame a ticket and browse tickets), retaining paired columns within each active panel at 70rem and wider, with stacking on narrower screens. This explicitly permits changing the existing grid under P-006. The two-tab split hides the other workflow stage, but keeps each input/output pair visible together; the user accepted this discoverability tradeoff rather than hiding each of the four sections independently.
+
+**Behavior:** Notes opens by default. Switching is explicit; accepting a note or saving a ticket never jumps to another tab. Both panels remain mounted, preserving unfinished proposals, framing drafts, ticket filters, and open editors. Hidden panels are excluded from display and keyboard navigation. The sample-data toggle and storage errors stay outside both panels. Tabs expose linked tab/tabpanel semantics, a single tab stop, wrapping Left/Right navigation, Home/End selection, and visible focus.
+
+**Type review:** A local `notes | tickets` union represents the finite UI selection without introducing a shared domain Type. No new Glossary definition is asserted by this layout decision.
+
+**Validation evidence (2026-10-07):** Red-Green tests first failed for absent tabs, then for absent keyboard navigation. Page tests verify default selection, panel hiding, keyboard selection/focus, draft/filter/editor preservation, and no automatic switching after acceptance or saving; the existing workflow tests remain green with 100% statement, branch, function, and line coverage. The client build passes. Browser checks verify preserved source drafts, visible keyboard focus, hidden inactive panels, and responsive stacking/paired columns at 320, 768, and 1440px. This is not a screen-reader certification or proof for every possible content length.
 
 ### SC-045 — Export system contents to an external system
 

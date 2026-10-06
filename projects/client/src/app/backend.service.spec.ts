@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { firstValueFrom } from 'rxjs';
 import type { Server } from 'node:http';
+import type { NewProblemTicket } from '@shared';
 
 import { BackendService } from './backend.service';
 import { LoggerService } from './logger.service';
@@ -163,5 +164,48 @@ describe('BackendService', () => {
     it('preserves folder loading errors', async () => {
         await expect(firstValueFrom(service.loadFolder('missing')))
             .rejects.toBeInstanceOf(HttpErrorResponse);
+    });
+
+    describe('tickets', () => {
+        const newTicket: NewProblemTicket = {
+            title: 'Pick list is wrong',
+            report: 'Pickers get the wrong aisle.',
+            problem: { condition: 'Wrong aisle', affected: 'Pickers', impact: 'Delays' },
+            scope: { level: 'workflow', label: 'Picking' },
+            context: { people: [], places: [], things: [] },
+            reportedBy: 'Ada',
+            reportedAt: '2026-10-06T10:00:00.000Z',
+        };
+
+        it('creates, lists, changes, and reads the history of a ticket through the API', async () => {
+            const created = await firstValueFrom(service.createTicket(newTicket, 'real'));
+            const listed = await firstValueFrom(service.listTickets());
+            const changed = await firstValueFrom(
+                service.changeTicket(created.id, { kind: 'assign', assigneeId: 'user-2' }, created.version));
+            const history = await firstValueFrom(service.getTicketHistory(created.id));
+
+            expect(created).toMatchObject({ status: { state: 'open' }, version: 1, dataKind: 'real' });
+            expect(listed.map(ticket => ticket.id)).toContain(created.id);
+            expect(changed.ticket).toMatchObject({ version: 2, status: { state: 'assigned', assigneeId: 'user-2' } });
+            expect(history).toEqual([changed.event]);
+        });
+
+        it('defaults new tickets to sample data', async () => {
+            const created = await firstValueFrom(service.createTicket(newTicket));
+
+            expect(created.dataKind).toBe('sample');
+        });
+
+        it('preserves stale-version conflicts with the current ticket', async () => {
+            const created = await firstValueFrom(service.createTicket(newTicket));
+            await firstValueFrom(service.changeTicket(created.id, { kind: 'assign', assigneeId: 'u' }, 1));
+
+            const error = await firstValueFrom(service.changeTicket(created.id, { kind: 'resolve' }, 1))
+                .catch(e => e as HttpErrorResponse);
+
+            expect(error).toBeInstanceOf(HttpErrorResponse);
+            expect((error as HttpErrorResponse).status).toBe(409);
+            expect((error as HttpErrorResponse).error.error.current.version).toBe(2);
+        });
     });
 });

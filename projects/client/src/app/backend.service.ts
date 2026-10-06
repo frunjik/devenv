@@ -5,11 +5,17 @@ import { catchError, map } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 import type {
+    DataKind,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
     LastTestRun,
     FolderEntry,
+    NewProblemTicket,
+    ProblemTicketId,
+    StoredTicket,
+    TicketChangeEvent,
+    TicketCommand,
     SuccessResponseBody,
     TestOutputStream,
     TestRunCacheStatus,
@@ -92,6 +98,28 @@ export class BackendService {
         return this.get<string>('version');
     }
 
+    listTickets(): Observable<StoredTicket[]> {
+        return this.get<StoredTicket[]>('tickets');
+    }
+
+    createTicket(ticket: NewProblemTicket, dataKind: DataKind = 'sample'): Observable<StoredTicket> {
+        return this.post<StoredTicket, { ticket: NewProblemTicket; dataKind: DataKind }>(
+            'tickets', { ticket, dataKind });
+    }
+
+    changeTicket(
+        id: ProblemTicketId,
+        command: TicketCommand,
+        expectedVersion: number,
+    ): Observable<{ ticket: StoredTicket; event: TicketChangeEvent }> {
+        return this.post<{ ticket: StoredTicket; event: TicketChangeEvent },
+            { command: TicketCommand; expectedVersion: number }>(
+            `tickets/${encodeURIComponent(id)}/changes`, { command, expectedVersion });
+    }
+
+    getTicketHistory(id: ProblemTicketId): Observable<TicketChangeEvent[]> {
+        return this.get<TicketChangeEvent[]>(`tickets/${encodeURIComponent(id)}/history`);
+    }
     getTestRunCacheStatus(): Observable<TestRunCacheStatus> {
         return this.get<TestRunCacheStatus>('tests/cache/status');
     }

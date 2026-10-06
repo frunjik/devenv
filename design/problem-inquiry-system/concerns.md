@@ -397,6 +397,8 @@ Accepted notes, review decisions, and framed tickets currently live in memory an
 
 **Second slice built (routes):** createApp takes an optional 	icketStore (default: in-memory) and mounts GET /tickets, POST /tickets (ticket plus optional data kind, default sample), POST /tickets/:id/changes (command plus expected version; 404 unknown, 409 stale with the current ticket, 422 refused with the reason, 400 malformed) and GET /tickets/:id/history. The actor is the authenticated principal (id and optional name), or nonymous when none is configured. Server suite: 123 tests, 100% coverage. Remaining: the client service, and showing stored tickets with the sample/real flag (SC-017).
 
+**Third slice built (client service):** BackendService has listTickets, createTicket (data kind defaults to sample), changeTicket (command plus expected version) and getTicketHistory, tested against the real in-process server; a stale change surfaces as an HttpErrorResponse with status 409 and the current ticket. setup-jest.ts now polyfills structuredClone because jsdom lacks it. Client suite: 199 tests, build passes. Remaining: showing stored tickets with the sample/real flag (SC-017).
+
 ### SC-029 — Assign problem tickets
 
 **Kind:** Behavior · **Status:** Ready · **Depends on:** SC-021, SC-028

@@ -523,9 +523,9 @@ export class SystemPlanComponent {
             id: 'SC-047',
             title: 'Visualize ticket dependencies as a graph',
             kind: 'Design',
-            status: 'Ready',
+            status: 'In progress',
             dependsOn: ['SC-021', 'SC-015'],
-            summary: 'Decide whether a ticket "depends on" relation exists before weighing Graphviz, D2, a web graph library, or Three.js to render it.',
+            summary: '"Depends on" decided as a real, directed, many-to-many relation distinct from duplicate-of; data model and rendering still open.',
         },
         {
             id: 'SC-048',

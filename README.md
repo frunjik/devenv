@@ -32,6 +32,7 @@ The client is served by Angular CLI; `npm start` remains an alias for the client
 
 The client opens Problem Inquiry by default: `/` redirects to `/problem-inquiry`. The System Plan remains available at `/system-plan`, and the file browser at `/browse`.
 The System Plan link is in the meta toolbar and is hidden when the meta layer is disabled; this does not change the default route.
+The System Plan supports case-insensitive search by concern ID, title, or displayed description. Search filters the list only; progress totals still describe the full register.
 
 Client and server release versions are maintained in `projects/client/package.json` and `projects/server/package.json`.
 The status toolbar displays both versions, and the API exposes the server version at `GET /version`.

@@ -1,0 +1,109 @@
+<main class="system-plan">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Problem-inquiry system</p>
+            <h1>System plan</h1>
+            <p class="page-description">
+                Track the concerns shaping the system, from domain questions to validated work.
+            </p>
+        </div>
+        <a class="primary-link" routerLink="/problem-inquiry">Open the inquiry tool <span aria-hidden="true">→</span></a>
+    </header>
+
+    <section class="progress-summary" aria-labelledby="progress-heading">
+        @if (loading) {
+            <p>Loading plan progress…</p>
+        } @else if (loadError) {
+            <p role="alert">Could not load the system plan.</p>
+        } @else {
+            <div class="progress-header">
+                <div>
+                    <h2 id="progress-heading">Plan progress</h2>
+                    <p class="progress-caption">Validated concerns across the current plan</p>
+                </div>
+                <p class="progress-count"><strong>{{ validatedCount }}</strong><span>of {{ concerns.length }}</span></p>
+            </div>
+            <progress
+                [value]="validatedCount"
+                [max]="concerns.length"
+                aria-label="Plan completion"
+            ></progress>
+            <ul class="plan-stats">
+                <li><span class="stat-dot validated" aria-hidden="true"></span><strong>{{ validatedCount }}</strong> validated</li>
+                <li><span class="stat-dot in-progress" aria-hidden="true"></span><strong>{{ inProgressCount }}</strong> in progress</li>
+                <li><strong>{{ readyCount }}</strong> ready</li>
+            </ul>
+        }
+    </section>
+
+    <section class="concerns-section" aria-labelledby="concerns-heading">
+        <div class="section-heading">
+            <div>
+                <h2 id="concerns-heading">System concerns</h2>
+                <p>Each item has a stable reference and shows its current status and prerequisites.</p>
+            </div>
+            <span class="concern-total">{{ concerns.length }} concerns</span>
+        </div>
+        <div class="concern-search">
+            <label for="concern-search">Search concerns</label>
+            <input
+                #search
+                id="concern-search"
+                type="search"
+                placeholder="ID, title, or description"
+                [value]="query"
+                (input)="query = search.value"
+                [disabled]="loading || loadError"
+            />
+        </div>
+        @if (loading) {
+            <p>Loading system concerns…</p>
+        } @else if (loadError) {
+            <p role="alert">Could not load the system plan.</p>
+        } @else if (concerns.length === 0) {
+            <p>No system concerns are registered.</p>
+        } @else if (visibleConcerns.length === 0) {
+            <p role="status">No matching system concerns.</p>
+        } @else {
+            <ul class="concern-list" aria-label="System concerns">
+                @for (concern of visibleConcerns; track concern.id) {
+                    <li>
+                        <article class="concern-card" [attr.data-status]="concern.status">
+                            <header class="concern-card__header">
+                                <div class="concern-card__identity">
+                                    <span class="concern-id">{{ concern.id }}</span>
+                                    <span class="kind">{{ concern.kind }}</span>
+                                </div>
+                                <span class="status" [attr.data-status]="concern.status" role="status">
+                                    {{ concern.status }}
+                                </span>
+                            </header>
+                            <h3>{{ concern.title }}</h3>
+                            <p class="concern-summary">{{ concern.summary }}</p>
+                            @if (concern.status === 'Validated' && concern.userAcceptance) {
+                                <div class="dependencies">
+                                    <span class="dependencies__label">User acceptance</span>
+                                    <span class="dependencies__value">{{ concern.userAcceptance }}</span>
+                                </div>
+                            }
+                            <div class="dependencies">
+                                <span class="dependencies__label">Prerequisites</span>
+                                <span class="dependencies__value">
+                                    {{ concern.dependsOn.length ? concern.dependsOn.join(', ') : 'None' }}
+                                </span>
+                            </div>
+                        </article>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <aside class="data-notice" aria-label="Plan data source">
+        <p>
+            Live data from
+            <code>design/problem-inquiry-system/concerns.md</code>.
+            This view does not edit or infer concern status.
+        </p>
+    </aside>
+</main>

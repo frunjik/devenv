@@ -41,6 +41,7 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 
 ## Change guidelines
 
+- Inspect nearby components before editing. Angular components use external `.html` templates via `templateUrl` and external `.scss` styles via `styleUrl`, not inline `template` or `styles` in TypeScript. Existing inline templates/styles are not evidence of the preferred convention; migrate them only within agreed scope.
 - Prefer shared API contracts in `projects/shared` and import them from `@shared`.
 - When changing API behavior, check both its server implementation and related client/shared callers and tests.
 - Preserve existing feature-store formats and workflows documented in `README.md`.

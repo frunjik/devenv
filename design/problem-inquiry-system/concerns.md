@@ -761,6 +761,16 @@ The client `BackendService` combines problem-app API access, such as ticket stor
 **Vocabulary and Type review:** Reuse the existing problem-app/meta-layer distinction. No new domain Term or Type is established here; review candidate service or boundary names against existing contracts before adoption.
 **Validation evidence:** The health analysis on 2026-10-06 identified both responsibilities in `projects/client/src/app/backend.service.ts`. This is an architectural risk to evaluate, not a demonstrated runtime defect.
 
+### SC-056 — Search the System Concern list
+
+**Kind:** Behavior · **Status:** Validated · **Depends on:** SC-035 · **User acceptance:** Pending
+
+Find System Concerns in the client System Plan by ID, title, or displayed description without changing the underlying register or overall progress totals.
+
+**Decision (user, 2026-10-07):** Search those three fields; keep totals based on the full register.
+**Working boundary:** View-only, case-insensitive substring search with surrounding whitespace ignored. Preserve register order; clearing the query restores all concerns. Search state is local to the page, not persisted. Status, kind, acceptance, and prerequisites are not searched.
+**Validation evidence:** Public-interface tests cover each searchable field, casing, whitespace, multiple matches, excluded metadata, no-match feedback, clearing, and unchanged overall totals, alongside loading/error/empty states. All 14 component tests pass with 100% coverage on all four metrics; shared/client builds pass. Reuse `SystemPlanConcern`; no new domain Type or Glossary term is needed.
+
 ## Working Sequence
 
 1. Resolve enough of SC-001–SC-005 to define the converter boundary and observable behavior.

@@ -127,6 +127,55 @@ describe('SystemPlanComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('0 concerns');
     });
 
+    it.each([
+        [' sc-002 ', ['SC-002']],
+        ['DISTINGUISH INPUT', ['SC-001']],
+        ['accepted-notes', ['SC-003']],
+        ['review', ['SC-004', 'SC-005']],
+        ['   ', ['SC-001', 'SC-002', 'SC-003', 'SC-004', 'SC-005']],
+    ])('searches IDs, titles, and descriptions for %s without changing plan totals', (query, expected) => {
+        httpTesting.expectOne('http://localhost:3000/system-plan').flush({ data: concerns });
+        fixture.detectChanges();
+
+        const input = fixture.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+        expect(input).not.toBeNull();
+        expect(fixture.nativeElement.querySelector('label[for="concern-search"]').textContent)
+            .toContain('Search concerns');
+        input.value = query;
+        input.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+
+        const identifiers = Array.from(
+            fixture.nativeElement.querySelectorAll('.concern-id') as NodeListOf<HTMLElement>,
+        ).map(element => element.textContent?.trim());
+        expect(identifiers).toEqual(expected);
+        expect(fixture.nativeElement.querySelector('progress').value).toBe(3);
+        expect(fixture.nativeElement.querySelector('progress').max).toBe(5);
+        expect(fixture.nativeElement.querySelector('.concern-total').textContent).toContain('5 concerns');
+    });
+
+    it.each(['not present', 'Validated', 'Behavior', 'Pending'])(
+        'shows no matching concerns for %s and restores the list when cleared',
+        query => {
+            httpTesting.expectOne('http://localhost:3000/system-plan').flush({ data: concerns });
+            fixture.detectChanges();
+            const input = fixture.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+            expect(input).not.toBeNull();
+            input.value = query;
+            input.dispatchEvent(new Event('input'));
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.textContent).toContain('No matching system concerns.');
+            expect(fixture.nativeElement.querySelector('.concern-list')).toBeNull();
+
+            input.value = '';
+            input.dispatchEvent(new Event('input'));
+            fixture.detectChanges();
+            expect(fixture.nativeElement.querySelectorAll('.concern-card')).toHaveLength(5);
+            expect(fixture.nativeElement.textContent).not.toContain('No matching system concerns.');
+        },
+    );
+
     it('shows a clear error when the plan endpoint fails', () => {
         httpTesting.expectOne('http://localhost:3000/system-plan')
             .flush('Unavailable', { status: 500, statusText: 'Server Error' });

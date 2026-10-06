@@ -119,6 +119,13 @@ nav button[mat-button] {
     --mat-snack-bar-button-color: #462b27;
 }
 
+.git-status-tooltip .mat-mdc-tooltip-surface,
+.current-entry-tooltip .mat-mdc-tooltip-surface {
+    font-family: Tahoma, Geneva, sans-serif;
+    text-align: left;
+    white-space: pre-line;
+}
+
 .git-status-tooltip .mat-mdc-tooltip-surface {
     --mat-tooltip-container-color: #29372e;
     --mat-tooltip-supporting-text-color: #d4ded6;
@@ -128,11 +135,8 @@ nav button[mat-button] {
     border: 1px solid #3b4b40;
     border-radius: 0.4rem;
     box-shadow: 0 4px 14px rgb(0 0 0 / 22%);
-    font-family: Tahoma, Geneva, sans-serif;
     font-size: 0.8rem;
     line-height: 1.5;
-    text-align: left;
-    white-space: pre-line;
 }
 
 .current-entry-tooltip .mat-mdc-tooltip-surface {
@@ -144,10 +148,7 @@ nav button[mat-button] {
     border: 1px solid #526b58;
     border-radius: 0.5rem;
     box-shadow: 0 6px 20px rgb(0 0 0 / 38%);
-    font-family: Tahoma, Geneva, sans-serif;
     font-size: 1rem;
     line-height: 1.55;
-    text-align: left;
-    white-space: pre-line;
     overflow-wrap: anywhere;
 }

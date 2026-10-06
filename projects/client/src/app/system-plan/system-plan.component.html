@@ -44,11 +44,12 @@
             </div>
             <span class="concern-total">{{ concerns.length }} concerns</span>
         </div>
-        <div class="concern-search">
+        <div class="concern-search form-field">
             <label for="concern-search">Search concerns</label>
             <input
                 #search
                 id="concern-search"
+                class="form-control"
                 type="search"
                 placeholder="ID, title, or description"
                 [value]="query"

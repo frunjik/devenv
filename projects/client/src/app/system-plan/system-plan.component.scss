@@ -22,29 +22,7 @@ progress { display: block; width: 100%; height: .55rem; margin: 1.25rem 0 1rem; 
 .concerns-section { margin-top: 2.5rem; }
 .section-heading { align-items: end; flex-wrap: wrap; margin-bottom: 1rem; }
 .concern-total { color: var(--muted); }
-.concern-search {
-    display: grid;
-    gap: .5rem;
-    margin-bottom: 1rem;
-
-    label { color: var(--muted); font-size: .9rem; }
-
-    input {
-        box-sizing: border-box;
-        width: 100%;
-        min-width: 0;
-        padding: .7rem .85rem;
-        border: 1px solid var(--border);
-        border-radius: .45rem;
-        background: #202922;
-        color: #e1ece3;
-        font: inherit;
-
-        &::placeholder { color: var(--muted); }
-        &:focus-visible { outline: 2px solid #b2cfb7; outline-offset: 2px; }
-        &:disabled { opacity: .6; }
-    }
-}
+.concern-search { margin-bottom: 1rem; }
 .concern-list { display: grid; gap: .75rem; margin: 0; padding: 0; list-style: none; }
 .concern-card { border: 1px solid var(--border); border-left: 3px solid var(--border-accent); border-radius: .65rem; background: var(--surface-card); padding: clamp(.9rem, 3vw, 1.1rem) clamp(.9rem, 3vw, 1.25rem); }
 .concern-card__header, .concern-card__identity { display: flex; align-items: center; gap: .6rem; }

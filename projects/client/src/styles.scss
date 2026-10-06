@@ -49,6 +49,29 @@ a {
     color: #a8c4ae;
 }
 
+.form-field {
+    display: grid;
+    gap: .5rem;
+
+    > label { color: #9ba99e; font-size: .9rem; }
+}
+
+.form-control {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    padding: .7rem .85rem;
+    border: 1px solid var(--border-default);
+    border-radius: .45rem;
+    background: #202922;
+    color: #e1ece3;
+    font: inherit;
+
+    &::placeholder { color: #9ba99e; }
+    &:focus-visible { outline: 2px solid #b2cfb7; outline-offset: 2px; }
+    &:disabled { opacity: .6; }
+}
+
 nav a[routerLink],
 nav button[mat-button] {
     text-transform: lowercase;

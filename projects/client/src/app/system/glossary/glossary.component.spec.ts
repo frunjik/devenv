@@ -29,6 +29,36 @@ describe('GlossaryComponent', () => {
             .map(item => item.textContent)).toEqual(['Term', 'Model']);
     });
 
+    it('presents each term with its definition, without the list marker', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({
+            data: ['Term', '- A word with an agreed meaning.', 'Domain', '- A bounded area.', '- Seen in a context.'],
+        });
+        fixture.detectChanges();
+
+        const entries = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-entry'));
+        expect(entries.map(entry => entry.querySelector('.glossary-term')?.textContent)).toEqual(['Term', 'Domain']);
+        expect(Array.from<HTMLElement>(entries[0].querySelectorAll('.glossary-definition')).map(item => item.textContent))
+            .toEqual(['A word with an agreed meaning.']);
+        expect(Array.from<HTMLElement>(entries[1].querySelectorAll('.glossary-definition')).map(item => item.textContent))
+            .toEqual(['A bounded area.', 'Seen in a context.']);
+    });
+
+    it('shows a term that has no definition without an empty definition', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({ data: ['Model'] });
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelectorAll('.glossary-entry').length).toBe(1);
+        expect(fixture.nativeElement.querySelector('.glossary-definition')).toBeNull();
+    });
+
+    it('keeps a definition line that has no term in front of it visible', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({ data: ['- Orphan text', 'Term', '- Definition'] });
+        fixture.detectChanges();
+
+        const terms = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-term'));
+        expect(terms.map(item => item.textContent)).toEqual(['- Orphan text', 'Term']);
+    });
+
     it('shows an empty message when there is nothing to show', () => {
         http.expectOne('http://localhost:3000/glossary').flush({ data: [] });
         fixture.detectChanges();

@@ -323,7 +323,7 @@ export class SystemPlanComponent {
             id: 'SC-022',
             title: 'Improve glossary screen layout and styling',
             kind: 'Design',
-            status: 'Ready',
+            status: 'Validated',
             dependsOn: [],
             summary: 'Evaluate readability and responsive layout of the existing glossary screen.',
         },

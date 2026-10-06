@@ -329,12 +329,14 @@ The system plan and problem-inquiry pages belong to the "solving problems with A
 
 ### SC-022 — Improve glossary screen layout and styling
 
-**Kind:** Design · **Status:** Ready · **Depends on:** None
+**Kind:** Design · **Status:** Validated · **Depends on:** None
 
 Evaluate the existing glossary screen's layout and styling for readability: term/definition hierarchy, spacing, long definitions, and behavior from 320 px to wide screens.
 
 **Working boundary:** Presentation only; do not change glossary content or its data source. Surrounding styles may only change with permission (P-006).
-**Open questions:** Should terms be a list, cards, or a definition grid? Should related terms be linked? Is grouping or alphabetical navigation needed?
+
+**Decisions (assistant's, revisable):** Cards in a responsive grid (a definition list, one card per term). A line starting with "- " is a definition of the term above it; other lines are terms; an orphan definition line is shown as a term so nothing is hidden. Palette is the existing dark green set. Related-term links, grouping/alphabet navigation, search (SC-023), and level marking (SC-027) are out of scope.
+**Evidence:** 6 component tests, 100% coverage. In the browser: 49 entries; 3 columns at 1440 px, 2 at 768 px, 1 at 320 px; no horizontal overflow.
 
 ### SC-023 — Quick glossary search from anywhere
 

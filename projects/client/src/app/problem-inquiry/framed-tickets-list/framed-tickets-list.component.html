@@ -26,6 +26,15 @@
                     }
                 </select>
             </label>
+            <label class="assignee-filter">
+                Filter by assignee
+                <select [value]="assigneeFilter" (change)="assigneeFilter = $any($event.target).value">
+                    <option value="all" [selected]="assigneeFilter === 'all'">All assignees</option>
+                    @for (assigneeId of assigneeFilterOptions; track assigneeId) {
+                        <option [value]="assigneeId" [selected]="assigneeId === assigneeFilter">{{ assigneeId }}</option>
+                    }
+                </select>
+            </label>
             <label class="metric-method">
                 Metric
                 <select [value]="metricMethod" (change)="metricMethod = $any($event.target).value">

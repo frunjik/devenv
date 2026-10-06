@@ -460,6 +460,93 @@ describe('FramedTicketsListComponent', () => {
         });
     });
 
+    describe('filtering by assignee', () => {
+        function stored(id: string, status: TicketStatus): StoredTicket {
+            return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };
+        }
+
+        function ids(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.ticket-id') as NodeListOf<HTMLElement>)
+                .map(element => element.textContent?.trim() ?? '');
+        }
+
+        function optionLabels(): string[] {
+            return Array.from(fixture.nativeElement.querySelectorAll('.assignee-filter option') as NodeListOf<HTMLOptionElement>)
+                .map(option => option.textContent?.trim() ?? '');
+        }
+
+        function filterByAssignee(assigneeId: string): void {
+            const select = fixture.nativeElement.querySelector('.assignee-filter select') as HTMLSelectElement;
+            select.value = assigneeId;
+            select.dispatchEvent(new Event('change'));
+            fixture.detectChanges();
+        }
+
+        it('offers every distinct current assignee once, in addition to "All assignees"', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'assigned', assigneeId: 'user-2' }),
+                stored('b', { state: 'resolved', assigneeId: 'user-1' }),
+                stored('c', { state: 'closed', assigneeId: 'user-1' }),
+                stored('d', { state: 'open' }),
+            ]);
+            fixture.detectChanges();
+
+            expect(optionLabels()).toEqual(['All assignees', 'user-1', 'user-2']);
+        });
+
+        it('narrows the list to tickets currently assigned to the chosen assignee', () => {
+            fixture.componentRef.setInput('tickets', [
+                stored('a', { state: 'assigned', assigneeId: 'user-1' }),
+                stored('b', { state: 'resolved', assigneeId: 'user-2' }),
+                stored('c', { state: 'open' }),
+            ]);
+            fixture.detectChanges();
+
+            filterByAssignee('user-2');
+
+            expect(ids()).toEqual(['b']);
+        });
+
+        it('combines the assignee filter with search and the state filter', () => {
+            const filterByState = (state: string) => {
+                const select = fixture.nativeElement.querySelector('.state-filter select') as HTMLSelectElement;
+                select.value = state;
+                select.dispatchEvent(new Event('change'));
+                fixture.detectChanges();
+            };
+            const search = (text: string) => {
+                const input = fixture.nativeElement.querySelector('input[type="search"]') as HTMLInputElement;
+                input.value = text;
+                input.dispatchEvent(new Event('input'));
+                fixture.detectChanges();
+            };
+            fixture.componentRef.setInput('tickets', [
+                { ...stored('a', { state: 'assigned', assigneeId: 'user-1' }), report: 'Barcode scanner froze.' },
+                { ...stored('b', { state: 'resolved', assigneeId: 'user-1' }), report: 'Barcode scanner froze.' },
+            ]);
+            fixture.detectChanges();
+
+            filterByAssignee('user-1');
+            filterByState('assigned');
+            search('scanner');
+
+            expect(ids()).toEqual(['a']);
+        });
+
+        it('shows a no-match message when the assignee filter leaves nothing', () => {
+            fixture.componentRef.setInput('tickets', [stored('a', { state: 'assigned', assigneeId: 'user-1' })]);
+            fixture.detectChanges();
+
+            filterByAssignee('user-1');
+            const select = fixture.nativeElement.querySelector('.state-filter select') as HTMLSelectElement;
+            select.value = 'closed';
+            select.dispatchEvent(new Event('change'));
+            fixture.detectChanges();
+
+            expect(fixture.nativeElement.textContent).toContain('No matching tickets.');
+        });
+    });
+
     describe('state count summary', () => {
         function stored(id: string, status: TicketStatus): StoredTicket {
             return { ...makeTicket(id, `Title ${id}`, undefined), status, version: 1, dataKind: 'real' };

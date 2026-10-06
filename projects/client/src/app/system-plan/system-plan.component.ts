@@ -357,7 +357,7 @@ export class SystemPlanComponent {
             kind: 'Behavior',
             status: 'Validated',
             dependsOn: ['SC-015', 'SC-017'],
-            summary: 'Sort framed tickets by different properties and search them by description.',
+            summary: 'Sort framed tickets by different properties and search, filter by state, and filter by assignee.',
         },
         {
             id: 'SC-027',

@@ -61,13 +61,20 @@ export class FramedTicketsListComponent {
     sortProperty: SortProperty = 'created';
     ascending = false;
     stateFilter: TicketStateFilter = 'all';
+    assigneeFilter = 'all';
 
     get displayedTickets(): readonly ProblemTicket[] {
         const needle = normalize(this.query.trim());
         const matching = this.tickets
             .filter(ticket => !needle || searchableText(ticket).includes(needle))
-            .filter(ticket => this.matchesStateFilter(ticket));
+            .filter(ticket => this.matchesStateFilter(ticket))
+            .filter(ticket => this.matchesAssigneeFilter(ticket));
         return matching.sort((a, b) => this.compare(a, b));
+    }
+
+    get assigneeFilterOptions(): string[] {
+        const assignees = this.tickets.map(ticket => assigneeOf(ticket)).filter((id): id is string => id !== undefined);
+        return [...new Set(assignees)].sort();
     }
 
     get stateSummary(): string {
@@ -223,6 +230,10 @@ export class FramedTicketsListComponent {
 
     private matchesStateFilter(ticket: ProblemTicket | StoredTicket): boolean {
         return this.stateFilter === 'all' || this.statusOf(ticket)?.state === this.stateFilter;
+    }
+
+    private matchesAssigneeFilter(ticket: ProblemTicket | StoredTicket): boolean {
+        return this.assigneeFilter === 'all' || assigneeOf(ticket) === this.assigneeFilter;
     }
 
     stateLabel(status: TicketStatus): string {

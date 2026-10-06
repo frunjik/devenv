@@ -69,7 +69,7 @@
             <ul class="concern-list" aria-label="System concerns">
                 @for (concern of visibleConcerns; track concern.id) {
                     <li>
-                        <article class="concern-card" [attr.data-status]="concern.status">
+                        <article class="concern-card accent-card" [attr.data-status]="concern.status">
                             <header class="concern-card__header">
                                 <div class="concern-card__identity">
                                     <span class="concern-id">{{ concern.id }}</span>

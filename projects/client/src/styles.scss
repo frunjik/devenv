@@ -49,6 +49,12 @@ a {
     color: #a8c4ae;
 }
 
+.accent-card {
+    border: 1px solid var(--border-default);
+    border-left: 3px solid var(--border-accent);
+    background: var(--surface-card);
+}
+
 .form-field {
     display: grid;
     gap: .5rem;

@@ -15,6 +15,17 @@ describe('InputConverterComponent', () => {
         fixture = TestBed.createComponent(InputConverterComponent);
     });
 
+    it('applies the shared dark-control class to text fields and actions, but not radio buttons', () => {
+        fixture.detectChanges();
+        const textControls = fixture.nativeElement.querySelectorAll('input[type="text"], textarea');
+        const radioControls = fixture.nativeElement.querySelectorAll('input[type="radio"]');
+        const buttons = fixture.nativeElement.querySelectorAll('button');
+
+        expect(Array.from(textControls).every(control => control.classList.contains('form-control'))).toBe(true);
+        expect(Array.from(radioControls).every(control => !control.classList.contains('form-control'))).toBe(true);
+        expect(Array.from(buttons).every(button => button.classList.contains('form-control'))).toBe(true);
+    });
+
     it('emits a local proposal retaining the source text and interpretation', () => {
         const proposals: NoteProposal[] = [];
         fixture.componentInstance.proposalCreated.subscribe(proposal => proposals.push(proposal));

@@ -8,13 +8,13 @@
 )">
     <fieldset [disabled]="pendingProposal !== null">
         <label for="source-text">Source text</label>
-        <textarea id="source-text" #sourceText required></textarea>
+        <textarea id="source-text" class="form-control" #sourceText required></textarea>
 
         <label for="source-artifact">Source artifact (optional)</label>
-        <input id="source-artifact" #sourceArtifact type="text">
+        <input id="source-artifact" class="form-control" #sourceArtifact type="text">
 
         <label for="source-locator">Source location (optional)</label>
-        <input id="source-locator" #sourceLocator type="text">
+        <input id="source-locator" class="form-control" #sourceLocator type="text">
 
         <fieldset>
             <legend>Source origin</legend>
@@ -31,16 +31,16 @@
         </fieldset>
 
         <label for="interpretation">Tentative interpretation</label>
-        <textarea id="interpretation" #interpretation required></textarea>
+        <textarea id="interpretation" class="form-control" #interpretation required></textarea>
 
         <label for="open-questions">Unresolved questions (one per line)</label>
-        <textarea id="open-questions" #openQuestions></textarea>
+        <textarea id="open-questions" class="form-control" #openQuestions></textarea>
 
         @if (validationMessage) {
             <p role="alert">{{ validationMessage }}</p>
         }
 
-        <button type="submit">Create note proposal</button>
+        <button type="submit" class="form-control">Create note proposal</button>
     </fieldset>
 </form>
 
@@ -54,12 +54,12 @@
                 <li>{{ question }}</li>
             }
         </ul>
-        <button id="edit-proposal" type="button" (click)="editProposal()">Edit proposal</button>
-        <button id="accept-note" type="button" (click)="acceptProposal(proposal)">Accept note</button>
+        <button id="edit-proposal" type="button" class="form-control" (click)="editProposal()">Edit proposal</button>
+        <button id="accept-note" type="button" class="form-control" (click)="acceptProposal(proposal)">Accept note</button>
 
         <label for="review-reason">Reason (optional, for reject or defer)</label>
-        <textarea id="review-reason" #reviewReason></textarea>
-        <button id="reject-proposal" type="button" (click)="reviewProposal(proposal, 'rejected', reviewReason.value)">Reject</button>
-        <button id="defer-proposal" type="button" (click)="reviewProposal(proposal, 'deferred', reviewReason.value)">Defer</button>
+        <textarea id="review-reason" class="form-control" #reviewReason></textarea>
+        <button id="reject-proposal" type="button" class="form-control" (click)="reviewProposal(proposal, 'rejected', reviewReason.value)">Reject</button>
+        <button id="defer-proposal" type="button" class="form-control" (click)="reviewProposal(proposal, 'deferred', reviewReason.value)">Defer</button>
     </section>
 }

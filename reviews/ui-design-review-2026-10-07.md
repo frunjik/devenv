@@ -2,10 +2,17 @@
 
 **Reviewed:** 2026-10-07
 **Scope:** Running DevEnv UI at desktop and 390px mobile widths: Problem Inquiry (notes and ticket form), System Plan, Glossary, and Workflow TODO. Relevant templates and component styles were inspected.
-**Status:** Findings recorded for later consideration; no implementation changes made.
+**Status:** All three findings have been addressed.
 **Limits:** No complete numeric contrast or keyboard accessibility audit; not every route or state was inspected. API was unavailable initially during the review and was started temporarily to inspect data-backed views.
 
 ## Findings
+
+### Implementation progress
+
+- **Finding 1 — Dense mobile meta navigation:** Addressed. On mobile, System plan, Workflow TODO, and Browse remain visible; secondary links and the commit action are grouped behind a “More” control with 44px controls and the Material touch target restored. Desktop navigation remains expanded.
+- **Finding 2 — Workflow table is cramped on mobile:** Addressed. Mobile table sizing preserves resume-button text without wrapping and provides a visible horizontal-scroll instruction; the scroll region is keyboard-focusable and labelled.
+- **Finding 3 — Problem Inquiry native controls differ from the theme:** Addressed. Notes and ticket form fields and actions use the shared dark control class; radio inputs and feature-specific layout remain unchanged.
+- Verification and implementation details are recorded in the [implementation workflow checkpoint](../design/ui-design-review-workflow.md).
 
 ### 1. Dense mobile meta navigation
 

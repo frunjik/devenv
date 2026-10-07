@@ -29,6 +29,11 @@ textarea {
     font: inherit;
 }
 
+button.form-control {
+    min-height: 44px;
+    cursor: pointer;
+}
+
 textarea {
     min-height: 5rem;
     resize: vertical;

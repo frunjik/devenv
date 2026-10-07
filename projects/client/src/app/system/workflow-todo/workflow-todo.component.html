@@ -4,7 +4,17 @@
     <p *ngIf="loading" role="status">Loading workflows...</p>
     <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
     <p *ngIf="!loading && !errorMessage && !workflows.length">No workflows registered.</p>
-    <div class="table-scroll" *ngIf="workflows.length">
+    <p id="workflow-table-scroll-hint" class="scroll-hint" *ngIf="workflows.length">
+        Swipe or scroll horizontally to see all workflow details.
+    </p>
+    <div
+        class="table-scroll"
+        *ngIf="workflows.length"
+        role="region"
+        tabindex="0"
+        aria-label="Registered workflows"
+        aria-describedby="workflow-table-scroll-hint"
+    >
         <table>
             <caption>Registered workflows and resume references</caption>
             <thead><tr><th scope="col">Workflow</th><th scope="col">Status</th><th scope="col">Resume reference</th><th scope="col">Related concern</th></tr></thead>

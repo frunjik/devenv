@@ -14,4 +14,10 @@ export class NavigationToolbarComponent {
     @Input() host = '';
     @Input() isCommitting = false;
     @Output() readonly commitRequested = new EventEmitter<void>();
+
+    isSecondaryNavigationExpanded = false;
+
+    toggleSecondaryNavigation(): void {
+        this.isSecondaryNavigationExpanded = !this.isSecondaryNavigationExpanded;
+    }
 }

@@ -32,7 +32,7 @@
         <fieldset class="source-notes" [disabled]="notes.length === 0">
             <legend>Accepted notes</legend>
             <label for="source-note-ids">Notes linked to this ticket</label>
-            <select id="source-note-ids" #sourceNoteIds multiple size="4" required>
+            <select id="source-note-ids" class="form-control" #sourceNoteIds multiple size="4" required>
                 @for (note of notes; track note.id) {
                     <option [value]="note.id">{{ note.id }} — {{ note.proposal.sourceText }}</option>
                 }
@@ -41,27 +41,27 @@
 
         <div class="ticket-fields">
             <label for="ticket-title">Title</label>
-            <input id="ticket-title" #title name="title" type="text" required>
+            <input id="ticket-title" class="form-control" #title name="title" type="text" required>
 
             <label for="ticket-report">Report</label>
-            <textarea id="ticket-report" #report name="report" required></textarea>
+            <textarea id="ticket-report" class="form-control" #report name="report" required></textarea>
 
             <fieldset class="problem-frame">
                 <legend>Problem frame</legend>
                 <label for="problem-condition">Undesirable condition</label>
-                <textarea id="problem-condition" #condition name="condition" required></textarea>
+                <textarea id="problem-condition" class="form-control" #condition name="condition" required></textarea>
 
                 <label for="problem-affected">Who or what is affected</label>
-                <input id="problem-affected" #affected name="affected" type="text" required>
+                <input id="problem-affected" class="form-control" #affected name="affected" type="text" required>
 
                 <label for="problem-impact">Why it matters</label>
-                <textarea id="problem-impact" #impact name="impact" required></textarea>
+                <textarea id="problem-impact" class="form-control" #impact name="impact" required></textarea>
             </fieldset>
 
             <fieldset class="scope">
                 <legend>Scope</legend>
                 <label for="scope-level">Scope level</label>
-                <select id="scope-level" #scopeLevel name="scopeLevel" required>
+                <select id="scope-level" class="form-control" #scopeLevel name="scopeLevel" required>
                     <option value="">Select a scope level</option>
                     <option value="operation">Operation</option>
                     <option value="workflow">Workflow</option>
@@ -70,58 +70,58 @@
                 </select>
 
                 <label for="scope-label">Scope description</label>
-                <input id="scope-label" #scopeLabel name="scopeLabel" type="text" required>
+                <input id="scope-label" class="form-control" #scopeLabel name="scopeLabel" type="text" required>
             </fieldset>
 
             <fieldset class="work-context">
                 <legend>Work context</legend>
                 <p>Enter one item per line. Leave a field blank when no entry is recorded.</p>
                 <label for="context-people">People</label>
-                <textarea id="context-people" #contextPeople name="contextPeople"></textarea>
+                <textarea id="context-people" class="form-control" #contextPeople name="contextPeople"></textarea>
 
                 <label for="context-places">Places</label>
-                <textarea id="context-places" #contextPlaces name="contextPlaces"></textarea>
+                <textarea id="context-places" class="form-control" #contextPlaces name="contextPlaces"></textarea>
 
                 <label for="context-things">Things</label>
-                <textarea id="context-things" #contextThings name="contextThings"></textarea>
+                <textarea id="context-things" class="form-control" #contextThings name="contextThings"></textarea>
             </fieldset>
 
             <fieldset class="estimate">
                 <legend>Estimate (optional)</legend>
                 <p>Rate each from 1 (lowest) to 5 (highest), or leave all three blank. A higher effort means more work.</p>
                 <label for="estimate-impact">Impact</label>
-                <select id="estimate-impact" #estimateImpact name="estimateImpact">
+                <select id="estimate-impact" class="form-control" #estimateImpact name="estimateImpact">
                     <option value="">Not rated</option>
                     <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                 </select>
 
                 <label for="estimate-urgency">Urgency</label>
-                <select id="estimate-urgency" #estimateUrgency name="estimateUrgency">
+                <select id="estimate-urgency" class="form-control" #estimateUrgency name="estimateUrgency">
                     <option value="">Not rated</option>
                     <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                 </select>
 
                 <label for="estimate-effort">Effort</label>
-                <select id="estimate-effort" #estimateEffort name="estimateEffort">
+                <select id="estimate-effort" class="form-control" #estimateEffort name="estimateEffort">
                     <option value="">Not rated</option>
                     <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
                 </select>
             </fieldset>
 
             <label for="depends-on-ticket-ids">Depends on (ticket ids, optional, one per line)</label>
-            <textarea id="depends-on-ticket-ids" #dependsOnTicketIds name="dependsOnTicketIds"></textarea>
+            <textarea id="depends-on-ticket-ids" class="form-control" #dependsOnTicketIds name="dependsOnTicketIds"></textarea>
 
             <label for="reported-by">Reported by</label>
-            <input id="reported-by" #reportedBy name="reportedBy" type="text" required>
+            <input id="reported-by" class="form-control" #reportedBy name="reportedBy" type="text" required>
 
             <label for="reported-at">Creation time</label>
-            <input id="reported-at" #reportedAt name="reportedAt" type="datetime-local" required>
+            <input id="reported-at" class="form-control" #reportedAt name="reportedAt" type="datetime-local" required>
         </div>
 
         @if (validationMessage) {
             <p role="alert">{{ validationMessage }}</p>
         }
 
-        <button type="submit" [disabled]="notes.length === 0">Create problem ticket</button>
+        <button type="submit" class="form-control" [disabled]="notes.length === 0">Create problem ticket</button>
     </form>
 </section>

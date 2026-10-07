@@ -41,6 +41,16 @@ describe('WorkflowTodoComponent', () => {
         expect(text).not.toContain('Loading workflows');
     });
 
+    it('provides a visible, accessible cue for horizontally scrolling the workflow table', () => {
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
+        fixture.detectChanges();
+        const tableScroll = fixture.nativeElement.querySelector('.table-scroll') as HTMLElement;
+        const hint = fixture.nativeElement.querySelector('#workflow-table-scroll-hint') as HTMLElement;
+
+        expect(tableScroll.getAttribute('aria-describedby')).toBe('workflow-table-scroll-hint');
+        expect(hint.textContent).toContain('Swipe or scroll horizontally to see all workflow details.');
+    });
+
     it('opens a workflow document read-only and preserves its checkpoint reference', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();

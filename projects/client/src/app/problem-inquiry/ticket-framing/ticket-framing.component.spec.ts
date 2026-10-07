@@ -20,6 +20,14 @@ describe('TicketFramingComponent', () => {
         fixture.detectChanges();
     });
 
+    it('applies the shared dark-control class to form fields and its action button', () => {
+        const controls = fixture.nativeElement.querySelectorAll('input, select, textarea');
+        const buttons = fixture.nativeElement.querySelectorAll('button');
+
+        expect(Array.from(controls).every(control => control.classList.contains('form-control'))).toBe(true);
+        expect(Array.from(buttons).every(button => button.classList.contains('form-control'))).toBe(true);
+    });
+
     it('emits an explicitly framed ticket linked to each selected accepted note', () => {
         const tickets: ProblemTicket[] = [];
         fixture.componentInstance.ticketCreated.subscribe(ticket => tickets.push(ticket));

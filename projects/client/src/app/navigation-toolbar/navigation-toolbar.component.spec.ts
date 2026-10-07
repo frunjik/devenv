@@ -31,6 +31,26 @@ describe('NavigationToolbarComponent', () => {
         expect(systemPlanLink.textContent?.trim()).toBe('System plan');
     });
 
+    it('expands and collapses secondary navigation on demand', () => {
+        const button = fixture.nativeElement.querySelector('.more-navigation-button') as HTMLButtonElement;
+        const secondaryNavigation = fixture.nativeElement.querySelector('#secondary-navigation') as HTMLElement;
+
+        expect(button.getAttribute('aria-expanded')).toBe('false');
+        expect(secondaryNavigation.classList.contains('is-expanded')).toBe(false);
+
+        button.click();
+        fixture.detectChanges();
+
+        expect(button.getAttribute('aria-expanded')).toBe('true');
+        expect(secondaryNavigation.classList.contains('is-expanded')).toBe(true);
+
+        button.click();
+        fixture.detectChanges();
+
+        expect(button.getAttribute('aria-expanded')).toBe('false');
+        expect(secondaryNavigation.classList.contains('is-expanded')).toBe(false);
+    });
+
     it('requests a commit and reflects the committing state', () => {
         let requested = 0;
         fixture.componentInstance.commitRequested.subscribe(() => requested++);

@@ -62,6 +62,8 @@ These replace the earlier definitions to distinguish a context of meaning from s
 
 ## Domain Display Preparation
 
+**SubjectDomain name refinement (user, 2026-10-07):** The current Glossary entry is `SubjectDomain (WMS AI)`, replacing `SubjectDomain` and its separate WMS example line. The user shortened the initial wording "AI for WMS" to "WMS AI". The definition remains unchanged. Earlier names and examples above are decision history; no defining-Domain assignment or export-scope change follows from this rename.
+
 **Decision (user, 2026-10-07):** Display the Domain(s) where each Term's meaning is defined, not its KnowledgeArea memberships. Agree assignments before implementing the display.
 
 Domain labels and assignments remain unresolved. Neither an example from SubjectDomain (WMS) nor use within DevEnv establishes where a Term's definition belongs. Do not convert the provisional KnowledgeArea mapping into Domain assignments.

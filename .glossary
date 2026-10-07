@@ -4,9 +4,8 @@ Term
 Domain (WMS)
 - A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings.
 
-SubjectDomain
+SubjectDomain (WMS AI)
 - The Domain being investigated or supported.
-- Example: SubjectDomain (WMS).
 
 KnowledgeArea
 - A subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership.

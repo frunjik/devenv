@@ -144,6 +144,8 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Use JSON as the source of truth for structured data. Generate Markdown views from that JSON rather than maintaining Markdown as a second authoritative copy.
 - **Practice:** Keep the generated view reproducible from its JSON source, identify it as generated, and do not let application behavior depend on parsing the view when the structured JSON is available.
 
+- **Format preference refinement (user, 2026-10-07):** Prefer structured formats over unstructured representations for data storage. The default order is **Typed JSON, then YAML, then Markdown**. Typed JSON means JSON with an explicit interface describing its structure; JSON alone is not typed, and an interface alone does not validate runtime input. Prefer generating `.md` views from the authoritative structured source rather than extracting the authoritative data from Markdown. Include this preference in the portable practices package, not only local project policy. Preserve meaning when choosing a format and record justified exceptions or explicit user choices. This does not authorize automatic migration of existing Markdown sources.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

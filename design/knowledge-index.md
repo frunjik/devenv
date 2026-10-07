@@ -111,6 +111,7 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [Type Detector findings (2026-10-07)](../reviews/type-detector-2026-10-07.json) | Authoritative future-enhancement record; distinguishes proposed refinements, unresolved questions, and leave-as-is conclusions. No implementation authorized. |
 | [C4 research and recommendations (2026-10-07)](./c4-research-2026-10-07.json) | Sources, DevEnv view recommendations, evidence limits, and the requested diagram follow-up. |
 | [DevEnv C4 views](./devenv-c4.md) | Authoritative JSON model and generated context, container, and local-development diagrams; current-architecture drafts for review. |
+| [Portable practices and Glossary checklist](./portable-practices-checklist.generated.md) | Preparation checklist for proposed cross-domain guidance; JSON owns checklist state, and existing project rules remain unchanged. |
 | [Demolition worker guidance](../.agents/demolition-worker.agent.md) | Procedure for assessing usage before removing code. |
 
 ## Practical Documentation and Historical Material

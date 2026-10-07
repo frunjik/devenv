@@ -1,0 +1,77 @@
+# Portable Practices and Glossary Checklist
+
+Generated from [portable-practices-checklist.json](./portable-practices-checklist.json). Edit JSON, not this view.
+
+**Status:** Proposed extraction; existing project rules remain in force
+
+Prepare cross-domain practices and vocabulary; add software guidance only where applicable and keep local policy separate.
+
+Interface: [TodoList](./portable-practices-checklist.types.ts). Check the actual JSON with:
+
+```powershell
+npx.cmd tsc --noEmit --strict --skipLibCheck --resolveJsonModule --esModuleInterop --module commonjs --target ES2022 design\portable-practices-checklist.types.ts
+```
+
+## Scope and authority
+
+- [ ] Confirm recipient, intended use, system boundary, and ownership; separate cross-domain, software-only, and local guidance.
+- [ ] Preserve sources, revisions, authority, exceptions, and history; resolve conflicts explicitly and obtain approval before adoption or expanded scope.
+
+## Work and learning
+
+- [ ] State the outcome, affected people, and observable success criteria; distinguish the current Problem from an assumed cause or proposed solution.
+- [ ] Separate observations, interpretations, assumptions, proposals, and decisions; provenance or agreement alone does not establish truth.
+- [ ] Make the smallest coherent change; preserve unrelated work, intended behavior, and dependencies, and resolve blockers before relying on them.
+- [ ] Verify outcomes and exceptions through appropriate evidence; report errors, uncertainty, and limits, distinguishing completion, verification, acceptance, and Goal achievement.
+- [ ] Save decisions, open questions, blockers, and the next step for resumption; periodically review whether the method still serves its purpose and record lessons as proposals.
+
+## Glossary and modelling
+
+- [ ] Select minimal definitions from Term, Glossary, Domain, System, Goal, Acceptance Criterion, Type, and Contract; review Problem and Inquiry only if needed, without assuming new entries are agreed.
+- [ ] Check names against existing meanings and discuss candidates before adoption, including unqualified Domain; preserve Domain (WMS), unknown context, and unresolved disagreements.
+- [ ] Keep contextual definitions separate from examples and reference policies; let recipients supply local Terms without exporting WMS or software assumptions. Type and Contract are not limited to programming or APIs.
+- [ ] Start with meaning, a genuine instance, and a contrasting case; justify Types by goals, states, relationships, constraints, or obligations, reusing existing concepts instead of adding ceremony.
+
+## Optional software practices
+
+- [ ] Use Red-Green-Refactor for behavior changes, with example-derived tests through public interfaces and simple mocks only at external boundaries; do not change production code merely to satisfy test tooling.
+- [ ] Run relevant tests, builds, and language-aware checks; verify affected consumers and entry points before changing or removing behavior, and report any unverified guarantees.
+
+## Data format preferences
+
+- [ ] Prefer structured storage: Typed JSON, then YAML, then Markdown. Typed JSON requires an explicit interface; interfaces do not replace runtime validation. Record justified exceptions or user choices.
+- [ ] Keep one authoritative source; generate reproducible, labelled .md views from structured data, not the reverse. Check preserved meaning and do not automatically migrate existing sources.
+
+## Keep local policy separate
+
+- [ ] Keep coverage thresholds, commands, frameworks, filesystem-test restrictions, paths, timing, commit approval, attribution, and numbering in applicable local policy; extraction does not waive them here.
+
+## Validate and package
+
+- [ ] Test the core on the DevEnv clone Goal and folder-exclusion Acceptance Criterion, then obtain a genuine non-software contrasting example; do not invent facts.
+- [ ] Check each item is necessary, actionable, and understandable without repository context; preserve distinctions when merging wording and obtain approval before activation, export wiring, or migration.
+
+## Review
+
+**Added:** Explicit boundaries and ownership; prerequisites and blockers; Problem versus cause/solution; provenance versus truth; completion versus verification/acceptance/achievement; periodic method review; change/removal impact checks.
+
+**Compression:** Merged 36 preparation items into 18, retaining the original requirements in combined wording. The TodoList interface in portable-practices-checklist.types.ts checks this JSON at compile time; runtime validation remains separate.
+
+**Limits:** Review of maintained guidance and selected vocabulary, not an exhaustive code audit. Historical review recommendations are evidence to consider, not adopted rules. Core Terms remain candidates; no new Type or name adopted.
+
+**Sources:**
+- [system-task-principles.md](../.agents/system-task-principles.md)
+- [type-detector.agent.md](../.agents/type-detector.agent.md)
+- [demolition-worker.agent.md](../.agents/demolition-worker.agent.md)
+- [SKILL.md](../skills/domain-type-design/SKILL.md)
+- [.glossary.json](../.glossary.json)
+- [knowledge-index.md](./knowledge-index.md)
+- [knowledge-soundness-2026-10-07.md](../reviews/knowledge-soundness-2026-10-07.md)
+
+## Checkpoint
+
+**Decisions:** A checklist was requested for the proposed portable principles, core Glossary, and domain vocabulary. The user agreed to include structured-format preferences: Typed JSON (with an explicit interface), then YAML, then Markdown, with generated Markdown preferred over reverse extraction. The overall package and candidate names remain unadopted.
+
+**Open questions:** Recipient and delivery format; agreement on core definitions and the Domain name; a genuine non-software contrasting example.
+
+**Next step:** Confirm recipient and intended use, then classify current guidance into portable, software-only, and local layers.

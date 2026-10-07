@@ -55,3 +55,44 @@ This example is a derived description, not a second independent rule source. If 
 Which distinctions need identity-bearing records? How should an override identify the instruction it supersedes? How should a recipient resolve project bindings and attribution? What source evidence is sufficient when a decision originated in conversation?
 
 The provisional names MetaExport and KnowledgeStatement are agreed for the modeling experiment in [MetaExport](./meta-export.md). Their structures and further candidate Type and field names remain to be discussed before adoption. No automated validator, generator, or export mechanism is introduced.
+
+## Example-Led Trial: The Documentation Commit
+
+**Observed example:** Commit `a719b1e9d9fb9f280a446a728c0e83f1922d2c08`, made on 2026-10-07 with subject `SystemConcern-049: establish example-led MetaExport design`.
+
+The user requested a commit, then explicitly aborted it during message approval. The assistant did not execute that aborted commit. The user subsequently established a standing preference to omit the Copilot co-author trailer. After a documentation-consistency check, the user made a fresh commit request, approved the proposed subject, and the assistant committed the six reviewed documentation files. The resulting message had no co-author trailer, and the worktree was clean.
+
+This is an execution observation, not a new instruction. The conversation supplies the request, abort, and approval sequence; the Git commit supplies the resulting subject and committed files, but cannot by itself prove user authorization. This document summarizes that conversation; it is not an attached transcript.
+
+### What a Recipient Must Be Able to Explain
+
+| Point in the example | Meaning that must survive transfer |
+| --- | --- |
+| Documentation is ready, without a commit request | Readiness alone permits neither a commit nor an approval prompt. |
+| A commit request is followed by an abort | The earlier request is not continuing permission to execute that commit. |
+| The user establishes the attribution preference | Omission of the trailer is a standing instruction, not merely a property of this one commit. |
+| A fresh request is made | Preparation may resume, but the particular subject still needs approval. |
+| The subject is approved | Execution is authorized for the reviewed scope and message, not for unrelated changes or future commits. |
+| Git reports success and a clean worktree | The commit succeeded; this does not establish acceptance of the concern's outcome. |
+
+### Candidate KnowledgeStatement Boundaries
+
+The example suggests independently referenceable statements rather than a single indivisible process paragraph:
+
+- Do not initiate commits or approval prompts without an explicit user commit request.
+- Obtain approval of the proposed message before executing the reviewed commit.
+- Omit the Copilot co-author trailer until the user says otherwise.
+- Use the current concern prefix for concern-focused subjects.
+- The documentation commit above succeeded with the approved subject and no co-author trailer.
+
+The first four express instructions or preferences; the last records an observation. A local preference can also be an instruction, so these descriptions must not become mutually exclusive categories without further discussion.
+
+**Boundary decision (user, 2026-10-07):** One KnowledgeStatement represents one independently revisable assertion. The complete commit-process description is assembled from statements rather than treated as one indivisible KnowledgeStatement. The particular decomposition above remains a candidate; no complete Type structure is agreed. Revising or superseding a statement must not accidentally replace unrelated rules. For example, changing attribution must not remove the message-approval requirement.
+
+### Candidate Type Constraints Derived From This Example
+
+Without choosing field names yet, a KnowledgeStatement would need to preserve its assertion, the context in which it applies, its source and authority, and whether it is current, superseded, or still proposed. A relationship to an earlier statement must specify what is replaced and what is retained.
+
+Recorded knowledge must not be confused with authorization for a particular execution. Nor should the example imply that KnowledgeStatement is necessarily the Type for a live approval or commit event.
+
+The narrative and the proposed statement boundaries are the current experiment. JSON comes after discussing those boundaries and naming the necessary parts. No full transfer package or recipient adoption is demonstrated yet.

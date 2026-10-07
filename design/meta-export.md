@@ -71,6 +71,8 @@ No external destination, transmission, source-file move, schema, generator, or p
 
 **Candidate name (user, 2026-10-07):** `KnowledgeStatement` names one individually referenceable piece of exported knowledge. It may express an instruction, definition, proposal, or observation, with its own authority and source. The name is agreed for the modeling experiment; its structure, variants, and constraints are not yet agreed. It is not synonymous with Evidence or the Artifact storing it.
 
+**Boundary decision (user, 2026-10-07):** One KnowledgeStatement represents one independently revisable assertion. A complete process may be assembled from multiple statements. The [documentation-commit trial](./commit-process.md#example-led-trial-the-documentation-commit) supplies the concrete example; field names, a full Type structure, and JSON remain unresolved.
+
 Derive a small candidate Type from the commit-process example, asking the user for names before adopting them. Then represent that example in JSON and compare it with the narrative. Try a contrasting in-scope example, such as a provisional concept or a meta/meta observation, before choosing an authoritative representation.
 
 The existing Rule Set concept in SC-049 may describe part of the content, but its relationship to MetaExport is unresolved. This experiment does not complete SC-049.

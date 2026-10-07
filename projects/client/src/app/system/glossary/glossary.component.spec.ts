@@ -51,6 +51,36 @@ describe('GlossaryComponent', () => {
         expect(fixture.nativeElement.querySelector('.glossary-definition')).toBeNull();
     });
 
+    it('separates recorded examples from definitions and preserves example-qualified names', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({
+            data: [
+                'Domain (WMS)', '- A context of meaning.',
+                'KnowledgeArea', '- A subject classification.',
+                '- Example: KnowledgeArea (warehouse operations).',
+                '- Example: KnowledgeArea (development practices).',
+                'MetaLayer (DevEnv)', '- A perspective.',
+            ],
+        });
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.entries).toEqual([
+            { term: 'Domain (WMS)', definitions: ['A context of meaning.'], examples: [] },
+            {
+                term: 'KnowledgeArea', definitions: ['A subject classification.'],
+                examples: ['KnowledgeArea (warehouse operations).', 'KnowledgeArea (development practices).'],
+            },
+            { term: 'MetaLayer (DevEnv)', definitions: ['A perspective.'], examples: [] },
+        ]);
+        const entry: HTMLElement = fixture.nativeElement.querySelectorAll('.glossary-entry')[1];
+        expect(Array.from(entry.querySelectorAll('.glossary-definition:not(.glossary-example)')).map(item => item.textContent))
+            .toEqual(['A subject classification.']);
+        expect(Array.from(entry.querySelectorAll('.glossary-example')).map(item => item.textContent))
+            .toEqual([
+                'Example: KnowledgeArea (warehouse operations).',
+                'Example: KnowledgeArea (development practices).',
+            ]);
+    });
+
     it('keeps a definition line that has no term in front of it visible', () => {
         http.expectOne('http://localhost:3000/glossary').flush({ data: ['- Orphan text', 'Term', '- Definition'] });
         fixture.detectChanges();

@@ -29,6 +29,10 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 **Progress (2026-10-07):** Steps 1–3 completed for the agreed definition refinement. The user approved the concise KnowledgeArea definition and retained SubjectDomain and MetaLayer unchanged. KnowledgeArea remains provisional; approving this wording does not settle its adoption. The Starting Meaning table preserves the earlier summary.
 
+**Latest refinement:** The user subsequently approved the Domain (WMS) and KnowledgeArea (warehouse operations) distinction recorded below. The earlier wording remains decision history; the Glossary contains the current definitions.
+
+**Representation sync (user, 2026-10-07):** Sync only recorded content with the glossary UI Type and parser. GlossaryEntry now separates definitions and `Example:` lines while preserving actual Term names, including `Domain (WMS)` and `MetaLayer (DevEnv)`. No Domain assignments, sources, or revision fields are inferred. The API still returns lines; this is a local display Type refinement, not an adopted export model.
+
 **Next:** Agree Domain labels and per-Term meaning assignments for the requested glossary display, before step 4's Markdown MetaExport example. No display implementation has started.
 
 The example distinguishes subject from perspective: development practices can be organized as KnowledgeArea (development/meta practices), while MetaLayer (development practices governing DevEnv work) identifies their governing relationship to an activity. SubjectDomain (WMS) identifies the Domain being investigated, not a level in that organization.
@@ -48,6 +52,13 @@ KnowledgeArea membership does not establish a separate Domain. MetaLayer is prov
 **Example-label refinement (user, 2026-10-07):** Use Domain (WMS) and MetaLayer (DevEnv) in the Glossary. MetaLayer (DevEnv) replaces the longer development-practices example above; earlier examples remain decision history. Under the unchanged MetaLayer definition, DevEnv names the meta perspective on the system or activity it supports, rather than implying that every application is a MetaLayer. SubjectDomain (WMS) remains unchanged. Example labels do not assign defining Domains to Terms.
 
 **Term-name decision (user, 2026-10-07):** Include the examples in the actual Glossary entry names: `Domain (WMS)` and `MetaLayer (DevEnv)`, not merely separate display labels. This supersedes the separate-example presentation for these two entries; definitions remain general and unchanged. Earlier references to Domain and MetaLayer retain their meaning but omit the newly adopted example suffixes. Other entry names and production code are unchanged.
+
+**Meaning/classification refinement (user, 2026-10-07):**
+
+- **Domain (WMS):** A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings.
+- **KnowledgeArea (warehouse operations):** A subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership.
+
+These replace the earlier definitions to distinguish a context of meaning from subject classification. Knowledge can still belong to multiple KnowledgeAreas; classification alone establishes neither hierarchy nor agreement. KnowledgeArea remains provisional. SubjectDomain and MetaLayer (DevEnv) are unchanged.
 
 ## Domain Display Preparation
 

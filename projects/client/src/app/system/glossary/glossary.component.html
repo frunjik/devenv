@@ -6,6 +6,7 @@
         <div *ngFor="let entry of entries" class="glossary-entry accent-card">
             <dt class="glossary-term">{{ entry.term }}</dt>
             <dd *ngFor="let definition of entry.definitions" class="glossary-definition">{{ definition }}</dd>
+            <dd *ngFor="let example of entry.examples" class="glossary-definition glossary-example">Example: {{ example }}</dd>
         </div>
     </dl>
 </section>

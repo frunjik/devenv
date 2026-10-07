@@ -8,6 +8,8 @@ DevEnv is currently implemented as an Angular client and Express API.
 
 See the [Project Knowledge Index](./design/knowledge-index.md) for the locations and roles of our decisions, learning, principles, vocabulary, design explorations, and reviews.
 
+The glossary display preserves Term names from `.glossary` and `.terms`, including parenthesized examples in names. Lines beginning `- Example: ` are shown as labeled examples, separate from definitions. Other `- ` lines remain definitions; Domain assignments are not inferred from examples.
+
 ## Requirements
 
 - Node.js and npm

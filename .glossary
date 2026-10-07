@@ -2,14 +2,14 @@ Term
 - A word or phrase with a specific, agreed meaning within a Domain or System.
 
 Domain (WMS)
-- A bounded area of knowledge and activity, including its concepts, entities, relationships, and rules, as understood in a particular context.
+- A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings.
 
 SubjectDomain
 - The Domain being investigated or supported.
 - Example: SubjectDomain (WMS).
 
 KnowledgeArea
-- A subject by which knowledge is organized. Knowledge may belong to multiple KnowledgeAreas; membership implies neither hierarchy, ownership, nor agreement.
+- A subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership.
 - Example: KnowledgeArea (warehouse operations).
 
 MetaLayer (DevEnv)

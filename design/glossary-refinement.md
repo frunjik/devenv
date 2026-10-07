@@ -29,7 +29,7 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 **Progress (2026-10-07):** Steps 1–3 completed for the agreed definition refinement. The user approved the concise KnowledgeArea definition and retained SubjectDomain and MetaLayer unchanged. KnowledgeArea remains provisional; approving this wording does not settle its adoption. The Starting Meaning table preserves the earlier summary.
 
-**Next:** Step 4, a separate Markdown MetaExport example of these definitions and their context.
+**Next:** Agree Domain labels and per-Term meaning assignments for the requested glossary display, before step 4's Markdown MetaExport example. No display implementation has started.
 
 The example distinguishes subject from perspective: development practices can be organized as KnowledgeArea (development/meta practices), while MetaLayer (development practices governing DevEnv work) identifies their governing relationship to an activity. SubjectDomain (WMS) identifies the Domain being investigated, not a level in that organization.
 
@@ -44,3 +44,11 @@ SubjectDomain retains its definition of the Domain being investigated or support
 **Example decision (user, 2026-10-07):** Add separate example lines in the Glossary: KnowledgeArea (warehouse operations), MetaLayer (development practices governing DevEnv work), and SubjectDomain (WMS). The user chose warehouse operations instead of concern-planning knowledge for the KnowledgeArea example. These examples illustrate the abstract definitions; they are not usage policies or additions to the MetaExport payload scope.
 
 KnowledgeArea membership does not establish a separate Domain. MetaLayer is provisional too; retaining its wording does not establish a ranked hierarchy. These qualifications remain context for transfer.
+
+## Domain Display Preparation
+
+**Decision (user, 2026-10-07):** Display the Domain(s) where each Term's meaning is defined, not its KnowledgeArea memberships. Agree assignments before implementing the display.
+
+Domain labels and assignments remain unresolved. Neither an example from SubjectDomain (WMS) nor use within DevEnv establishes where a Term's definition belongs. Do not convert the provisional KnowledgeArea mapping into Domain assignments.
+
+Start with the three in-scope Terms. Identify their defining context and whether a shared definition is reused or different Domain-specific meanings are needed. Agree names and boundaries before assigning labels; expansion to other Terms and display implementation remain subsequent work.

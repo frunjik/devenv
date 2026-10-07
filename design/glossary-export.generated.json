@@ -1,0 +1,425 @@
+[
+  {
+    "term": "Term",
+    "definitions": [
+      "A word or phrase with a specific, agreed meaning within a Domain or System."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Domain (WMS)",
+    "definitions": [
+      "A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "SubjectDomain (WMS AI)",
+    "definitions": [
+      "The Domain being investigated or supported."
+    ],
+    "examples": [],
+    "domains": [
+      "Meta"
+    ]
+  },
+  {
+    "term": "KnowledgeArea (WMS operations)",
+    "definitions": [
+      "A subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership."
+    ],
+    "examples": [],
+    "domains": [
+      "Meta"
+    ]
+  },
+  {
+    "term": "MetaLayer (DevEnv)",
+    "definitions": [
+      "A named perspective from which another system, activity, or its description is examined, described, governed, or evaluated."
+    ],
+    "examples": [],
+    "domains": [
+      "DevEnv",
+      "Meta"
+    ]
+  },
+  {
+    "term": "Abstraction",
+    "definitions": [
+      "The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Domain Design System",
+    "definitions": [
+      "A System that helps people define, inspect, validate, and evolve a Domain's Terms, Types, relationships, rules, and supporting evidence."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Domain Definition",
+    "definitions": [
+      "A versioned description of a Domain, including its context, Glossary, Types, relationships, and applicable Contracts."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "System",
+    "definitions": [
+      "A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "System Concern",
+    "definitions": [
+      "A topic or uncertainty that needs attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items. It is not itself necessarily a Work Item."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Goal",
+    "definitions": [
+      "A desired outcome or condition that a System is intended to achieve."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Problem",
+    "definitions": [
+      "A context-bound description of an undesirable or inadequate current condition, including who or what is affected and why it matters; its framing may be uncertain or contested and should be supported by observations or evidence."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Inquiry",
+    "definitions": [
+      "A purposeful, revisable investigation into a question or uncertainty relevant to a Goal, using evidence and reasoning to record findings or decisions with rationale; it may be revisited as understanding changes."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Work Item",
+    "definitions": [
+      "A bounded unit of work undertaken to contribute to a Goal or satisfy an Acceptance Criterion."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Work Status",
+    "definitions": [
+      "The current lifecycle state of a Work Item: ready, in progress, blocked, completed, or cancelled."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Dependency",
+    "definitions": [
+      "A relationship in which one Work Item must be completed or otherwise resolved before another can proceed."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Blocker",
+    "definitions": [
+      "An unresolved condition preventing a Work Item from making progress."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Deliverable",
+    "definitions": [
+      "An Artifact produced or changed by completing a Work Item."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Progress",
+    "definitions": [
+      "A summary of advancement in Work Items or Acceptance Criteria; Work Item progress is not itself proof that a Goal has been achieved."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Goal Assessment",
+    "definitions": [
+      "A determination of whether a Goal's Acceptance Criteria are satisfied by evidence."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Type",
+    "definitions": [
+      "A definition that groups things by their shared meaning, properties, relationships, and rules."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Type Description",
+    "definitions": [
+      "A machine-readable description of a Type's identity, fields, relationships, constraints, variants, and version."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Type Instance",
+    "definitions": [
+      "A particular value whose structure and validity are described by a Type."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Hydration",
+    "definitions": [
+      "The process of constructing a Type Instance from serialized data using its Type Description."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Transformation",
+    "definitions": [
+      "An explicit mapping that converts data from one Type or representation to another while stating semantic differences or information loss."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Contract",
+    "definitions": [
+      "An agreed specification of the obligations and guarantees between parts of a System."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Glossary",
+    "definitions": [
+      "An organized collection of defined Terms used within a Domain or System."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Acceptance Criterion",
+    "definitions": [
+      "An observable condition that must hold for a Goal to count as achieved."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Evidence",
+    "definitions": [
+      "An observation or Artifact used to support or challenge a claim, including whether an Acceptance Criterion holds."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "System Observation",
+    "definitions": [
+      "A recorded, directly observable behavior or state of a System."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Artifact",
+    "definitions": [
+      "A persistent work product or System output that can be inspected as evidence."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Test Case",
+    "definitions": [
+      "A defined stimulus and expected observable result used to evaluate a System behavior, Contract, or Type rule."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Test Result",
+    "definitions": [
+      "The observed outcome of executing a Test Case, including whether its expected result held."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Test Suite",
+    "definitions": [
+      "An organized collection of Test Cases executed together for a stated purpose."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Coverage Scope",
+    "definitions": [
+      "The set of source files and code units included in a particular coverage measurement."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Coverage Metric",
+    "definitions": [
+      "A measured proportion of covered code units, such as statements, branches, functions, or lines, within a Coverage Scope."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Coverage Report",
+    "definitions": [
+      "A record of Coverage Metrics and thresholds for a declared Coverage Scope."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Type Invariant",
+    "definitions": [
+      "A rule that every valid instance of a Type must satisfy."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Prioritization Candidate",
+    "definitions": [
+      "A proposed feature, initiative, or Work Item being considered for investment."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Estimate",
+    "definitions": [
+      "A stated value for an uncertain quantity, accompanied by its rationale and supporting evidence."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Impact Scale",
+    "definitions": [
+      "A declared set of Impact levels used consistently to estimate and compare candidate outcomes."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "RICE Model",
+    "definitions": [
+      "A prioritization method that divides Reach multiplied by Impact and Confidence by Effort."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "RICE Assessment",
+    "definitions": [
+      "A contextualized set of Reach, Impact, Confidence, and Effort estimates for one Prioritization Candidate, with its calculated score and supporting rationale."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Prioritization Decision",
+    "definitions": [
+      "A recorded selection, deferral, or rejection of a Prioritization Candidate, linked to the assessment and rationale used."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Reach",
+    "definitions": [
+      "The estimated number of people or occurrences affected by a Prioritization Candidate within a defined time period and population."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Impact",
+    "definitions": [
+      "The estimated magnitude of a Prioritization Candidate's effect on a stated user or System outcome, measured with a declared scale."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Confidence",
+    "definitions": [
+      "The estimated degree of certainty that the Reach, Impact, and Effort estimates are reasonable, represented from 0 to 1."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Effort",
+    "definitions": [
+      "The estimated team work required to deliver a Prioritization Candidate, measured in a declared unit such as person-months."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Scoring Context",
+    "definitions": [
+      "The time period, target population, outcome, impact scale, and effort unit that make RICE Assessments interpretable and comparable."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "RICE Score",
+    "definitions": [
+      "The calculated value (Reach × Impact × Confidence) ÷ Effort for one RICE Assessment; it ranks relative expected impact per effort within a comparable Scoring Context."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Monetary Cost",
+    "definitions": [
+      "An estimated financial expenditure expressed as an amount and currency; it is distinct from Effort."
+    ],
+    "examples": [],
+    "domains": []
+  },
+  {
+    "term": "Monetary Comparison",
+    "definitions": [
+      "A comparison of estimated financial benefit and cost for the same candidate, currency, and time period, separate from a RICE Score."
+    ],
+    "examples": [],
+    "domains": []
+  }
+]

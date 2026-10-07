@@ -13,6 +13,7 @@ module.exports = {
         }],
     },
     collectCoverageFrom: [
+        'scripts/glossary-export.ts',
         'projects/server/src/lib/index.ts',
         'projects/server/src/lib/handlers/current-entry.ts',
         'projects/server/src/lib/authentication.ts',

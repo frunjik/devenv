@@ -14,6 +14,8 @@ Use `- Domains: DevEnv, Meta` to record known usage Domains separately from defi
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `design/meta-export-example.json` and overwrites only `design/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 
+Generate the complete structured Glossary JSON with `npm run export:glossary`. It reads only `.glossary` (not the legacy `.terms` fallback) and overwrites only `design/glossary-export.generated.json`. The JSON preserves entry order and records each Term's definitions, examples, and known-usage Domain labels; an empty `domains` array means usage is unknown or unrecorded, not confirmed absent. Invalid usage labels and file read/write errors fail the command.
+
 ## Requirements
 
 - Node.js and npm

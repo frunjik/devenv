@@ -14,6 +14,20 @@ Generate the human-readable `.glossary` Markdown view from the JSON source with 
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `knowledge/knowledge-transfer/meta-export-example.json` and overwrites only `knowledge/knowledge-transfer/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 
+## Agent skills
+
+Repository skills live in [`.agents/skills`](./.agents/skills), a standard project-level
+discovery location. Each skill has its own named folder containing `SKILL.md` and any
+supporting resources. DevEnv folder exports already include this directory through
+the `.agents` package entry.
+
+To reuse selected skills in another project, copy their complete folders into that
+project's `.agents/skills` directory. For personal use across projects, copy them into
+`%USERPROFILE%\.copilot\skills` on Windows (or `~/.copilot/skills` on other systems).
+Use a Copilot client with Agent Skills support, open a fresh chat, and verify discovery
+in its skill/slash-command list before relying on invocation. Copying files alone does
+not verify that a receiving client supports or has enabled skills.
+
 ## Requirements
 
 - Node.js and npm

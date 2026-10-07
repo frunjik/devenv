@@ -17,6 +17,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | DevEnv Export (sibling or hosting system) | Paused | [Green-tests checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
 | Portable Practices and Glossary | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
 | Knowledge Organization Migration | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
+| Principle Register Organization and Priority Review | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |
 
 Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

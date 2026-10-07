@@ -146,6 +146,18 @@ These principles are active from their recorded date and apply to future work in
 
 - **Format preference refinement (user, 2026-10-07):** Prefer structured formats over unstructured representations for data storage. The default order is **Typed JSON, then YAML, then Markdown**. Typed JSON means JSON with an explicit interface describing its structure; JSON alone is not typed, and an interface alone does not validate runtime input. Prefer generating `.md` views from the authoritative structured source rather than extracting the authoritative data from Markdown. Include this preference in the portable practices package, not only local project policy. Preserve meaning when choosing a format and record justified exceptions or explicit user choices. This does not authorize automatic migration of existing Markdown sources.
 
+### P-016 — Verify Practices and Report Deviations
+
+- **Recorded:** 2026-10-08
+- **Source:** User instruction
+- **Applies to:** Requested work, user proposals/actions encountered during that work, and the assistant's own approach.
+- **Rule:** Use confirmed, applicable good practices rather than unverified assumptions. Check existing project processes first and consult maintained guidance, official documentation, or credible evidence where needed. Do not claim a preference or plausible recommendation is a confirmed standard.
+- **Reporting:** When an approach conflicts with good practice or differs from an existing process, provide a concise report in the conversation: observation, applicable process or practice with evidence, likely impact, and recommended alternative. Distinguish a harmful practice from a legitimate variation; make uncertainty explicit. A separate persisted report is not required unless requested or needed by the existing workflow.
+- **Decision boundary:** Raise consequential conflicts before implementing them and seek a decision where needed. Do not silently override project policy, automatically adopt an external recommendation, or expand the task into unrelated cleanup. An intentional deviation may be valid; record its agreed rationale in the appropriate existing checkpoint.
+- **Actual instance:** DevEnv skills were initially stored in root `skills`, which is not a standard Copilot discovery location. The corrected project location is `.agents/skills`; file placement follows documented discovery conventions, while discovery on a receiving client still requires verification.
+- **Optional method prompt (user, 2026-10-08):** When a decision compares competing optional work candidates, assess whether RICE is appropriate and ask whether to apply it before scoring. Use the [RICE prioritization guidance](../reviews/rice-prioritization.md): comparable contexts, explicit estimates and evidence, and separate decision rationale. Missing evidence is a reason to gather estimates or recommend a simpler comparison, not invent scores. Do not ask routinely for single already-selected tasks, use RICE to rank binding rules, or let it override dependencies and mandatory constraints.
+- **Prioritization example:** The pending Principle Register Organization and Priority Review and Term Editing workflows are actual optional work candidates. RICE could inform their execution order only if a common goal/context and defensible estimates can be established; it would not establish precedence among the P-NNN rules themselves.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

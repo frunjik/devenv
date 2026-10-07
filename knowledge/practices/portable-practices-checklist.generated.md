@@ -63,7 +63,7 @@ npx.cmd tsc --noEmit --strict --skipLibCheck --resolveJsonModule --esModuleInter
 - [system-task-principles.md](../../.agents/system-task-principles.md)
 - [type-detector.agent.md](../../.agents/type-detector.agent.md)
 - [demolition-worker.agent.md](../../.agents/demolition-worker.agent.md)
-- [SKILL.md](../../skills/domain-type-design/SKILL.md)
+- [SKILL.md](../../.agents/skills/domain-type-design/SKILL.md)
 - [.glossary.json](../../.glossary.json)
 - [index.md](../index.md)
 - [knowledge-soundness-2026-10-07.md](../../reviews/knowledge-soundness-2026-10-07.md)

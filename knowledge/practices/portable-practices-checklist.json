@@ -62,7 +62,7 @@
       ".agents/system-task-principles.md",
       ".agents/type-detector.agent.md",
       ".agents/demolition-worker.agent.md",
-      "skills/domain-type-design/SKILL.md",
+      ".agents/skills/domain-type-design/SKILL.md",
       ".glossary.json",
       "knowledge/index.md",
       "reviews/knowledge-soundness-2026-10-07.md"

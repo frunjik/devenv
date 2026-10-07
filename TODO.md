@@ -18,6 +18,5 @@
 
 - Review the UIDesignReview skill after applying it to a UI
 
-- Potential skill candidates: Example-Led Knowledge Modeling ([pattern](./knowledge/practices/example-led-knowledge-modeling.md)); Commit Preparation & Approval ([process](./knowledge/practices/commit-process.md), generalize local rules cautiously); UIDesignReview ([skill](skills/ui-design-review/SKILL.md), review and refine after applying).
-
+- Potential skill candidates: Example-Led Knowledge Modeling ([pattern](./knowledge/practices/example-led-knowledge-modeling.md)); Commit Preparation & Approval ([process](./knowledge/practices/commit-process.md), generalize local rules cautiously); UIDesignReview ([skill](.agents/skills/ui-design-review/SKILL.md), review and refine after applying).
 

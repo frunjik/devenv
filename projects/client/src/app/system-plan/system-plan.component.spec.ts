@@ -108,7 +108,8 @@ describe('SystemPlanComponent', () => {
         fixture.detectChanges();
 
         const list = fixture.nativeElement.querySelector('.concern-list') as HTMLElement;
-        const identifiers = fixture.nativeElement.querySelectorAll('.concern-id');
+        const element: HTMLElement = fixture.nativeElement;
+        const identifiers = element.querySelectorAll<HTMLElement>('.concern-id');
         expect(list.tagName).toBe('UL');
         expect(fixture.nativeElement.querySelector('ol.concern-list')).toBeNull();
         expect(Array.from(identifiers).map((identifier: HTMLElement) => identifier.textContent?.trim()))

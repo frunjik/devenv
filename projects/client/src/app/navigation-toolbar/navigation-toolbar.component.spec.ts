@@ -51,6 +51,16 @@ describe('NavigationToolbarComponent', () => {
         expect(secondaryNavigation.classList.contains('is-expanded')).toBe(false);
     });
 
+    it('requests a DevEnv clone from the host application', () => {
+        let requested = 0;
+        fixture.componentInstance.cloneRequested.subscribe(() => requested++);
+        const button = fixture.nativeElement.querySelector('.clone-button') as HTMLButtonElement;
+
+        button.click();
+
+        expect(requested).toBe(1);
+    });
+
     it('requests a commit and reflects the committing state', () => {
         let requested = 0;
         fixture.componentInstance.commitRequested.subscribe(() => requested++);

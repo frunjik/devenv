@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { of, throwError } from 'rxjs';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
+import { DevEnvCloneDialogComponent } from './devenv-clone-dialog/devenv-clone-dialog.component';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { META_LAYER_STORAGE } from './meta-layer/meta-layer.service';
 
@@ -79,6 +80,19 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         const app = fixture.componentInstance;
         expect(app).toBeTruthy();
+    });
+
+    it('opens the clone dialog from the navigation toolbar without navigating away', () => {
+        const fixture = TestBed.createComponent(AppComponent);
+        fixture.detectChanges();
+        fixture.nativeElement.querySelector('.clone-button').click();
+
+        expect(dialogOpen).toHaveBeenCalledWith(DevEnvCloneDialogComponent, {
+            width: 'min(48rem, calc(100vw - 2rem))',
+            ariaLabel: 'Clone DevEnv',
+            disableClose: true,
+        });
+        expect(navigateByUrl).not.toHaveBeenCalled();
     });
 
     it(`should have the 'Devenv' title`, () => {

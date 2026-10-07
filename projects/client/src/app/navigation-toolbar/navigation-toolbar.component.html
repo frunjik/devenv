@@ -31,6 +31,9 @@
             <a mat-button routerLink="/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
             <a mat-button routerLink="/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html'}">EDIT-MENU</a>
             <a mat-button routerLink="/git/log">Git log</a>
+            <button type="button" mat-button class="clone-button" (click)="cloneRequested.emit()">
+                Clone DevEnv
+            </button>
             <button
                 type="button"
                 mat-button

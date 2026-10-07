@@ -10,6 +10,17 @@ export interface GitCommandResult {
 
 export type GitCommitResult = GitCommandResult;
 
+export interface DevEnvCloneRequest {
+    destination: string;
+    replaceExisting: boolean;
+}
+
+export interface DevEnvCloneResult {
+    destination: string;
+    replacedExisting: boolean;
+    warning?: string;
+}
+
 export interface GitLogEntry {
     hash: string;
     author: string;

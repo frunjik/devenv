@@ -17,9 +17,10 @@ describe('InputConverterComponent', () => {
 
     it('applies the shared dark-control class to text fields and actions, but not radio buttons', () => {
         fixture.detectChanges();
-        const textControls = fixture.nativeElement.querySelectorAll('input[type="text"], textarea');
-        const radioControls = fixture.nativeElement.querySelectorAll('input[type="radio"]');
-        const buttons = fixture.nativeElement.querySelectorAll('button');
+        const element: HTMLElement = fixture.nativeElement;
+        const textControls = element.querySelectorAll('input[type="text"], textarea');
+        const radioControls = element.querySelectorAll('input[type="radio"]');
+        const buttons = element.querySelectorAll('button');
 
         expect(Array.from(textControls).every(control => control.classList.contains('form-control'))).toBe(true);
         expect(Array.from(radioControls).every(control => !control.classList.contains('form-control'))).toBe(true);

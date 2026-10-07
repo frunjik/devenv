@@ -3,6 +3,7 @@
         [host]="host"
         [isCommitting]="isCommitting"
         (commitRequested)="commitChanges()"
+        (cloneRequested)="cloneDevEnv()"
     />
 }
 <div class="inner-app" [class.framed]="meta.enabled()">

@@ -49,14 +49,14 @@ describe('GlossaryComponent', () => {
         fixture.detectChanges();
 
         const entry: HTMLElement = fixture.nativeElement.querySelector('.glossary-entry');
-        expect(entry.querySelector('.glossary-term').textContent).toBe('KnowledgeArea (WMS operations)');
+        expect(entry.querySelector('.glossary-term')?.textContent).toBe('KnowledgeArea (WMS operations)');
         expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-definition:not(.glossary-example):not(.glossary-domains)'))
             .map(item => item.textContent)).toEqual(['A subject classification.']);
         expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-example'))
             .map(item => item.textContent)).toEqual(['Example: Warehouse operations.']);
         expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-domain-badge'))
             .map(item => item.textContent?.trim())).toEqual(['DevEnv', 'Meta']);
-        expect(entry.querySelector('.glossary-domains-label').textContent).toBe('Domain usage:');
+        expect(entry.querySelector('.glossary-domains-label')?.textContent).toBe('Domain usage:');
     });
 
     it('shows an empty message when the JSON array is empty', () => {

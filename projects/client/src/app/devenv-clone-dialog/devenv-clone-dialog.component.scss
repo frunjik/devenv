@@ -1,0 +1,14 @@
+form {
+    display: grid;
+    gap: 1rem;
+}
+
+.replacement-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+}
+
+p {
+    overflow-wrap: anywhere;
+}

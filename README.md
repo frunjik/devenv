@@ -47,6 +47,18 @@ The System Plan supports case-insensitive search by concern ID, title, or displa
 
 The meta toolbar's **Workflow TODO** link opens `/workflow-todo`, a read-only workflow table. `GET /workflow-todo` derives its JSON from the authoritative `design/workflow-todo-list.md` on each request; no duplicate JSON list is maintained. Resume buttons show the complete workflow Markdown document and its checkpoint reference, without editing, changing workflow selection, or jumping to a heading. The existing **TODO** file-browser link remains separate. List and document loading failures are shown explicitly.
 
+The meta toolbar's **Clone DevEnv** action opens a folder-export dialog (under **More** on mobile).
+Enter an absolute folder path on the API server's machine; its parent must already exist.
+The dialog requires acknowledgement that existing destination contents will be replaced.
+The server stages the curated package before replacing the destination, rejects source/destination overlap
+and existing symbolic-link destinations, and attempts restoration if installation fails.
+The package includes client/server/shared source, scripts, configuration, documentation, agents,
+skills, glossary, design resources and reviews. It excludes Git history, dependencies, build output,
+cache folders, workspace-specific task/input/scratch resources and `.env` files.
+Export errors and any failure to remove the previous destination are displayed in the dialog.
+The [DevEnv Export checkpoint](./design/devenv-export-workflow.md#checkpoint) records the current
+green-tests milestone and the remaining safety and full-coverage verification before the export trial is complete.
+
 Client and server release versions are maintained in `projects/client/package.json` and `projects/server/package.json`.
 The status toolbar displays both versions, and the API exposes the server version at `GET /version`.
 

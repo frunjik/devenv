@@ -1,0 +1,41 @@
+<h2 mat-dialog-title>Clone DevEnv</h2>
+<mat-dialog-content>
+    <p>Export the reusable client, server, shared contracts, configuration, documentation,
+        agents, glossary and design resources. Git history, dependencies, build output and
+        workspace-specific state are excluded.</p>
+    <form id="clone-form" (ngSubmit)="submit()">
+        <div class="form-field">
+            <label for="clone-destination">Absolute destination folder on the server</label>
+            <input id="clone-destination" class="form-control" name="destination"
+                [(ngModel)]="destination" [disabled]="exporting" required
+                aria-describedby="clone-destination-help">
+        </div>
+        <p id="clone-destination-help">The parent folder must already exist.
+            The destination must be outside the DevEnv source folder.</p>
+        <label class="replacement-consent">
+            <input type="checkbox" name="replaceExisting" [(ngModel)]="replaceExisting"
+                [disabled]="exporting">
+            I understand that all existing contents in the destination folder will be replaced.
+        </label>
+    </form>
+    @if (exporting) {
+        <p role="status">Exporting DevEnv...</p>
+    }
+    @if (errorMessage) {
+        <p role="alert">{{ errorMessage }}</p>
+    }
+    @if (result; as clone) {
+        <p role="status">Clone exported to {{ clone.destination }}</p>
+        @if (clone.replacedExisting) {
+            <p>Existing destination contents were replaced.</p>
+        }
+        @if (clone.warning) {
+            <p role="alert">{{ clone.warning }}</p>
+        }
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button type="button" mat-button [disabled]="exporting" (click)="close()">Close</button>
+    <button type="submit" form="clone-form" mat-flat-button
+        [disabled]="exporting || !destination.trim() || !replaceExisting">Clone DevEnv</button>
+</mat-dialog-actions>

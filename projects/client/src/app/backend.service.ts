@@ -6,6 +6,8 @@ import { Observable, throwError } from 'rxjs';
 
 import type {
     DataKind,
+    DevEnvCloneRequest,
+    DevEnvCloneResult,
     GitCommitResult,
     GitLogEntry,
     GitStatus,
@@ -112,6 +114,10 @@ export class BackendService {
 
     getWorkflowTodo(): Observable<WorkflowTodoList> {
         return this.get<WorkflowTodoList>('workflow-todo');
+    }
+
+    cloneDevEnv(request: DevEnvCloneRequest): Observable<DevEnvCloneResult> {
+        return this.post<DevEnvCloneResult, DevEnvCloneRequest>('devenv/clone', request);
     }
 
     getServerVersion(): Observable<string> {

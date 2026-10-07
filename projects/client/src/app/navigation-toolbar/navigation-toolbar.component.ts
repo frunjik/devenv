@@ -14,6 +14,7 @@ export class NavigationToolbarComponent {
     @Input() host = '';
     @Input() isCommitting = false;
     @Output() readonly commitRequested = new EventEmitter<void>();
+    @Output() readonly cloneRequested = new EventEmitter<void>();
 
     isSecondaryNavigationExpanded = false;
 

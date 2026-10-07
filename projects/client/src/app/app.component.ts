@@ -7,6 +7,7 @@ import { MetaLayerToggleComponent } from './meta-layer/meta-layer-toggle.compone
 import { MetaLayerService } from './meta-layer/meta-layer.service';
 import { BackendService } from './backend.service';
 import { CommitMessageDialogComponent } from './commit-message-dialog/commit-message-dialog.component';
+import { DevEnvCloneDialogComponent } from './devenv-clone-dialog/devenv-clone-dialog.component';
 import { CurrentEntryService } from './current-entry.service';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { GitStatusService } from './git-status.service';
@@ -57,6 +58,14 @@ export class AppComponent implements OnInit, OnDestroy {
         this.currentEntry.stopPolling();
         this.testRunCacheStatus.stopPolling();
         this.rgrPhase.stopPolling();
+    }
+
+    cloneDevEnv(): void {
+        this.dialog.open(DevEnvCloneDialogComponent, {
+            width: 'min(48rem, calc(100vw - 2rem))',
+            ariaLabel: 'Clone DevEnv',
+            disableClose: true,
+        });
     }
 
     commitChanges(): void {

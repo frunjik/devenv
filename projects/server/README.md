@@ -31,6 +31,17 @@ The actor of a change is the authenticated principal, or `anonymous` when no aut
 |-------|---------|
 | `GET /system-plan` | Reads and parses the concern register at `design/problem-inquiry-system/concerns.md`; returns each concern's id, title, kind, status, prerequisites, and opening description, plus user acceptance for validated concerns, in `{ data }`. |
 
+## DevEnv clone API
+
+`POST /devenv/clone` accepts `{ destination: string, replaceExisting: boolean }`.
+The destination must be an absolute server-local folder path whose parent already exists.
+Success returns `{ data: { destination, replacedExisting, warning? } }`.
+Malformed input and unsafe source/destination overlap return 400; an existing directory without
+replacement consent returns 409. Filesystem failures propagate as server errors.
+The source allowlist and staging/replacement behavior are implemented in
+[`devenv-clone.ts`](./src/lib/handlers/devenv-clone.ts).
+See the [workflow checkpoint](../../design/devenv-export-workflow.md#checkpoint) for remaining verification.
+
 ## Tests
 
 ```bash

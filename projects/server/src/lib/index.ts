@@ -16,6 +16,9 @@ import { createRgrPhaseHandler } from './handlers/rgr-phase';
 import { createGlossaryHandler } from './handlers/glossary';
 import { createSystemPlanHandler } from './handlers/system-plan';
 import { createWorkflowTodoHandler } from './handlers/workflow-todo';
+import { createDevEnvCloneHandler } from './handlers/devenv-clone';
+import { cloneDevEnv } from './handlers/devenv-clone';
+import type { DevEnvCloneRequest, DevEnvCloneResult } from '@shared';
 import { createTicketsRouter } from './handlers/tickets';
 import { FileTicketStore } from './storage/file-ticket-store';
 import { InMemoryTicketStore } from './storage/in-memory-ticket-store';
@@ -38,6 +41,7 @@ export interface CreateAppOptions {
     testRunCacheDirectory?: string;
     authenticationService?: AuthenticationService;
     ticketStore?: TicketStore;
+    devEnvClone?: (root: string, request: DevEnvCloneRequest) => Promise<DevEnvCloneResult>;
 }
 
 export function createApp(root: string, options: CreateAppOptions = {}): Express {
@@ -47,6 +51,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
         testRunCacheDirectory,
         authenticationService,
         ticketStore = new InMemoryTicketStore(),
+        devEnvClone = cloneDevEnv,
     } = options;
     const app = express();
 
@@ -71,6 +76,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/glossary', createGlossaryHandler(root));
     app.get('/system-plan', createSystemPlanHandler(root));
     app.get('/workflow-todo', createWorkflowTodoHandler(root));
+    app.post('/devenv/clone', createDevEnvCloneHandler(root, devEnvClone));
     if (process.env['NODE_ENV'] !== 'production') {
         app.post('/tests/run', createTestRunHandler(testCommandExecutor, testRunCacheDirectory));
         app.get('/tests/last', createLastTestRunHandler(testRunCacheDirectory));

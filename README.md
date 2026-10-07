@@ -55,7 +55,9 @@ and existing symbolic-link destinations, and attempts restoration if installatio
 The package includes client/server/shared source, scripts, configuration, documentation, agents,
 skills, glossary, design resources and reviews. It excludes Git history, dependencies, build output,
 cache folders, workspace-specific task/input/scratch resources and `.env` files.
-Export errors and any failure to remove the previous destination are displayed in the dialog.
+An indeterminate progress bar is shown while exporting. Success closes the dialog automatically
+and shows a success snackbar. Export errors keep the dialog open for retry; any failure to remove
+the previous destination is included in a persistent warning snackbar after the successful export.
 The [DevEnv Export checkpoint](./design/devenv-export-workflow.md#checkpoint) records the current
 green-tests milestone and the remaining safety and full-coverage verification before the export trial is complete.
 

@@ -20,18 +20,10 @@
     </form>
     @if (exporting) {
         <p role="status">Exporting DevEnv...</p>
+        <mat-progress-bar mode="indeterminate" aria-label="Exporting DevEnv"></mat-progress-bar>
     }
     @if (errorMessage) {
         <p role="alert">{{ errorMessage }}</p>
-    }
-    @if (result; as clone) {
-        <p role="status">Clone exported to {{ clone.destination }}</p>
-        @if (clone.replacedExisting) {
-            <p>Existing destination contents were replaced.</p>
-        }
-        @if (clone.warning) {
-            <p role="alert">{{ clone.warning }}</p>
-        }
     }
 </mat-dialog-content>
 <mat-dialog-actions align="end">

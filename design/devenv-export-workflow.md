@@ -45,3 +45,10 @@ Explore making DevEnv available alongside another system or as its hosting envir
 - Type review: the agreed request/result contracts remain appropriate; no new domain Type is proposed at this checkpoint.
 
 **Next:** Before treating the export trial as complete, review protected destinations beyond source overlap (such as the user's home), source symlinks, concurrent exports, and the curated package's runnable configuration/dependency completeness. Cover copier rollback and cleanup outcomes and API error responses, perform the deferred full-coverage verification, and validate the UI/export outcome. Broader sibling/hosting architecture remains undecided.
+
+### Clone dialog feedback follow-up (2026-10-07)
+
+- Added an indeterminate Material progress bar while the export request is pending; the API does not report a measurable completion percentage.
+- Successful exports close the dialog automatically and show a snackbar using the existing success styling. Cleanup warnings remain explicit in a persistent warning snackbar, rather than disappearing with the dialog.
+- Export failures leave the dialog open for retry. No new Type was needed; this is presentation behavior using the existing request/result contracts.
+- Validation: 42 focused dialog/application tests pass, client test type-check passes, and the client production build passes. Full-coverage verification remains deferred at the previously agreed checkpoint.

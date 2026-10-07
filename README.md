@@ -6,6 +6,8 @@ In this README, **Glossary**, **Term**, **Type**, and **Contract** are defined t
 
 DevEnv is currently implemented as an Angular client and Express API.
 
+See the [Project Knowledge Index](./design/knowledge-index.md) for the locations and roles of our decisions, learning, principles, vocabulary, design explorations, and reviews.
+
 ## Requirements
 
 - Node.js and npm

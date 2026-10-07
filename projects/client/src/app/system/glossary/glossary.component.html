@@ -8,7 +8,7 @@
             <dd *ngFor="let definition of entry.definitions" class="glossary-definition">{{ definition }}</dd>
             <dd *ngFor="let example of entry.examples" class="glossary-definition glossary-example">Example: {{ example }}</dd>
             <dd class="glossary-definition glossary-domains">
-                <span class="glossary-domains-label">Known usage Domains:</span>
+                <span class="glossary-domains-label">Domain usage:</span>
                 <span *ngFor="let domain of entry.domains" class="glossary-domain-badge">{{ domain }}</span>
                 <span *ngIf="entry.domains.length === 0" class="glossary-domain-badge glossary-domain-unknown" title="Usage Domains not recorded">Unknown</span>
             </dd>

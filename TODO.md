@@ -12,4 +12,4 @@
 
 - shorten Knwon usage Domaing to just: Domain usage
 
-
+- review suggested external agents/skills for possible adoption (see `design/agent-skill-landscape-2026-10-07.md`)

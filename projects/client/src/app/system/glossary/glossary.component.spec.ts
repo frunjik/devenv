@@ -97,6 +97,8 @@ describe('GlossaryComponent', () => {
             ]);
         expect(fixture.nativeElement.querySelector('.glossary-domain-unknown').textContent).toBe('Unknown');
         expect(fixture.nativeElement.querySelectorAll('.glossary-domains-label').length).toBe(3);
+        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-domains-label'))
+            .map(item => item.textContent?.trim())).toEqual(['Domain usage:', 'Domain usage:', 'Domain usage:']);
     });
 
     it.each(['- Domains:', '- Domains: Meta, ', '- Domains: , Meta'])('reports invalid usage metadata %s', line => {

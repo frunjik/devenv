@@ -72,7 +72,7 @@ Domain labels and assignments remain unresolved. Neither an example from Subject
 
 Start with the three in-scope Terms. Identify their defining context and whether a shared definition is reused or different Domain-specific meanings are needed. Agree names and boundaries before assigning labels; expansion to other Terms and display implementation remain subsequent work.
 
-### Known Usage Domain Decision
+### Domain Usage Label Decision
 
 **User revision (2026-10-07):** The requested `domains` field on GlossaryEntry will identify Domains where the Term is known to occur, not where its meaning is defined. This supersedes the earlier defining-Domain display direction, not the distinction between definitions and usage.
 
@@ -92,7 +92,7 @@ Assignments are recorded in the per-Term review below; no code fields or source-
 | MetaLayer (DevEnv) | DevEnv, Meta | WMS | DevEnv's host UI/toggle uses the meta-layer concept; this workflow uses the broader perspective concept. Occurrence does not establish identical meanings. User-approved assignment, 2026-10-07. |
 | SubjectDomain (WMS AI) | Meta | WMS, DevEnv | Used here to identify the Domain under investigation; the example and glossary display do not establish other usage. User-approved assignment, 2026-10-07. |
 
-**Representation decision (user, 2026-10-07):** Record `- Domains: DevEnv, Meta` lines in the Glossary, parse them into `domains: string[]` on GlossaryEntry, and display "Known usage Domains". Missing metadata displays "Usage Domains not recorded"; omitted labels mean unknown, not absent. The three assignments above are implemented; examples do not produce assignments. Empty labels surface an error. The API continues returning lines.
+**Representation decision (user, 2026-10-07):** Record `- Domains: DevEnv, Meta` lines in the Glossary, parse them into `domains: string[]` on GlossaryEntry, and display "Domain usage". Missing metadata displays "Usage Domains not recorded"; omitted labels mean unknown, not absent. The three assignments above are implemented; examples do not produce assignments. Empty labels surface an error. The API continues returning lines.
 
 Type review: usage metadata is distinct from definitions and examples, justifying the additional field on the existing display Type. A separate Domain identity Type and structured evidence model remain candidates for later modeling, not necessary for this agreed string-label representation.
 

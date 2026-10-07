@@ -16,9 +16,8 @@
 
 - export glossary terms belonging to a domain
 
-- I want to create a new skill DesignReview, ask me for more input
+- Review the UIDesignReview skill after applying it to a UI
 
-- Potential skill candidates: Example-Led Knowledge Modeling ([pattern](design/example-led-knowledge-modeling.md)); Commit Preparation & Approval ([process](design/commit-process.md), generalize local rules cautiously); DesignReview (needs my input on trigger and expected output).
-
+- Potential skill candidates: Example-Led Knowledge Modeling ([pattern](design/example-led-knowledge-modeling.md)); Commit Preparation & Approval ([process](design/commit-process.md), generalize local rules cautiously); UIDesignReview ([skill](skills/ui-design-review/SKILL.md), review and refine after applying).
 
 

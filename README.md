@@ -10,7 +10,7 @@ See the [Project Knowledge Index](./design/knowledge-index.md) for the locations
 
 The glossary display preserves Term names from `.glossary` and `.terms`, including parenthesized examples in names. Lines beginning `- Example: ` are shown as labeled examples, separate from definitions. Except for `Domains:` metadata below, other `- ` lines remain definitions; Domain assignments are not inferred from examples.
 
-Use `- Domains: DevEnv, Meta` to record known usage Domains separately from definitions. Missing metadata displays "Usage Domains not recorded"; omitted labels mean unknown, not absent. These labels record occurrence, not defining-Domain ownership. Empty labels are reported as loading errors rather than silently ignored.
+Use `- Domains: DevEnv, Meta` to record known usage Domains separately from definitions. Usage Domains display as badges; missing metadata displays an "Unknown" badge. Omitted labels mean unknown, not absent. These labels record occurrence, not defining-Domain ownership. Empty labels are reported as loading errors rather than silently ignored.
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `design/meta-export-example.json` and overwrites only `design/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 

@@ -91,12 +91,12 @@ describe('GlossaryComponent', () => {
         fixture.detectChanges();
         expect(fixture.componentInstance.entries.map(entry => entry.domains))
             .toEqual([['DevEnv', 'Meta'], ['Meta'], []]);
-        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-domains'))
+        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-domain-badge'))
             .map(item => item.textContent?.trim())).toEqual([
-                'Known usage Domains: DevEnv, Meta',
-                'Known usage Domains: Meta',
-                'Usage Domains not recorded.',
+                'DevEnv', 'Meta', 'Meta', 'Unknown',
             ]);
+        expect(fixture.nativeElement.querySelector('.glossary-domain-unknown').textContent).toBe('Unknown');
+        expect(fixture.nativeElement.querySelectorAll('.glossary-domains-label').length).toBe(3);
     });
 
     it.each(['- Domains:', '- Domains: Meta, ', '- Domains: , Meta'])('reports invalid usage metadata %s', line => {

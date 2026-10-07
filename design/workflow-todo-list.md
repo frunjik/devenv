@@ -11,6 +11,8 @@ Repository-wide navigation for resumable work. This list does not replace System
 | MetaExport | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
 | Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Active | [Current checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
 | TODO View (DevEnv system layer) | Pending | [Starting checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
+| Term Editing (DevEnv glossary UI) | Pending | [Starting checkpoint](./term-editing-workflow.md#checkpoint) | Not assigned |
+| DevEnv Export (sibling or hosting system) | Pending | [Starting checkpoint](./devenv-export-workflow.md#checkpoint) | Not assigned |
 
 Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

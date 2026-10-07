@@ -136,6 +136,14 @@ These principles are active from their recorded date and apply to future work in
 - **Exception (user, 2026-10-06):** The test runner may write coverage reports and caches.
 - **Migration:** Existing suites that perform mutations are tracked in SC-053. Migrate them in bounded slices without silently dropping persistence or Git behavior coverage.
 
+### P-015 — Maintain Structured Data in JSON and Generate Markdown Views
+
+- **Recorded:** 2026-10-07
+- **Source:** User instruction
+- **Applies to:** Structured data storage and transfer in this system, unless the user specifies otherwise.
+- **Rule:** Use JSON as the source of truth for structured data. Generate Markdown views from that JSON rather than maintaining Markdown as a second authoritative copy.
+- **Practice:** Keep the generated view reproducible from its JSON source, identify it as generated, and do not let application behavior depend on parsing the view when the structured JSON is available.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

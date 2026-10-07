@@ -103,8 +103,7 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [Glossary MetaExport JSON trial](./glossary-meta-export-example.json) | Illustrative KnowledgeStatement JSON for the Glossary example; distinctions remain narrative and the structure is not authoritative. |
 | [External agent and skill candidates (2026-10-07)](./agent-skill-landscape-2026-10-07.md) | Point-in-time research shortlist for possible agent/skill additions; recommendations are proposals, not adopted project guidance. |
 | [Workflow TODO List](./workflow-todo-list.md) | Repository-wide workflow selection, status, and links to authoritative resume checkpoints; not a replacement for SystemConcerns or detailed steps. |
-| [Full Glossary Export](./full-glossary-export-workflow.md) | Completed local CLI export of structured JSON from `.glossary`; user acceptance remains separate. |
-| [Generated Glossary JSON](./glossary-export.generated.json) | Derived export from `.glossary`, regenerated with `npm run export:glossary`; not a second source of truth. |
+| [Full Glossary Export](./full-glossary-export-workflow.md) | Paused migration toward authoritative `.glossary.json`, generated `.glossary` Markdown, and a JSON-consuming UI; checkpoint records the next implementation step. |
 | [Domain Type design skill](../skills/domain-type-design/SKILL.md) | Reusable procedure for defining/reviewing goal-oriented domain Types and keeping vocabulary consistent. |
 | [TDD developer guidance](../.agents/test-driven-developer.agent.md) | Detailed Red-Green-Refactor method. |
 | [Type reviewer guidance](../.agents/type-reviewer.agent.md) | Type-review lens used at checkpoints. |

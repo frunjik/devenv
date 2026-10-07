@@ -51,6 +51,7 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 - Native text controls can opt into the global `.form-field` label/control layout and `.form-control` appearance. Keep feature spacing local; do not apply these classes indiscriminately to Material controls, radios, or specialized editor controls.
 - Prefer shared API contracts in `projects/shared` and import them from `@shared`.
 - When changing API behavior, check both its server implementation and related client/shared callers and tests.
+- Unless otherwise specified, maintain structured data as authoritative JSON and generate human-readable Markdown views from that JSON; do not maintain two independent sources of truth. See P-015 in the System Task Principles.
 - Preserve existing feature-store formats and workflows documented in `README.md`.
 - Avoid unrelated edits; run the smallest relevant tests and builds, and report any known or newly encountered failures.
 

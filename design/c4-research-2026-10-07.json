@@ -1,0 +1,60 @@
+{
+  "title": "C4 research and DevEnv recommendations",
+  "date": "2026-10-07",
+  "status": "Research saved; user requested diagrams after committing the research",
+  "summary": "Use C4 to communicate responsibilities, boundaries, runtime units, and collaborations. Begin with context and container views, then document local development deployment. Do not require all four levels.",
+  "sources": [
+    { "url": "https://c4model.com/", "finding": "C4 offers system, container, component, and code abstractions plus supporting views; notation and tooling are independent." },
+    { "url": "https://c4model.com/diagrams/system-context", "finding": "Recommended starting view: people and directly connected software systems, without implementation detail." },
+    { "url": "https://c4model.com/diagrams/container", "finding": "Recommended view of applications, data stores, responsibilities, technologies, and communication. A container need not be Docker." },
+    { "url": "https://c4model.com/diagrams/component", "finding": "Optional decomposition within one container; create only when it adds value." },
+    { "url": "https://c4model.com/diagrams/code", "finding": "Optional fine detail, preferably generated on demand rather than maintained by hand." },
+    { "url": "https://c4model.com/diagrams/deployment", "finding": "Shows runtime instances and infrastructure in one explicit environment." },
+    { "url": "https://c4model.com/diagrams/dynamic", "finding": "Use sparingly for important or complicated runtime interactions." },
+    { "url": "https://c4model.com/diagrams/notation", "finding": "Include scope, title, legend, element types and responsibilities; label directed relationships and communication protocols." },
+    { "url": "https://c4model.com/tooling", "finding": "A shared model with multiple views avoids duplicated elements and supports querying and export." },
+    { "url": "https://github.com/mermaid-js/mermaid/blob/develop/packages/mermaid/src/docs/syntax/c4.md", "finding": "Mermaid documents its C4 syntax as experimental; avoid making that syntax the authoritative model." }
+  ],
+  "repositoryEvidence": [
+    "README.md",
+    "projects/server/README.md",
+    "projects/server/src/lib/index.ts",
+    "projects/server/dev.ts",
+    "projects/server/src/lib/handlers/test-runner.ts"
+  ],
+  "recommendedViews": [
+    {
+      "view": "System context",
+      "purpose": "Explain DevEnv's purpose and users.",
+      "include": ["Person using DevEnv", "DevEnv as one software system", "Only confirmed direct external software-system integrations"],
+      "avoid": ["Framework detail", "Individual files", "Treating WMS example content as a live integration"]
+    },
+    {
+      "view": "Containers",
+      "purpose": "Explain execution responsibilities and persistence.",
+      "include": ["Angular client", "Express API", "Workspace resource store", "JSON ticket store", "Test-run cache where useful"],
+      "notes": ["Shared is a library, not an independently running container.", "Label HTTP/JSON operations and the NDJSON test event stream.", "Filesystem data stores can be containers without being separate services."]
+    },
+    {
+      "view": "Local development deployment",
+      "purpose": "Make machine boundaries, processes, and server-local paths explicit.",
+      "include": ["Browser", "Angular development server", "Node API process", "Workspace and ticket/cache storage", "Git and test subprocesses", "Server-local export destination"],
+      "notes": ["Do not imply the browser and server must be on the same machine.", "Git and test routes are enabled outside production; do not invent a production deployment."]
+    },
+    {
+      "view": "Selected dynamic views",
+      "purpose": "Explain complex interactions if needed after the initial views.",
+      "candidates": ["Clone staging, replacement, restoration and warning", "Ticket change, expected version and conflict", "Test subprocess, event stream and cached result"]
+    }
+  ],
+  "maintenance": [
+    "One authoritative structured architecture model, with derived visual and readable views.",
+    "Use stable element identities and reuse relationships across views.",
+    "Distinguish observed current architecture from proposed architecture.",
+    "Link responsibilities to implementation evidence and review when boundaries change.",
+    "Evaluate existing local modelling tools before building a custom tool; no hosted upload is needed."
+  ],
+  "typeDetectorRelationship": "C4 identifies architectural responsibilities and collaborations; Type Detector examines meanings, invariants, states, and contracts within them. Neither every Type nor every Angular component is a C4 architectural component.",
+  "limits": "Recommendations were based on official guidance and selective repository inspection, not a full integration inventory or runtime validation. Tool-specific JSON support was not verified.",
+  "nextStep": "After the approved research commit, create context, container, and local-development views from a single authoritative JSON model. Keep diagram work uncommitted unless separately requested."
+}

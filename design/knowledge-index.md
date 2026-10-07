@@ -108,6 +108,8 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [Domain Type design skill](../skills/domain-type-design/SKILL.md) | Reusable procedure for defining/reviewing goal-oriented domain Types and keeping vocabulary consistent. |
 | [TDD developer guidance](../.agents/test-driven-developer.agent.md) | Detailed Red-Green-Refactor method. |
 | [Type detector guidance](../.agents/type-detector.agent.md) | Type-detection and review lens used at checkpoints. |
+| [Type Detector findings (2026-10-07)](../reviews/type-detector-2026-10-07.json) | Authoritative future-enhancement record; distinguishes proposed refinements, unresolved questions, and leave-as-is conclusions. No implementation authorized. |
+| [C4 research and recommendations (2026-10-07)](./c4-research-2026-10-07.json) | Sources, DevEnv view recommendations, evidence limits, and the requested diagram follow-up. |
 | [Demolition worker guidance](../.agents/demolition-worker.agent.md) | Procedure for assessing usage before removing code. |
 
 ## Practical Documentation and Historical Material

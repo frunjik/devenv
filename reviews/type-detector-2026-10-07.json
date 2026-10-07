@@ -1,0 +1,114 @@
+{
+  "title": "Type Detector analysis: possible future enhancements",
+  "date": "2026-10-07",
+  "disposition": "Saved for future consideration; no implementation authorized",
+  "scope": {
+    "inspected": [
+      "Maintained client, server, and shared production TypeScript",
+      "Selected related tests and existing domain representations"
+    ],
+    "excluded": [
+      "Dependencies and generated outputs",
+      "Unrelated WMS example applications"
+    ],
+    "limits": "Selective read-only survey, not an exhaustive audit. Tests and builds were not run. No new Type names were adopted."
+  },
+  "possibleEnhancements": [
+    {
+      "priority": 1,
+      "subject": "Refine the existing TestRunCacheStatus alternatives",
+      "assessment": "Justified Type refinement",
+      "confidence": "High",
+      "evidence": [
+        "projects/shared/src/lib/types.ts:90",
+        "projects/server/src/lib/handlers/test-runner.ts:167",
+        "projects/server/test/test-runner.spec.ts:135"
+      ],
+      "observation": "Status and independently nullable fields permit contradictory combinations such as available=false with status=passed, or status=empty with a populated exit code. The producer emits distinct empty and populated alternatives.",
+      "concreteInstance": "An empty cache has no result.",
+      "contrastingExample": "A completed passing run has result metadata.",
+      "proposal": "Refine the existing Type into correlated variants derived from actual producer behavior and tests; no separate domain concept is needed.",
+      "benefit": "Reject contradictory combinations at compile time.",
+      "riskOrLimit": "The Type does not validate persisted JSON at runtime; update consumers without changing intended cache behavior.",
+      "nextStep": "Reinspect the producer, consumers, and empty/passed/failed/error tests, then establish the precise variants before implementation."
+    },
+    {
+      "priority": 2,
+      "subject": "Clarify whether ticket dependency cycles are valid",
+      "assessment": "Unresolved domain constraint",
+      "confidence": "Medium",
+      "evidence": [
+        "projects/shared/src/lib/problem-inquiry.types.ts:126",
+        "projects/server/src/lib/handlers/tickets.ts:98",
+        "projects/server/test/tickets.spec.ts:77"
+      ],
+      "observation": "Dependencies are directed and many-to-many. The server checks referenced ticket existence; no cycle test was identified in the inspected dependency tests.",
+      "concreteInstance": "Ticket A depends on ticket B.",
+      "contrastingExample": "Tickets A and B depend on each other.",
+      "proposal": "Ask whether reciprocal and longer cycles are valid before adding any constraint.",
+      "benefit": "If cycles are forbidden, graph validation can reject invalid dependencies.",
+      "riskOrLimit": "Forbidding cycles without agreement would invent a domain rule. A Type alone cannot enforce graph-wide validity.",
+      "nextStep": "Obtain the user's decision on cycle semantics."
+    },
+    {
+      "priority": 3,
+      "subject": "Investigate timestamp validation contracts if a concrete need emerges",
+      "assessment": "Unresolved possibility, not a recommendation",
+      "confidence": "Low",
+      "evidence": [
+        "projects/client/src/app/problem-inquiry/ticket-framing/ticket-framing.component.ts:78",
+        "projects/client/src/app/problem-inquiry/ticket-framing/ticket-framing.component.ts:113"
+      ],
+      "observation": "Timestamp strings occur across shared records. Some producers parse or normalize them, but the survey did not establish one shared validation contract.",
+      "concreteInstance": "Ticket framing parses and serializes reportedAt.",
+      "contrastingExample": "No independently traced contrasting timestamp contract was established in this survey.",
+      "proposal": "Trace actual timestamp producers and consumers before proposing a shared abstraction.",
+      "benefit": "Potentially clarify accepted formats and validation boundaries if evidence supports a shared contract.",
+      "riskOrLimit": "A string alias alone would not validate serialized values. Different timestamps may have different meanings.",
+      "nextStep": "Only revisit when a concrete ambiguity or validation requirement warrants it; discuss candidate names before adoption."
+    }
+  ],
+  "leaveAsIs": [
+    {
+      "subject": "Workflow status labels",
+      "evidence": [
+        "projects/shared/src/lib/workflow-todo.types.ts:1",
+        "design/workflow-todo-list.md",
+        "projects/server/src/lib/handlers/workflow-todo.ts:14",
+        "projects/server/test/workflow-todo.spec.ts"
+      ],
+      "reason": "Statuses intentionally preserve descriptive document labels, including Awaiting review. A fixed union would remove intended flexibility without an established invariant.",
+      "confidence": "High"
+    },
+    {
+      "subject": "Estimate parsing outcomes",
+      "evidence": [
+        "projects/shared/src/lib/problem-inquiry.types.ts:106",
+        "projects/client/src/app/problem-inquiry/ticket-framing/ticket-framing.component.ts:120",
+        "projects/client/src/app/problem-inquiry/ticket-framing/ticket-framing.component.spec.ts:136"
+      ],
+      "reason": "TicketEstimate already represents the complete three-rating value. Absent, valid, and invalid input are tested; the private invalid sentinel is immediately handled.",
+      "revisitWhen": "Parsing gains more consumers or additional outcomes.",
+      "confidence": "High"
+    },
+    {
+      "subject": "Clone destination representation",
+      "evidence": [
+        "projects/server/src/lib/handlers/devenv-clone.ts:117",
+        "projects/server/test/devenv-clone-package.spec.ts:47"
+      ],
+      "reason": "Boundary validation expresses meaningful constraints. A named path Type cannot guarantee that filesystem facts remain unchanged. This observation does not settle the separate deferred clone safety work."
+    }
+  ],
+  "positiveExamples": [
+    {
+      "subject": "Explicit ticket lifecycle alternatives",
+      "evidence": [
+        "projects/shared/src/lib/problem-inquiry.types.ts:9",
+        "projects/server/test/ticket-lifecycle.spec.ts"
+      ],
+      "observation": "Existing status and command/result unions model lifecycle alternatives and provide prior art for future refinements."
+    }
+  ],
+  "resume": "Start with the TestRunCacheStatus refinement if implementation is requested. Recheck current code and evidence first; saved line anchors describe the reviewed version and may drift."
+}

@@ -45,6 +45,10 @@ SubjectDomain retains its definition of the Domain being investigated or support
 
 KnowledgeArea membership does not establish a separate Domain. MetaLayer is provisional too; retaining its wording does not establish a ranked hierarchy. These qualifications remain context for transfer.
 
+**Example-label refinement (user, 2026-10-07):** Use Domain (WMS) and MetaLayer (DevEnv) in the Glossary. MetaLayer (DevEnv) replaces the longer development-practices example above; earlier examples remain decision history. Under the unchanged MetaLayer definition, DevEnv names the meta perspective on the system or activity it supports, rather than implying that every application is a MetaLayer. SubjectDomain (WMS) remains unchanged. Example labels do not assign defining Domains to Terms.
+
+**Term-name decision (user, 2026-10-07):** Include the examples in the actual Glossary entry names: `Domain (WMS)` and `MetaLayer (DevEnv)`, not merely separate display labels. This supersedes the separate-example presentation for these two entries; definitions remain general and unchanged. Earlier references to Domain and MetaLayer retain their meaning but omit the newly adopted example suffixes. Other entry names and production code are unchanged.
+
 ## Domain Display Preparation
 
 **Decision (user, 2026-10-07):** Display the Domain(s) where each Term's meaning is defined, not its KnowledgeArea memberships. Agree assignments before implementing the display.

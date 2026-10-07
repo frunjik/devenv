@@ -38,7 +38,7 @@ These are working navigation categories, not a new Type hierarchy. Classify a pa
 
 ### Cross-Cutting and Mixed Records
 
-- The [Glossary](../.glossary) spans all these subjects. Do not export it wholesale as a single domain's agreed vocabulary; term-level classification and meaning remain to be resolved under SC-027.
+- The [Glossary](../.glossary) spans all these subjects. Do not export it wholesale as a single domain's agreed vocabulary; the initial term classification below does not settle domain-specific meanings under SC-027.
 - The [warehouse candidate model](./explorations/2026-10-05-warehouse-web-modernization/domain-model.md#keep-two-models-distinct) explicitly separates warehouse meaning from modernization knowledge. Its Claim, Evidence, PatternTrial, and ParityClaim concepts describe how we investigate replacement, not warehouse operations themselves.
 - The [AI-assisted authoring exploration](./explorations/2026-10-05-ai-assisted-wms-authoring/README.md) describes builders' work in a WMS context. It is primarily development/meta inquiry, not evidence of actual warehouse rules or proof of useful AI assistance.
 - The [Domain Design System model](./domain-design-system-model.md), [exploration](./domain-design-system-exploration.md), [Meta-Type rationale](./meta-type-system-purpose.md), and [Type Description model](./type-description-model.md) are proposals for describing domains and supporting consumers. They may be relevant to an external target, but neither the word "meta" nor a reusable shape establishes that they belong to that target or should be implemented there.
@@ -52,6 +52,27 @@ For each selected passage, retain its source link and revision, subject/context,
 Distinguish reusable meaning from local bindings: a public-interface testing principle may transfer, while a repository path, npm command, or concern-prefix preference may require adaptation. An external target must not silently promote a hypothesis to a rule, source provenance to verified truth, or a passed test to domain usefulness.
 
 SC-027 remains the place to decide domain-scoped vocabulary; SC-049 remains the exploration of a portable Rule Set. This classification neither completes those concerns nor authorizes moving documents, exporting data, or implementing a new schema.
+
+### Initial Glossary Classification by KnowledgeArea
+
+**Decision (user, 2026-10-07):** Add `KnowledgeArea` as a provisional Glossary term and classify terms first, keeping the current glossary file and UI working. Separate files and shared-definition handling are not decided.
+
+The following is a proposed subject mapping of every current term in [.glossary](../.glossary), not a change to its definitions or a claim that those definitions have been domain-validated. Membership is non-exclusive. Shared terms remain defined once; use in an area does not transfer ownership or establish a new meaning. Unstructured entries in [.terms](../.terms) are not promoted to defined vocabulary by this mapping.
+
+| Terms | Proposed KnowledgeAreas | Interpretation boundary |
+|---|---|---|
+| Term, Domain, Abstraction, System, Type, Type Instance, Contract, Glossary | Cross-cutting: applicable in all five areas | General vocabulary, not warehouse-specific definitions. A use in each area still needs context. |
+| Problem, Inquiry, Evidence, System Observation, Artifact | WMS subject knowledge; Problem Inquiry; concern planning; development/meta practices; meta/meta observations | Shared inquiry/evidence vocabulary. A warehouse observation is not the same claim as a test observation or an observation about our process. |
+| Goal, Acceptance Criterion, Goal Assessment | Problem Inquiry; concern planning; development/meta practices; meta/meta observations; potentially WMS subject knowledge | State the beneficiary, outcome, and assessment scope. Merely applying these words to a WMS example does not validate a warehouse goal. |
+| System Concern, Work Item, Work Status, Dependency, Blocker, Deliverable, Progress | Concern planning; development/meta practices | These definitions describe planning/work. In particular, Dependency currently means a Work Item prerequisite, not automatically a ticket dependency or warehouse relation. |
+| Test Case, Test Result, Test Suite, Coverage Scope, Coverage Metric, Coverage Report, Type Invariant | Development/meta practices; concern planning where verification evidence is assessed | Tests and coverage are engineering evidence, not direct proof of warehouse usefulness or Goal achievement. |
+| Prioritization Candidate, Estimate, Impact Scale, RICE Model, RICE Assessment, Prioritization Decision, Reach, Impact, Confidence, Effort, Scoring Context, RICE Score, Monetary Cost, Monetary Comparison | Concern planning; potentially Problem Inquiry | These definitions belong to the conceptual prioritization model. The implemented ticket ratings and simplified metrics do not automatically have the same scales, units, or semantics. |
+| Domain Design System, Domain Definition, Type Description, Hydration, Transformation | Development/meta practices; meta/meta observations | Exploratory domain-description and representation concepts. Their suitability for an external target remains undecided; they are not warehouse entities. |
+| KnowledgeArea | Meta/meta observations; development/meta practices; concern planning | Provisional organizing term for this separation experiment; not an implemented Class or a ranked level. |
+
+There are currently no warehouse-specific defined terms in `.glossary`. Warehouse candidate vocabulary stays provisional in the [WMS exploration](./explorations/2026-10-05-warehouse-web-modernization/domain-model.md). Likewise, note/proposal/ticket vocabulary is recorded in the [concern register](./problem-inquiry-system/concerns.md), but is not automatically a Glossary definition.
+
+Next decisions under SC-027 include which memberships to agree, whether a shared meaning needs area-specific refinement, and how separate glossaries would reference a shared definition without duplication. No glossary API, parser, or UI classification/filtering is introduced by this documentation step.
 
 ## Design Rationale and Exploratory Knowledge
 

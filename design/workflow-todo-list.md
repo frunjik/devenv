@@ -2,15 +2,15 @@
 
 Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.
 
-**Active workflow:** [Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain)](./glossary-refinement.md#checkpoint).
+**Active workflow:** None selected.
 
 ## Workflows
 
 | Workflow | Status | Resume reference | Related concern |
 | --- | --- | --- | --- |
 | MetaExport | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
-| Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Active | [Current checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
-| TODO View (DevEnv system layer) | Pending | [Starting checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
+| Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Paused | [Current checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
+| TODO View (DevEnv system layer) | Completed | [Implementation and review checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
 | Term Editing (DevEnv glossary UI) | Pending | [Starting checkpoint](./term-editing-workflow.md#checkpoint) | Not assigned |
 | DevEnv Export (sibling or hosting system) | Pending | [Starting checkpoint](./devenv-export-workflow.md#checkpoint) | Not assigned |
 

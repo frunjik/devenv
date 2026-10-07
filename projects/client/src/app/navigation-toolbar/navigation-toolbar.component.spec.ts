@@ -24,6 +24,8 @@ describe('NavigationToolbarComponent', () => {
         expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
         expect(text).not.toContain('Meta');
         expect(text).toContain('glossary');
+        expect(fixture.nativeElement.querySelector('a[href="/workflow-todo"]').textContent.trim()).toBe('Workflow TODO');
+        expect(fixture.nativeElement.querySelector('a[href="/browse?path=&file=TODO.md"]')).not.toBeNull();
         const systemPlanLink = fixture.nativeElement.querySelector('a[href="/system-plan"]') as HTMLAnchorElement;
         expect(systemPlanLink).not.toBeNull();
         expect(systemPlanLink.textContent?.trim()).toBe('System plan');

@@ -1,10 +1,11 @@
 .glossary { width: calc(100% - 2rem); max-width: 76rem; margin: 0 auto; padding: 1rem 0; }
 .glossary-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: .75rem; margin: 1rem 0 0; }
-.glossary-entry { border-radius: .5rem; padding: .8rem 1rem; }
+.glossary-entry { display: flex; flex-direction: column; border-radius: .5rem; padding: .8rem 1rem; }
 .glossary-term { margin: 0 0 .35rem; color: var(--text-heading); font-size: 1.05rem; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
 .glossary-definition { margin: 0; color: var(--text-secondary); font-size: .9rem; line-height: 1.55; overflow-wrap: anywhere; }
 .glossary-definition + .glossary-definition { margin-top: .4rem; }
 .glossary-domains { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; padding-top: .6rem; }
+.glossary-entry > .glossary-domains { margin-top: auto; }
 .glossary-domains-label { font-size: .75rem; }
 .glossary-domain-badge { border: 1px solid var(--border-accent); border-radius: 1rem; padding: .1rem .55rem; color: var(--text-heading); font-size: .75rem; line-height: 1.5; overflow-wrap: anywhere; max-width: 100%; }
 .glossary-domain-unknown { border-style: dashed; color: var(--text-secondary); }

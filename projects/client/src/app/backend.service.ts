@@ -24,6 +24,7 @@ import type {
     SystemPlanConcern,
     TestOutputStream,
     TestRunCacheStatus,
+    WorkflowTodoList,
 } from '@shared';
 import { LoggerService } from './logger.service';
 
@@ -106,6 +107,10 @@ export class BackendService {
 
     getSystemPlan(): Observable<SystemPlanConcern[]> {
         return this.get<SystemPlanConcern[]>('system-plan');
+    }
+
+    getWorkflowTodo(): Observable<WorkflowTodoList> {
+        return this.get<WorkflowTodoList>('workflow-todo');
     }
 
     getServerVersion(): Observable<string> {

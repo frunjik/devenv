@@ -10,7 +10,7 @@ See the [Project Knowledge Index](./design/knowledge-index.md) for the locations
 
 The glossary display preserves Term names from `.glossary` and `.terms`, including parenthesized examples in names. Lines beginning `- Example: ` are shown as labeled examples, separate from definitions. Except for `Domains:` metadata below, other `- ` lines remain definitions; Domain assignments are not inferred from examples.
 
-Use `- Domains: DevEnv, Meta` to record known usage Domains separately from definitions. Usage Domains display as badges; missing metadata displays an "Unknown" badge. Omitted labels mean unknown, not absent. These labels record occurrence, not defining-Domain ownership. Empty labels are reported as loading errors rather than silently ignored.
+Use `- Domains: DevEnv, Meta` to record known usage Domains separately from definitions. Usage Domains display as badges at the bottom of each glossary card, below its definitions and examples; missing metadata displays an "Unknown" badge in the same position. Omitted labels mean unknown, not absent. These labels record occurrence, not defining-Domain ownership. Empty labels are reported as loading errors rather than silently ignored.
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `design/meta-export-example.json` and overwrites only `design/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 
@@ -44,6 +44,8 @@ The client opens Problem Inquiry by default: `/` redirects to `/problem-inquiry`
 Problem Inquiry opens on the **Notes** tab (input conversion and accepted notes). The **Tickets** tab contains ticket framing and the ticket list. Switching tabs preserves unsaved form content, ticket filters, and open editors; accepting notes or saving tickets does not switch tabs automatically. The sample-data toggle and storage errors remain visible above both panels. Each panel uses paired columns at widths of at least 70rem and stacks on narrower screens. Use Left/Right arrow keys to switch tabs, Home/End to select the first/last tab, and Tab to enter the active panel's controls.
 The System Plan link is in the meta toolbar and is hidden when the meta layer is disabled; this does not change the default route.
 The System Plan supports case-insensitive search by concern ID, title, or displayed description. Search filters the list only; progress totals still describe the full register.
+
+The meta toolbar's **Workflow TODO** link opens `/workflow-todo`, a read-only workflow table. `GET /workflow-todo` derives its JSON from the authoritative `design/workflow-todo-list.md` on each request; no duplicate JSON list is maintained. Resume buttons show the complete workflow Markdown document and its checkpoint reference, without editing, changing workflow selection, or jumping to a heading. The existing **TODO** file-browser link remains separate. List and document loading failures are shown explicitly.
 
 Client and server release versions are maintained in `projects/client/package.json` and `projects/server/package.json`.
 The status toolbar displays both versions, and the API exposes the server version at `GET /version`.

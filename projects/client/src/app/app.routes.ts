@@ -6,8 +6,13 @@ import { TermsComponent } from './system/terms/terms.component';
 import { GlossaryComponent } from './system/glossary/glossary.component';
 import { ProblemInquiryPageComponent } from './problem-inquiry/problem-inquiry-page.component';
 import { SystemPlanComponent } from './system-plan/system-plan.component';
+import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.component';
 
 export const routes: Routes = [
+    {
+        path: 'workflow-todo',
+        component: WorkflowTodoComponent
+    },
     {
         path: '',
         redirectTo: '/problem-inquiry',

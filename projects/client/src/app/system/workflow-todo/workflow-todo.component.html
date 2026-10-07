@@ -1,0 +1,29 @@
+<section class="workflow-todo">
+    <h1>Workflow TODO List</h1>
+    <p>Read-only workflows from the repository Markdown list. Viewing does not select or switch a workflow.</p>
+    <p *ngIf="loading" role="status">Loading workflows...</p>
+    <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
+    <p *ngIf="!loading && !errorMessage && !workflows.length">No workflows registered.</p>
+    <div class="table-scroll" *ngIf="workflows.length">
+        <table>
+            <caption>Registered workflows and resume references</caption>
+            <thead><tr><th scope="col">Workflow</th><th scope="col">Status</th><th scope="col">Resume reference</th><th scope="col">Related concern</th></tr></thead>
+            <tbody>
+                <tr *ngFor="let workflow of workflows" [class.active]="workflow.status === 'Active'">
+                    <th scope="row">{{ workflow.name }}</th>
+                    <td><span class="status">{{ workflow.status }}</span></td>
+                    <td><button type="button" class="resume-button" (click)="openDocument(workflow.resumePath)" [attr.aria-label]="'Read ' + workflow.name + ': ' + workflow.resumeLabel">{{ workflow.resumeLabel }}</button></td>
+                    <td>{{ workflow.relatedConcern }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <section *ngIf="documentReference" aria-label="Workflow document" aria-live="polite">
+        <h2>Workflow document</h2>
+        <p class="reference">Checkpoint reference: {{ documentReference }}</p>
+        <p>The complete Markdown document is shown below; locate the referenced heading to resume.</p>
+        <p *ngIf="documentLoading" role="status">Loading document...</p>
+        <p *ngIf="documentError" role="alert">{{ documentError }}</p>
+        <pre *ngIf="!documentLoading && !documentError">{{ documentText }}</pre>
+    </section>
+</section>

@@ -39,3 +39,20 @@ Sources remain authoritative; these documents are derived. Export does not autho
 Ask for further names, derive the Type, try JSON, check preserved meaning, then contrast an in-scope example before choosing authority.
 
 No self-contained export, external transmission, schema, tooling, or code is agreed. Rule Set's relationship remains unresolved; SC-049 is not completed.
+
+## Resumable Workflow
+
+**Saved:** 2026-10-07. Resume at step 1; the Markdown example is drafted, not validated.
+
+Complete one step at a time. Record decisions, remaining questions, and the next step here before pausing. Ask for new names before adoption; keep proposals distinct from agreed meaning.
+
+1. **Review the example:** Check each candidate KnowledgeStatement against current sources. Split independently revisable assertions, identify missing dependencies, and confirm scope and completeness.
+2. **Describe the candidate Type:** Agree names and meanings for the necessary parts, relationships, and constraints. Preserve authority, provenance, overrides, and local context without treating overlapping concepts as exclusive categories.
+3. **Try JSON:** Encode the commit-process example as a documentation experiment, not production code or an authoritative schema.
+4. **Check meaning:** Test the existing interpretation scenarios against the JSON. Confirm no lost approval requirements, revived superseded rules, or observations mistaken for authorization. Record failures and revise steps 2–3.
+5. **Contrast:** Try an in-scope provisional definition or meta/meta observation. Refine the model without forcing all knowledge into process rules.
+6. **Choose authority:** Decide which representation is maintained and which views are derived. Resolve the relationship to Rule Set and how revisions, dependencies, and conflicts are handled.
+7. **Prepare the local export:** Assemble selected statements and necessary supporting content. Check understanding without repository access; identify omissions and recipient adaptation requirements.
+8. **Review completion:** Present the artifact, checks, and limitations for user review. Assess SC-049 separately: this example alone does not establish import, hydration, or persistence.
+
+Schema validation, generators, import tooling, production code, and external transmission require separate scope decisions. Commit only on explicit request, with message approval.

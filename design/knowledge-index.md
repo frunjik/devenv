@@ -95,6 +95,7 @@ These documents distinguish hypotheses and candidates from validated conclusions
 |---|---|
 | [System Type review](../reviews/system-types.md) | Recorded findings, invariant problems, strengths, and candidate improvements; not proof that recommendations were implemented. |
 | [Knowledge soundness review (2026-10-07)](../reviews/knowledge-soundness-2026-10-07.md) | Dated assessment of conceptual soundness and consistency across the indexed documents, with proposed improvements and review limits. Recommendations are pending discussion, not agreed rules. |
+| [UI design review (2026-10-07)](../reviews/ui-design-review-2026-10-07.md) | Point-in-time visual review of selected DevEnv desktop/mobile views; records three improvement opportunities and evidence limits, without implementing changes. |
 | [RICE prioritization review](../reviews/rice-prioritization.md) | Scoring concepts, rules, contracts, and interpretation. |
 | [Example-Led Knowledge Modeling](./example-led-knowledge-modeling.md) | User-agreed pattern for deriving a knowledge-transfer model from meaning and contrasting examples before choosing an authoritative representation. |
 | [Commit Process](./commit-process.md) | First Markdown transfer example, distinguishing current procedure, local preferences, source decisions, overrides, and open modeling questions. Not an independent rule source or agreed export schema. |

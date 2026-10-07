@@ -33,7 +33,9 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 **Representation sync (user, 2026-10-07):** Sync only recorded content with the glossary UI Type and parser. GlossaryEntry now separates definitions and `Example:` lines while preserving actual Term names, including `Domain (WMS)` and `MetaLayer (DevEnv)`. No Domain assignments, sources, or revision fields are inferred. The API still returns lines; this is a local display Type refinement, not an adopted export model.
 
-**Next:** Step 4's glossary Markdown MetaExport example. The three user-reviewed usage assignments are recorded in the Glossary and displayed through `domains: string[]`; other usage remains unknown.
+**Progress (2026-10-07):** Steps 4–6 are complete. The [Glossary MetaExport Example](./glossary-meta-export-example.md) records the Markdown example, an eight-statement [JSON trial](./glossary-meta-export-example.json), and meaning checks. The user accepted the JSON's narrative-only distinctions for this example; this is not an authoritative schema decision. A more structured model remains for later exploration in the MetaExport workflow.
+
+**Remaining, deferred:** Explore whether definitions, examples, and Term-to-Domain usage relationships need separate structure when the MetaExport model is revisited. A usage relationship remains a Type candidate for review; no name or structure is adopted.
 
 The example distinguishes subject from perspective: development practices can be organized as KnowledgeArea (development/meta practices), while MetaLayer (development practices governing DevEnv work) identifies their governing relationship to an activity. SubjectDomain (WMS) identifies the Domain being investigated, not a level in that organization.
 

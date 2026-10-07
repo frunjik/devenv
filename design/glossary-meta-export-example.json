@@ -1,0 +1,98 @@
+[
+  {
+    "id": "knowledgearea-definition",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "A KnowledgeArea is a subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership.",
+        "context": "Definition of the current Glossary entry KnowledgeArea (WMS operations). The parenthetical name qualification is illustrative and does not establish use in the WMS Domain.",
+        "source": "Current definition in the DevEnv Glossary, reviewed at frunjik/devenv revision 0f98efc; wording approved by the user on 2026-10-07 and recorded in Glossary Refinement.",
+        "applicability": "Current as the source project's Glossary definition at the reviewed revision. KnowledgeArea remains provisional; recipient adoption is separate."
+      }
+    ]
+  },
+  {
+    "id": "knowledgearea-usage",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "KnowledgeArea (WMS operations) is known to occur in the Meta context.",
+        "context": "This records occurrence in the context of reasoning about systems, development practices, and their evaluation. It does not say that the Term's meaning is defined by Meta or that the WMS example establishes WMS usage.",
+        "source": "User-approved individual usage assignment on 2026-10-07, recorded in Glossary Refinement and the current Glossary.",
+        "applicability": "Current source-project usage assignment. Other usage, including WMS and DevEnv, remains unknown rather than absent."
+      }
+    ]
+  },
+  {
+    "id": "metalayer-definition",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "A MetaLayer is a named perspective from which another system, activity, or its description is examined, described, governed, or evaluated.",
+        "context": "Definition of the current Glossary entry MetaLayer (DevEnv). DevEnv names the meta perspective on the system or activity it supports; this does not imply that every application is a MetaLayer or establish a ranked hierarchy.",
+        "source": "Current definition in the DevEnv Glossary, reviewed at frunjik/devenv revision 0f98efc; the definition was retained by the user on 2026-10-07 and interpreted in Glossary Refinement.",
+        "applicability": "Current as the source project's Glossary definition at the reviewed revision. The concept remains provisional; recipient adoption is separate."
+      }
+    ]
+  },
+  {
+    "id": "metalayer-usage",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "MetaLayer (DevEnv) is known to occur in the DevEnv and Meta contexts.",
+        "context": "The DevEnv host UI/toggle uses the meta-layer concept; this work uses the broader perspective concept. These occurrences do not establish identical meanings. Known usage does not mean defining-Domain ownership.",
+        "source": "User-approved individual usage assignment on 2026-10-07, recorded in Glossary Refinement and the current Glossary.",
+        "applicability": "Current source-project usage assignments. Other usage, including WMS, remains unknown rather than absent."
+      }
+    ]
+  },
+  {
+    "id": "subjectdomain-definition",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "A SubjectDomain is the Domain being investigated or supported.",
+        "context": "Definition of the current Glossary entry SubjectDomain (WMS AI). The parenthetical name qualification identifies an example context; it does not establish known usage in the WMS Domain.",
+        "source": "Current definition in the DevEnv Glossary, reviewed at frunjik/devenv revision 0f98efc; the definition was retained by the user on 2026-10-07 and interpreted in Glossary Refinement.",
+        "applicability": "Current as the source project's Glossary definition at the reviewed revision. Recipient adoption is separate."
+      }
+    ]
+  },
+  {
+    "id": "subjectdomain-usage",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "SubjectDomain (WMS AI) is known to occur in the Meta context.",
+        "context": "This work uses the Term to identify the Domain under investigation. The name qualification and Glossary display do not establish WMS or DevEnv usage.",
+        "source": "User-approved individual usage assignment on 2026-10-07, recorded in Glossary Refinement and the current Glossary.",
+        "applicability": "Current source-project usage assignment. Other usage, including WMS and DevEnv, remains unknown rather than absent."
+      }
+    ]
+  },
+  {
+    "id": "usage-meaning",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "A listed Domain records a Term's known occurrence, not where its meaning is defined. An unlisted Domain is unknown, not confirmed absent.",
+        "context": "Applies to the three individually reviewed usage assignments in this example. Do not infer additional assignments from parenthesized Term names, Glossary display, or KnowledgeArea membership. Meta is the selected label for reasoning about systems, development practices, and their evaluation; its boundary remains unsettled and it is not synonymous with MetaLayer.",
+        "source": "User decisions recorded in Glossary Refinement on 2026-10-07, including the revision from defining-Domain ownership to known occurrence and the per-Term review.",
+        "applicability": "Current source-project interpretation for the listed usage assignments. It does not assert universal Domain boundaries or recipient adoption."
+      }
+    ]
+  },
+  {
+    "id": "domain-definition",
+    "revisions": [
+      {
+        "revision": 1,
+        "assertion": "A Domain is a bounded context of activity in which concepts, entities, relationships, and rules have particular meanings.",
+        "context": "Supporting definition for the current Glossary entry Domain (WMS). It is included to distinguish a context of meaning from a KnowledgeArea, not as a fourth in-scope Term refinement.",
+        "source": "Current definition in the DevEnv Glossary, reviewed at frunjik/devenv revision 0f98efc; the distinction from KnowledgeArea was approved by the user on 2026-10-07 and recorded in Glossary Refinement.",
+        "applicability": "Current as supporting source-project Glossary knowledge at the reviewed revision. Recipient adoption is separate."
+      }
+    ]
+  }
+]

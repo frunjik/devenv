@@ -42,7 +42,7 @@ No complete self-contained export, external transmission, authoritative schema, 
 
 ## Resumable Workflow
 
-**Progress (2026-10-07):** Steps 2–3 have a candidate structure with user-approved field names and a [JSON subset](./meta-export-example.json), preserving instruction revisions. Preliminary interpretation checks are recorded in the [example](./meta-export-example.md#preliminary-meaning-check). Resume at step 4. Editorial corrections, partial/multiple replacements, structured references, and export completeness remain unresolved; no recipient validation has occurred.
+**Progress (2026-10-07):** Steps 2–3 have a candidate structure with user-approved field names and a [JSON subset](./meta-export-example.json), preserving instruction revisions. Preliminary interpretation checks are recorded in the [example](./meta-export-example.md#preliminary-meaning-check). The [Glossary contrast example](./glossary-meta-export-example.md) also tried the candidate KnowledgeStatement fields. The user accepted narrative-only distinctions for that example, while explicitly deferring exploration of a more structured model; this does not establish a general schema choice. Resume at step 4. Editorial corrections, partial/multiple replacements, structured references, and export completeness remain unresolved; no recipient validation has occurred.
 
 Complete one step at a time. Record decisions, remaining questions, and the next step here before pausing. Ask for new names before adoption; keep proposals distinct from agreed meaning.
 
@@ -56,3 +56,5 @@ Complete one step at a time. Record decisions, remaining questions, and the next
 8. **Review completion:** Present the artifact, checks, and limitations for user review. Assess SC-049 separately: this example alone does not establish import, hydration, or persistence.
 
 Schema validation, generators, import tooling, production code, and external transmission require separate scope decisions. Commit only on explicit request, with message approval.
+
+**Deferred from Glossary contrast (2026-10-07):** When choosing the model at step 6, revisit whether definitions, examples, and Term-to-Domain usage relationships need structure beyond narrative KnowledgeStatement assertions. The narrative form was accepted for the Glossary example only; no additional Type or field names were adopted.

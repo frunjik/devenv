@@ -32,7 +32,8 @@ describe('DevEnv clone package', () => {
         expect(copiedPaths).toContain(join(root, 'projects', 'client'));
         expect(copiedPaths).toContain(join(root, 'projects', 'server'));
         expect(copiedPaths).toContain(join(root, 'projects', 'shared'));
-        expect(copiedPaths).toContain(join(root, 'design'));
+        expect(copiedPaths).not.toContain(join(root, 'design'));
+        expect(copiedPaths).not.toContain(join(root, 'reviews'));
         expect(copiedPaths).toContain(join(root, '.glossary.json'));
         expect(copiedPaths).not.toContain(join(root, 'projects', 'ppt'));
         expect(copiedPaths).not.toContain(join(root, '.features'));

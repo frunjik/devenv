@@ -53,8 +53,10 @@ The dialog requires acknowledgement that existing destination contents will be r
 The server stages the curated package before replacing the destination, rejects source/destination overlap
 and existing symbolic-link destinations, and attempts restoration if installation fails.
 The package includes client/server/shared source, scripts, configuration, documentation, agents,
-skills, glossary, design resources and reviews. It excludes Git history, dependencies, build output,
+skills and glossary. It excludes the root `design` and `reviews` folders, Git history, dependencies, build output,
 cache folders, workspace-specific task/input/scratch resources and `.env` files.
+Design-backed features such as System Plan and Workflow TODO require recipient-provided resources;
+the export does not recreate those excluded documents or rewrite references to them.
 An indeterminate progress bar is shown while exporting. Success closes the dialog automatically
 and shows a success snackbar. Export errors keep the dialog open for retry; any failure to remove
 the previous destination is included in a persistent warning snackbar after the successful export.

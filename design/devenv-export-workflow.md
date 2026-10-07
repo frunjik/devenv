@@ -9,8 +9,9 @@ Explore making DevEnv available alongside another system or as its hosting envir
 ### Agreed clone trial (2026-10-07)
 
 - Provide a DevEnv UI action that asks the local server to copy a curated DevEnv package into a destination folder.
-- Include the runnable client/server/shared source, reusable scripts and configuration, root/project documentation, `.agents`, `.glossary.json` and generated `.glossary`, and DevEnv design and workflow resources, including explorations.
-- Exclude Git history, dependencies, build/test caches, local runtime data, credentials, and unrelated WMS application-specific projects.
+- Include the client/server/shared source, reusable scripts and configuration, root/project documentation, `.agents`, `.glossary.json` and generated `.glossary`.
+- Exclude the root `design` and `reviews` folders, Git history, dependencies, build/test caches, local runtime data, credentials, and unrelated WMS application-specific projects.
+- **Scope override (user, 2026-10-07):** Do not export `design` or `reviews`. This supersedes their earlier inclusion. Design-backed features such as System Plan and Workflow TODO require recipient-provided documents; existing links and scripts referencing excluded documents are not rewritten by the clone.
 - Replace the contents of an existing destination folder when the user explicitly selects it.
 - This trial packages resources for folder-based export only; it does not choose sibling/hosting integration, recipient adoption, deployment, or external transmission.
 - Success means the UI can request the export, the local server copies the agreed package to the selected destination, replacement behavior is explicit and safe, and the resulting folder contains no excluded local/runtime resources.

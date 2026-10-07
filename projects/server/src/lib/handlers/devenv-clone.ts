@@ -27,11 +27,9 @@ export class DevEnvCloneError extends Error {
 
 const PACKAGE_DIRECTORIES = [
     '.agents',
-    'design',
     'projects/client',
     'projects/server',
     'projects/shared',
-    'reviews',
     'scripts',
     'skills',
 ];

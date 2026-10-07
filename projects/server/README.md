@@ -36,6 +36,8 @@ The actor of a change is the authenticated principal, or `anonymous` when no aut
 `POST /devenv/clone` accepts `{ destination: string, replaceExisting: boolean }`.
 The destination must be an absolute server-local folder path whose parent already exists.
 Success returns `{ data: { destination, replacedExisting, warning? } }`.
+The curated package excludes the source repository's root `design` and `reviews` folders.
+Design-backed routes require recipient-provided documents after export.
 Malformed input and unsafe source/destination overlap return 400; an existing directory without
 replacement consent returns 409. Filesystem failures propagate as server errors.
 The source allowlist and staging/replacement behavior are implemented in

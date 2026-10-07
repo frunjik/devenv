@@ -119,6 +119,7 @@ These principles are active from their recorded date and apply to future work in
 - **Practice:** Keep this to genuine candidate Type/Term *names*, not every passing word already noted in the register. Use the `ask_user` tool when I raise a candidate; report findings plainly when the user raises one. Final agreement on any name still rests with the user; this is a check-and-surface step, not a veto.
 
 - **Definition and reference policy (user, 2026-10-07):** Glossary entries explain Terms; instructions for how we refer to them belong in working guidance, not their definitions. When referring to our current SubjectDomain, write `SubjectDomain (WMS)` to make the concrete subject explicit. This qualifies the reference, not the abstract Term's meaning.
+- **Concrete reference rule (user, 2026-10-07):** For concepts we introduce, including process names and Terms, accompany the abstract name with a named concrete instance from the actual system or meta practice, for example `SubjectDomain (WMS)` or `KnowledgeStatement (commit-attribution)`. This improves reader understanding without equating the concept with that instance. Use a genuine instance, not an invented mapping; if none is known, make that gap explicit. Keep abstract Glossary definitions separate from this reference policy.
 
 ### P-013 — *(retired, merged into P-012)*
 

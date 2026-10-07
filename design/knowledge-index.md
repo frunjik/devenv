@@ -99,6 +99,7 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [Example-Led Knowledge Modeling](./example-led-knowledge-modeling.md) | User-agreed pattern for deriving a knowledge-transfer model from meaning and contrasting examples before choosing an authoritative representation. |
 | [Commit Process](./commit-process.md) | First Markdown transfer example, distinguishing current procedure, local preferences, source decisions, overrides, and open modeling questions. Not an independent rule source or agreed export schema. |
 | [MetaExport](./meta-export.md) | Provisional transfer concept for concern-planning and development/meta/meta-meta knowledge; starts from Commit Process and records what a candidate model must preserve. No external transmission or schema is agreed. |
+| [Workflow TODO List](./workflow-todo-list.md) | Repository-wide workflow selection, status, and links to authoritative resume checkpoints; not a replacement for SystemConcerns or detailed steps. |
 | [Domain Type design skill](../skills/domain-type-design/SKILL.md) | Reusable procedure for defining/reviewing goal-oriented domain Types and keeping vocabulary consistent. |
 | [TDD developer guidance](../.agents/test-driven-developer.agent.md) | Detailed Red-Green-Refactor method. |
 | [Type reviewer guidance](../.agents/type-reviewer.agent.md) | Type-review lens used at checkpoints. |

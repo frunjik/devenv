@@ -2,13 +2,15 @@
 
 Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.
 
-**Active workflow:** None selected. MetaExport is saved for resumption.
+**Active workflow:** [Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain)](./glossary-refinement.md#checkpoint).
 
 ## Workflows
 
 | Workflow | Status | Resume reference | Related concern |
 | --- | --- | --- | --- |
 | MetaExport | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
+| Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Active | [Current checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
+| TODO View (DevEnv system layer) | Pending | [Starting checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
 
 Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 
@@ -22,4 +24,4 @@ Only workflows explicitly registered here are tracked. Open concerns and histori
 
 The detailed document owns steps and progress; this list owns selection and status. Resume references link to the current checkpoint rather than duplicating step numbers that can drift.
 
-Use `Active`, `Paused`, `Blocked`, or `Completed` as document labels, not new domain Types. Add workflows when requested or when resumable work is explicitly established. Ask for clarification if a resume request has multiple possible targets and none is selected.
+Use `Pending` for registered work not yet started, and `Active`, `Paused`, `Blocked`, or `Completed` as document labels, not new domain Types. Add workflows when requested or when resumable work is explicitly established. Ask for clarification if a resume request has multiple possible targets and none is selected.

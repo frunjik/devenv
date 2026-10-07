@@ -42,7 +42,7 @@ No self-contained export, external transmission, schema, tooling, or code is agr
 
 ## Resumable Workflow
 
-**Saved:** 2026-10-07. Resume at step 1; the Markdown example is drafted, not validated.
+**Progress (2026-10-07):** Step 1 source review is recorded in the [example](./meta-export-example.md#step-1-review). Compound entries were split into candidate assertions; dependencies and provenance gaps are explicit. Resume at step 2. Statement decomposition and completeness remain subject to review; no recipient validation has occurred.
 
 Complete one step at a time. Record decisions, remaining questions, and the next step here before pausing. Ask for new names before adoption; keep proposals distinct from agreed meaning.
 

@@ -17,4 +17,4 @@ Additional **unconverted** synthetic sources are also in the inbox:
 
 These added samples have not been imported into the structured ProblemSet.
 
-The proposed distinction between source fragments, imported notes, and Problem Tickets—and the remaining provenance Type questions—is tracked under [SC-001 and SC-002](../design/problem-inquiry-system/concerns.md#sc-001--distinguish-input-from-ticket).
+The proposed distinction between source fragments, imported notes, and Problem Tickets—and the remaining provenance Type questions—is tracked under [SC-001 and SC-002](../knowledge/domain-models/problem-inquiry-system/concerns.md#sc-001--distinguish-input-from-ticket).

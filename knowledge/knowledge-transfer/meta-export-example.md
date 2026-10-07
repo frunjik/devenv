@@ -66,7 +66,7 @@ Validation commands must come from the receiving project's guidance, not be copi
 
 ## Sources and Overrides
 
-The statements summarize [P-001 through P-005 and P-011](../.agents/system-task-principles.md) and [Commit Process](./commit-process.md) at the source revision. Links provide traceability; the text above supplies the operative meaning.
+The statements summarize [P-001 through P-005 and P-011](../../.agents/system-task-principles.md) and [Commit Process](../practices/commit-process.md) at the source revision. Links provide traceability; the text above supplies the operative meaning.
 
 P-005's original checkpoint instruction said to commit once verification was complete. The user's 2026-10-07 override says:
 

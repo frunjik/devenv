@@ -64,7 +64,7 @@
       ".agents/demolition-worker.agent.md",
       "skills/domain-type-design/SKILL.md",
       ".glossary.json",
-      "design/knowledge-index.md",
+      "knowledge/index.md",
       "reviews/knowledge-soundness-2026-10-07.md"
     ],
     "added": "Explicit boundaries and ownership; prerequisites and blockers; Problem versus cause/solution; provenance versus truth; completion versus verification/acceptance/achievement; periodic method review; change/removal impact checks.",

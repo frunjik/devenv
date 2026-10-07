@@ -3,7 +3,7 @@
 ## Checkpoint
 
 **Status:** Completed; all three findings are addressed.
-**Source review:** [UI Design Review (2026-10-07)](../reviews/ui-design-review-2026-10-07.md)
+**Source review:** [UI Design Review (2026-10-07)](../../reviews/ui-design-review-2026-10-07.md)
 
 ### Completed
 

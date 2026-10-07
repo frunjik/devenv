@@ -56,7 +56,7 @@ describe('system plan route', () => {
 
         const response = await request(createApp(root)).get('/system-plan');
 
-        expect(fileReader).toHaveBeenCalledWith(join(root, 'design', 'problem-inquiry-system', 'concerns.md'), 'utf8');
+        expect(fileReader).toHaveBeenCalledWith(join(root, 'knowledge', 'domain-models', 'problem-inquiry-system', 'concerns.md'), 'utf8');
         expect(response.status).toBe(200);
         expect(response.body.data).toEqual([
             {

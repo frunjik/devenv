@@ -24,7 +24,7 @@ Use these signals to find candidates, not as automatic extraction rules:
 5. Identify the benefit: an invalid state prevented, ambiguity removed, relationship clarified, or dependency made explicit. Explain costs and uncertainty; naming alone does not enforce validation, equality, immutability, or temporal rules.
 6. Recommend leaving the representation as-is, reusing or refining an existing Type, or proposing a new Type. Separate justified convictions from unresolved candidates. Ask before adopting a candidate name or implementing a modeling change.
 
-For knowledge-transfer modeling, follow [Example-Led Knowledge Modeling](../design/example-led-knowledge-modeling.md): meaning, concrete Markdown example, candidate Type, JSON, and a check that meaning is preserved. Test a contrasting example before choosing the authoritative representation.
+For knowledge-transfer modeling, follow [Example-Led Knowledge Modeling](../knowledge/practices/example-led-knowledge-modeling.md): meaning, concrete Markdown example, candidate Type, JSON, and a check that meaning is preserved. Test a contrasting example before choosing the authoritative representation.
 
 ## DevEnv Examples
 

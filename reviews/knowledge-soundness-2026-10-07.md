@@ -7,7 +7,7 @@
 
 ## Scope and Limits
 
-Reviewed the documents listed in the [Project Knowledge Index](../design/knowledge-index.md): the concern register and Meta Notes, principles, assistant guidance, glossary and terms, conceptual designs, exploration records, reviews, reusable methods, practical documentation, and historical notes.
+Reviewed the documents listed in the [Project Knowledge Index](../knowledge/index.md): the concern register and Meta Notes, principles, assistant guidance, glossary and terms, conceptual designs, exploration records, reviews, reusable methods, practical documentation, and historical notes.
 
 This was a conceptual/document review, not a fresh implementation audit, external-reference verification, security review, or domain-user validation. Application ticket contents and Git history were not audited as part of the review. No source documents were changed during the review.
 
@@ -42,7 +42,7 @@ The [System Type Review](./system-types.md) says criterion assessment is derived
 **Importance:** High
 **Disposition:** Proposed; not agreed or addressed.
 
-The [concern register](../design/problem-inquiry-system/concerns.md) applies one status to domain decisions, design choices, behavior, and implementation. A selected policy, model fit to synthetic examples, passing tests, browser inspection, and demonstrated usefulness are different kinds of evidence.
+The [concern register](../knowledge/domain-models/problem-inquiry-system/concerns.md) applies one status to domain decisions, design choices, behavior, and implementation. A selected policy, model fit to synthetic examples, passing tests, browser inspection, and demonstrated usefulness are different kinds of evidence.
 
 Separate user acceptance is a useful improvement, but acceptance does not establish operational usefulness or truth.
 
@@ -53,7 +53,7 @@ Separate user acceptance is a useful improvement, but acceptance does not establ
 **Importance:** High
 **Disposition:** Proposed; not agreed or addressed.
 
-The [Glossary](../.glossary) defines Domain Definition, Type Description, and Hydration without qualification, while the [design model](../design/domain-design-system-model.md) leaves their model and implementation open. Readers cannot readily distinguish agreed vocabulary, provisional working meaning, and implemented capability.
+The [Glossary](../.glossary) defines Domain Definition, Type Description, and Hydration without qualification, while the [design model](../knowledge/domain-models/domain-design-system-model.md) leaves their model and implementation open. Readers cannot readily distinguish agreed vocabulary, provisional working meaning, and implemented capability.
 
 Definitions also merit review:
 
@@ -102,7 +102,7 @@ The [RICE review](./rice-prioritization.md) carefully distinguishes context, uni
 **Importance:** Medium
 **Disposition:** Proposed; not agreed or addressed.
 
-The [register](../design/problem-inquiry-system/concerns.md) separates these concepts, but language remains ambiguous:
+The [register](../knowledge/domain-models/problem-inquiry-system/concerns.md) separates these concepts, but language remains ambiguous:
 
 - Source-origin categories are not inherently exclusive: a synthetic report can arrive externally.
 - Assignment responsibility differs from the actor who resolves a ticket. "Resolved by" should not silently mean assignee.
@@ -121,7 +121,7 @@ The [System Type Review](./system-types.md) lacks a clear reviewed revision and 
 
 ## Focus: Meta-Type Rationale
 
-[meta-type-system-purpose.md](../design/meta-type-system-purpose.md) is one of the stronger documents: benefits, costs, alternatives, and non-adoption are explicit.
+[meta-type-system-purpose.md](../knowledge/domain-models/meta-type-system-purpose.md) is one of the stronger documents: benefits, costs, alternatives, and non-adoption are explicit.
 
 **Proposed refinements, all pending discussion:**
 

@@ -21,6 +21,6 @@ Develop a knowledge-transfer model from concrete meaning and examples rather tha
 
 Ask the user for candidate names before adopting them, following P-012. Distinguish a method name, an example's subject, a conceptual Type, and a file or serialization format.
 
-The initial example is [Commit Process](./commit-process.md), the user-selected title. [MetaExport](./meta-export.md) is the user-selected provisional name for the transfer collection, and KnowledgeStatement is the agreed candidate name for an individually referenceable piece of knowledge. Their structures and further candidate Type and field names remain to be agreed. No Class, schema, generator, external destination, or transmission is authorized by recording this pattern.
+The initial example is [Commit Process](./commit-process.md), the user-selected title. [MetaExport](../workflows/meta-export.md) is the user-selected provisional name for the transfer collection, and KnowledgeStatement is the agreed candidate name for an individually referenceable piece of knowledge. Their structures and further candidate Type and field names remain to be agreed. No Class, schema, generator, external destination, or transmission is authorized by recording this pattern.
 
 This pattern supports SC-049's Rule Set exploration; it does not complete that concern or settle whether Rule Set, Domain Definition, or another concept best describes the eventual export.

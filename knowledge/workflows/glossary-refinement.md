@@ -4,9 +4,9 @@
 
 ## Scope
 
-Refine three existing [Glossary](../.glossary) Terms and their distinctions, then try a MetaExport example of the agreed glossary knowledge. Keep definitions abstract; put concrete reference examples and usage policies separately.
+Refine three existing [Glossary](../../.glossary) Terms and their distinctions, then try a MetaExport example of the agreed glossary knowledge. Keep definitions abstract; put concrete reference examples and usage policies separately.
 
-The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains paused at its saved checkpoint. This workflow does not expand that example or authorize code, external transmission, or commits.
+The [commit-process MetaExport](../workflows/meta-export.md#resumable-workflow) remains paused at its saved checkpoint. This workflow does not expand that example or authorize code, external transmission, or commits.
 
 ## Starting Meaning
 
@@ -33,7 +33,7 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 **Representation sync (user, 2026-10-07):** Sync only recorded content with the glossary UI Type and parser. GlossaryEntry now separates definitions and `Example:` lines while preserving actual Term names, including `Domain (WMS)` and `MetaLayer (DevEnv)`. No Domain assignments, sources, or revision fields are inferred. The API still returns lines; this is a local display Type refinement, not an adopted export model.
 
-**Progress (2026-10-07):** Steps 4–6 are complete. The [Glossary MetaExport Example](./glossary-meta-export-example.md) records the Markdown example, an eight-statement [JSON trial](./glossary-meta-export-example.json), and meaning checks. The user accepted the JSON's narrative-only distinctions for this example; this is not an authoritative schema decision. A more structured model remains for later exploration in the MetaExport workflow.
+**Progress (2026-10-07):** Steps 4–6 are complete. The [Glossary MetaExport Example](../knowledge-transfer/glossary-meta-export-example.md) records the Markdown example, an eight-statement [JSON trial](../knowledge-transfer/glossary-meta-export-example.json), and meaning checks. The user accepted the JSON's narrative-only distinctions for this example; this is not an authoritative schema decision. A more structured model remains for later exploration in the MetaExport workflow.
 
 **Remaining, deferred:** Explore whether definitions, examples, and Term-to-Domain usage relationships need separate structure when the MetaExport model is revisited. A usage relationship remains a Type candidate for review; no name or structure is adopted.
 

@@ -16,7 +16,7 @@ function isConcernAcceptanceStatus(value: string): value is ConcernAcceptanceSta
 
 export function createSystemPlanHandler(root: string): RequestHandler {
     return (_request, response, next) => {
-        void readFile(join(root, 'design', 'problem-inquiry-system', 'concerns.md'), 'utf8')
+        void readFile(join(root, 'knowledge', 'domain-models', 'problem-inquiry-system', 'concerns.md'), 'utf8')
             .then(markdown => response.json({ data: parseSystemPlan(markdown) }))
             .catch(next);
     };

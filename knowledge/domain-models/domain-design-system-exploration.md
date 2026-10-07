@@ -18,7 +18,7 @@ Preserve both outcomes and reasoning; conclusions may be revisited. Iteration is
 - Paper or narrative modeling; compare competing models.
 - Vertical-slice evaluation of one meaningful scenario.
 - Prior-art study: Magritte, EMF, JSON Schema, CUE, SHACL, OWL.
-- **Spike:** a bounded, time-limited inquiry, possibly paper-only. Store artifacts under `design/explorations/<date>-<topic>/`; later promote useful findings, retain context, mark superseded material, or discard it with a reason. Keep the record lightweight; build no tooling in advance.
+- **Spike:** a bounded, time-limited inquiry, possibly paper-only. Store artifacts under `knowledge/research/explorations/<date>-<topic>/`; later promote useful findings, retain context, mark superseded material, or discard it with a reason. Keep the record lightweight; build no tooling in advance.
 
 ### Bootstrap Example
 
@@ -30,11 +30,11 @@ Use the Domain that motivates this System as an example, keeping distinct:
 
 Trace one real situation from context and observation through Problem framing, evidence, causes, desired outcome, and possible responses. Later use a contrasting Domain to test transfer. Do not confuse the modeled example with the System itself.
 
-The planned [Problem-framing Spike](./explorations/2026-10-05-problem-framing-assumption/README.md) tests whether separating observation, interpretation, cause, outcome, and response improves understanding. It has not been conducted.
+The planned [Problem-framing Spike](../research/explorations/2026-10-05-problem-framing-assumption/README.md) tests whether separating observation, interpretation, cause, outcome, and response improves understanding. It has not been conducted.
 
-The [Warehouse Management System modernization inquiry](./explorations/2026-10-05-warehouse-web-modernization/README.md) applies these distinctions to a legacy-to-web replacement scenario. It is an initial hypothesis-based exploration; no legacy behavior or user needs have yet been independently verified.
+The [Warehouse Management System modernization inquiry](../research/explorations/2026-10-05-warehouse-web-modernization/README.md) applies these distinctions to a legacy-to-web replacement scenario. It is an initial hypothesis-based exploration; no legacy behavior or user needs have yet been independently verified.
 
-The planned [AI-assisted WMS authoring Spike](./explorations/2026-10-05-ai-assisted-wms-authoring/README.md) explores Terms and Types for builders using AI under limited discovery time and an impending knowledge-transfer constraint. It has not been conducted.
+The planned [AI-assisted WMS authoring Spike](../research/explorations/2026-10-05-ai-assisted-wms-authoring/README.md) explores Terms and Types for builders using AI under limited discovery time and an impending knowledge-transfer constraint. It has not been conducted.
 
 ### Preserving Learning Toward Code
 

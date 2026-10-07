@@ -1,5 +1,4 @@
 # MetaExport Example: Glossary Refinement
-
 **Recorded:** 2026-10-07
 
 **Source system:** DevEnv, repository `frunjik/devenv`, reviewed at revision `0f98efc`.
@@ -65,8 +64,8 @@ Other usage remains unknown, not absent. A parenthesized example, a Term's appea
 
 ## Sources and Authority
 
-- [Glossary](../.glossary): current definitions, names, and recorded usage lines.
-- [Glossary Refinement](./glossary-refinement.md): user decisions, provisional status, rationale, source interpretations, and unresolved boundaries.
+- [Glossary](../../.glossary): current definitions, names, and recorded usage lines.
+- [Glossary Refinement](../workflows/glossary-refinement.md): user decisions, provisional status, rationale, source interpretations, and unresolved boundaries.
 - User decisions recorded on 2026-10-07: KnowledgeArea's meaning and provisional status; retained MetaLayer and SubjectDomain meanings; the three individually reviewed usage assignments; and the distinction between known usage and defining-Domain ownership.
 
 These are derived summaries. The Markdown sources provide traceability and context; this example alone does not prove Domain facts or authorize adoption by another system.

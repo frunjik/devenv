@@ -22,7 +22,7 @@ describe('workflow TODO JSON', () => {
         fileReader.mockResolvedValue(`# Workflow TODO List\n\n${header}\n${row}\n\n## Maintaining and Switching`);
         const response = await request(createApp(process.cwd())).get('/workflow-todo');
         expect(response.status).toBe(200);
-        expect(fileReader).toHaveBeenCalledWith(join(process.cwd(), 'design', 'workflow-todo-list.md'), 'utf8');
+        expect(fileReader).toHaveBeenCalledWith(join(process.cwd(), 'knowledge', 'workflows', 'workflow-todo-list.md'), 'utf8');
         expect(response.body.data).toEqual({ workflows: [{
             name: 'TODO View (DevEnv system layer)', status: 'Pending',
             resumeLabel: 'Starting checkpoint', resumePath: './todo-view-workflow.md#checkpoint',
@@ -38,6 +38,14 @@ describe('workflow TODO JSON', () => {
         expect((await request(createApp(process.cwd())).get('/workflow-todo')).body.data).toEqual({ workflows: [] });
     });
 
+    it('supports generated practice checkpoints outside the workflow section', async () => {
+        const resumePath = '../practices/portable-practices-checklist.generated.md#checkpoint';
+        fileReader.mockResolvedValue(`${header}\n${row.replace('./todo-view-workflow.md#checkpoint', resumePath)}`);
+        const response = await request(createApp(process.cwd())).get('/workflow-todo');
+        expect(response.status).toBe(200);
+        expect(response.body.data.workflows[0].resumePath).toBe(resumePath);
+    });
+
     it.each([
         'No table',
         '| Workflow | Status | Resume reference | Related concern |',
@@ -46,6 +54,7 @@ describe('workflow TODO JSON', () => {
         `${header}\n${row.replace('Starting checkpoint', '')}`,
         `${header}\n${row.replace('./todo-view-workflow.md#checkpoint', 'https://example.com')}`,
         `${header}\n${row.replace('./todo-view-workflow.md', '../secrets.md')}`,
+        `${header}\n${row.replace('./todo-view-workflow.md', '../practices/../secrets.md')}`,
         `${header}\n${row.replace('Not assigned', '')}`,
     ])('rejects malformed workflow data instead of returning success: %s', async markdown => {
         fileReader.mockResolvedValue(markdown);

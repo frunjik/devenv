@@ -23,7 +23,7 @@ These principles are active from their recorded date and apply to future work in
 - **Checkpoints:** After identifying the workflow concepts; after considering scope variation and important exceptions; and before completing the task.
 - **Review prompts:** Are distinct lifecycle states, outcomes, evidence, decisions, scope levels, roles, or relationships being collapsed into strings or unstructured fields? Does a proposed Type have a distinct meaning, constraints, or lifecycle? Would separating it clarify the model, or merely add ceremony?
 
-- **Knowledge-transfer modeling pattern (user, 2026-10-07):** Use [Example-Led Knowledge Modeling](../design/example-led-knowledge-modeling.md): meaning, a concrete Markdown example, a candidate Type, JSON, and a check that meaning is preserved. Try a contrasting example before choosing an authoritative representation. Ask for names before adopting them; do not equate a serialization format with the conceptual Type.
+- **Knowledge-transfer modeling pattern (user, 2026-10-07):** Use [Example-Led Knowledge Modeling](../knowledge/practices/example-led-knowledge-modeling.md): meaning, a concrete Markdown example, a candidate Type, JSON, and a check that meaning is preserved. Try a contrasting example before choosing an authoritative representation. Ask for names before adopting them; do not equate a serialization format with the conceptual Type.
 
 ### P-003 — Verify Type Safety Before Completion
 
@@ -92,7 +92,7 @@ These principles are active from their recorded date and apply to future work in
 - **Source:** User instruction
 - **Applies to:** Ongoing work, after it has been under way for a while (at the same stable points as the P-008 gate).
 - **Rule:** Consider whether the work has produced knowledge worth recording at the outer (meta) level, such as improvements to the SC-NN numbering and concern conventions, or the realization that the same thing has been done repeatedly in different shapes. If so, make a note on the meta level.
-- **Practice:** Record the note in `design/problem-inquiry-system/concerns.md` under "Meta Notes", numbered `Meta-NNN` in the order added (introduced 2026-10-06, same 3-digit style as `SC-NNN`/`P-NNN`). Notes are observations and proposals, not decisions; raise consequential ones with the user.
+- **Practice:** Record the note in `knowledge/domain-models/problem-inquiry-system/concerns.md` under "Meta Notes", numbered `Meta-NNN` in the order added (introduced 2026-10-06, same 3-digit style as `SC-NNN`/`P-NNN`). Notes are observations and proposals, not decisions; raise consequential ones with the user.
 - **Meta-meta cadence (recorded 2026-10-06):** This whole project is a learning sandbox, not only a system being built. After roughly every 10 implemented feature slices (real code, tests, and a commit — not documentation-only or principle-only changes), step up a level beyond per-slice Meta Notes: evaluate whether the accumulated principles, conventions, and register are still serving that learning purpose, and report the evaluation to the user rather than only acting on it silently. Track the count toward 10 in the session database; reset it after each such evaluation.
 
 ### P-011 — Identify the Referenced Concern in Commit Messages

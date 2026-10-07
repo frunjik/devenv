@@ -34,9 +34,9 @@ These settings belong to this repository; a recipient must not silently treat th
 ## Sources and Precedence
 
 - Baseline repository revision: `bb7673c7712d5bf03d5a31ed449215a503ffc34c`.
-- [P-001 through P-005](../.agents/system-task-principles.md): development and verification prerequisites, checkpoint practice, and message approval.
-- [P-011](../.agents/system-task-principles.md#p-011--identify-the-referenced-concern-in-commit-messages): naming and pre-draft checks.
-- [Project guidance](../AGENTS.md): operational summaries and project bindings.
+- [P-001 through P-005](../../.agents/system-task-principles.md): development and verification prerequisites, checkpoint practice, and message approval.
+- [P-011](../../.agents/system-task-principles.md#p-011--identify-the-referenced-concern-in-commit-messages): naming and pre-draft checks.
+- [Project guidance](../../AGENTS.md): operational summaries and project bindings.
 - User instruction on 2026-10-07: "stop with self commit", followed by acknowledgment to stop initiating commits and approval prompts. This overrides automatic initiation in the earlier P-005 rule. It was recorded in P-005 and guidance in the working tree after the baseline revision, alongside this example.
 - The earlier co-author trailer requirement was an execution requirement, not a user decision, and was absent from the baseline principle files. The user explicitly waived it on 2026-10-07 and asked to preserve that waiver until further instruction; the current preference is recorded in P-011 and project guidance.
 
@@ -54,7 +54,7 @@ This example is a derived description, not a second independent rule source. If 
 
 Which distinctions need identity-bearing records? How should an override identify the instruction it supersedes? How should a recipient resolve project bindings and attribution? What source evidence is sufficient when a decision originated in conversation?
 
-The provisional names MetaExport and KnowledgeStatement are agreed for the modeling experiment in [MetaExport](./meta-export.md). Their structures and further candidate Type and field names remain to be discussed before adoption. No automated validator, generator, or export mechanism is introduced.
+The provisional names MetaExport and KnowledgeStatement are agreed for the modeling experiment in [MetaExport](../workflows/meta-export.md). Their structures and further candidate Type and field names remain to be discussed before adoption. No automated validator, generator, or export mechanism is introduced.
 
 ## Example-Led Trial: The Documentation Commit
 

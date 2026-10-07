@@ -12,12 +12,12 @@
 
 - shorten Knwon usage Domaing to just: Domain usage
 
-- review suggested external agents/skills for possible adoption (see `design/agent-skill-landscape-2026-10-07.md`)
+- review suggested external agents/skills for possible adoption (see `knowledge/research/agent-skill-landscape-2026-10-07.md`)
 
 - export glossary terms belonging to a domain
 
 - Review the UIDesignReview skill after applying it to a UI
 
-- Potential skill candidates: Example-Led Knowledge Modeling ([pattern](design/example-led-knowledge-modeling.md)); Commit Preparation & Approval ([process](design/commit-process.md), generalize local rules cautiously); UIDesignReview ([skill](skills/ui-design-review/SKILL.md), review and refine after applying).
+- Potential skill candidates: Example-Led Knowledge Modeling ([pattern](./knowledge/practices/example-led-knowledge-modeling.md)); Commit Preparation & Approval ([process](./knowledge/practices/commit-process.md), generalize local rules cautiously); UIDesignReview ([skill](skills/ui-design-review/SKILL.md), review and refine after applying).
 
 

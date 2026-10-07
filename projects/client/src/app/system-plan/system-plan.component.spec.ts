@@ -99,7 +99,7 @@ describe('SystemPlanComponent', () => {
         expect(text).toContain('Prerequisites');
         expect(text).toContain('SC-001, SC-002');
         expect(text).toContain('Live data from');
-        expect(text).toContain('design/problem-inquiry-system/concerns.md');
+        expect(text).toContain('knowledge/domain-models/problem-inquiry-system/concerns.md');
         expect(text).not.toContain('manually synchronized');
     });
 

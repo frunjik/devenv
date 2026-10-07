@@ -4,7 +4,7 @@
 
 **Status:** Provisional concept; candidate structure and illustrative JSON drafted, not an authoritative schema.
 
-**Method:** [Example-Led Knowledge Modeling](./example-led-knowledge-modeling.md).
+**Method:** [Example-Led Knowledge Modeling](../practices/example-led-knowledge-modeling.md).
 
 ## Meaning and Scope
 
@@ -16,9 +16,9 @@ KnowledgeArea identifies subject; MetaLayer identifies perspective. They are not
 
 ## Commit Process Example
 
-The [Markdown MetaExport example](./meta-export-example.md) packages the current statements, override meaning, and interpretation checks without requiring repository access to understand them.
+The [Markdown MetaExport example](../knowledge-transfer/meta-export-example.md) packages the current statements, override meaning, and interpretation checks without requiring repository access to understand them.
 
-Use [Commit Process](./commit-process.md), including its [observed trial](./commit-process.md#example-led-trial-the-documentation-commit). A recipient without repository access must distinguish:
+Use [Commit Process](../practices/commit-process.md), including its [observed trial](../practices/commit-process.md#example-led-trial-the-documentation-commit). A recipient without repository access must distinguish:
 
 - Readiness, commit request, message approval, execution, and outcome acceptance.
 - Current instructions and superseded rules.
@@ -42,7 +42,7 @@ No complete self-contained export, external transmission, authoritative schema, 
 
 ## Resumable Workflow
 
-**Progress (2026-10-07):** Steps 2–3 have a candidate structure with user-approved field names and a [JSON subset](./meta-export-example.json), preserving instruction revisions. Preliminary interpretation checks are recorded in the [example](./meta-export-example.md#preliminary-meaning-check). The [Glossary contrast example](./glossary-meta-export-example.md) also tried the candidate KnowledgeStatement fields. The user accepted narrative-only distinctions for that example, while explicitly deferring exploration of a more structured model; this does not establish a general schema choice. Resume at step 4. Editorial corrections, partial/multiple replacements, structured references, and export completeness remain unresolved; no recipient validation has occurred.
+**Progress (2026-10-07):** Steps 2–3 have a candidate structure with user-approved field names and a [JSON subset](../knowledge-transfer/meta-export-example.json), preserving instruction revisions. Preliminary interpretation checks are recorded in the [example](../knowledge-transfer/meta-export-example.md#preliminary-meaning-check). The [Glossary contrast example](../knowledge-transfer/glossary-meta-export-example.md) also tried the candidate KnowledgeStatement fields. The user accepted narrative-only distinctions for that example, while explicitly deferring exploration of a more structured model; this does not establish a general schema choice. Resume at step 4. Editorial corrections, partial/multiple replacements, structured references, and export completeness remain unresolved; no recipient validation has occurred.
 
 Complete one step at a time. Record decisions, remaining questions, and the next step here before pausing. Ask for new names before adoption; keep proposals distinct from agreed meaning.
 

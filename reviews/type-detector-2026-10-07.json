@@ -73,7 +73,7 @@
       "subject": "Workflow status labels",
       "evidence": [
         "projects/shared/src/lib/workflow-todo.types.ts:1",
-        "design/workflow-todo-list.md",
+        "knowledge/workflows/workflow-todo-list.md",
         "projects/server/src/lib/handlers/workflow-todo.ts:14",
         "projects/server/test/workflow-todo.spec.ts"
       ],

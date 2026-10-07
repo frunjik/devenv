@@ -13,7 +13,7 @@ Server code imports only types from `@shared`; the shared package re-exports Ang
 
 ## Ticket API
 
-Tickets are stored on the server behind the `TicketStore` port (SC-028 in `design/problem-inquiry-system/concerns.md`). Responses wrap results as `{ data }` or `{ error: { message } }`.
+Tickets are stored on the server behind the `TicketStore` port (SC-028 in `knowledge/domain-models/problem-inquiry-system/concerns.md`). Responses wrap results as `{ data }` or `{ error: { message } }`.
 
 | Route | Purpose |
 |-------|---------|
@@ -29,20 +29,20 @@ The actor of a change is the authenticated principal, or `anonymous` when no aut
 
 | Route | Purpose |
 |-------|---------|
-| `GET /system-plan` | Reads and parses the concern register at `design/problem-inquiry-system/concerns.md`; returns each concern's id, title, kind, status, prerequisites, and opening description, plus user acceptance for validated concerns, in `{ data }`. |
+| `GET /system-plan` | Reads and parses the concern register at `knowledge/domain-models/problem-inquiry-system/concerns.md`; returns each concern's id, title, kind, status, prerequisites, and opening description, plus user acceptance for validated concerns, in `{ data }`. |
 
 ## DevEnv clone API
 
 `POST /devenv/clone` accepts `{ destination: string, replaceExisting: boolean }`.
 The destination must be an absolute server-local folder path whose parent already exists.
 Success returns `{ data: { destination, replacedExisting, warning? } }`.
-The curated package excludes the source repository's root `design` and `reviews` folders.
+The curated package excludes the source repository's root `knowledge` and `reviews` folders.
 Design-backed routes require recipient-provided documents after export.
 Malformed input and unsafe source/destination overlap return 400; an existing directory without
 replacement consent returns 409. Filesystem failures propagate as server errors.
 The source allowlist and staging/replacement behavior are implemented in
 [`devenv-clone.ts`](./src/lib/handlers/devenv-clone.ts).
-See the [workflow checkpoint](../../design/devenv-export-workflow.md#checkpoint) for remaining verification.
+See the [workflow checkpoint](../../knowledge/workflows/devenv-export-workflow.md#checkpoint) for remaining verification.
 
 ## Tests
 

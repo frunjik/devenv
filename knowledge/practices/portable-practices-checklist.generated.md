@@ -9,7 +9,7 @@ Prepare cross-domain practices and vocabulary; add software guidance only where 
 Interface: [TodoList](./portable-practices-checklist.types.ts). Check the actual JSON with:
 
 ```powershell
-npx.cmd tsc --noEmit --strict --skipLibCheck --resolveJsonModule --esModuleInterop --module commonjs --target ES2022 design\portable-practices-checklist.types.ts
+npx.cmd tsc --noEmit --strict --skipLibCheck --resolveJsonModule --esModuleInterop --module commonjs --target ES2022 knowledge\practices\portable-practices-checklist.types.ts
 ```
 
 ## Scope and authority
@@ -60,13 +60,13 @@ npx.cmd tsc --noEmit --strict --skipLibCheck --resolveJsonModule --esModuleInter
 **Limits:** Review of maintained guidance and selected vocabulary, not an exhaustive code audit. Historical review recommendations are evidence to consider, not adopted rules. Core Terms remain candidates; no new Type or name adopted.
 
 **Sources:**
-- [system-task-principles.md](../.agents/system-task-principles.md)
-- [type-detector.agent.md](../.agents/type-detector.agent.md)
-- [demolition-worker.agent.md](../.agents/demolition-worker.agent.md)
-- [SKILL.md](../skills/domain-type-design/SKILL.md)
-- [.glossary.json](../.glossary.json)
-- [knowledge-index.md](./knowledge-index.md)
-- [knowledge-soundness-2026-10-07.md](../reviews/knowledge-soundness-2026-10-07.md)
+- [system-task-principles.md](../../.agents/system-task-principles.md)
+- [type-detector.agent.md](../../.agents/type-detector.agent.md)
+- [demolition-worker.agent.md](../../.agents/demolition-worker.agent.md)
+- [SKILL.md](../../skills/domain-type-design/SKILL.md)
+- [.glossary.json](../../.glossary.json)
+- [index.md](../index.md)
+- [knowledge-soundness-2026-10-07.md](../../reviews/knowledge-soundness-2026-10-07.md)
 
 ## Checkpoint
 

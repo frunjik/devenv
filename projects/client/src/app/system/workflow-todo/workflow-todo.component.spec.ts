@@ -57,7 +57,7 @@ describe('WorkflowTodoComponent', () => {
         fixture.nativeElement.querySelector('.resume-button').click();
         fixture.detectChanges();
         expect(fixture.nativeElement.textContent).toContain('Loading document');
-        http.expectOne('http://localhost:3000/files?path=design\\glossary-refinement.md')
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\glossary-refinement.md')
             .flush({ data: '# Glossary Refinement\n\n## Checkpoint\nNext: MetaExport <script>not HTML</script>' });
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('pre').textContent).toContain('<script>not HTML</script>');
@@ -71,14 +71,22 @@ describe('WorkflowTodoComponent', () => {
         fixture.detectChanges();
         const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.resume-button'));
         buttons[0].click();
-        http.expectOne('http://localhost:3000/files?path=design\\glossary-refinement.md').flush({ data: 'Old document' });
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\glossary-refinement.md').flush({ data: 'Old document' });
         buttons[1].click();
-        http.expectOne('http://localhost:3000/files?path=design\\devenv-export-workflow.md')
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-export-workflow.md')
             .flush({}, { status: 500, statusText: 'Server Error' });
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('500');
         expect(fixture.nativeElement.textContent).not.toContain('Old document');
         expect(fixture.nativeElement.textContent).not.toContain('Loading document');
+    });
+
+    it('loads a generated practice checkpoint relative to the workflow list', () => {
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [] } });
+        fixture.componentInstance.openDocument('../practices/portable-practices-checklist.generated.md#checkpoint');
+        http.expectOne('http://localhost:3000/files?path=knowledge\\practices\\portable-practices-checklist.generated.md')
+            .flush({ data: '# Checklist' });
+        expect(fixture.componentInstance.documentText).toBe('# Checklist');
     });
 
     it('shows an empty message only after a successful empty response', () => {
@@ -93,10 +101,10 @@ describe('WorkflowTodoComponent', () => {
         fixture.detectChanges();
         const buttons: HTMLButtonElement[] = Array.from(fixture.nativeElement.querySelectorAll('.resume-button'));
         buttons[0].click();
-        const oldRequest = http.expectOne('http://localhost:3000/files?path=design\\glossary-refinement.md');
+        const oldRequest = http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\glossary-refinement.md');
         buttons[1].click();
         expect(oldRequest.cancelled).toBe(true);
-        const currentRequest = http.expectOne('http://localhost:3000/files?path=design\\devenv-export-workflow.md');
+        const currentRequest = http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-export-workflow.md');
         fixture.destroy();
         expect(currentRequest.cancelled).toBe(true);
     });

@@ -6,13 +6,13 @@ In this README, **Glossary**, **Term**, **Type**, and **Contract** are defined t
 
 DevEnv is currently implemented as an Angular client and Express API.
 
-See the [Project Knowledge Index](./design/knowledge-index.md) for the locations and roles of our decisions, learning, principles, vocabulary, design explorations, and reviews.
+See the [Project Knowledge Index](./knowledge/index.md) for the locations and roles of our decisions, learning, principles, vocabulary, design explorations, and reviews.
 
 The root `.glossary.json` is the authoritative Glossary data source, with `term`, `definitions`, `examples`, and `domains` fields. The Glossary UI and API read these structured records directly; legacy `.terms` content is not used as a fallback. An empty `domains` array means usage is unknown or unrecorded, not confirmed absent. These labels record occurrence, not defining-Domain ownership.
 
 Generate the human-readable `.glossary` Markdown view from the JSON source with `npm run generate:glossary:markdown`. The command reads `.glossary.json` and overwrites only `.glossary`; edit the JSON source, not the generated Markdown. Invalid records and file read/write errors fail the command.
 
-Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `design/meta-export-example.json` and overwrites only `design/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
+Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `knowledge/knowledge-transfer/meta-export-example.json` and overwrites only `knowledge/knowledge-transfer/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 
 ## Requirements
 
@@ -45,7 +45,7 @@ Problem Inquiry opens on the **Notes** tab (input conversion and accepted notes)
 The System Plan link is in the meta toolbar and is hidden when the meta layer is disabled; this does not change the default route.
 The System Plan supports case-insensitive search by concern ID, title, or displayed description. Search filters the list only; progress totals still describe the full register.
 
-The meta toolbar's **Workflow TODO** link opens `/workflow-todo`, a read-only workflow table. `GET /workflow-todo` derives its JSON from the authoritative `design/workflow-todo-list.md` on each request; no duplicate JSON list is maintained. Resume buttons show the complete workflow Markdown document and its checkpoint reference, without editing, changing workflow selection, or jumping to a heading. The existing **TODO** file-browser link remains separate. List and document loading failures are shown explicitly.
+The meta toolbar's **Workflow TODO** link opens `/workflow-todo`, a read-only workflow table. `GET /workflow-todo` derives its JSON from the authoritative `knowledge/workflows/workflow-todo-list.md` on each request; no duplicate JSON list is maintained. Resume buttons show the complete workflow Markdown document and its checkpoint reference, without editing, changing workflow selection, or jumping to a heading. The existing **TODO** file-browser link remains separate. List and document loading failures are shown explicitly.
 
 The meta toolbar's **Clone DevEnv** action opens a folder-export dialog (under **More** on mobile).
 Enter an absolute folder path on the API server's machine; its parent must already exist.
@@ -53,14 +53,14 @@ The dialog requires acknowledgement that existing destination contents will be r
 The server stages the curated package before replacing the destination, rejects source/destination overlap
 and existing symbolic-link destinations, and attempts restoration if installation fails.
 The package includes client/server/shared source, scripts, configuration, documentation, agents,
-skills and glossary. It excludes the root `design` and `reviews` folders, Git history, dependencies, build output,
+skills and glossary. It excludes the root `knowledge` and `reviews` folders, Git history, dependencies, build output,
 cache folders, workspace-specific task/input/scratch resources and `.env` files.
 Design-backed features such as System Plan and Workflow TODO require recipient-provided resources;
 the export does not recreate those excluded documents or rewrite references to them.
 An indeterminate progress bar is shown while exporting. Success closes the dialog automatically
 and shows a success snackbar. Export errors keep the dialog open for retry; any failure to remove
 the previous destination is included in a persistent warning snackbar after the successful export.
-The [DevEnv Export checkpoint](./design/devenv-export-workflow.md#checkpoint) records the current
+The [DevEnv Export checkpoint](./knowledge/workflows/devenv-export-workflow.md#checkpoint) records the current
 green-tests milestone and the remaining safety and full-coverage verification before the export trial is complete.
 
 Client and server release versions are maintained in `projects/client/package.json` and `projects/server/package.json`.

@@ -43,8 +43,11 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
         this.documentText = '';
         this.documentError = '';
         this.documentLoading = true;
-        const filename = resumePath.split('#')[0].slice(2);
-        this.documentSubscription = this.backend.loadFile(`design\\${filename}`).subscribe({
+        const reference = resumePath.split('#')[0];
+        const filename = reference.startsWith('../practices/')
+            ? `knowledge\\${reference.slice(3).replace(/\//g, '\\')}`
+            : `knowledge\\workflows\\${reference.slice(2)}`;
+        this.documentSubscription = this.backend.loadFile(filename).subscribe({
             next: text => {
                 this.documentText = text;
                 this.documentLoading = false;

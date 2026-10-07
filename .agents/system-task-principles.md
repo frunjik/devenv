@@ -23,6 +23,8 @@ These principles are active from their recorded date and apply to future work in
 - **Checkpoints:** After identifying the workflow concepts; after considering scope variation and important exceptions; and before completing the task.
 - **Review prompts:** Are distinct lifecycle states, outcomes, evidence, decisions, scope levels, roles, or relationships being collapsed into strings or unstructured fields? Does a proposed Type have a distinct meaning, constraints, or lifecycle? Would separating it clarify the model, or merely add ceremony?
 
+- **Knowledge-transfer modeling pattern (user, 2026-10-07):** Use [Example-Led Knowledge Modeling](../design/example-led-knowledge-modeling.md): meaning, a concrete Markdown example, a candidate Type, JSON, and a check that meaning is preserved. Try a contrasting example before choosing an authoritative representation. Ask for names before adopting them; do not equate a serialization format with the conceptual Type.
+
 ### P-003 — Verify Type Safety Before Completion
 
 - **Recorded:** 2026-10-05
@@ -46,9 +48,11 @@ These principles are active from their recorded date and apply to future work in
 - **Recorded:** 2026-10-05
 - **Source:** User instruction
 - **Applies to:** Coding tasks that reach a validated, stable state.
-- **Rule:** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
+- **Original rule (automatic initiation superseded by the 2026-10-07 override below):** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
 - **Exception:** Do not commit past an explicit user review; pause for that review instead. Keep the commit scoped to the completed work and follow the repository's commit-message conventions.
 - **Message approval (recorded 2026-10-06):** Before running `git commit`, present the drafted commit message to the user and let them approve it, edit it, or choose among alternatives, rather than committing it unilaterally. Applies to every commit, including regular feature work, not only meta/process changes. The current default is short and subject-only, but this is a revisable preference, not a fixed rule — the user may change it at any point, and a past choice of style is not binding on later commits.
+
+- **Commit initiation override (user, 2026-10-07):** Do not initiate commits or commit-approval prompts at stable checkpoints. Leave changes uncommitted unless the user explicitly requests a commit. This supersedes automatic initiation in the earlier rule, not the verification requirements or message approval after an explicit request.
 
 ### P-006 — Ask Before Changing Surrounding Code
 
@@ -103,7 +107,8 @@ These principles are active from their recorded date and apply to future work in
   - A word for `XX` renames the whole category, not one entry: reflect it everywhere that prefix's meaning is documented or used as a literal pattern — at minimum the Concern Record format/legend in `concerns.md`, the "Three ID schemes" Meta Note, and this principle itself.
 - **Standing default (recorded 2026-10-06):** For now, always use `SystemConcern-NN` (PascalCase, no space or underscore) as the commit-subject prefix in place of `SC-NN`, without asking each time — the user settled on this after trying several styles live (Meta-008, Meta-017). This is still a current preference, not a permanent rule (see "Applying the Register" below); revisit if the user says otherwise.
   Do not pre-assign such words unprompted; this stays an option the user invokes, not a default naming step.
-- **Clarification and pre-draft check (user, 2026-10-07):** Preserve the register's three-digit number in commit subjects, for example `SC-044` becomes `SystemConcern-044:`. Before drafting any commit message for approval, read P-005 and this principle, then check the current naming preference, the scope-specific subject, and the required co-author trailer. Approval follows validation and does not replace it. Keep the short project guidance consistent with this preference. Automated enforcement is not authorized by this decision.
+- **Clarification and pre-draft check (user, 2026-10-07; attribution updated by the override below):** Preserve the register's three-digit number in commit subjects, for example `SC-044` becomes `SystemConcern-044:`. Before drafting any commit message for approval, read P-005 and this principle, then check the current naming preference, the scope-specific subject, and the current attribution preference. Approval follows validation and does not replace it. Keep the short project guidance consistent with this preference. Automated enforcement is not authorized by this decision.
+- **Co-author attribution override (user, 2026-10-07):** Omit the Copilot `Co-authored-by` trailer from commits until the user says otherwise. This is a standing waiver of the earlier trailer requirement, including when the assistant edits code or documentation; it is not limited to commit-message assistance. Commit initiation and message approval rules remain unchanged. The pre-draft check must use this current attribution preference rather than adding the earlier trailer.
 
 ### P-012 — Review Naming Decisions From Either Direction
 

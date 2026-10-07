@@ -57,7 +57,7 @@ SC-027 remains the place to decide domain-scoped vocabulary; SC-049 remains the 
 
 **Decision (user, 2026-10-07):** Add `KnowledgeArea` as a provisional Glossary term and classify terms first, keeping the current glossary file and UI working. Separate files and shared-definition handling are not decided.
 
-The following is a proposed subject mapping of every current term in [.glossary](../.glossary), not a change to its definitions or a claim that those definitions have been domain-validated. Membership is non-exclusive. Shared terms remain defined once; use in an area does not transfer ownership or establish a new meaning. Unstructured entries in [.terms](../.terms) are not promoted to defined vocabulary by this mapping.
+The following is the initial proposed subject mapping of the 50 terms present in [.glossary](../.glossary) when the classification was recorded, not a change to its definitions or a claim that those definitions have been domain-validated. Later additions, including MetaLayer and SubjectDomain, are not classified in this snapshot. Membership is non-exclusive. Shared terms remain defined once; use in an area does not transfer ownership or establish a new meaning. Unstructured entries in [.terms](../.terms) are not promoted to defined vocabulary by this mapping.
 
 | Terms | Proposed KnowledgeAreas | Interpretation boundary |
 |---|---|---|
@@ -96,6 +96,9 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [System Type review](../reviews/system-types.md) | Recorded findings, invariant problems, strengths, and candidate improvements; not proof that recommendations were implemented. |
 | [Knowledge soundness review (2026-10-07)](../reviews/knowledge-soundness-2026-10-07.md) | Dated assessment of conceptual soundness and consistency across the indexed documents, with proposed improvements and review limits. Recommendations are pending discussion, not agreed rules. |
 | [RICE prioritization review](../reviews/rice-prioritization.md) | Scoring concepts, rules, contracts, and interpretation. |
+| [Example-Led Knowledge Modeling](./example-led-knowledge-modeling.md) | User-agreed pattern for deriving a knowledge-transfer model from meaning and contrasting examples before choosing an authoritative representation. |
+| [Commit Process](./commit-process.md) | First Markdown transfer example, distinguishing current procedure, local preferences, source decisions, overrides, and open modeling questions. Not an independent rule source or agreed export schema. |
+| [MetaExport](./meta-export.md) | Provisional transfer concept for concern-planning and development/meta/meta-meta knowledge; starts from Commit Process and records what a candidate model must preserve. No external transmission or schema is agreed. |
 | [Domain Type design skill](../skills/domain-type-design/SKILL.md) | Reusable procedure for defining/reviewing goal-oriented domain Types and keeping vocabulary consistent. |
 | [TDD developer guidance](../.agents/test-driven-developer.agent.md) | Detailed Red-Green-Refactor method. |
 | [Type reviewer guidance](../.agents/type-reviewer.agent.md) | Type-review lens used at checkpoints. |

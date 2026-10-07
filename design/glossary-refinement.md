@@ -33,7 +33,7 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 **Representation sync (user, 2026-10-07):** Sync only recorded content with the glossary UI Type and parser. GlossaryEntry now separates definitions and `Example:` lines while preserving actual Term names, including `Domain (WMS)` and `MetaLayer (DevEnv)`. No Domain assignments, sources, or revision fields are inferred. The API still returns lines; this is a local display Type refinement, not an adopted export model.
 
-**Next:** Agree Domain labels and per-Term meaning assignments for the requested glossary display, before step 4's Markdown MetaExport example. No display implementation has started.
+**Next:** Agree per-Term known usage assignments for WMS, DevEnv, and Meta before adding the `domains` field and display. This replaces the earlier defining-Domain plan; step 4's Markdown MetaExport example follows. No Domain display implementation has started.
 
 The example distinguishes subject from perspective: development practices can be organized as KnowledgeArea (development/meta practices), while MetaLayer (development practices governing DevEnv work) identifies their governing relationship to an activity. SubjectDomain (WMS) identifies the Domain being investigated, not a level in that organization.
 
@@ -71,3 +71,13 @@ These replace the earlier definitions to distinguish a context of meaning from s
 Domain labels and assignments remain unresolved. Neither an example from SubjectDomain (WMS) nor use within DevEnv establishes where a Term's definition belongs. Do not convert the provisional KnowledgeArea mapping into Domain assignments.
 
 Start with the three in-scope Terms. Identify their defining context and whether a shared definition is reused or different Domain-specific meanings are needed. Agree names and boundaries before assigning labels; expansion to other Terms and display implementation remain subsequent work.
+
+### Known Usage Domain Decision
+
+**User revision (2026-10-07):** The requested `domains` field on GlossaryEntry will identify Domains where the Term is known to occur, not where its meaning is defined. This supersedes the earlier defining-Domain display direction, not the distinction between definitions and usage.
+
+**Selected labels:** WMS, DevEnv, and Meta. DevEnv follows the existing system-name spelling. Meta labels the context of reasoning about systems, development practices, and their evaluation; it is not synonymous with MetaLayer (DevEnv). Exact boundaries and per-Term assignments remain to be agreed.
+
+Displaying a Term in DevEnv's glossary does not alone establish its use in the DevEnv Domain. Likewise, a parenthesized example does not establish usage within the example's Domain. Do not infer assignments from either, or from KnowledgeArea memberships.
+
+No assignments, code fields, or source-format changes have been added yet. Unknown usage must not be presented as confirmed absence.

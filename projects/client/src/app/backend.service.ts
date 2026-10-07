@@ -11,6 +11,7 @@ import type {
     GitStatus,
     LastTestRun,
     FolderEntry,
+    GlossaryEntry,
     NewProblemTicket,
     ProblemTicketId,
     RgrPhase,
@@ -101,8 +102,8 @@ export class BackendService {
         return this.get<RgrPhase | null>('rgr-phase');
     }
 
-    getGlossary(): Observable<string[]> {
-        return this.get<string[]>('glossary');
+    getGlossary(): Observable<GlossaryEntry[]> {
+        return this.get<GlossaryEntry[]>('glossary');
     }
 
     getSystemPlan(): Observable<SystemPlanConcern[]> {

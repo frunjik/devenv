@@ -4,7 +4,7 @@
 
 ## Steps
 
-1. Inspect glossary loading and existing editing patterns. Agree editable fields, naming rules, and handling of entries from `.glossary` versus `.terms`.
+1. Inspect glossary loading and existing editing patterns. Treat `.glossary.json` as authoritative and `.glossary` as generated; agree editable fields and naming rules. `.terms` is not part of the Glossary API.
 2. Agree validation, authorization, persistence, and conflict handling. Preserve unrelated entries and metadata; do not introduce a second authoritative glossary.
 3. Review Types and identify the relevant SystemConcern before implementation. A glossary display entry is not automatically an editing contract.
 4. Implement the agreed UI/API scope using Red-Green-Refactor. Preserve drafts on failed saves and surface errors explicitly.

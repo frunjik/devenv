@@ -21,103 +21,45 @@ describe('GlossaryComponent', () => {
 
     afterEach(() => http.verify());
 
-    it('displays the loaded items', () => {
-        http.expectOne('http://localhost:3000/glossary').flush({ data: ['Term', 'Model'] });
-        fixture.detectChanges();
-
-        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-term'))
-            .map(item => item.textContent)).toEqual(['Term', 'Model']);
-    });
-
-    it('presents each term with its definition, without the list marker', () => {
-        http.expectOne('http://localhost:3000/glossary').flush({
-            data: ['Term', '- A word with an agreed meaning.', 'Domain', '- A bounded area.', '- Seen in a context.'],
-        });
-        fixture.detectChanges();
-
-        const entries = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-entry'));
-        expect(entries.map(entry => entry.querySelector('.glossary-term')?.textContent)).toEqual(['Term', 'Domain']);
-        expect(Array.from<HTMLElement>(entries[0].querySelectorAll('.glossary-definition:not(.glossary-domains)')).map(item => item.textContent))
-            .toEqual(['A word with an agreed meaning.']);
-        expect(Array.from<HTMLElement>(entries[1].querySelectorAll('.glossary-definition:not(.glossary-domains)')).map(item => item.textContent))
-            .toEqual(['A bounded area.', 'Seen in a context.']);
-    });
-
-    it('shows a term that has no definition without an empty definition', () => {
-        http.expectOne('http://localhost:3000/glossary').flush({ data: ['Model'] });
-        fixture.detectChanges();
-
-        expect(fixture.nativeElement.querySelectorAll('.glossary-entry').length).toBe(1);
-        expect(fixture.nativeElement.querySelector('.glossary-definition:not(.glossary-domains)')).toBeNull();
-    });
-
-    it('separates recorded examples from definitions and preserves example-qualified names', () => {
+    it('displays structured terms returned by the API', () => {
         http.expectOne('http://localhost:3000/glossary').flush({
             data: [
-                'Domain (WMS)', '- A context of meaning.',
-                'KnowledgeArea', '- A subject classification.',
-                '- Example: KnowledgeArea (warehouse operations).',
-                '- Example: KnowledgeArea (development practices).',
-                'MetaLayer (DevEnv)', '- A perspective.',
+                { term: 'Term', definitions: ['A word with meaning.'], examples: [], domains: [] },
+                { term: 'Model', definitions: [], examples: [], domains: [] },
             ],
         });
         fixture.detectChanges();
 
-        expect(fixture.componentInstance.entries).toEqual([
-            { term: 'Domain (WMS)', definitions: ['A context of meaning.'], examples: [], domains: [] },
-            {
-                term: 'KnowledgeArea', definitions: ['A subject classification.'],
-                examples: ['KnowledgeArea (warehouse operations).', 'KnowledgeArea (development practices).'],
-                domains: [],
-            },
-            { term: 'MetaLayer (DevEnv)', definitions: ['A perspective.'], examples: [], domains: [] },
-        ]);
-        const entry: HTMLElement = fixture.nativeElement.querySelectorAll('.glossary-entry')[1];
-        expect(Array.from(entry.querySelectorAll('.glossary-definition:not(.glossary-example):not(.glossary-domains)')).map(item => item.textContent))
-            .toEqual(['A subject classification.']);
-        expect(Array.from(entry.querySelectorAll('.glossary-example')).map(item => item.textContent))
-            .toEqual([
-                'Example: KnowledgeArea (warehouse operations).',
-                'Example: KnowledgeArea (development practices).',
-            ]);
+        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-term'))
+            .map(item => item.textContent)).toEqual(['Term', 'Model']);
+        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-definition:not(.glossary-domains)'))
+            .map(item => item.textContent)).toEqual(['A word with meaning.']);
+        expect(fixture.nativeElement.querySelector('.glossary-domain-unknown').textContent).toBe('Unknown');
     });
 
-    it('shows recorded usage Domains separately without inferring them from names', () => {
+    it('displays definitions, examples, and known usage in separate groups', () => {
         http.expectOne('http://localhost:3000/glossary').flush({
-            data: ['MetaLayer (DevEnv)', '- A perspective.', '- Domains: DevEnv, Meta',
-                'SubjectDomain (WMS AI)', '- A Domain.', '- Domains: Meta',
-                'Domain (WMS)', '- A context.'],
+            data: [{
+                term: 'KnowledgeArea (WMS operations)',
+                definitions: ['A subject classification.'],
+                examples: ['Warehouse operations.'],
+                domains: ['DevEnv', 'Meta'],
+            }],
         });
         fixture.detectChanges();
-        expect(fixture.componentInstance.entries.map(entry => entry.domains))
-            .toEqual([['DevEnv', 'Meta'], ['Meta'], []]);
-        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-domain-badge'))
-            .map(item => item.textContent?.trim())).toEqual([
-                'DevEnv', 'Meta', 'Meta', 'Unknown',
-            ]);
-        expect(fixture.nativeElement.querySelector('.glossary-domain-unknown').textContent).toBe('Unknown');
-        expect(fixture.nativeElement.querySelectorAll('.glossary-domains-label').length).toBe(3);
-        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-domains-label'))
-            .map(item => item.textContent?.trim())).toEqual(['Domain usage:', 'Domain usage:', 'Domain usage:']);
+
+        const entry: HTMLElement = fixture.nativeElement.querySelector('.glossary-entry');
+        expect(entry.querySelector('.glossary-term').textContent).toBe('KnowledgeArea (WMS operations)');
+        expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-definition:not(.glossary-example):not(.glossary-domains)'))
+            .map(item => item.textContent)).toEqual(['A subject classification.']);
+        expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-example'))
+            .map(item => item.textContent)).toEqual(['Example: Warehouse operations.']);
+        expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-domain-badge'))
+            .map(item => item.textContent?.trim())).toEqual(['DevEnv', 'Meta']);
+        expect(entry.querySelector('.glossary-domains-label').textContent).toBe('Domain usage:');
     });
 
-    it.each(['- Domains:', '- Domains: Meta, ', '- Domains: , Meta'])('reports invalid usage metadata %s', line => {
-        http.expectOne('http://localhost:3000/glossary').flush({ data: ['Term', line] });
-        fixture.detectChanges();
-        expect(fixture.nativeElement.querySelector('[role="alert"]').textContent)
-            .toContain('Usage Domains must contain non-empty labels');
-        expect(fixture.componentInstance.entries).toEqual([]);
-    });
-
-    it('keeps a definition line that has no term in front of it visible', () => {
-        http.expectOne('http://localhost:3000/glossary').flush({ data: ['- Orphan text', 'Term', '- Definition'] });
-        fixture.detectChanges();
-
-        const terms = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-term'));
-        expect(terms.map(item => item.textContent)).toEqual(['- Orphan text', 'Term']);
-    });
-
-    it('shows an empty message when there is nothing to show', () => {
+    it('shows an empty message when the JSON array is empty', () => {
         http.expectOne('http://localhost:3000/glossary').flush({ data: [] });
         fixture.detectChanges();
 
@@ -125,7 +67,10 @@ describe('GlossaryComponent', () => {
     });
 
     it('shows an error message when loading fails', () => {
-        http.expectOne('http://localhost:3000/glossary').flush({ error: { message: 'boom' } }, { status: 500, statusText: 'Server Error' });
+        http.expectOne('http://localhost:3000/glossary').flush(
+            { error: { message: 'Invalid Glossary JSON' } },
+            { status: 500, statusText: 'Server Error' },
+        );
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('500');

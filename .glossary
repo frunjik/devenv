@@ -1,158 +1,730 @@
-Term
-- A word or phrase with a specific, agreed meaning within a Domain or System.
+# Glossary
 
-Domain (WMS)
-- A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings.
+## Term
 
-SubjectDomain (WMS AI)
-- The Domain being investigated or supported.
-- Domains: Meta
+### Definitions
 
-KnowledgeArea (WMS operations)
-- A subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership.
-- Domains: Meta
+- A word or phrase with a specific, agreed meaning within a Domain or System\.
 
-MetaLayer (DevEnv)
-- A named perspective from which another system, activity, or its description is examined, described, governed, or evaluated.
-- Domains: DevEnv, Meta
+### Examples
 
-Abstraction
-- The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand.
+_No examples recorded._
 
-Domain Design System
-- A System that helps people define, inspect, validate, and evolve a Domain's Terms, Types, relationships, rules, and supporting evidence.
+### Domain usage
 
-Domain Definition
-- A versioned description of a Domain, including its context, Glossary, Types, relationships, and applicable Contracts.
+_Unknown or unrecorded._
 
-System
-- A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior.
+## Domain \(WMS\)
 
-System Concern
-- A topic or uncertainty that needs attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items. It is not itself necessarily a Work Item.
+### Definitions
 
-Goal
-- A desired outcome or condition that a System is intended to achieve.
+- A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings\.
 
-Problem
-- A context-bound description of an undesirable or inadequate current condition, including who or what is affected and why it matters; its framing may be uncertain or contested and should be supported by observations or evidence.
+### Examples
 
-Inquiry
-- A purposeful, revisable investigation into a question or uncertainty relevant to a Goal, using evidence and reasoning to record findings or decisions with rationale; it may be revisited as understanding changes.
+_No examples recorded._
 
-Work Item
-- A bounded unit of work undertaken to contribute to a Goal or satisfy an Acceptance Criterion.
+### Domain usage
 
-Work Status
-- The current lifecycle state of a Work Item: ready, in progress, blocked, completed, or cancelled.
+_Unknown or unrecorded._
 
-Dependency
-- A relationship in which one Work Item must be completed or otherwise resolved before another can proceed.
+## SubjectDomain \(WMS AI\)
 
-Blocker
-- An unresolved condition preventing a Work Item from making progress.
+### Definitions
 
-Deliverable
-- An Artifact produced or changed by completing a Work Item.
+- The Domain being investigated or supported\.
 
-Progress
-- A summary of advancement in Work Items or Acceptance Criteria; Work Item progress is not itself proof that a Goal has been achieved.
+### Examples
 
-Goal Assessment
-- A determination of whether a Goal's Acceptance Criteria are satisfied by evidence.
+_No examples recorded._
 
-Type
-- A definition that groups things by their shared meaning, properties, relationships, and rules.
+### Domain usage
 
-Type Description
-- A machine-readable description of a Type's identity, fields, relationships, constraints, variants, and version.
+- Meta
 
-Type Instance
-- A particular value whose structure and validity are described by a Type.
+## KnowledgeArea \(WMS operations\)
 
-Hydration
-- The process of constructing a Type Instance from serialized data using its Type Description.
+### Definitions
 
-Transformation
-- An explicit mapping that converts data from one Type or representation to another while stating semantic differences or information loss.
+- A subject used to classify knowledge, potentially spanning multiple Domains\. Membership does not establish shared meaning, rules, or ownership\.
 
-Contract
-- An agreed specification of the obligations and guarantees between parts of a System.
+### Examples
 
-Glossary
-- An organized collection of defined Terms used within a Domain or System.
+_No examples recorded._
 
-Acceptance Criterion
-- An observable condition that must hold for a Goal to count as achieved.
+### Domain usage
 
-Evidence
-- An observation or Artifact used to support or challenge a claim, including whether an Acceptance Criterion holds.
+- Meta
 
-System Observation
-- A recorded, directly observable behavior or state of a System.
+## MetaLayer \(DevEnv\)
 
-Artifact
-- A persistent work product or System output that can be inspected as evidence.
+### Definitions
 
-Test Case
-- A defined stimulus and expected observable result used to evaluate a System behavior, Contract, or Type rule.
+- A named perspective from which another system, activity, or its description is examined, described, governed, or evaluated\.
 
-Test Result
-- The observed outcome of executing a Test Case, including whether its expected result held.
+### Examples
 
-Test Suite
-- An organized collection of Test Cases executed together for a stated purpose.
+_No examples recorded._
 
-Coverage Scope
-- The set of source files and code units included in a particular coverage measurement.
+### Domain usage
 
-Coverage Metric
-- A measured proportion of covered code units, such as statements, branches, functions, or lines, within a Coverage Scope.
+- DevEnv
+- Meta
 
-Coverage Report
-- A record of Coverage Metrics and thresholds for a declared Coverage Scope.
+## Abstraction
 
-Type Invariant
-- A rule that every valid instance of a Type must satisfy.
+### Definitions
 
-Prioritization Candidate
-- A proposed feature, initiative, or Work Item being considered for investment.
+- The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand\.
 
-Estimate
-- A stated value for an uncertain quantity, accompanied by its rationale and supporting evidence.
+### Examples
 
-Impact Scale
-- A declared set of Impact levels used consistently to estimate and compare candidate outcomes.
+_No examples recorded._
 
-RICE Model
-- A prioritization method that divides Reach multiplied by Impact and Confidence by Effort.
+### Domain usage
 
-RICE Assessment
-- A contextualized set of Reach, Impact, Confidence, and Effort estimates for one Prioritization Candidate, with its calculated score and supporting rationale.
+_Unknown or unrecorded._
 
-Prioritization Decision
-- A recorded selection, deferral, or rejection of a Prioritization Candidate, linked to the assessment and rationale used.
+## Domain Design System
 
-Reach
-- The estimated number of people or occurrences affected by a Prioritization Candidate within a defined time period and population.
+### Definitions
 
-Impact
-- The estimated magnitude of a Prioritization Candidate's effect on a stated user or System outcome, measured with a declared scale.
+- A System that helps people define, inspect, validate, and evolve a Domain's Terms, Types, relationships, rules, and supporting evidence\.
 
-Confidence
-- The estimated degree of certainty that the Reach, Impact, and Effort estimates are reasonable, represented from 0 to 1.
+### Examples
 
-Effort
-- The estimated team work required to deliver a Prioritization Candidate, measured in a declared unit such as person-months.
+_No examples recorded._
 
-Scoring Context
-- The time period, target population, outcome, impact scale, and effort unit that make RICE Assessments interpretable and comparable.
+### Domain usage
 
-RICE Score
-- The calculated value (Reach × Impact × Confidence) ÷ Effort for one RICE Assessment; it ranks relative expected impact per effort within a comparable Scoring Context.
+_Unknown or unrecorded._
 
-Monetary Cost
-- An estimated financial expenditure expressed as an amount and currency; it is distinct from Effort.
+## Domain Definition
 
-Monetary Comparison
-- A comparison of estimated financial benefit and cost for the same candidate, currency, and time period, separate from a RICE Score.
+### Definitions
+
+- A versioned description of a Domain, including its context, Glossary, Types, relationships, and applicable Contracts\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## System
+
+### Definitions
+
+- A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## System Concern
+
+### Definitions
+
+- A topic or uncertainty that needs attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items\. It is not itself necessarily a Work Item\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Goal
+
+### Definitions
+
+- A desired outcome or condition that a System is intended to achieve\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Problem
+
+### Definitions
+
+- A context\-bound description of an undesirable or inadequate current condition, including who or what is affected and why it matters; its framing may be uncertain or contested and should be supported by observations or evidence\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Inquiry
+
+### Definitions
+
+- A purposeful, revisable investigation into a question or uncertainty relevant to a Goal, using evidence and reasoning to record findings or decisions with rationale; it may be revisited as understanding changes\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Work Item
+
+### Definitions
+
+- A bounded unit of work undertaken to contribute to a Goal or satisfy an Acceptance Criterion\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Work Status
+
+### Definitions
+
+- The current lifecycle state of a Work Item: ready, in progress, blocked, completed, or cancelled\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Dependency
+
+### Definitions
+
+- A relationship in which one Work Item must be completed or otherwise resolved before another can proceed\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Blocker
+
+### Definitions
+
+- An unresolved condition preventing a Work Item from making progress\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Deliverable
+
+### Definitions
+
+- An Artifact produced or changed by completing a Work Item\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Progress
+
+### Definitions
+
+- A summary of advancement in Work Items or Acceptance Criteria; Work Item progress is not itself proof that a Goal has been achieved\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Goal Assessment
+
+### Definitions
+
+- A determination of whether a Goal's Acceptance Criteria are satisfied by evidence\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Type
+
+### Definitions
+
+- A definition that groups things by their shared meaning, properties, relationships, and rules\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Type Description
+
+### Definitions
+
+- A machine\-readable description of a Type's identity, fields, relationships, constraints, variants, and version\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Type Instance
+
+### Definitions
+
+- A particular value whose structure and validity are described by a Type\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Hydration
+
+### Definitions
+
+- The process of constructing a Type Instance from serialized data using its Type Description\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Transformation
+
+### Definitions
+
+- An explicit mapping that converts data from one Type or representation to another while stating semantic differences or information loss\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Contract
+
+### Definitions
+
+- An agreed specification of the obligations and guarantees between parts of a System\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Glossary
+
+### Definitions
+
+- An organized collection of defined Terms used within a Domain or System\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Acceptance Criterion
+
+### Definitions
+
+- An observable condition that must hold for a Goal to count as achieved\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Evidence
+
+### Definitions
+
+- An observation or Artifact used to support or challenge a claim, including whether an Acceptance Criterion holds\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## System Observation
+
+### Definitions
+
+- A recorded, directly observable behavior or state of a System\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Artifact
+
+### Definitions
+
+- A persistent work product or System output that can be inspected as evidence\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Test Case
+
+### Definitions
+
+- A defined stimulus and expected observable result used to evaluate a System behavior, Contract, or Type rule\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Test Result
+
+### Definitions
+
+- The observed outcome of executing a Test Case, including whether its expected result held\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Test Suite
+
+### Definitions
+
+- An organized collection of Test Cases executed together for a stated purpose\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Coverage Scope
+
+### Definitions
+
+- The set of source files and code units included in a particular coverage measurement\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Coverage Metric
+
+### Definitions
+
+- A measured proportion of covered code units, such as statements, branches, functions, or lines, within a Coverage Scope\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Coverage Report
+
+### Definitions
+
+- A record of Coverage Metrics and thresholds for a declared Coverage Scope\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Type Invariant
+
+### Definitions
+
+- A rule that every valid instance of a Type must satisfy\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Prioritization Candidate
+
+### Definitions
+
+- A proposed feature, initiative, or Work Item being considered for investment\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Estimate
+
+### Definitions
+
+- A stated value for an uncertain quantity, accompanied by its rationale and supporting evidence\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Impact Scale
+
+### Definitions
+
+- A declared set of Impact levels used consistently to estimate and compare candidate outcomes\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## RICE Model
+
+### Definitions
+
+- A prioritization method that divides Reach multiplied by Impact and Confidence by Effort\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## RICE Assessment
+
+### Definitions
+
+- A contextualized set of Reach, Impact, Confidence, and Effort estimates for one Prioritization Candidate, with its calculated score and supporting rationale\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Prioritization Decision
+
+### Definitions
+
+- A recorded selection, deferral, or rejection of a Prioritization Candidate, linked to the assessment and rationale used\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Reach
+
+### Definitions
+
+- The estimated number of people or occurrences affected by a Prioritization Candidate within a defined time period and population\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Impact
+
+### Definitions
+
+- The estimated magnitude of a Prioritization Candidate's effect on a stated user or System outcome, measured with a declared scale\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Confidence
+
+### Definitions
+
+- The estimated degree of certainty that the Reach, Impact, and Effort estimates are reasonable, represented from 0 to 1\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Effort
+
+### Definitions
+
+- The estimated team work required to deliver a Prioritization Candidate, measured in a declared unit such as person\-months\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Scoring Context
+
+### Definitions
+
+- The time period, target population, outcome, impact scale, and effort unit that make RICE Assessments interpretable and comparable\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## RICE Score
+
+### Definitions
+
+- The calculated value \(Reach × Impact × Confidence\) ÷ Effort for one RICE Assessment; it ranks relative expected impact per effort within a comparable Scoring Context\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Monetary Cost
+
+### Definitions
+
+- An estimated financial expenditure expressed as an amount and currency; it is distinct from Effort\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._
+
+## Monetary Comparison
+
+### Definitions
+
+- A comparison of estimated financial benefit and cost for the same candidate, currency, and time period, separate from a RICE Score\.
+
+### Examples
+
+_No examples recorded._
+
+### Domain usage
+
+_Unknown or unrecorded._

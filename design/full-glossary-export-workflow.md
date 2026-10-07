@@ -1,6 +1,6 @@
 # Full Glossary Export
 
-**Registered:** 2026-10-07. Paused; source-of-truth migration is not implemented.
+**Registered:** 2026-10-07. Completed; `.glossary.json` is authoritative and `.glossary` is generated.
 
 ## Scope
 
@@ -12,15 +12,15 @@ This is separate from [MetaExport](./meta-export.md), which explores transfer of
 
 1. **Superseded:** The previous CLI exported `.glossary` to `design/glossary-export.generated.json`. The user now specifies `.glossary.json` as the authoritative data source and `.glossary` as generated Markdown.
 2. **Agreed:** Use structured records with `term`, `definitions`, `examples`, and `domains`. Exclude legacy `.terms` entries.
-3. **Agreed and implemented:** Reuse the existing `GlossaryEntry` fields and parser through `@shared`; empty `domains` represents unknown/unrecorded usage.
+3. **Agreed:** Reuse `GlossaryEntry` as the shared contract; validate structured data before API responses or Markdown generation. Empty `domains` represents unknown/unrecorded usage.
 4. **Reviewed:** SC-027 and SC-049 were considered; neither directly covers this unfiltered full export. No concern association or new Type was adopted.
 5. **Agreed:** `.glossary.json` is the one editable source of truth; `.glossary` is a generated view and must not be independently edited.
-6. Rework CLI generation, API, and UI so the UI consumes JSON and Markdown is generated from JSON. Surface read/parse/write failures.
-7. Verify with filesystem-boundary mocks, scoped coverage, builds, JSON/Markdown equivalence, and update documentation. External transmission and commits require separate permission.
+6. **Implemented:** Rework CLI generation, API, and UI so the UI consumes JSON and Markdown is generated from JSON. Surface read/parse/write failures.
+7. **Verified:** Use filesystem-boundary mocks, scoped coverage, builds, JSON/Markdown equivalence, and update documentation. External transmission and commits require separate permission.
 
 ## Checkpoint
 
-**Checkpoint (2026-10-07):** The user changed the initial scope from Domain-filtered export to full Glossary export, then specified a source-of-truth migration: `.glossary.json` at the repository root is authoritative, `.glossary` is generated Markdown, and the UI must use authoritative JSON. The prior `design/glossary-export.generated.json` is superseded; decide whether to remove it during migration.
+**Checkpoint (2026-10-07):** The user changed the initial scope from Domain-filtered export to full Glossary export, then specified a source-of-truth migration: `.glossary.json` at the repository root is authoritative, `.glossary` is generated Markdown, and the UI must use authoritative JSON. The prior `design/glossary-export.generated.json` has been removed.
 
 **Source review before migration:** `.glossary` contains current Terms; `.terms` contains legacy workflow/status labels. The current `GET /glossary` endpoint prefers `.glossary` and falls back to `.terms`. The shared parser already maps Markdown lines to the agreed JSON record shape.
 
@@ -28,7 +28,7 @@ This is separate from [MetaExport](./meta-export.md), which explores transfer of
 
 **Concern review:** SC-027 concerns scoping Glossary terms by Domain level, whereas this export is unfiltered; SC-049 concerns transfer of concern-planning and development/meta knowledge and does not include Glossary export in its current scope. No direct existing concern is established; keep this workflow unassigned unless the user directs otherwise.
 
-**Acceptance criteria:** Export all `.glossary` entries in source order as records with the selected four fields; preserve every term, definition, example, and recorded usage label; represent unrecorded usage as an empty `domains` array without implying absence; exclude `.terms`; write only the selected generated output path; surface read, parse, and write failures; add no parallel source of truth. Validate with filesystem-boundary mocks, scoped 100% four-metric coverage for changed production code, shared/client builds, and a JSON parse/shape check.
+**Acceptance criteria:** Preserve the existing Glossary content and order as records with the selected four fields; represent unrecorded usage as an empty `domains` array without implying absence; exclude `.terms`; generate `.glossary` Markdown only from `.glossary.json`; surface read, parse, and write failures; add no parallel source of truth. Validate with filesystem-boundary mocks, scoped 100% four-metric coverage for changed production code, shared/client builds, and JSON/Markdown consistency checks.
 
 **Previous implementation and verification (2026-10-07):** The initial CLI export and shared parser were committed in `844fbec`. It generated 52 records from `.glossary`; prior test/build results are retained below as a baseline, not final migration verification.
 
@@ -46,4 +46,6 @@ Type review: reusing `GlossaryEntry` as a shared contract and parser avoids comp
 
 The previously committed implementation remains unchanged: `npm run export:glossary` still parses `.glossary` and writes `design/glossary-export.generated.json`; the API still reads Markdown lines and falls back to `.terms`. No migration or generated-view change has been made yet.
 
-**Next:** Resume with Red phase tests for (1) serving validated `.glossary.json` through the API with no `.terms` fallback, and (2) generating `.glossary` Markdown from authoritative JSON through a filesystem boundary mock. Then migrate the existing 52 records from the generated JSON to root `.glossary.json`, implement the shared JSON validation/API/UI contract and JSON-to-Markdown generator, remove the obsolete `design/glossary-export.generated.json`, update docs, and validate builds, scoped coverage, generated Markdown equivalence, and full suites. Keep the user's unrelated `TODO.md` change untouched.
+**Resume (2026-10-07):** User requested continuation. Begin with Red tests for (1) serving validated `.glossary.json` through the API with no `.terms` fallback, and (2) generating `.glossary` Markdown from authoritative JSON through a filesystem boundary mock. Then migrate the existing 52 records to root `.glossary.json`, implement shared JSON validation/API/UI behavior and JSON-to-Markdown generation, remove the obsolete `design/glossary-export.generated.json`, update docs, and validate builds, scoped coverage, generated Markdown equivalence, and full suites. Keep the user's unrelated `TODO.md` change untouched.
+
+**Completion checkpoint (2026-10-07):** `.glossary.json` contains the existing 52 structured records. Shared validation and Markdown rendering, the JSON-backed API and UI, and the JSON-to-Markdown generator are implemented; `.glossary` was regenerated and README/index documentation updated. Focused tests pass. Full server coverage passes: 221 tests and 100% statements, branches, functions, and lines. Full client tests pass: 336 tests; the Glossary shared module and UI are at 100% across all four metrics. Repository-wide client coverage exits nonzero at 99.65% function coverage because of the untouched `SharedService` constructor outside this change; the other client aggregate metrics are 100%. Shared and client builds pass; both `tsc --noEmit --project projects/server/tsconfig.jest.json` and a targeted strict check of the generator/API implementation pass. JSON and generated Markdown both contain 52 entries; generation tests verify exact output and validation behavior. The `TODO.md` working-tree change was left untouched. The final Type review retains the existing `GlossaryEntry` contract; no new Type is justified because `domains` intentionally records occurrence labels as strings and no Domain identity or relationship contract was agreed. This workflow is completed; no commit was made.

@@ -19,8 +19,8 @@ When resuming work, consult:
 | [Meta Notes](./problem-inquiry-system/concerns.md#meta-notes) | Lessons about how we build and reason: recurring patterns, naming issues, evidence limitations, and reflections on the process. |
 | [System Task Principles](../.agents/system-task-principles.md) | Agreed development principles, their source, scope, and practice: TDD, coverage, Type review, commit approval/naming, continuation checkpoints, and filesystem-free tests. |
 | [AGENTS.md](../AGENTS.md) | Operational assistant guidance: project structure, commands, conventions, and summaries of the principles. Keep it consistent with the principle register. |
-| [Glossary](../.glossary) | Definitions of domain/system vocabulary, including Problem, Inquiry, System Concern, Goal, and Work Item. The primary vocabulary store. |
-| [Terms](../.terms) | Less structured terms and earlier workflow labels. The glossary endpoint reads this file as well as the Glossary; entries are not automatically agreed definitions. |
+| [Glossary](../.glossary.json) | Authoritative structured definitions of domain/system vocabulary, including Problem, Inquiry, System Concern, Goal, and Work Item. The generated [Markdown view](../.glossary) is for human reading. |
+| [Terms](../.terms) | Less structured terms and earlier workflow labels. This legacy file is excluded from the Glossary API; its entries are not automatically agreed definitions. |
 
 ## Knowledge by Subject: Separation Experiment
 
@@ -103,7 +103,7 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [Glossary MetaExport JSON trial](./glossary-meta-export-example.json) | Illustrative KnowledgeStatement JSON for the Glossary example; distinctions remain narrative and the structure is not authoritative. |
 | [External agent and skill candidates (2026-10-07)](./agent-skill-landscape-2026-10-07.md) | Point-in-time research shortlist for possible agent/skill additions; recommendations are proposals, not adopted project guidance. |
 | [Workflow TODO List](./workflow-todo-list.md) | Repository-wide workflow selection, status, and links to authoritative resume checkpoints; not a replacement for SystemConcerns or detailed steps. |
-| [Full Glossary Export](./full-glossary-export-workflow.md) | Paused migration toward authoritative `.glossary.json`, generated `.glossary` Markdown, and a JSON-consuming UI; checkpoint records the next implementation step. |
+| [Full Glossary Export](./full-glossary-export-workflow.md) | Completed migration to authoritative `.glossary.json`, generated `.glossary` Markdown, and a JSON-consuming UI; checkpoint records verification. |
 | [Domain Type design skill](../skills/domain-type-design/SKILL.md) | Reusable procedure for defining/reviewing goal-oriented domain Types and keeping vocabulary consistent. |
 | [TDD developer guidance](../.agents/test-driven-developer.agent.md) | Detailed Red-Green-Refactor method. |
 | [Type reviewer guidance](../.agents/type-reviewer.agent.md) | Type-review lens used at checkpoints. |

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { parseGlossaryLines, type GlossaryEntry } from '@shared';
+import type { GlossaryEntry } from '@shared';
 import { BackendService } from '../../backend.service';
-import { map } from 'rxjs';
 
 @Component({
     selector: 'app-glossary',
@@ -18,7 +17,7 @@ export class GlossaryComponent implements OnInit {
     constructor(private readonly backend: BackendService) {}
 
     ngOnInit(): void {
-        this.backend.getGlossary().pipe(map(parseGlossaryLines)).subscribe({
+        this.backend.getGlossary().subscribe({
             next: entries => {
                 this.entries = entries;
             },

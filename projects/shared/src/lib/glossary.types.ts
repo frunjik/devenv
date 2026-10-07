@@ -5,34 +5,65 @@ export interface GlossaryEntry {
     domains: string[];
 }
 
-const DEFINITION_MARKER = '- ';
-const EXAMPLE_MARKER = 'Example: ';
-const DOMAINS_MARKER = 'Domains:';
-
-export function parseGlossaryLines(lines: readonly string[]): GlossaryEntry[] {
-    const entries: GlossaryEntry[] = [];
-    for (const sourceLine of lines) {
-        const line = sourceLine.trim();
-        if (!line) {
-            continue;
-        }
-        const current = entries.at(-1);
-        if (line.startsWith(DEFINITION_MARKER) && current) {
-            const text = line.slice(DEFINITION_MARKER.length).trim();
-            if (text.startsWith(EXAMPLE_MARKER)) {
-                current.examples.push(text.slice(EXAMPLE_MARKER.length).trim());
-            } else if (text.startsWith(DOMAINS_MARKER)) {
-                const domains = text.slice(DOMAINS_MARKER.length).split(',').map(domain => domain.trim());
-                if (domains.some(domain => domain.length === 0)) {
-                    throw new Error('Usage Domains must contain non-empty labels');
-                }
-                current.domains.push(...domains);
-            } else {
-                current.definitions.push(text);
-            }
-        } else {
-            entries.push({ term: line, definitions: [], examples: [], domains: [] });
-        }
+function requireText(value: unknown): asserts value is string {
+    if (typeof value !== 'string' || value.trim().length === 0 || /[\r\n]/.test(value)) {
+        throw new Error('Invalid Glossary: fields must contain non-empty, single-line text');
     }
-    return entries;
+}
+
+function requireTextList(value: unknown): asserts value is string[] {
+    if (!Array.isArray(value)) {
+        throw new Error('Invalid Glossary: definitions, examples, and domains must be arrays');
+    }
+    for (const item of value) {
+        requireText(item);
+    }
+}
+
+export function validateGlossaryEntries(value: unknown): GlossaryEntry[] {
+    if (!Array.isArray(value)) {
+        throw new Error('Invalid Glossary: expected an array of entries');
+    }
+    return value.map(entry => {
+        if (entry === null || typeof entry !== 'object'
+            || Object.keys(entry).sort().join(',') !== ['definitions', 'domains', 'examples', 'term'].join(',')) {
+            throw new Error('Invalid Glossary: expected term, definitions, examples, and domains fields');
+        }
+        const candidate = entry as Record<string, unknown>;
+        requireText(candidate['term']);
+        requireTextList(candidate['definitions']);
+        requireTextList(candidate['examples']);
+        requireTextList(candidate['domains']);
+        return {
+            term: candidate['term'],
+            definitions: candidate['definitions'],
+            examples: candidate['examples'],
+            domains: candidate['domains'],
+        };
+    });
+}
+
+function escapeMarkdown(text: string): string {
+    return text.replace(/[\\`*_{}\[\]()#+.!|<>~-]/g, '\\$&');
+}
+
+export function glossaryEntriesToMarkdown(value: unknown): string {
+    const entries = validateGlossaryEntries(value);
+    const lines = ['# Glossary', ''];
+    for (const entry of entries) {
+        lines.push(`## ${escapeMarkdown(entry.term)}`, '', '### Definitions', '');
+        lines.push(...(entry.definitions.length
+            ? entry.definitions.map(definition => `- ${escapeMarkdown(definition)}`)
+            : ['_No definitions recorded._']));
+        lines.push('', '### Examples', '');
+        lines.push(...(entry.examples.length
+            ? entry.examples.map(example => `- ${escapeMarkdown(example)}`)
+            : ['_No examples recorded._']));
+        lines.push('', '### Domain usage', '');
+        lines.push(...(entry.domains.length
+            ? entry.domains.map(domain => `- ${escapeMarkdown(domain)}`)
+            : ['_Unknown or unrecorded._']));
+        lines.push('');
+    }
+    return lines.join('\n');
 }

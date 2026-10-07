@@ -8,13 +8,11 @@ DevEnv is currently implemented as an Angular client and Express API.
 
 See the [Project Knowledge Index](./design/knowledge-index.md) for the locations and roles of our decisions, learning, principles, vocabulary, design explorations, and reviews.
 
-The glossary display preserves Term names from `.glossary` and `.terms`, including parenthesized examples in names. Lines beginning `- Example: ` are shown as labeled examples, separate from definitions. Except for `Domains:` metadata below, other `- ` lines remain definitions; Domain assignments are not inferred from examples.
+The root `.glossary.json` is the authoritative Glossary data source, with `term`, `definitions`, `examples`, and `domains` fields. The Glossary UI and API read these structured records directly; legacy `.terms` content is not used as a fallback. An empty `domains` array means usage is unknown or unrecorded, not confirmed absent. These labels record occurrence, not defining-Domain ownership.
 
-Use `- Domains: DevEnv, Meta` to record known usage Domains separately from definitions. Usage Domains display as badges at the bottom of each glossary card, below its definitions and examples; missing metadata displays an "Unknown" badge in the same position. Omitted labels mean unknown, not absent. These labels record occurrence, not defining-Domain ownership. Empty labels are reported as loading errors rather than silently ignored.
+Generate the human-readable `.glossary` Markdown view from the JSON source with `npm run generate:glossary:markdown`. The command reads `.glossary.json` and overwrites only `.glossary`; edit the JSON source, not the generated Markdown. Invalid records and file read/write errors fail the command.
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `design/meta-export-example.json` and overwrites only `design/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
-
-Generate the complete structured Glossary JSON with `npm run export:glossary`. It reads only `.glossary` (not the legacy `.terms` fallback) and overwrites only `design/glossary-export.generated.json`. The JSON preserves entry order and records each Term's definitions, examples, and known-usage Domain labels; an empty `domains` array means usage is unknown or unrecorded, not confirmed absent. Invalid usage labels and file read/write errors fail the command.
 
 ## Requirements
 

@@ -15,7 +15,7 @@
     "test:all": "npm run test:client && npm run test:server",
     "test:all:coverage": "node scripts/run-all-tests-coverage.cjs",
     "export:meta:markdown": "node -e \"require('./scripts/meta-export-markdown.cjs').writeMarkdown('design/meta-export-example.json', 'design/meta-export-example.generated.md', require('node:fs'))\"",
-    "export:glossary": "tsx scripts/run-glossary-export.ts"
+    "generate:glossary:markdown": "tsx scripts/generate-glossary-markdown.ts"
   },
   "private": true,
   "dependencies": {

@@ -13,7 +13,7 @@ import { createGitStatusHandler } from './handlers/git-status';
 import { createGitUndoHandler } from './handlers/git-undo';
 import { createCurrentEntryHandler } from './handlers/current-entry';
 import { createRgrPhaseHandler } from './handlers/rgr-phase';
-import { createLinesHandler } from './handlers/lines';
+import { createGlossaryHandler } from './handlers/glossary';
 import { createSystemPlanHandler } from './handlers/system-plan';
 import { createWorkflowTodoHandler } from './handlers/workflow-todo';
 import { createTicketsRouter } from './handlers/tickets';
@@ -68,7 +68,7 @@ export function createApp(root: string, options: CreateAppOptions = {}): Express
     app.get('/rgr-phase', createRgrPhaseHandler(root));
     app.get('/version', (_request, response) => response.json({ data: serverPackage.version }));
     app.use(createTicketsRouter(ticketStore));
-    app.get('/glossary', createLinesHandler(root, ['.glossary', '.terms']));
+    app.get('/glossary', createGlossaryHandler(root));
     app.get('/system-plan', createSystemPlanHandler(root));
     app.get('/workflow-todo', createWorkflowTodoHandler(root));
     if (process.env['NODE_ENV'] !== 'production') {

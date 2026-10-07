@@ -16,6 +16,11 @@ describe('glossary API', () => {
     let root: string;
     let app: ReturnType<typeof createApp>;
 
+    const glossary = [
+        { term: 'Term', definitions: ['Definition'], examples: ['Example'], domains: ['DevEnv'] },
+        { term: 'Unknown', definitions: [], examples: [], domains: [] },
+    ];
+
     beforeEach(() => {
         root = process.cwd();
         fileReader.mockReset();
@@ -24,20 +29,22 @@ describe('glossary API', () => {
         app.set('env', 'production');
     });
 
-    it('prefers .glossary and falls back to .terms', async () => {
-        fileReader.mockRejectedValueOnce(missingFile).mockResolvedValueOnce('Term\n');
-        expect((await request(app).get('/glossary')).body).toEqual({ data: ['Term'] });
-        expect(fileReader).toHaveBeenNthCalledWith(1, join(root, '.glossary'), 'utf8');
-        expect(fileReader).toHaveBeenNthCalledWith(2, join(root, '.terms'), 'utf8');
-
-        fileReader.mockResolvedValueOnce('Glossary term\n');
-        expect((await request(app).get('/glossary')).body).toEqual({ data: ['Glossary term'] });
-        expect(fileReader).toHaveBeenCalledTimes(3);
-        expect(fileReader).toHaveBeenNthCalledWith(3, join(root, '.glossary'), 'utf8');
+    it('returns validated structured entries from the authoritative JSON file', async () => {
+        fileReader.mockResolvedValueOnce(JSON.stringify(glossary));
+        expect((await request(app).get('/glossary')).body).toEqual({ data: glossary });
+        expect(fileReader).toHaveBeenCalledTimes(1);
+        expect(fileReader).toHaveBeenCalledWith(join(root, '.glossary.json'), 'utf8');
     });
 
-    it('returns an empty glossary when neither file exists', async () => {
-        expect((await request(app).get('/glossary')).body).toEqual({ data: [] });
+    it('does not fall back to legacy .terms when the JSON file is missing', async () => {
+        expect((await request(app).get('/glossary')).status).toBe(500);
+        expect(fileReader).toHaveBeenCalledTimes(1);
+        expect(fileReader).toHaveBeenCalledWith(join(root, '.glossary.json'), 'utf8');
+    });
+
+    it('rejects invalid structured entries', async () => {
+        fileReader.mockResolvedValueOnce(JSON.stringify([{ term: 'Term', definitions: [] }]));
+        expect((await request(app).get('/glossary')).status).toBe(500);
     });
 
     it('forwards glossary read errors that are not missing files', async () => {

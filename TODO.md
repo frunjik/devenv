@@ -15,3 +15,9 @@
 - review suggested external agents/skills for possible adoption (see `design/agent-skill-landscape-2026-10-07.md`)
 
 - export glossary terms belonging to a domain
+
+- I want to create a new skill DesignReview, ask me for more input
+
+
+
+

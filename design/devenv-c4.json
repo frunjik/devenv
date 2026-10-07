@@ -1,0 +1,65 @@
+{
+  "title": "DevEnv architecture",
+  "date": "2026-10-07",
+  "status": "Current-architecture draft for review, not a proposed redesign",
+  "elements": {
+    "user": { "name": "DevEnv user", "type": "Person", "description": "Frames outcomes and works with notes, tickets, artifacts and development feedback" },
+    "devenv": { "name": "DevEnv", "type": "Software System", "description": "Connects intended outcomes to work, artifacts, tests and changes" },
+    "client": { "name": "DevEnv client", "type": "Container", "technology": "Angular / TypeScript", "description": "Presents inquiry, planning, glossary, files and development actions" },
+    "api": { "name": "DevEnv API", "type": "Container", "technology": "Node.js / Express", "description": "Validates requests, applies ticket rules and accesses local resources" },
+    "workspace": { "name": "Workspace resources", "type": "Container: data store", "technology": "Filesystem / JSON / Markdown", "description": "Source, glossary, concerns, workflows and other project resources" },
+    "tickets": { "name": "Ticket store", "type": "Container: data store", "technology": "JSON file", "description": "Persists tickets and their change history" },
+    "cache": { "name": "Test-run cache", "type": "Container: data store", "technology": "JSON file", "description": "Persists the last test-run result" },
+    "devserver": { "name": "Angular development server", "type": "Infrastructure node", "technology": "Angular CLI", "description": "Serves client assets during local development" },
+    "tools": { "name": "Development subprocesses", "type": "Execution environment", "technology": "Git / Node.js / npm / Jest", "description": "Execute Git operations and the maintained tests" },
+    "export": { "name": "Export destination", "type": "Filesystem resource", "technology": "Server-local folder", "description": "Receives the curated DevEnv clone package" }
+  },
+  "relationships": {
+    "use-system": { "from": "user", "to": "devenv", "label": "Frames work and reviews outcomes" },
+    "use-client": { "from": "user", "to": "client", "label": "Works through the browser UI" },
+    "requests": { "from": "client", "to": "api", "label": "Requests data and actions", "technology": "HTTP / JSON; test responses stream NDJSON" },
+    "resources": { "from": "api", "to": "workspace", "label": "Reads resources and edits files", "technology": "Filesystem I/O" },
+    "persistence": { "from": "api", "to": "tickets", "label": "Loads and persists tickets and history", "technology": "Filesystem I/O" },
+    "results": { "from": "api", "to": "cache", "label": "Stores and retrieves test results", "technology": "Filesystem I/O" },
+    "assets": { "from": "client", "to": "devserver", "label": "Loads client assets", "technology": "HTTP" },
+    "execute": { "from": "api", "to": "tools", "label": "Starts Git and test commands", "technology": "Child processes; development routes" },
+    "tool-files": { "from": "tools", "to": "workspace", "label": "Operates on repository and source", "technology": "Filesystem I/O" },
+    "clone": { "from": "api", "to": "export", "label": "Stages and installs a curated clone", "technology": "Filesystem copy / rename" }
+  },
+  "views": [
+    {
+      "title": "System context: DevEnv",
+      "relationships": ["use-system"],
+      "groups": [{ "title": "Context", "elements": ["user", "devenv"] }],
+      "notes": "No independent external application integration is established by the inspected paths. Git and test tooling appear in the deployment view; WMS examples are content, not a live integration."
+    },
+    {
+      "title": "Containers: DevEnv",
+      "relationships": ["use-client", "requests", "resources", "persistence", "results"],
+      "groups": [
+        { "title": "User", "elements": ["user"] },
+        { "title": "DevEnv system boundary", "elements": ["client", "api", "workspace", "tickets", "cache"] }
+      ],
+      "notes": "Filesystem stores are logical responsibilities, not separate services or necessarily separate disks. The shared package is a compile-time library, not a running container. Ticket persistence describes startServer; createApp defaults to an in-memory store."
+    },
+    {
+      "title": "Deployment: local development",
+      "relationships": ["use-client", "assets", "requests", "resources", "persistence", "results", "execute", "tool-files", "clone"],
+      "groups": [
+        { "title": "User", "elements": ["user"] },
+        { "title": "Browser execution environment", "elements": ["client"] },
+        { "title": "Development host", "elements": ["devserver", "api", "tools", "workspace", "tickets", "cache", "export"] }
+      ],
+      "notes": "The browser may share the development host or be on another machine. The API defaults to port 3000. Export paths belong to the API machine. This does not specify production hosting, scaling or authentication guarantees."
+    }
+  ],
+  "evidence": [
+    "README.md",
+    "projects/server/README.md",
+    "projects/server/src/lib/index.ts",
+    "projects/server/src/lib/handlers/test-runner.ts",
+    "projects/server/src/lib/handlers/devenv-clone.ts",
+    "projects/server/src/lib/storage/file-ticket-store.ts"
+  ],
+  "limitations": "Selective source inspection, not runtime verification or a complete integration inventory. No component or dynamic diagrams yet. Mermaid flowcharts express C4-style views, not the experimental Mermaid C4 syntax."
+}

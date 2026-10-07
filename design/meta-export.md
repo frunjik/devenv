@@ -2,7 +2,7 @@
 
 **Recorded:** 2026-10-07
 
-**Status:** User-selected provisional name; Type structure and JSON unresolved.
+**Status:** Provisional concept; candidate structure and illustrative JSON drafted, not an authoritative schema.
 
 **Method:** [Example-Led Knowledge Modeling](./example-led-knowledge-modeling.md).
 
@@ -38,11 +38,11 @@ Sources remain authoritative; these documents are derived. Export does not autho
 
 Ask for further names, derive the Type, try JSON, check preserved meaning, then contrast an in-scope example before choosing authority.
 
-No self-contained export, external transmission, schema, tooling, or code is agreed. Rule Set's relationship remains unresolved; SC-049 is not completed.
+No complete self-contained export, external transmission, authoritative schema, tooling, or production code is agreed. Rule Set's relationship remains unresolved; SC-049 is not completed.
 
 ## Resumable Workflow
 
-**Progress (2026-10-07):** Step 1 source review is recorded in the [example](./meta-export-example.md#step-1-review). Compound entries were split into candidate assertions; dependencies and provenance gaps are explicit. Resume at step 2. Statement decomposition and completeness remain subject to review; no recipient validation has occurred.
+**Progress (2026-10-07):** Steps 2–3 have a candidate structure with user-approved field names and a [JSON subset](./meta-export-example.json), preserving instruction revisions. Preliminary interpretation checks are recorded in the [example](./meta-export-example.md#preliminary-meaning-check). Resume at step 4. Editorial corrections, partial/multiple replacements, structured references, and export completeness remain unresolved; no recipient validation has occurred.
 
 Complete one step at a time. Record decisions, remaining questions, and the next step here before pausing. Ask for new names before adoption; keep proposals distinct from agreed meaning.
 

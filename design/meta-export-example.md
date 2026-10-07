@@ -105,3 +105,63 @@ No external transmission, JSON format, generator, or completed SC-049 is implied
 Current initiation, approval, prefix, and attribution wording matches the reviewed rules. Superseded initiation and attribution requirements remain historical, not active.
 
 **Still needed for a complete export:** Select supporting excerpts from the TDD and Type-review methods, clarify how a recipient identifies the reviewed scope and approval, and represent per-statement provenance and override relationships without relying on group-level citations. Stable statement identities and the distinction between agreement and current applicability remain unresolved. No recipient validation has occurred.
+
+## Step 2: Candidate Type Meaning
+
+**Status:** Candidate structure described and illustrated in JSON. Preserved revisions under one instruction identity are selected; no production Type or authoritative schema is adopted.
+
+| Necessary distinction | Concrete example |
+| --- | --- |
+| Assertion and applicable context | Omit the Copilot trailer for this project's commits until the user says otherwise. |
+| Source and authority | User instruction on 2026-10-07, recorded in P-011; this export is a derived summary. |
+| Agreement versus current applicability | The older automatic-commit rule was agreed, but its initiation requirement is superseded. It must not become active merely because it was agreed. |
+| Replacement and unaffected instructions | Attribution changes do not replace approval or verification. |
+| Source decision versus recipient adoption | A current DevEnv instruction is not automatically an adopted recipient instruction. |
+| Supporting material and limits | Recorded source excerpts support interpretation; no conversation transcript or recipient validation is supplied. |
+
+An instruction may also be a local preference. An observation can support Evidence without itself authorizing execution. These distinctions do not justify one exclusive category list.
+
+### Decision: Preserve Instruction Revisions
+
+**Decision history (2026-10-07):** The user initially selected a new superseding statement, then reconsidered after clarifying that revisions can also preserve history. The current user-selected approach is preserved revisions under one instruction identity.
+
+For example, restoring the Copilot trailer would create a new revision of the attribution instruction, retaining its earlier revisions. Do not overwrite their assertions or provenance. Unrelated approval and verification instructions retain their own identities. This hypothetical example does not change the current instruction to omit the trailer.
+
+References must distinguish the instruction identity from the particular revision being cited. Current applicability must remain contextual, not inferred solely from agreement or the highest revision number. Exact reference names and formats are not yet agreed.
+
+The decision does not settle editorial corrections, partial replacements, or replacements spanning several instructions. Separate-statement supersession remains an unresolved candidate for those cases, not the selected approach for the attribution example.
+
+### Provisional Structure (User-Approved Names, 2026-10-07)
+
+A KnowledgeStatement has `id` and `revisions`. Each preserved revision has:
+
+- `revision`: an exact revision label within that identity.
+- `assertion`: the recorded meaning.
+- `context`: scope and conditions, including local bindings.
+- `source`: origin, authority, date/revision, and evidence limits.
+- `applicability`: where and when it applies, distinct from original agreement.
+
+For the experiment, IDs are readable strings and revision labels are positive integers. This is an illustrative encoding, not a selected global identity scheme. IDs must be unique within the example and revision labels unique within their statement. Earlier revisions retain their assertions and provenance. Current applicability is explicit, not inferred from the largest label.
+
+Sources and applicability use narrative text rather than silently inventing additional Types or lifecycle enums. Structured source records and exact-reference relationships remain unresolved.
+
+## Step 3: JSON Example
+
+[The JSON example](./meta-export-example.json) contains eleven representative KnowledgeStatements, including preserved initiation and attribution history. It is a subset of the Markdown process, not a complete export or schema. The historical assertions are derived summaries, not verbatim copies or a claim that historical sources already used this revision model.
+
+The hypothetical restoration of attribution is deliberately absent: the current waiver remains unchanged. Recipient adoption is not asserted. The array represents selected statements, not a fully modeled MetaExport envelope.
+
+## Preliminary Meaning Check
+
+| Scenario | JSON support |
+| --- | --- |
+| Ready without request | Current initiation revision and approval-prompt instruction prohibit automatic action. |
+| Request then abort | Abort instruction stops execution; message approval remains required after a fresh request. |
+| Approved commit | Scope, current attribution, and verification instructions still apply. |
+| Attribution changes | Only attribution's history changes; separate approval and verification identities remain. |
+| Failed check or unrelated work | Verification, scope, unrelated-work, and execution-report assertions prevent success-shaped reporting. |
+| Commit succeeds | Outcome-acceptance assertion prevents treating execution as acceptance. |
+
+This is a manual interpretation check, not recipient validation. JSON parsing and example-shape checks do not establish semantic completeness.
+
+**Resume at step 4:** Complete the meaning review, decide whether the selected subset is sufficient, and address narrative-only source/relationship references before a full export. Then try a contrasting example. No generator, importer, or external transmission is introduced.

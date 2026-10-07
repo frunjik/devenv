@@ -77,7 +77,7 @@ The index warns about historical material, but [DEVENVOPDEV.md](../DEVENVOPDEV.m
 **Importance:** Medium-High
 **Disposition:** Proposed; not agreed or addressed.
 
-The [Type reviewer guidance](../.agents/type-reviewer.agent.md) treats a concept that "smells like" a Type as grounds for conviction, weaker than P-002's justification through meaning, constraints, or lifecycle.
+The [Type reviewer guidance](../.agents/type-detector.agent.md) treats a concept that "smells like" a Type as grounds for conviction, weaker than P-002's justification through meaning, constraints, or lifecycle.
 
 The [demolition worker guidance](../.agents/demolition-worker.agent.md) treats absent references or a closed reference loop as grounds for removal. Static references alone do not establish non-use: external consumers, configuration, registration, and runtime entry points matter.
 

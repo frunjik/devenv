@@ -17,7 +17,7 @@ These principles are active from their recorded date and apply to future work in
 ### P-002 — Review for Missing or Refinable Types
 
 - **Recorded:** 2026-10-05
-- **Source:** User instruction; `.agents/type-reviewer.agent.md`
+- **Source:** User instruction; `.agents/type-detector.agent.md`
 - **Applies to:** Domain modeling, workflow design, and implementation that changes domain concepts or their representation.
 - **Rule:** Regularly inspect the model for concepts that need a Type and existing Types whose boundaries or structure should be refined. Report a justified conviction that a Type is needed to the user; distinguish confirmed Types from candidates and unresolved questions.
 - **Checkpoints:** After identifying the workflow concepts; after considering scope variation and important exceptions; and before completing the task.

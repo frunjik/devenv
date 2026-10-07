@@ -16,6 +16,8 @@ KnowledgeArea identifies subject; MetaLayer identifies perspective. They are not
 
 ## Commit Process Example
 
+The [Markdown MetaExport example](./meta-export-example.md) packages the current statements, override meaning, and interpretation checks without requiring repository access to understand them.
+
 Use [Commit Process](./commit-process.md), including its [observed trial](./commit-process.md#example-led-trial-the-documentation-commit). A recipient without repository access must distinguish:
 
 - Readiness, commit request, message approval, execution, and outcome acceptance.

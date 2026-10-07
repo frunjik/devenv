@@ -13,7 +13,8 @@
     "test:server": "jest --config projects/server/jest.config.cjs --runInBand",
     "test:server:coverage": "jest --config projects/server/jest.config.cjs --coverage --runInBand",
     "test:all": "npm run test:client && npm run test:server",
-    "test:all:coverage": "node scripts/run-all-tests-coverage.cjs"
+    "test:all:coverage": "node scripts/run-all-tests-coverage.cjs",
+    "export:meta:markdown": "node -e \"require('./scripts/meta-export-markdown.cjs').writeMarkdown('design/meta-export-example.json', 'design/meta-export-example.generated.md', require('node:fs'))\""
   },
   "private": true,
   "dependencies": {

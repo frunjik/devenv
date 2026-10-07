@@ -165,3 +165,11 @@ The hypothetical restoration of attribution is deliberately absent: the current 
 This is a manual interpretation check, not recipient validation. JSON parsing and example-shape checks do not establish semantic completeness.
 
 **Resume at step 4:** Complete the meaning review, decide whether the selected subset is sufficient, and address narrative-only source/relationship references before a full export. Then try a contrasting example. No generator, importer, or external transmission is introduced.
+
+## Derived Markdown Generator
+
+**Added scope (user, 2026-10-07):** Generate a separate [Markdown view](./meta-export-example.generated.md) with `npm run export:meta:markdown`. This supersedes the earlier no-generator boundary only for this local renderer; it does not choose an authoritative representation or implement import/transmission.
+
+The generator preserves every assertion, context, source, applicability description, identity, and revision in input order. It rejects unrecognized fields rather than silently dropping knowledge. Its shape validation is specific to this JSON experiment, not an agreed general MetaExport schema.
+
+The JavaScript script follows the existing repository script format. Tests exercise its public write operation with filesystem boundary mocks; tests do not write real files. No new domain Type is introduced: structured provenance and contextual applicability remain unresolved candidates. The hand-written narrative still owns interpretation checks and limitations, which are not automatically included in the JSON-derived view.

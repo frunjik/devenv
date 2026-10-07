@@ -10,6 +10,8 @@ See the [Project Knowledge Index](./design/knowledge-index.md) for the locations
 
 The glossary display preserves Term names from `.glossary` and `.terms`, including parenthesized examples in names. Lines beginning `- Example: ` are shown as labeled examples, separate from definitions. Other `- ` lines remain definitions; Domain assignments are not inferred from examples.
 
+Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `design/meta-export-example.json` and overwrites only `design/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
+
 ## Requirements
 
 - Node.js and npm

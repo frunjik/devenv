@@ -113,6 +113,8 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** When a candidate name surfaces — whether I consider it mid-reasoning (per P-002/P-009) or the user proposes it directly — do not silently accept it or only record it in the artifact. Check it against existing names in `.glossary`, the shared Types, and the principle register for consistency (style, collisions with an existing meaning), then either ask the user for their view (if I raised the candidate) or report my honest assessment (if they raised it) before it is adopted.
 - **Practice:** Keep this to genuine candidate Type/Term *names*, not every passing word already noted in the register. Use the `ask_user` tool when I raise a candidate; report findings plainly when the user raises one. Final agreement on any name still rests with the user; this is a check-and-surface step, not a veto.
 
+- **Definition and reference policy (user, 2026-10-07):** Glossary entries explain Terms; instructions for how we refer to them belong in working guidance, not their definitions. When referring to our current SubjectDomain, write `SubjectDomain (WMS)` to make the concrete subject explicit. This qualifies the reference, not the abstract Term's meaning.
+
 ### P-013 — *(retired, merged into P-012)*
 
 - **Recorded:** 2026-10-06; retired 2026-10-06. Originally "Verify User-Suggested Names for Consistency and Sense" — the user pointed out, while asking for an honest evaluation of the pace of recent principle additions, that this was the same topic as P-012 split across two entries. Merged into P-012 rather than deleted, so the record of the change stays visible.

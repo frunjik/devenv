@@ -37,9 +37,9 @@ describe('GlossaryComponent', () => {
 
         const entries = Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-entry'));
         expect(entries.map(entry => entry.querySelector('.glossary-term')?.textContent)).toEqual(['Term', 'Domain']);
-        expect(Array.from<HTMLElement>(entries[0].querySelectorAll('.glossary-definition')).map(item => item.textContent))
+        expect(Array.from<HTMLElement>(entries[0].querySelectorAll('.glossary-definition:not(.glossary-domains)')).map(item => item.textContent))
             .toEqual(['A word with an agreed meaning.']);
-        expect(Array.from<HTMLElement>(entries[1].querySelectorAll('.glossary-definition')).map(item => item.textContent))
+        expect(Array.from<HTMLElement>(entries[1].querySelectorAll('.glossary-definition:not(.glossary-domains)')).map(item => item.textContent))
             .toEqual(['A bounded area.', 'Seen in a context.']);
     });
 
@@ -48,7 +48,7 @@ describe('GlossaryComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelectorAll('.glossary-entry').length).toBe(1);
-        expect(fixture.nativeElement.querySelector('.glossary-definition')).toBeNull();
+        expect(fixture.nativeElement.querySelector('.glossary-definition:not(.glossary-domains)')).toBeNull();
     });
 
     it('separates recorded examples from definitions and preserves example-qualified names', () => {
@@ -64,21 +64,47 @@ describe('GlossaryComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.componentInstance.entries).toEqual([
-            { term: 'Domain (WMS)', definitions: ['A context of meaning.'], examples: [] },
+            { term: 'Domain (WMS)', definitions: ['A context of meaning.'], examples: [], domains: [] },
             {
                 term: 'KnowledgeArea', definitions: ['A subject classification.'],
                 examples: ['KnowledgeArea (warehouse operations).', 'KnowledgeArea (development practices).'],
+                domains: [],
             },
-            { term: 'MetaLayer (DevEnv)', definitions: ['A perspective.'], examples: [] },
+            { term: 'MetaLayer (DevEnv)', definitions: ['A perspective.'], examples: [], domains: [] },
         ]);
         const entry: HTMLElement = fixture.nativeElement.querySelectorAll('.glossary-entry')[1];
-        expect(Array.from(entry.querySelectorAll('.glossary-definition:not(.glossary-example)')).map(item => item.textContent))
+        expect(Array.from(entry.querySelectorAll('.glossary-definition:not(.glossary-example):not(.glossary-domains)')).map(item => item.textContent))
             .toEqual(['A subject classification.']);
         expect(Array.from(entry.querySelectorAll('.glossary-example')).map(item => item.textContent))
             .toEqual([
                 'Example: KnowledgeArea (warehouse operations).',
                 'Example: KnowledgeArea (development practices).',
             ]);
+    });
+
+    it('shows recorded usage Domains separately without inferring them from names', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({
+            data: ['MetaLayer (DevEnv)', '- A perspective.', '- Domains: DevEnv, Meta',
+                'SubjectDomain (WMS AI)', '- A Domain.', '- Domains: Meta',
+                'Domain (WMS)', '- A context.'],
+        });
+        fixture.detectChanges();
+        expect(fixture.componentInstance.entries.map(entry => entry.domains))
+            .toEqual([['DevEnv', 'Meta'], ['Meta'], []]);
+        expect(Array.from<HTMLElement>(fixture.nativeElement.querySelectorAll('.glossary-domains'))
+            .map(item => item.textContent?.trim())).toEqual([
+                'Known usage Domains: DevEnv, Meta',
+                'Known usage Domains: Meta',
+                'Usage Domains not recorded.',
+            ]);
+    });
+
+    it.each(['- Domains:', '- Domains: Meta, ', '- Domains: , Meta'])('reports invalid usage metadata %s', line => {
+        http.expectOne('http://localhost:3000/glossary').flush({ data: ['Term', line] });
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('[role="alert"]').textContent)
+            .toContain('Usage Domains must contain non-empty labels');
+        expect(fixture.componentInstance.entries).toEqual([]);
     });
 
     it('keeps a definition line that has no term in front of it visible', () => {

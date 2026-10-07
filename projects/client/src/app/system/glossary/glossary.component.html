@@ -7,6 +7,9 @@
             <dt class="glossary-term">{{ entry.term }}</dt>
             <dd *ngFor="let definition of entry.definitions" class="glossary-definition">{{ definition }}</dd>
             <dd *ngFor="let example of entry.examples" class="glossary-definition glossary-example">Example: {{ example }}</dd>
+            <dd class="glossary-definition glossary-domains">
+                {{ entry.domains.length > 0 ? 'Known usage Domains: ' + entry.domains.join(', ') : 'Usage Domains not recorded.' }}
+            </dd>
         </div>
     </dl>
 </section>

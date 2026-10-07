@@ -6,12 +6,15 @@ Domain (WMS)
 
 SubjectDomain (WMS AI)
 - The Domain being investigated or supported.
+- Domains: Meta
 
 KnowledgeArea (WMS operations)
 - A subject used to classify knowledge, potentially spanning multiple Domains. Membership does not establish shared meaning, rules, or ownership.
+- Domains: Meta
 
 MetaLayer (DevEnv)
 - A named perspective from which another system, activity, or its description is examined, described, governed, or evaluated.
+- Domains: DevEnv, Meta
 
 Abstraction
 - The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand.

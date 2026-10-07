@@ -33,7 +33,7 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 **Representation sync (user, 2026-10-07):** Sync only recorded content with the glossary UI Type and parser. GlossaryEntry now separates definitions and `Example:` lines while preserving actual Term names, including `Domain (WMS)` and `MetaLayer (DevEnv)`. No Domain assignments, sources, or revision fields are inferred. The API still returns lines; this is a local display Type refinement, not an adopted export model.
 
-**Next:** Agree per-Term known usage assignments for WMS, DevEnv, and Meta before adding the `domains` field and display. This replaces the earlier defining-Domain plan; step 4's Markdown MetaExport example follows. No Domain display implementation has started.
+**Next:** Step 4's glossary Markdown MetaExport example. The three user-reviewed usage assignments are recorded in the Glossary and displayed through `domains: string[]`; other usage remains unknown.
 
 The example distinguishes subject from perspective: development practices can be organized as KnowledgeArea (development/meta practices), while MetaLayer (development practices governing DevEnv work) identifies their governing relationship to an activity. SubjectDomain (WMS) identifies the Domain being investigated, not a level in that organization.
 
@@ -80,4 +80,24 @@ Start with the three in-scope Terms. Identify their defining context and whether
 
 Displaying a Term in DevEnv's glossary does not alone establish its use in the DevEnv Domain. Likewise, a parenthesized example does not establish usage within the example's Domain. Do not infer assignments from either, or from KnowledgeArea memberships.
 
-No assignments, code fields, or source-format changes have been added yet. Unknown usage must not be presented as confirmed absence.
+Assignments are recorded in the per-Term review below; no code fields or source-format changes have been added yet. Unknown usage must not be presented as confirmed absence.
+
+### Per-Term Usage Review
+
+**User decision (2026-10-07):** Review Terms individually before assigning usage Domains.
+
+| Term | Agreed known usage | Unresolved usage | Basis |
+| --- | --- | --- | --- |
+| KnowledgeArea (WMS operations) | Meta | WMS, DevEnv | Used here to classify knowledge; its warehouse example does not establish use within WMS. User-approved assignment, 2026-10-07. |
+| MetaLayer (DevEnv) | DevEnv, Meta | WMS | DevEnv's host UI/toggle uses the meta-layer concept; this workflow uses the broader perspective concept. Occurrence does not establish identical meanings. User-approved assignment, 2026-10-07. |
+| SubjectDomain (WMS AI) | Meta | WMS, DevEnv | Used here to identify the Domain under investigation; the example and glossary display do not establish other usage. User-approved assignment, 2026-10-07. |
+
+**Representation decision (user, 2026-10-07):** Record `- Domains: DevEnv, Meta` lines in the Glossary, parse them into `domains: string[]` on GlossaryEntry, and display "Known usage Domains". Missing metadata displays "Usage Domains not recorded"; omitted labels mean unknown, not absent. The three assignments above are implemented; examples do not produce assignments. Empty labels surface an error. The API continues returning lines.
+
+Type review: usage metadata is distinct from definitions and examples, justifying the additional field on the existing display Type. A separate Domain identity Type and structured evidence model remain candidates for later modeling, not necessary for this agreed string-label representation.
+
+### AI MetaLayer Example
+
+**User-proposed example (2026-10-07):** MetaLayer (AI examining and explaining WMS models and processes).
+
+This fits the existing perspective definition: AI examines and explains WMS models and processes rather than merely performing warehouse operations. It is a descriptive example, not a new Term, an implemented capability, or a replacement for MetaLayer (DevEnv). It establishes neither a fixed layer hierarchy nor additional usage-Domain assignments.

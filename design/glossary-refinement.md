@@ -27,8 +27,20 @@ The [commit-process MetaExport](./meta-export.md#resumable-workflow) remains pau
 
 ## Checkpoint
 
-**Next:** Continue step 1 by comparing the three meanings. Scope, workflow title, and the descriptive MetaLayer example are user-selected; definitions are unchanged.
+**Progress (2026-10-07):** Steps 1–3 completed for the agreed definition refinement. The user approved the concise KnowledgeArea definition and retained SubjectDomain and MetaLayer unchanged. KnowledgeArea remains provisional; approving this wording does not settle its adoption. The Starting Meaning table preserves the earlier summary.
+
+**Next:** Step 4, a separate Markdown MetaExport example of these definitions and their context.
 
 The example distinguishes subject from perspective: development practices can be organized as KnowledgeArea (development/meta practices), while MetaLayer (development practices governing DevEnv work) identifies their governing relationship to an activity. SubjectDomain (WMS) identifies the Domain being investigated, not a level in that organization.
 
 This is concept clarification, not a new production Type conviction. A workflow title is not a new Glossary Term. Its relationship to SC-027 is vocabulary scope; subsequent export exploration relates to SC-049.
+
+## Refinement Decision
+
+**KnowledgeArea:** A subject by which knowledge is organized. Knowledge may belong to multiple KnowledgeAreas; membership implies neither hierarchy, ownership, nor agreement.
+
+SubjectDomain retains its definition of the Domain being investigated or supported. MetaLayer retains its definition of a named perspective examining, describing, governing, or evaluating a target.
+
+**Example decision (user, 2026-10-07):** Add separate example lines in the Glossary: KnowledgeArea (warehouse operations), MetaLayer (development practices governing DevEnv work), and SubjectDomain (WMS). The user chose warehouse operations instead of concern-planning knowledge for the KnowledgeArea example. These examples illustrate the abstract definitions; they are not usage policies or additions to the MetaExport payload scope.
+
+KnowledgeArea membership does not establish a separate Domain. MetaLayer is provisional too; retaining its wording does not establish a ranked hierarchy. These qualifications remain context for transfer.

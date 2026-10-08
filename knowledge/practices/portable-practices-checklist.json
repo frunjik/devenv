@@ -60,8 +60,8 @@
   "review": {
     "sources": [
       ".agents/system-task-principles.md",
-      ".agents/type-detector.agent.md",
-      ".agents/demolition-worker.agent.md",
+      ".github/agents/type-detector.agent.md",
+      ".github/agents/demolition-worker.agent.md",
       ".agents/skills/domain-type-design/SKILL.md",
       ".glossary.json",
       "knowledge/index.md",

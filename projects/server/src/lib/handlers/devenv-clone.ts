@@ -27,11 +27,11 @@ export class DevEnvCloneError extends Error {
 
 const PACKAGE_DIRECTORIES = [
     '.agents',
+    '.github/agents',
     'projects/client',
     'projects/server',
     'projects/shared',
     'scripts',
-    'skills',
 ];
 
 const PACKAGE_FILES = [

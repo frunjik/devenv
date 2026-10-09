@@ -34,6 +34,36 @@
     border-radius: 4px;
 }
 
+.connection-layer {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.diagram-connection {
+    pointer-events: stroke;
+    cursor: pointer;
+}
+
+.connection-hit-target {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 16px;
+    pointer-events: stroke;
+}
+
+.connection-line {
+    fill: none;
+    stroke: var(--border-accent);
+    stroke-width: 2px;
+    pointer-events: none;
+}
+
+.diagram-connection[aria-pressed='true'] .connection-line {
+    stroke-width: 4px;
+}
+
 .diagram-element {
     position: absolute;
     display: grid;

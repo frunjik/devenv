@@ -26,7 +26,7 @@ describe('DiagramPageComponent', () => {
         const workspace = element.querySelector('[aria-label="Diagram workspace"]') as HTMLElement;
 
         expect(workspace).not.toBeNull();
-        expect(workspace.children.length).toBe(0);
+        expect(workspace.querySelectorAll('[data-element-id]')).toHaveLength(0);
         expect(element.textContent).toContain('No items yet');
     });
 
@@ -56,6 +56,68 @@ describe('DiagramPageComponent', () => {
         fixture.detectChanges();
 
         expect(item.getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('connects the selected workspace item to another item', () => {
+        element.querySelector<HTMLButtonElement>('button[aria-label="Add Rectangle"]')?.click();
+        element.querySelector<HTMLButtonElement>('button[aria-label="Add Ellipse"]')?.click();
+        fixture.detectChanges();
+
+        const source = element.querySelector('[data-element-id="diagram-element-1"]') as HTMLElement;
+        const target = element.querySelector('[data-element-id="diagram-element-2"]') as HTMLElement;
+        source.click();
+        fixture.detectChanges();
+
+        const connectButton = element.querySelector<HTMLButtonElement>('button[aria-label="Connect"]');
+        expect(connectButton).not.toBeNull();
+        connectButton?.click();
+        fixture.detectChanges();
+        target.click();
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.document.connections).toEqual([
+            {
+                id: 'diagram-connection-1',
+                sourceElementId: 'diagram-element-1',
+                targetElementId: 'diagram-element-2',
+                label: '',
+            },
+        ]);
+        const connection = element.querySelector<SVGElement>(
+            '[data-connection-id="diagram-connection-1"]',
+        );
+        expect(connection).not.toBeNull();
+        connection?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        fixture.detectChanges();
+        expect(connection?.getAttribute('aria-pressed')).toBe('true');
+    });
+
+    it('keeps connect mode after selecting its source and exits on Escape or Cancel', () => {
+        element.querySelector<HTMLButtonElement>('button[aria-label="Add Rectangle"]')?.click();
+        fixture.detectChanges();
+        const source = element.querySelector('[data-element-id="diagram-element-1"]') as HTMLElement;
+        source.click();
+        fixture.detectChanges();
+        element.querySelector<HTMLButtonElement>('button[aria-label="Connect"]')?.click();
+        fixture.detectChanges();
+
+        source.click();
+        fixture.detectChanges();
+        expect(fixture.componentInstance.document.connections).toHaveLength(0);
+        expect(element.querySelector('[role="status"]')?.textContent)
+            .toContain('Select a different item');
+
+        source.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+        fixture.detectChanges();
+        expect(element.querySelector('[role="status"]')).toBeNull();
+
+        element.querySelector<HTMLButtonElement>('button[aria-label="Connect"]')?.click();
+        fixture.detectChanges();
+        element.querySelector<HTMLButtonElement>('button[aria-label="Cancel connection"]')?.click();
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.document.connections).toHaveLength(0);
+        expect(element.querySelector('[role="status"]')).toBeNull();
     });
 
     it('rejects a workspace drag start without its item element', () => {

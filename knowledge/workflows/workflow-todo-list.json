@@ -102,11 +102,12 @@
       "name": "Minimal Typed Diagram Editor",
       "evaluationIds": [
         "diagram-selection-and-movement",
-        "diagram-editor-drag-interaction"
+        "diagram-editor-drag-interaction",
+        "diagram-connection-workflow"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",
-      "resumeLabel": "Movement fix verified; connections next",
+      "resumeLabel": "Connection workflow checkpoint",
       "resumePath": "./diagram-editor-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"
     },

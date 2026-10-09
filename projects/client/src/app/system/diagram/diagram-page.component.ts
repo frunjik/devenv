@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { createDiagramElement, moveDiagramElement } from './diagram-operations';
-import type { DiagramDocument, DiagramElementKind, DiagramPoint } from '@shared';
+import { connectDiagramElements, createDiagramElement, moveDiagramElement } from './diagram-operations';
+import type { DiagramConnection, DiagramDocument, DiagramElementKind, DiagramPoint } from '@shared';
 
 function isDiagramElementKind(value: unknown): value is DiagramElementKind {
     return value === 'rectangle' || value === 'ellipse' || value === 'note';
@@ -47,11 +47,64 @@ export class DiagramPageComponent {
     };
 
     private nextElementId = 1;
+    private nextConnectionId = 1;
     private dragOffset: DiagramPoint | null = null;
+    private connectingSourceElementId: string | null = null;
     selectedElementId: string | null = null;
+    selectedConnectionId: string | null = null;
 
     selectElement(elementId: string): void {
+        if (this.connectingSourceElementId !== null) {
+            if (elementId === this.connectingSourceElementId) {
+                return;
+            }
+            this.document = connectDiagramElements(
+                this.document,
+                `diagram-connection-${this.nextConnectionId++}`,
+                this.connectingSourceElementId,
+                elementId,
+                '',
+            );
+            this.connectingSourceElementId = null;
+        }
         this.selectedElementId = elementId;
+    }
+
+    startConnection(): void {
+        if (this.selectedElementId === null) {
+            throw new Error('Invalid Diagram connection: select a source item first');
+        }
+        this.connectingSourceElementId = this.selectedElementId;
+    }
+
+    cancelConnection(): void {
+        this.connectingSourceElementId = null;
+    }
+
+    selectConnection(connectionId: string): void {
+        this.selectedConnectionId = connectionId;
+        this.selectedElementId = null;
+    }
+
+    connectionLine(
+        connection: DiagramConnection,
+        workspace: HTMLElement,
+    ): { x1: number; y1: number; x2: number; y2: number } {
+        const items = Array.from(workspace.querySelectorAll<HTMLElement>('[data-element-id]'));
+        const source = items.find(item => item.dataset['elementId'] === connection.sourceElementId);
+        const target = items.find(item => item.dataset['elementId'] === connection.targetElementId);
+        if (!source || !target) {
+            throw new Error(`Invalid Diagram connection: endpoint item is unavailable for "${connection.id}"`);
+        }
+        const workspaceBounds = workspace.getBoundingClientRect();
+        const sourceBounds = source.getBoundingClientRect();
+        const targetBounds = target.getBoundingClientRect();
+        return {
+            x1: sourceBounds.left - workspaceBounds.left + workspace.scrollLeft + sourceBounds.width / 2,
+            y1: sourceBounds.top - workspaceBounds.top + workspace.scrollTop + sourceBounds.height / 2,
+            x2: targetBounds.left - workspaceBounds.left + workspace.scrollLeft + targetBounds.width / 2,
+            y2: targetBounds.top - workspaceBounds.top + workspace.scrollTop + targetBounds.height / 2,
+        };
     }
 
     addElement(kind: DiagramElementKind): void {

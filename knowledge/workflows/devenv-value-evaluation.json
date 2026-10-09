@@ -254,6 +254,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "diagram-connection-workflow",
+      "title": "Implement diagram connection interaction",
+      "beneficiary": "Developer using the diagram editor",
+      "intendedOutcome": "Create a visible, selectable connection between two distinct workspace items through an explicit source-to-target workflow.",
+      "successCondition": "Selecting a source and activating Connect starts a clear connect mode; selecting another item stores and renders the connection; selecting the source again does not create a self-connection; Cancel and Escape leave the document unchanged and exit connect mode.",
+      "baseline": "The document contract and connectDiagramElements operation support validated connections, including endpoint existence, non-self connections, and no duplicate unordered pairs. The Diagram page has no connection controls, interaction mode, line rendering, or cancellation behavior.",
+      "startedAt": "2026-10-09T19:06:24+02:00",
+      "completedAt": null,
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The developer beneficiary, missing user-level workflow, persistent outcome, and explicit cancellation/invalid-self-link conditions were recorded before the first connection UI behavior test.",
+          "evidence": "Diagram Editor workflow contract and this WorkEvaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "The initial connection interaction is implemented and its focused page suite passes (23 tests): select source, activate Connect, select a different target, persist a DiagramConnection, prevent self-connection, and cancel using the visible control or Escape from a focused item. A selectable SVG line renders for persisted connections. Preview behavior and remaining edge cases/verification are still open.",
+          "evidence": "projects/client/src/app/system/diagram/diagram-page.component.spec.ts. The next steps and unverified behavior are recorded in diagram-editor-workflow.md."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

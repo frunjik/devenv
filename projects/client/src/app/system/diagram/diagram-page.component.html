@@ -40,6 +40,21 @@
             >&#x283F;</span>
         </div>
     </div>
+    <div class="connection-controls">
+        <button
+            type="button"
+            aria-label="Connect"
+            [attr.aria-pressed]="connectingSourceElementId !== null"
+            [disabled]="selectedElementId === null || connectingSourceElementId !== null"
+            (click)="startConnection()"
+        >Connect</button>
+        @if (connectingSourceElementId !== null) {
+            <button type="button" aria-label="Cancel connection" (click)="cancelConnection()">
+                Cancel connection
+            </button>
+            <p role="status">Select a different item to connect, or cancel.</p>
+        }
+    </div>
     @if (document.elements.length === 0) {
         <p class="empty-hint" role="status">No items yet.</p>
     }
@@ -52,7 +67,38 @@
         cdkDropList
         cdkDropListConnectedTo="palette"
         (cdkDropListDropped)="dropWorkspaceItem($event)"
+        #workspace
     >
+        <svg class="connection-layer" [attr.width]="workspace.scrollWidth" [attr.height]="workspace.scrollHeight">
+            @for (connection of document.connections; track connection.id) {
+                <g
+                    class="diagram-connection"
+                    [attr.data-connection-id]="connection.id"
+                    [attr.aria-label]="connection.label || 'Connection between items'"
+                    [attr.aria-pressed]="selectedConnectionId === connection.id"
+                    [attr.tabindex]="0"
+                    role="button"
+                    (click)="selectConnection(connection.id)"
+                    (keydown.enter)="selectConnection(connection.id)"
+                    (keydown.space)="$event.preventDefault(); selectConnection(connection.id)"
+                >
+                    <line
+                        class="connection-hit-target"
+                        [attr.x1]="connectionLine(connection, workspace).x1"
+                        [attr.y1]="connectionLine(connection, workspace).y1"
+                        [attr.x2]="connectionLine(connection, workspace).x2"
+                        [attr.y2]="connectionLine(connection, workspace).y2"
+                    />
+                    <line
+                        class="connection-line"
+                        [attr.x1]="connectionLine(connection, workspace).x1"
+                        [attr.y1]="connectionLine(connection, workspace).y1"
+                        [attr.x2]="connectionLine(connection, workspace).x2"
+                        [attr.y2]="connectionLine(connection, workspace).y2"
+                    />
+                </g>
+            }
+        </svg>
         @for (element of document.elements; track element.id) {
             <div
                 class="diagram-element"
@@ -69,6 +115,7 @@
                 role="button"
                 tabindex="0"
                 (click)="selectElement(element.id)"
+                (keydown.escape)="cancelConnection()"
                 (keydown.enter)="selectElement(element.id)"
                 (keydown.space)="$event.preventDefault(); selectElement(element.id)"
             >

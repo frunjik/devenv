@@ -41,7 +41,7 @@ describe('validateWorkEvaluationDataset', () => {
         const source = readFileSync('knowledge/workflows/devenv-value-evaluation.json', 'utf8');
         const dataset: unknown = JSON.parse(source);
 
-        expect(validateWorkEvaluationDataset(dataset).evaluations).toHaveLength(6);
+        expect(validateWorkEvaluationDataset(dataset).evaluations).toHaveLength(7);
     });
 
     it('accepts an evaluation with an unknown start and a known completion', () => {

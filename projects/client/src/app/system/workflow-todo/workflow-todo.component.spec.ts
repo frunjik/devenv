@@ -170,6 +170,13 @@ describe('WorkflowTodoComponent', () => {
             fixture.detectChanges();
         }
 
+        it('shows only the checkpoint label while retaining the descriptive accessible action', () => {
+            const host: HTMLElement = fixture.nativeElement;
+            expect(Array.from(host.querySelectorAll('.checkpoint-button')).map(button => button.textContent?.trim()))
+                .toEqual(['Starting checkpoint', 'Current checkpoint']);
+            expect(host.querySelector('[aria-label="View checkpoint for Glossary Refinement"]')).not.toBeNull();
+        });
+
         it('loads the document and shows its reference without switching workflow', () => {
             openCheckpoint();
             expect(fixture.nativeElement.textContent).toContain('Loading checkpoint');

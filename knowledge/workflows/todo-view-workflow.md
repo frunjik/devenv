@@ -17,6 +17,16 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Compact checkpoint label styling
+
+- User requested much smaller checkpoint text, no gray background and no visible View checkpoint prefix. Approved workflow record; evaluation skipped for this small refinement.
+- Preserve read-only document action and descriptive accessible name, native keyboard/focus behavior and sufficiently usable target. Reuse existing HTTP test boundary. Next: label Red, transparent small link-style Green, targeted tests/type/build and visible style check. No domain/API change.
+- Completion: observed label-prefix Red, then 22 tests pass with 100% all-four component coverage. Full test-source type-check, client build, diagnostics and diff formatting pass. Both groups show only resumeLabel; accessible action unchanged.
+- Styling: 12px (.75rem), normal-weight underlined text, transparent background/no border, palette secondary text, explicit focus-visible outline. Minimum target reduced from44px to24px for compact desktop labels (not the ticket-control convention); native button and wrapping retained. Browser computed styles confirm text/size/background/border/24px height; tab hidden, so no claim of visible visual or keyboard acceptance.
+- User follow-up: checkpoint text now uses intentional local muted teal #89aaa5 rather than the neutral secondary role. Contrast against page background #171d19 is 6.82:1, above normal-text 4.5:1; size, background and action unchanged.
+- Subsequent user refinement: use muted blue #8faac7 for the checkpoint text accent instead of teal. Contrast against #171d19 is 7.13:1; small transparent link-style presentation and action remain unchanged.
+- Type review: existing resumeLabel is presentation text contrasting unchanged descriptive aria action; no representation/lifecycle/API change or new Type warranted. No test I/O or new mocks/interception. Evaluation intentionally skipped; previous evaluations unchanged. Active workflow remains canvas; refinement complete/uncommitted, phase idle. Suggested subject: Make workflow checkpoint labels compact and transparent.
+
 ### Product/meta subtotals and grand total
 
 - Approved view-only group subtotal rows and grand total at table bottom. Count unique associated evaluations within each group and overall; shared cross-group evaluations can make subtotals exceed grand total. Keep summed-elapsed/not-effort and missing-duration semantics.

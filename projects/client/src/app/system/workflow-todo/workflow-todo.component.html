@@ -49,7 +49,7 @@
                             <span class="workflow-name">{{ workflow.name }}</span>
                             <button type="button" class="checkpoint-button"
                                 [attr.aria-label]="'View checkpoint for ' + workflow.name"
-                                (click)="viewCheckpoint(workflow)">View checkpoint: {{ workflow.resumeLabel }}</button>
+                                (click)="viewCheckpoint(workflow)">{{ workflow.resumeLabel }}</button>
                         </th>
                         <td><span class="status">{{ workflow.status }}</span></td>
                         <td>{{ workflow.relatedConcern }}</td>
@@ -71,7 +71,7 @@
                             <span class="workflow-name">{{ workflow.name }}</span>
                             <button type="button" class="checkpoint-button"
                                 [attr.aria-label]="'View checkpoint for ' + workflow.name"
-                                (click)="viewCheckpoint(workflow)">View checkpoint: {{ workflow.resumeLabel }}</button>
+                                (click)="viewCheckpoint(workflow)">{{ workflow.resumeLabel }}</button>
                         </th>
                         <td><span class="status">{{ workflow.status }}</span></td>
                         <td>{{ workflow.relatedConcern }}</td>

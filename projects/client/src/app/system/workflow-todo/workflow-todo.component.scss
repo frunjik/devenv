@@ -25,7 +25,25 @@ th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertic
 .evaluation-history ul { padding-left: 1.25rem; }
 .workflow-total th, .workflow-total td { font-weight: 600; border-top: 2px solid var(--border-default); }
 .totals-note { margin-top: .75rem; }
-.checkpoint-button { display: block; min-height: 44px; max-width: 100%; margin-top: .5rem; white-space: normal; text-align: left; }
+.checkpoint-button {
+    display: block;
+    min-height: 24px;
+    min-width: 24px;
+    max-width: 100%;
+    margin-top: .25rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #8faac7;
+    font: inherit;
+    font-size: .75rem;
+    font-weight: normal;
+    white-space: normal;
+    text-align: left;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.checkpoint-button:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 2px; }
 .checkpoint { margin-top: 1.5rem; }
 .checkpoint pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 th { color: var(--text-heading); }

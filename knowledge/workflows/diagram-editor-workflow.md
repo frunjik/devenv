@@ -8,7 +8,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 ## Checkpoint
 
-**Status:** Document contract and pure create/move operation slices implemented. The empty `/diagram` page and navigation exist. Remaining operations, canvas interactions, file workflow, and departure guard are not started.
+**Status:** Document contract and pure create/move/edit/connect operation slices implemented. The empty `/diagram` page and navigation exist. Remaining operations, canvas interactions, file workflow, and departure guard are not started.
 
 **Authority:** This document is the maintained plan. The session-local plan points here rather than maintaining a separate copy.
 
@@ -16,7 +16,17 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 **Open questions:** None blocking the agreed minimal scope. Future ports, viewport state, and diagram-library selection remain outside this plan.
 
-**Next step:** Continue document operations with a failing label-edit test. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+**Next step:** Continue document operations with a failing connection-label edit test. After connection editing, implement delete and clear operations before wiring canvas interactions. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+
+**Connection checkpoint (2026-10-09):** Added pure `connectDiagramElements(document, connectionId, sourceElementId, targetElementId, label)`. It appends an undirected selectable connection and delegates ID, endpoint, self-connection, duplicate-pair, and document validation to the shared validator. Tests verify reverse-order duplicate refusal and source preservation. No new Type or external side effect.
+
+**Note-text checkpoint (2026-10-09):** Added pure `editDiagramNoteText(document, elementId, text)`. It only accepts an existing Note, allows empty text, preserves all other content immutably, and rejects missing IDs and non-Note elements. The shared validator checks the result; no new Type or external side effect.
+
+**Operation-slice verification (2026-10-09):** Create, move, label edit, Note-text edit, and connect operations with the 96 document-contract tests pass: 129 tests total, 100% statements, branches, functions, and lines for `diagram-operations.ts` and `diagram.types.ts`. Client production and test TypeScript checks pass. All test scenarios use in-memory data and have no external side effects. No UI operation is wired yet. Changes remain uncommitted.
+
+**Functional-boundary refactor (2026-10-09):** Extracted private `requireDiagramElementIndex` to centralize required element lookup for move, label edit, and Note-text edit. It preserves explicit element-versus-Note error wording; all 129 focused tests and full four-metric coverage remain green. This is a cohesive lookup responsibility, not a general search abstraction.
+
+**Label-edit checkpoint (2026-10-09):** Added pure `editDiagramElementLabel(document, elementId, label)`. It edits Rectangle and Note labels immutably, allows empty labels as specified by the contract, preserves other element fields, title, and connections, and rejects missing IDs explicitly. The shared validator checks the resulting document. No new Type or external side effect. The 23 operation tests plus 96 contract tests pass with 100% statements, branches, functions, and lines for both modules. Client production and test TypeScript checks pass. UI property editing is not wired yet. Changes are uncommitted.
 
 **Move checkpoint (2026-10-09):** Added pure `moveDiagramElement(document, elementId, position)`. It replaces the requested element immutably, preserves all other elements and connections, rejects unknown IDs explicitly, and delegates coordinate/document invariants to `validateDiagramDocument`. No browser or filesystem behavior and no new Type. The 19 operation tests plus 96 contract tests pass with 100% statements, branches, functions, and lines for both modules; client production and test TypeScript checks pass. Tests have zero external side effects. UI movement is not wired yet. Changes are uncommitted.
 

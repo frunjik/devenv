@@ -16,11 +16,12 @@
         aria-describedby="workflow-table-scroll-hint"
     >
         <table>
-            <caption>Registered workflows and resume references</caption>
-            <thead><tr><th scope="col">Workflow</th><th scope="col">Status</th><th scope="col">Resume reference</th><th scope="col">Related concern</th></tr></thead>
+            <caption>Registered workflows, purpose, and resume references</caption>
+            <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Resume reference</th><th scope="col">Related concern</th></tr></thead>
             <tbody>
                 <tr *ngFor="let workflow of workflows" [class.active]="workflow.status === 'Active'">
                     <th scope="row">{{ workflow.name }}</th>
+                    <td>{{ workflow.primaryWorkPurpose }}</td>
                     <td><span class="status">{{ workflow.status }}</span></td>
                     <td><button type="button" class="resume-button" (click)="openDocument(workflow.resumePath)" [attr.aria-label]="'Read ' + workflow.name + ': ' + workflow.resumeLabel">{{ workflow.resumeLabel }}</button></td>
                     <td>{{ workflow.relatedConcern }}</td>

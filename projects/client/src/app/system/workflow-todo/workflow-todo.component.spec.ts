@@ -8,9 +8,9 @@ describe('WorkflowTodoComponent', () => {
     let fixture: ComponentFixture<WorkflowTodoComponent>;
     let http: HttpTestingController;
     const workflows = [
-        { name: 'Glossary Refinement', status: 'Active', resumeLabel: 'Current checkpoint',
+        { name: 'Glossary Refinement', primaryWorkPurpose: 'Meta work', status: 'Active', resumeLabel: 'Current checkpoint',
             resumePath: './glossary-refinement.md#checkpoint', relatedConcern: 'SC-027; SC-049' },
-        { name: 'DevEnv Export', status: 'Pending', resumeLabel: 'Starting checkpoint',
+        { name: 'DevEnv Export', primaryWorkPurpose: 'Product work', status: 'Pending', resumeLabel: 'Starting checkpoint',
             resumePath: './devenv-export-workflow.md#checkpoint', relatedConcern: 'Not assigned' },
     ];
 
@@ -33,6 +33,7 @@ describe('WorkflowTodoComponent', () => {
         const text = fixture.nativeElement.textContent;
         for (const workflow of workflows) {
             expect(text).toContain(workflow.name);
+            expect(text).toContain(workflow.primaryWorkPurpose);
             expect(text).toContain(workflow.status);
             expect(text).toContain(workflow.resumeLabel);
             expect(text).toContain(workflow.relatedConcern);

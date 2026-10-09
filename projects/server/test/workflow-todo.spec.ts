@@ -10,8 +10,8 @@ jest.mock('node:fs/promises', () => ({
 }));
 
 const fileReader = jest.mocked(readFile);
-const header = '| Workflow | Status | Resume reference | Related concern |\n| --- | --- | --- | --- |';
-const row = '| TODO View (DevEnv system layer) | Pending | [Starting checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |';
+const header = '| Workflow | Primary work purpose | Status | Resume reference | Related concern |\n| --- | --- | --- | --- | --- |';
+const row = '| TODO View (DevEnv system layer) | Meta work | Pending | [Starting checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |';
 
 beforeEach(() => {
     fileReader.mockReset();
@@ -24,7 +24,7 @@ describe('workflow TODO JSON', () => {
         expect(response.status).toBe(200);
         expect(fileReader).toHaveBeenCalledWith(join(process.cwd(), 'knowledge', 'workflows', 'workflow-todo-list.md'), 'utf8');
         expect(response.body.data).toEqual({ workflows: [{
-            name: 'TODO View (DevEnv system layer)', status: 'Pending',
+            name: 'TODO View (DevEnv system layer)', primaryWorkPurpose: 'Meta work', status: 'Pending',
             resumeLabel: 'Starting checkpoint', resumePath: './todo-view-workflow.md#checkpoint',
             relatedConcern: 'Not assigned',
         }] });
@@ -71,7 +71,7 @@ describe('workflow TODO JSON', () => {
         const response = await request(createApp(process.cwd())).get('/workflow-todo');
         expect(response.status).toBe(200);
         expect(response.body.data.workflows).toEqual(expect.arrayContaining([
-            expect.objectContaining({ name: 'TODO View (DevEnv system layer)' }),
+            expect.objectContaining({ name: 'TODO View (DevEnv system layer)', primaryWorkPurpose: 'Meta work' }),
             expect.objectContaining({ name: 'DevEnv Export (sibling or hosting system)' }),
         ]));
     });

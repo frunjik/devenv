@@ -26,7 +26,7 @@ Browser verification: the existing client server still served old routes, so the
 - Keep the Workflow TODO List Markdown authoritative; derive JSON rather than maintaining a duplicate list.
 - The UI consumes that JSON. Do not display the unrelated commit-process KnowledgeStatements example as workflows.
 - Approved shared Type name: `WorkflowTodoList`, containing `workflows`.
-- Each workflow has `name`, `status`, `resumeLabel`, `resumePath`, and `relatedConcern`. Status remains descriptive text, not a newly agreed lifecycle Type.
+- Each workflow has `name`, `primaryWorkPurpose`, `status`, `resumeLabel`, `resumePath`, and `relatedConcern`. The view displays all fields. Status remains descriptive text, not a newly agreed lifecycle Type.
 - Concrete example: `TODO View (DevEnv system layer)`, `Pending`, `Starting checkpoint`, `./todo-view-workflow.md#checkpoint`, `Not assigned`.
 - The user approved a separate `Workflow TODO` toolbar link and a read-only table/document view, retaining the existing `TODO.md` link.
 - Resume buttons load the complete workflow Markdown document and display the checkpoint reference. They do not jump to a heading, edit, or switch workflows.
@@ -39,3 +39,17 @@ Browser verification: the existing client server still served old routes, so the
 Type review: `WorkflowTodoList` is justified as the shared API representation of the existing list. No additional status or lifecycle Type is adopted. The row Type name remains to be agreed if a separately named Type is needed.
 
 The row structure is inline in `WorkflowTodoList`; no additional name was needed for this slice. Glossary Refinement is paused with its existing checkpoint preserved.
+
+## Follow-up checkpoint: work-purpose API and view compatibility
+
+**Status:** Implementation and verification complete; user review remains separate.
+
+The workflow register gained a `Primary work purpose` column, while the `/workflow-todo` parser still required the previous four-column table. This caused the reported missing-header error. The Markdown register remains authoritative; the endpoint derives its response from it, and no global TODO JSON source was added.
+
+The parser and shared API contract now accept and validate the five-column schema, and the API response carries `primaryWorkPurpose`. The workflow view displays that field in a labelled table column. Red was observed against focused direct-handler and client tests before their respective changes. The direct-handler suite passes all seven tests and the client component suite all twelve; each changed production module has 100% statement, branch, function, and line coverage. The server scoped TypeScript check and shared and client builds pass. `git diff --check` passes.
+
+The existing API Supertest suite was not run because it uses localhost/socket activity that is outside the current test boundary policy. Its fixture was updated to the five-column format; direct handler tests exercise the parser and current Markdown without network activity.
+
+`WorkflowWorkPurpose` is a supporting API Type for the two existing labels (`Product work` and `Meta work`). No conflicting existing Type was found; the name accurately distinguishes the value from workflow status and describes its purpose in the API contract. This does not establish a new Glossary Term or a broader domain Type beyond the two registered labels. No global list authority change is proposed.
+
+**Next:** User review of the updated read-only view and its purpose column.

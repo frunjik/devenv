@@ -17,6 +17,12 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Compact evaluation disclosures
+
+- User approved compact evaluation headers (title, completion status and elapsed duration) with expandable evidence, plus collapsed metric definitions and credit estimator. Native details/summary retains keyboard interaction and all existing content/controls. Missing completion means Not completed, not an inferred active lifecycle state.
+- Observed two public-view tests fail before implementation. Existing dataset and duration formatter unchanged; no new Type warranted for this presentation-only change.
+- Verified six tests with 100% component coverage, full test-source type-check, client build, diagnostics and diff formatting. Running page has 29 collapsed evaluation disclosures; expansion/collapse works via Enter on the summary. Metric definitions and estimator start collapsed. Corrected a nested closing-tag error during Green; no remaining refactoring or Type cleanup identified. Changes uncommitted.
+
 ### Top evaluated-work totals
 
 - Subsequent user refinement: each summary total grows equally across the available page width, with a 14rem wrapping basis and border-box sizing. Keep narrow-screen wrapping and the existing grand-total accent.

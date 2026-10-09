@@ -57,6 +57,11 @@ describe('WorkflowEvaluationsComponent', () => {
         expect(text).toContain('Dragged position is saved.');
         expect(text).toContain('Unknown');
         expect(text).toContain('Evidence');
+        const evaluation = fixture.nativeElement.querySelector('details.work-evaluation') as HTMLDetailsElement;
+        expect(evaluation.open).toBe(false);
+        expect(evaluation.querySelector('summary')!.textContent).toContain('Not completed');
+        expect(fixture.nativeElement.querySelector('details.metric-definitions').open).toBe(false);
+        expect(fixture.nativeElement.querySelector('details.credit-estimator').open).toBe(false);
     });
 
     it('shows elapsed duration for completed evaluations only', () => {
@@ -135,6 +140,9 @@ describe('WorkflowEvaluationsComponent', () => {
         ).find(section => section.querySelector('h2')?.textContent?.trim() === 'Unfinished item');
         expect(unfinished).toBeDefined();
         expect(unfinished?.textContent).not.toContain('Elapsed duration:');
+        const completed = fixture.nativeElement.querySelector('.work-evaluation summary') as HTMLElement;
+        expect(completed.textContent).toContain('Completed');
+        expect(completed.textContent).toContain('16m 45s');
     });
 
     it('reports evaluation file loading failures', () => {

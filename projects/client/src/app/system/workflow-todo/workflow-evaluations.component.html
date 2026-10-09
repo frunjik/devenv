@@ -4,7 +4,8 @@
     <p *ngIf="loading" role="status">Loading evaluation data...</p>
     <p *ngIf="errorMessage" role="alert">Could not load evaluation data: {{ errorMessage }}</p>
     <ng-container *ngIf="dataset as data">
-        <h2>Metric definitions</h2>
+        <details class="metric-definitions">
+        <summary><h2>Metric definitions</h2></summary>
         <div class="table-scroll">
             <table>
                 <caption>Value-evaluation measures</caption>
@@ -24,18 +25,21 @@
                 </tbody>
             </table>
         </div>
-        <section *ngFor="let evaluation of data.evaluations" class="work-evaluation">
-            <h2>{{ evaluation.title }}</h2>
+        </details>
+        <details *ngFor="let evaluation of data.evaluations" class="work-evaluation">
+            <summary>
+                <h2>{{ evaluation.title }}</h2>
+                <span class="evaluation-summary">
+                    {{ evaluation.completedAt ? 'Completed' : 'Not completed' }}
+                    <span *ngIf="evaluation.completedAt"> · Elapsed duration: {{ formatElapsedDuration(evaluation.startedAt, evaluation.completedAt) }}</span>
+                </span>
+            </summary>
             <p><strong>Beneficiary:</strong> {{ evaluation.beneficiary }}</p>
             <p><strong>Intended outcome:</strong> {{ evaluation.intendedOutcome }}</p>
             <p><strong>Success condition:</strong> {{ evaluation.successCondition }}</p>
             <p><strong>Baseline:</strong> {{ evaluation.baseline }}</p>
             <p><strong>Started:</strong> {{ evaluation.startedAt ?? 'Unknown' }}</p>
             <p><strong>Completed:</strong> {{ evaluation.completedAt ?? 'Unknown' }}</p>
-            <p *ngIf="evaluation.completedAt">
-                <strong>Elapsed duration:</strong>
-                {{ formatElapsedDuration(evaluation.startedAt, evaluation.completedAt) }}
-            </p>
             <div class="table-scroll">
                 <table>
                     <caption>Measures for {{ evaluation.title }}</caption>
@@ -55,10 +59,10 @@
                     </tbody>
                 </table>
             </div>
-        </section>
+        </details>
     </ng-container>
-    <section class="credit-estimator" aria-labelledby="credit-estimator-heading">
-        <h2 id="credit-estimator-heading">Copilot AI credit estimate</h2>
+    <details class="credit-estimator">
+        <summary><h2>Copilot AI credit estimate</h2></summary>
         <p>
             Paste a normalized JSON array with one usage object per model call.
             Include <code>model</code>, <code>uncachedInputTokens</code>, and <code>outputTokens</code>;
@@ -97,5 +101,5 @@
                 </li>
             </ul>
         </section>
-    </section>
+    </details>
 </section>

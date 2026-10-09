@@ -106,6 +106,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "glossary-client-search",
+      "title": "Search the Glossary view",
+      "beneficiary": "DevEnv users looking up a Glossary term",
+      "intendedOutcome": "Find relevant Glossary entries quickly by searching their terms and content.",
+      "successCondition": "A case-insensitive partial query filters entries by term, definitions, examples, or domains; clearing the query restores all entries, and unmatched queries show a clear empty state.",
+      "baseline": "The Glossary has no search; all entries are shown. No comparable historical timing or effort baseline exists.",
+      "startedAt": "2026-10-09T16:50:11+02:00",
+      "completedAt": "2026-10-09T16:52:59+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Beneficiary, intended outcome, and observable acceptance condition were recorded before implementation.",
+          "evidence": "This evaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "About 3 minutes wall-clock; active effort is unknown.",
+          "evidence": "Recorded start and completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Search acceptance checks passed; real-browser usability and follow-up outcomes are unknown.",
+          "evidence": "5 Glossary component tests passed with 100% four-metric component coverage; client type-check and build passed."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

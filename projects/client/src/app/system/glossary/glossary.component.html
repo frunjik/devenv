@@ -2,11 +2,29 @@
     <h1>Glossary</h1>
     <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
     <p *ngIf="!errorMessage && entries.length === 0">No terms yet.</p>
-    <dl *ngIf="entries.length > 0" class="glossary-list">
-        <div *ngFor="let entry of entries" class="glossary-entry accent-card">
+    <div *ngIf="entries.length > 0" class="glossary-search form-field">
+        <label for="glossary-search">Search terms and content</label>
+        <input
+            #search
+            id="glossary-search"
+            class="form-control"
+            type="search"
+            [value]="searchQuery"
+            (input)="searchQuery = search.value">
+    </div>
+    <p *ngIf="entries.length > 0 && filteredEntries.length === 0">No Glossary entries match your search.</p>
+    <dl *ngIf="filteredEntries.length > 0" class="glossary-list">
+        <div *ngFor="let entry of filteredEntries" class="glossary-entry accent-card">
             <dt class="glossary-term">{{ entry.term }}</dt>
             <dd *ngFor="let definition of entry.definitions" class="glossary-definition">{{ definition }}</dd>
-            <dd *ngFor="let example of entry.examples" class="glossary-definition glossary-example">Example: {{ example }}</dd>
+            <dd *ngIf="entry.examples.length > 0" class="glossary-definition glossary-examples">
+                <details class="glossary-examples">
+                    <summary>Examples ({{ entry.examples.length }})</summary>
+                    <div class="glossary-example-list">
+                        <p *ngFor="let example of entry.examples" class="glossary-example">Example: {{ example }}</p>
+                    </div>
+                </details>
+            </dd>
             <dd class="glossary-definition glossary-domains">
                 <span class="glossary-domains-label">Domain usage:</span>
                 <span *ngFor="let domain of entry.domains" class="glossary-domain-badge">{{ domain }}</span>

@@ -13,6 +13,21 @@ import { BackendService } from '../../backend.service';
 export class GlossaryComponent implements OnInit {
     entries: GlossaryEntry[] = [];
     errorMessage = '';
+    searchQuery = '';
+
+    get filteredEntries(): GlossaryEntry[] {
+        const query = this.searchQuery.trim().toLowerCase();
+        if (query.length === 0) {
+            return this.entries;
+        }
+
+        return this.entries.filter(entry => [
+            entry.term,
+            ...entry.definitions,
+            ...entry.examples,
+            ...entry.domains,
+        ].some(value => value.toLowerCase().includes(query)));
+    }
 
     constructor(private readonly backend: BackendService) {}
 

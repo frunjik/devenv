@@ -1,12 +1,13 @@
 export type WorkflowWorkPurpose = 'Product work' | 'Meta work';
 
 export interface WorkflowTodoList {
-    schemaVersion: 1;
+    schemaVersion: 2;
     title: string;
     introduction: string;
     activeWorkflow: string | null;
     workflows: {
         name: string;
+        evaluationIds: string[];
         primaryWorkPurpose: WorkflowWorkPurpose;
         status: string;
         resumeLabel: string;
@@ -58,14 +59,23 @@ function validatePurpose(value: unknown): WorkflowWorkPurpose {
 function validateWorkflow(value: unknown): WorkflowTodoList['workflows'][number] {
     const workflow = requireRecord(value);
     requireFields(workflow, [
-        'name', 'primaryWorkPurpose', 'status', 'resumeLabel', 'resumePath', 'relatedConcern',
+        'name', 'evaluationIds', 'primaryWorkPurpose', 'status', 'resumeLabel', 'resumePath',
+        'relatedConcern',
     ]);
+    if (!Array.isArray(workflow['evaluationIds'])) {
+        throw new Error('Invalid WorkflowTodoList: workflow evaluation IDs must be an array');
+    }
+    const evaluationIds = workflow['evaluationIds'].map(requireText);
+    if (new Set(evaluationIds).size !== evaluationIds.length) {
+        throw new Error('Invalid WorkflowTodoList: evaluation IDs must be unique per workflow');
+    }
     const resumePath = requireText(workflow['resumePath']);
     if (!/^(?:\.\/|\.\.\/practices\/)[a-z0-9-]+(?:\.generated)?\.md#[a-z0-9-]+$/.test(resumePath)) {
         throw new Error('Invalid WorkflowTodoList: resume references must be local Markdown checkpoints');
     }
     return {
         name: requireText(workflow['name']),
+        evaluationIds,
         primaryWorkPurpose: validatePurpose(workflow['primaryWorkPurpose']),
         status: requireText(workflow['status']),
         resumeLabel: requireText(workflow['resumeLabel']),
@@ -108,9 +118,9 @@ export function validateWorkflowTodoList(value: unknown): WorkflowTodoList {
     ]);
     const workflowValues = source['workflows'];
     const switchingGuidance = source['switchingGuidance'];
-    if (source['schemaVersion'] !== 1 || !Array.isArray(workflowValues) || !workflowValues.length
+    if (source['schemaVersion'] !== 2 || !Array.isArray(workflowValues) || !workflowValues.length
         || !Array.isArray(switchingGuidance) || !switchingGuidance.length) {
-        throw new Error('Invalid WorkflowTodoList: expected version 1 and non-empty workflow/guidance arrays');
+        throw new Error('Invalid WorkflowTodoList: expected version 2 and non-empty workflow/guidance arrays');
     }
     if (!switchingGuidance.every(item => typeof item === 'string' && item.trim())) {
         throw new Error('Invalid WorkflowTodoList: switching guidance must contain non-empty text');
@@ -130,7 +140,7 @@ export function validateWorkflowTodoList(value: unknown): WorkflowTodoList {
         throw new Error('Invalid WorkflowTodoList: active workflow selection must match workflow status');
     }
     return {
-        schemaVersion: 1,
+        schemaVersion: 2,
         title: requireText(source['title']),
         introduction: requireText(source['introduction']),
         activeWorkflow,

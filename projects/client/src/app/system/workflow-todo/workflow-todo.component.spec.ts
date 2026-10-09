@@ -10,9 +10,9 @@ describe('WorkflowTodoComponent', () => {
     let http: HttpTestingController;
     const workflows = [
         { name: 'Glossary Refinement', primaryWorkPurpose: 'Meta work', status: 'Active', resumeLabel: 'Current checkpoint',
-            resumePath: './glossary-refinement.md#checkpoint', relatedConcern: 'SC-027; SC-049' },
+            resumePath: './glossary-refinement.md#checkpoint', relatedConcern: 'SC-027; SC-049', evaluationIds: [] },
         { name: 'DevEnv Export', primaryWorkPurpose: 'Product work', status: 'Pending', resumeLabel: 'Starting checkpoint',
-            resumePath: './devenv-export-workflow.md#checkpoint', relatedConcern: 'Not assigned' },
+            resumePath: './devenv-export-workflow.md#checkpoint', relatedConcern: 'Not assigned', evaluationIds: [] },
     ];
 
     beforeEach(async () => {
@@ -30,7 +30,7 @@ describe('WorkflowTodoComponent', () => {
     it('shows loading, then all JSON fields and the active workflow', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
         expect(fixture.componentInstance.metricSummary).toEqual([]);
-        expect(fixture.componentInstance.completedEvaluationSummary('Minimal Typed Diagram Editor')).toBe('—');
+        expect(fixture.componentInstance.completedEvaluationSummary(['diagram-selection-and-movement'])).toBe('—');
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
@@ -84,9 +84,101 @@ describe('WorkflowTodoComponent', () => {
         expect(workflowTables[0].querySelectorAll('tbody')).toHaveLength(2);
     });
 
+    it('shows all completed evaluations linked from a workflow independent of its name', () => {
+        const reviewWorkflow = {
+            name: 'Renamed principle review workflow',
+            primaryWorkPurpose: 'Meta work',
+            status: 'Completed',
+            resumeLabel: 'Approved cross-reference update and verification',
+            resumePath: './principle-register-review.md#checkpoint',
+            relatedConcern: 'Not assigned',
+            evaluationIds: [
+                'principle-register-organization-review',
+                'workflow-association-follow-up',
+            ],
+        };
+        const evaluationWorkflow = {
+            name: 'DevEnv Value Evaluation',
+            evaluationIds: [],
+            primaryWorkPurpose: 'Meta work',
+            status: 'Active',
+            resumeLabel: 'Measurement-feasibility pilot',
+            resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
+            relatedConcern: 'Not assigned',
+        };
+        http.expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { workflows: [...workflows, reviewWorkflow, evaluationWorkflow] } });
+        fixture.detectChanges();
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: JSON.stringify({
+                schemaVersion: 1,
+                metrics: [{
+                    id: 'delivery-flow-and-effort',
+                    name: 'Delivery flow and effort',
+                    definition: 'Record elapsed delivery time.',
+                    interpretation: 'Elapsed time is not active effort.',
+                }],
+                evaluations: [{
+                    id: 'principle-register-organization-review',
+                    title: 'Principle register organization review',
+                    beneficiary: 'DevEnv contributors',
+                    intendedOutcome: 'Review principle register organization.',
+                    successCondition: 'Record a supported conclusion.',
+                    baseline: 'No priority ranking.',
+                    startedAt: '2026-10-09T17:04:18+02:00',
+                    completedAt: '2026-10-09T17:13:14+02:00',
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: 'About 8m 56s wall-clock.',
+                        evidence: 'Recorded timestamps.',
+                    }],
+                }, {
+                    id: 'workflow-association-follow-up',
+                    title: 'Association follow-up',
+                    beneficiary: 'DevEnv contributors',
+                    intendedOutcome: 'Review the workflow association.',
+                    successCondition: 'Record a supported conclusion.',
+                    baseline: 'No explicit association.',
+                    startedAt: '2026-10-09T17:15:00+02:00',
+                    completedAt: '2026-10-09T17:17:00+02:00',
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: 'About 2m wall-clock.',
+                        evidence: 'Recorded timestamps.',
+                    }],
+                }, {
+                    id: 'workflow-evaluation-associations',
+                    title: 'Workflow evaluation associations',
+                    beneficiary: 'DevEnv contributors',
+                    intendedOutcome: 'Link evaluations to workflows.',
+                    successCondition: 'Workflow records declare evaluation IDs.',
+                    baseline: 'Name-based view mapping.',
+                    startedAt: '2026-10-09T17:22:56+02:00',
+                    completedAt: null,
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: null,
+                        evidence: null,
+                    }],
+                }],
+            }) });
+        fixture.detectChanges();
+
+        const reviewRow = Array.from(
+            fixture.nativeElement.querySelectorAll(
+                '.workflow-table tbody tr:not(.workflow-group-heading)',
+            ) as NodeListOf<HTMLTableRowElement>,
+        ).find(row => row.querySelector('th')?.textContent?.trim()
+            === 'Renamed principle review workflow');
+
+        expect(reviewRow?.textContent).toContain('Principle register organization review (8m 56s)');
+        expect(reviewRow?.textContent).toContain('Association follow-up (2m 0s)');
+    });
+
     it('shows a metric availability summary and links to evaluation details', () => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
+            evaluationIds: [],
             primaryWorkPurpose: 'Meta work',
             status: 'Active',
             resumeLabel: 'Measurement-feasibility pilot',
@@ -95,6 +187,7 @@ describe('WorkflowTodoComponent', () => {
         };
         const diagramWorkflow = {
             name: 'Minimal Typed Diagram Editor',
+            evaluationIds: ['diagram-selection-and-movement'],
             primaryWorkPurpose: 'Product work',
             status: 'Paused',
             resumeLabel: 'Document-operations checkpoint',
@@ -103,6 +196,7 @@ describe('WorkflowTodoComponent', () => {
         };
         const todoViewWorkflow = {
             name: 'TODO View (DevEnv system layer)',
+            evaluationIds: ['workflow-todo-value-metrics-view'],
             primaryWorkPurpose: 'Meta work',
             status: 'Completed',
             resumeLabel: 'Implementation and review checkpoint',
@@ -231,7 +325,7 @@ describe('WorkflowTodoComponent', () => {
         expect(todoViewEvaluation).toBeDefined();
         if (todoViewEvaluation) {
             todoViewEvaluation.completedAt = null;
-            expect(fixture.componentInstance.completedEvaluationSummary('TODO View (DevEnv system layer)'))
+            expect(fixture.componentInstance.completedEvaluationSummary(['workflow-todo-value-metrics-view']))
                 .toBe('—');
         }
     });
@@ -239,6 +333,7 @@ describe('WorkflowTodoComponent', () => {
     it('reports evaluation data load failures instead of presenting an empty dataset', () => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
+            evaluationIds: [],
             primaryWorkPurpose: 'Meta work',
             status: 'Active',
             resumeLabel: 'Measurement-feasibility pilot',
@@ -259,6 +354,43 @@ describe('WorkflowTodoComponent', () => {
         expect(metrics.querySelector('table')).toBeNull();
     });
 
+    it('reports workflow references to evaluations that are not in the evaluation dataset', () => {
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [{
+            ...workflows[0],
+            resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
+            evaluationIds: ['missing-evaluation'],
+        }] } });
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: JSON.stringify({
+                schemaVersion: 1,
+                metrics: [{
+                    id: 'delivery',
+                    name: 'Delivery',
+                    definition: 'Measure elapsed delivery time.',
+                    interpretation: 'Elapsed time is not active effort.',
+                }],
+                evaluations: [{
+                    id: 'known-evaluation',
+                    title: 'Known evaluation',
+                    beneficiary: 'Developer',
+                    intendedOutcome: 'Record a result.',
+                    successCondition: 'Show a result.',
+                    baseline: 'No result.',
+                    startedAt: '2026-10-09T17:00:00+02:00',
+                    completedAt: '2026-10-09T17:01:00+02:00',
+                    measures: [{ metricId: 'delivery', value: null, evidence: null }],
+                }],
+            }) });
+        fixture.detectChanges();
+
+        const metrics = fixture.nativeElement.querySelector(
+            '[aria-label="DevEnv value evaluation metrics"]',
+        ) as HTMLElement;
+        expect((metrics.querySelector('[role="alert"]') as HTMLElement).textContent)
+            .toContain('unknown evaluation IDs: missing-evaluation');
+        expect(metrics.querySelector('table')).toBeNull();
+    });
+
     it.each([
         { label: 'invalid JSON', contents: '{', expectedError: 'SyntaxError:' },
         {
@@ -269,6 +401,7 @@ describe('WorkflowTodoComponent', () => {
     ])('reports $label from the evaluation data file', ({ contents, expectedError }) => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
+            evaluationIds: [],
             primaryWorkPurpose: 'Meta work',
             status: 'Active',
             resumeLabel: 'Measurement-feasibility pilot',
@@ -311,6 +444,7 @@ describe('WorkflowTodoComponent', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: {
             workflows: [{
                 name: 'DevEnv Value Evaluation',
+                evaluationIds: [],
                 primaryWorkPurpose: 'Meta work',
                 status: 'Active',
                 resumeLabel: 'Checkpoint',
@@ -336,6 +470,7 @@ describe('WorkflowTodoComponent', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [
             {
                 name: 'Principle Register Organization and Priority Review',
+                evaluationIds: ['principle-register-organization-review'],
                 primaryWorkPurpose: 'Meta work',
                 status: 'Completed',
                 resumeLabel: 'Approved cross-reference update and verification',
@@ -344,6 +479,7 @@ describe('WorkflowTodoComponent', () => {
             },
             {
                 name: 'DevEnv Value Evaluation',
+                evaluationIds: [],
                 primaryWorkPurpose: 'Meta work',
                 status: 'Active',
                 resumeLabel: 'Measurement-feasibility pilot',

@@ -42,7 +42,7 @@
                         <td>{{ workflow.primaryWorkPurpose }}</td>
                         <td><span class="status">{{ workflow.status }}</span></td>
                         <td>{{ workflow.relatedConcern }}</td>
-                        <td>{{ completedEvaluationSummary(workflow.name) }}</td>
+                        <td>{{ completedEvaluationSummary(workflow.evaluationIds) }}</td>
                     </tr>
                 </tbody>
                 <tbody *ngIf="metaWorkflows.length">
@@ -54,7 +54,7 @@
                         <td>{{ workflow.primaryWorkPurpose }}</td>
                         <td><span class="status">{{ workflow.status }}</span></td>
                         <td>{{ workflow.relatedConcern }}</td>
-                        <td>{{ completedEvaluationSummary(workflow.name) }}</td>
+                        <td>{{ completedEvaluationSummary(workflow.evaluationIds) }}</td>
                     </tr>
                 </tbody>
             </table>

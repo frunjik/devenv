@@ -180,6 +180,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "workflow-evaluation-associations",
+      "title": "Associate evaluations with workflow records",
+      "beneficiary": "DevEnv contributors maintaining and viewing workflow/evaluation records",
+      "intendedOutcome": "Represent workflow-to-evaluation links in authoritative typed workflow data and render completed linked evaluations without relying on display names.",
+      "successCondition": "Workflow records carry validated evaluation ID lists; the view displays all completed evaluations referenced by each workflow; invalid references are reported; focused tests and the client/shared build pass.",
+      "baseline": "The workflow view keeps a component-local display-name-to-evaluation-ID map, which must be manually updated and supports only one evaluation per workflow. Workflow TODO JSON has no evaluation associations.",
+      "startedAt": "2026-10-09T17:22:56+02:00",
+      "completedAt": "2026-10-09T17:33:59+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Beneficiary, desired association behavior, baseline limitation, and observable acceptance conditions were recorded before implementation.",
+          "evidence": "User request and this WorkEvaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "About 11 minutes 3 seconds wall-clock from recorded start through verification and workflow completion, including pauses; active effort is unknown.",
+          "evidence": "Evaluation startedAt and completion timestamp; focused client/server test and coverage runs; shared/client builds."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Workflow records now declare zero or more evaluation IDs in schema version 2; the view renders multiple completed linked evaluations independent of workflow display name, and reports unknown references. All 64 focused client tests and 33 server tests passed; changed production modules have 100% four-metric coverage; shared and client builds passed.",
+          "evidence": "workflow-todo-list.json and generated Markdown; workflow/evaluation component tests; server workflow validator tests; targeted coverage reports; Angular shared and client builds. Longer-term usability and rework remain unobserved."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

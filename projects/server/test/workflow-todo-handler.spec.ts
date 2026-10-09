@@ -11,12 +11,13 @@ jest.mock('node:fs/promises', () => ({
 
 const fileReader = jest.mocked(readFile);
 const workflowTodo = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     title: 'Workflow TODO List',
     introduction: 'Repository-wide navigation for resumable work.',
     activeWorkflow: 'Minimal Typed Diagram Editor',
     workflows: [{
         name: 'Minimal Typed Diagram Editor',
+        evaluationIds: ['diagram-selection-and-movement'],
         primaryWorkPurpose: 'Product work',
         status: 'Active',
         resumeLabel: 'Checkpoint',

@@ -7,12 +7,6 @@ import type { WorkflowTodoList, WorkEvaluationDataset } from '@shared';
 import { BackendService } from '../../backend.service';
 import { formatElapsedDuration } from './evaluation-duration';
 
-const evaluationIdsByWorkflowName: Readonly<Record<string, string>> = {
-    'Minimal Typed Diagram Editor': 'diagram-selection-and-movement',
-    'TODO View (DevEnv system layer)': 'workflow-todo-value-metrics-view',
-    'Principle Register Organization and Priority Review': 'principle-register-organization-review',
-};
-
 @Component({
     selector: 'app-workflow-todo',
     standalone: true,
@@ -55,18 +49,19 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
 
     constructor(private readonly backend: BackendService) {}
 
-    completedEvaluationSummary(workflowName: string): string {
-        const evaluationId = evaluationIdsByWorkflowName[workflowName];
-        if (evaluationId === undefined || this.evaluationDataset === null) {
+    completedEvaluationSummary(evaluationIds: string[]): string {
+        if (this.evaluationDataset === null) {
             return '—';
         }
-        const evaluation = this.evaluationDataset.evaluations.find(item =>
-            item.id === evaluationId && item.completedAt !== null,
-        );
-        if (evaluation === undefined) {
-            return '—';
-        }
-        return `${evaluation.title} (${formatElapsedDuration(evaluation.startedAt, evaluation.completedAt)})`;
+        const summaries = evaluationIds.flatMap(evaluationId => {
+            const evaluation = this.evaluationDataset?.evaluations.find(item =>
+                item.id === evaluationId && item.completedAt !== null,
+            );
+            return evaluation
+                ? [`${evaluation.title} (${formatElapsedDuration(evaluation.startedAt, evaluation.completedAt)})`]
+                : [];
+        });
+        return summaries.length ? summaries.join('; ') : '—';
     }
 
     ngOnInit(): void {
@@ -94,7 +89,17 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
             next: text => {
                 try {
                     const value: unknown = JSON.parse(text);
-                    this.evaluationDataset = validateWorkEvaluationDataset(value);
+                    const dataset = validateWorkEvaluationDataset(value);
+                    const knownEvaluationIds = new Set(dataset.evaluations.map(evaluation => evaluation.id));
+                    const unknownEvaluationIds = this.workflows
+                        .flatMap(workflow => workflow.evaluationIds)
+                        .filter(evaluationId => !knownEvaluationIds.has(evaluationId));
+                    if (unknownEvaluationIds.length) {
+                        throw new Error(`Workflow TODO data references unknown evaluation IDs: ${
+                            [...new Set(unknownEvaluationIds)].join(', ')
+                        }`);
+                    }
+                    this.evaluationDataset = dataset;
                     this.evaluationLoading = false;
                 } catch (error) {
                     this.evaluationError = String(error);

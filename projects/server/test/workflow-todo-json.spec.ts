@@ -3,12 +3,13 @@ import { validateWorkflowTodoList, workflowTodoListToMarkdown } from '@shared';
 import { writeWorkflowTodoMarkdown } from '../../../scripts/workflow-todo-export';
 
 const workflowTodo = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     title: 'Workflow TODO List',
     introduction: 'Repository-wide navigation for resumable work.',
     activeWorkflow: 'Diagram Editor',
     workflows: [{
         name: 'Diagram Editor',
+        evaluationIds: [],
         primaryWorkPurpose: 'Product work',
         status: 'Active',
         resumeLabel: 'Checkpoint',
@@ -40,6 +41,7 @@ const workflowTodo = {
 describe('Workflow TODO JSON authority', () => {
     it('validates workflow data and renders the complete readable view', () => {
         const validated = validateWorkflowTodoList(workflowTodo);
+        expect(validated.workflows[0].evaluationIds).toEqual([]);
         const filesystem = {
             readFileSync: jest.fn(() => JSON.stringify(validated)),
             writeFileSync: jest.fn(),
@@ -90,9 +92,18 @@ describe('Workflow TODO JSON authority', () => {
     it.each([
         null,
         [],
-        { ...workflowTodo, schemaVersion: 2 },
+        { ...workflowTodo, schemaVersion: 1 },
         { ...workflowTodo, workflows: [] },
         { ...workflowTodo, workflows: undefined },
+        { ...workflowTodo, workflows: [{ ...workflowTodo.workflows[0], evaluationIds: null }] },
+        { ...workflowTodo, workflows: [{ ...workflowTodo.workflows[0], evaluationIds: [' '] }] },
+        {
+            ...workflowTodo,
+            workflows: [{
+                ...workflowTodo.workflows[0],
+                evaluationIds: ['diagram-evaluation', 'diagram-evaluation'],
+            }],
+        },
         { ...workflowTodo, switchingGuidance: [] },
         { ...workflowTodo, switchingGuidance: [null] },
         { ...workflowTodo, activeWorkflow: null },

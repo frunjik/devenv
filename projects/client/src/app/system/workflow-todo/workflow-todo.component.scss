@@ -23,8 +23,21 @@ th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertic
 .evaluation-history summary { min-height: 44px; cursor: pointer; }
 .evaluation-history li { margin-bottom: .5rem; }
 .evaluation-history ul { padding-left: 1.25rem; }
-.workflow-total th, .workflow-total td { font-weight: 600; border-top: 2px solid var(--border-default); }
-.totals-note { margin-top: .75rem; }
+.totals-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin: 1rem 0 0;
+}
+.totals-summary dt { color: var(--text-heading); font-weight: 600; }
+.totals-summary dd { margin: .25rem 0 0; color: var(--text-secondary); overflow-wrap: anywhere; }
+.totals-summary .grand-total { border-left: 3px solid var(--border-accent); padding-left: 1rem; }
+.totals-note {
+    margin-top: .75rem;
+    font-size: .75rem;
+    line-height: 1.5;
+    color: #8e9b92;
+}
 .checkpoint-button {
     display: block;
     min-height: 24px;

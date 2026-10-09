@@ -17,6 +17,26 @@
         Swipe or scroll horizontally to see all workflow details.
     </p>
     <ng-container *ngIf="workflows.length">
+        <section aria-label="Evaluated work totals">
+            <dl class="totals-summary">
+                <div class="workflow-total" *ngIf="endUserWorkflows.length">
+                    <dt>Product work subtotal</dt>
+                    <dd>Summed elapsed: {{ summedWorkflowElapsed(endUserWorkflows) }}</dd>
+                </div>
+                <div class="workflow-total" *ngIf="metaWorkflows.length">
+                    <dt>Meta work subtotal</dt>
+                    <dd>Summed elapsed: {{ summedWorkflowElapsed(metaWorkflows) }}</dd>
+                </div>
+                <div class="workflow-total grand-total">
+                    <dt>Grand total</dt>
+                    <dd>Summed elapsed: {{ summedWorkflowElapsed(workflows) }}</dd>
+                </div>
+            </dl>
+            <p class="totals-note">Each evaluation is counted once within each group and once overall.
+                Evaluations shared across Product and Meta work can make subtotals add up to more than the grand total.
+                Summed elapsed includes waiting and overlapping intervals, not active effort.
+                Unknown or unavailable durations are excluded and counted separately.</p>
+        </section>
         <div
             class="table-scroll"
             role="region"
@@ -57,10 +77,6 @@
                             <ng-container *ngTemplateOutlet="evaluationHistory; context: { $implicit: workflow.evaluationIds }"></ng-container>
                         </td>
                     </tr>
-                    <tr class="workflow-total">
-                        <th scope="row" colspan="3">Product work subtotal</th>
-                        <td>Summed elapsed: {{ summedWorkflowElapsed(endUserWorkflows) }}</td>
-                    </tr>
                 </tbody>
                 <tbody *ngIf="metaWorkflows.length">
                     <tr class="workflow-group-heading">
@@ -79,23 +95,9 @@
                             <ng-container *ngTemplateOutlet="evaluationHistory; context: { $implicit: workflow.evaluationIds }"></ng-container>
                         </td>
                     </tr>
-                    <tr class="workflow-total">
-                        <th scope="row" colspan="3">Meta work subtotal</th>
-                        <td>Summed elapsed: {{ summedWorkflowElapsed(metaWorkflows) }}</td>
-                    </tr>
                 </tbody>
-                <tfoot>
-                    <tr class="workflow-total">
-                        <th scope="row" colspan="3">Grand total</th>
-                        <td>Summed elapsed: {{ summedWorkflowElapsed(workflows) }}</td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
-        <p class="totals-note">Each evaluation is counted once within each group and once overall.
-            Evaluations shared across Product and Meta work can make subtotals add up to more than the grand total.
-            Summed elapsed includes waiting and overlapping intervals, not active effort.
-            Unknown or unavailable durations are excluded and counted separately.</p>
     </ng-container>
     <ng-template #evaluationHistory let-ids>
         <ng-container *ngIf="completedEvaluationItems(ids) as items">

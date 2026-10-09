@@ -55,27 +55,37 @@ describe('WorkflowTodoComponent', () => {
             fixture.detectChanges();
         });
 
-        it('shows unique completed evaluation subtotals at each group end', () => {
+        it('shows unique completed evaluation subtotals in the top summary', () => {
             const host: HTMLElement = fixture.nativeElement;
-            const bodies = host.querySelectorAll('.workflow-table tbody');
-            expect(bodies[0].lastElementChild!.textContent).toContain('Product work subtotal');
-            expect(bodies[0].lastElementChild!.textContent).toContain('Summed elapsed: 4m 0s');
-            expect(bodies[1].lastElementChild!.textContent).toContain('Meta work subtotal');
-            expect(bodies[1].lastElementChild!.textContent).toContain('Summed elapsed: 3m 0s');
+            const totals = host.querySelectorAll('.totals-summary .workflow-total');
+            expect(totals[0].textContent).toContain('Product work subtotal');
+            expect(totals[0].textContent).toContain('Summed elapsed: 4m 0s');
+            expect(totals[1].textContent).toContain('Meta work subtotal');
+            expect(totals[1].textContent).toContain('Summed elapsed: 3m 0s');
         });
 
-        it('shows the unique associated grand total in the footer, not the sum of group totals', () => {
+        it('shows the unique associated grand total in the top summary, not the sum of group totals', () => {
             const host: HTMLElement = fixture.nativeElement;
-            expect(host.querySelector('.workflow-table tfoot')!.textContent).toContain('Grand total');
-            expect(host.querySelector('.workflow-table tfoot')!.textContent).toContain('Summed elapsed: 6m 0s');
+            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('Grand total');
+            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('Summed elapsed: 6m 0s');
             expect(host.textContent).toContain('Each evaluation is counted once');
+        });
+
+        it('places the summary and explanation before the table without duplicate total rows', () => {
+            const host: HTMLElement = fixture.nativeElement;
+            const summary = host.querySelector('.totals-summary')!;
+            const note = host.querySelector('.totals-note')!;
+            const table = host.querySelector('.workflow-table')!;
+            expect(summary.compareDocumentPosition(note) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+            expect(note.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+            expect(table.querySelectorAll('.workflow-total')).toHaveLength(0);
         });
 
         it('keeps missing durations explicit in group totals', () => {
             fixture.componentInstance.evaluationDataset!.evaluations[0].startedAt = null;
             fixture.detectChanges();
             const host: HTMLElement = fixture.nativeElement;
-            expect(host.querySelector('.workflow-table tfoot')!.textContent).toContain('5m 0s; 1 unknown');
+            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('5m 0s; 1 unknown');
         });
     });
 

@@ -17,6 +17,16 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Top evaluated-work totals
+
+- User approved moving Product and Meta subtotals and the grand total into a compact wrapping summary above the workflow table, with the subtle explanation directly underneath. Per-workflow elapsed totals stay in their rows; duplicate bottom totals removed. Existing calculation, deduplication and missing-duration semantics unchanged.
+- Observed four top-summary tests fail before implementation. Reuse existing workflow groups and summedWorkflowElapsed; presentation-only rearrangement warrants no new domain Type.
+- Verified: 23 component tests pass with 100% statement/branch/function/line coverage; full test-source type-check, client build, diagnostics and diff formatting pass. Running-page DOM/computed-style check confirms top placement, flex wrapping and no bottom total rows. Browser tab hidden; visible visual acceptance not claimed. No further refactoring needed; changes uncommitted.
+
+### Subtle totals explanation
+
+- User requested smaller, subtler totals explanatory text. Scoped style-only refinement: .75rem (12px), 1.5 line height and local muted gray-green #8e9b92. Contrast against page #171d19 is 5.92:1. Wording, totals and all interactions unchanged.
+
 ### Compact checkpoint label styling
 
 - User requested much smaller checkpoint text, no gray background and no visible View checkpoint prefix. Approved workflow record; evaluation skipped for this small refinement.

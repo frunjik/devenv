@@ -30,7 +30,7 @@ Do not use completed tasks, tool usage, test count, or coverage alone as value m
 
 1. **Before TDD Red:** identify the user/team outcome and observable acceptance condition; record available starting-state/baseline evidence and start date/time. If a baseline is unavailable or any outcome is unclear, record that rather than silently making it up.
 2. **During TDD:** keep Red-Green-Refactor unchanged. Existing tests, coverage, type checks, builds, and runtime checks provide implementation evidence. Note significant decision points and blocked time only when observable.
-3. **At a stable completion or pause:** record completion time, acceptance result, evidence links, approximate active effort and DevEnv process overhead if participants can estimate them, and unresolved user-outcome evidence.
+3. **At a stable completion or pause:** record completion time, acceptance result, evidence links, approximate active effort and DevEnv process overhead if participants can estimate them, and unresolved user-outcome evidence. Reconcile each measure against available evidence, calculate elapsed wall-clock time from recorded start and completion timestamps, and leave active effort or other values unknown when the evidence does not support them.
 4. **After the pre-agreed follow-up window:** update defects/rework and user outcome evidence; do not treat immediate test success as sustained value.
 5. **After three consecutive eligible slices:** review completeness, collection burden, missing measures, and whether any comparison is credible. Adapt or stop collection if burden exceeds the likely learning.
 

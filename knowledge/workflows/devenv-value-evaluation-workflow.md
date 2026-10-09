@@ -6,13 +6,13 @@ Test whether DevEnv's practices, tools, and workflows help teams clarify goals, 
 
 ## Checkpoint
 
-**Status:** Active — measurement-feasibility pilot.
+**Status:** Paused — measurement-feasibility pilot.
 
 **Scope:** First dogfood the existing coding workflow. This can test whether we can capture useful evidence with reasonable effort; it cannot by itself prove value for developers, testers, salespeople, project managers, or teams using different workflows.
 
 **Current process:** TDD links behavior to tests; coverage, type-checks/builds, runtime checks, and workflow checkpoints record implementation and verification evidence. We do not consistently record pre-work success conditions, a comparable baseline, decision/delivery elapsed time, human effort, process overhead, or post-delivery outcomes.
 
-**Next step:** Selection and movement are complete and recorded. The streamed test-run extraction from client `BackendService` is complete and committed as `e1c2418`; the evaluation-duration presentation follow-up is implemented and awaits user review. After that review, resume the next planned diagram-editor slice (the connection workflow) with a pre-work record before implementation. Continue the existing TDD and verification process; add only the measurement record below. Review measurement feasibility after three consecutive eligible coding slices. Treat this small sample as descriptive, not proof of improved performance.
+**Next step:** The Principle Register Organization and Priority Review is complete: its approved narrow P-026 cross-reference was added to `AGENTS.md`, with no register or policy changes. Selection and movement are complete and recorded. The streamed test-run extraction from client `BackendService` is complete and committed as `e1c2418`; the evaluation-duration presentation follow-up is implemented and awaits user review. After that review, resume the next planned diagram-editor slice (the connection workflow) with a pre-work record before implementation. Continue the existing TDD and verification process; add only the measurement record below. Review measurement feasibility after three consecutive eligible coding slices. Treat this small sample as descriptive, not proof of improved performance.
 
 **Open limits:** Historical slices lack consistent start/end and effort records, so do not invent a retrospective baseline. The first prospective records describe the current DevEnv-supported coding process; they are not a without-DevEnv control group and cannot show causal improvement. Coding-task evidence does not establish product impact after deployment. A later comparison with a credible alternative workflow and evidence from other product roles is required for broader claims.
 

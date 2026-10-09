@@ -19,7 +19,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | DevEnv Export (sibling or hosting system) | Product work | Paused | [Full-coverage checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
 | Portable Practices and Glossary | Meta work | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
 | Knowledge Organization Migration | Meta work | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
-| Principle Register Organization and Priority Review | Meta work | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |
+| Principle Register Organization and Priority Review | Meta work | Completed | [Approved cross-reference update and verification](./principle-register-review.md#checkpoint) | Not assigned |
 | Minimal Typed Diagram Editor | Product work | Paused | [Document-operations checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
 | DevEnv Value Evaluation | Meta work | Active | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
 

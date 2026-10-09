@@ -143,6 +143,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "principle-register-organization-review",
+      "title": "Review principle register organization and precedence",
+      "beneficiary": "DevEnv contributors applying repository development principles",
+      "intendedOutcome": "Determine whether the principle register needs clearer navigation/grouping, explicit conflict precedence, or both, and propose only evidence-supported changes.",
+      "successCondition": "Review all current principles and guidance; assess the three checkpoint scenarios; preserve existing obligations and identifiers; present an evidence-backed proposal and unresolved questions for user approval before changing policy.",
+      "baseline": "The principle register is additive and currently has no established priority ranking. Its workflow checkpoint frames navigation/grouping and conflict precedence as separate questions; no changes are approved.",
+      "startedAt": "2026-10-09T17:04:18+02:00",
+      "completedAt": "2026-10-09T17:10:02+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The purpose, beneficiary, baseline, review cases, and approval boundary are recorded before review.",
+          "evidence": "Principle Register Organization and Priority Review workflow checkpoint and this evaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "About 5 minutes 44 seconds wall-clock from recorded start through approved implementation; this includes review wait, and active effort is unknown.",
+          "evidence": "Recorded start and completion timestamps; approval and implementation are recorded in the Principle Register Organization and Priority Review checkpoint."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "The register and guidance review produced an approved, narrow navigation change; no register rules or policy meanings were changed.",
+          "evidence": "P-026 cross-reference in AGENTS.md and completed Principle Register Organization and Priority Review checkpoint."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

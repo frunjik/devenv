@@ -23,6 +23,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | Minimal Typed Diagram Editor | Product work | Active | [Connection workflow checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
 | DevEnv Value Evaluation | Meta work | Paused | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
 | Workflow Evaluation Associations | Meta work | Completed | [Association model and verification checkpoint](./workflow-evaluation-associations.md#checkpoint) | Not assigned |
+| Test Boundary Mocks | Meta work | Pending | [Starting checkpoint](./test-boundary-mocks.md#checkpoint) | Not assigned |
 
 **Registration:** Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

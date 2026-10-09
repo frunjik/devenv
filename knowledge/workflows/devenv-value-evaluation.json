@@ -402,6 +402,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "interactive-canvas-editor-milestone",
+      "title": "Canvas editor first useful milestone (provisional)",
+      "beneficiary": "DevEnv developer interactively describing DevEnv and its parts",
+      "intendedOutcome": "Create and arrange a readable picture of DevEnv client, DevEnv API, and Workspace resources with labelled directed relationships, while preserving the existing Diagram Editor for comparison.",
+      "successCondition": "On the isolated canvas route, create and independently select, move, and rename parts; connect them with labelled directed arrows that remain attached during movement; cancel unfinished connections and delete parts without dangling relationships. Responsive sizing and pointer coordinates remain correct. Sketch-versus-architecture semantics, adding interaction, and first-milestone persistence remain open for user decision.",
+      "baseline": "The isolated /interactive-canvas route renders a clock but has no editor interactions. The existing /diagram editor uses HTML items and SVG connections; its DiagramDocument models undirected relationships. No comparative responsiveness or usability measurement exists.",
+      "startedAt": "2026-10-09T21:28:33+02:00",
+      "completedAt": null,
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The beneficiary, concrete three-part example, staged acceptance conditions, and unresolved modeling and interaction decisions were saved before editor implementation. Goal clarity is partial until these decisions are resolved.",
+          "evidence": "User request to save and activate the plan with all metrics; interactive-canvas-workflow.md#canvas-editor-plan."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

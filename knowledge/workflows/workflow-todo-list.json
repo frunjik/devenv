@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "title": "Workflow TODO List",
   "introduction": "Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.",
-  "activeWorkflow": null,
+  "activeWorkflow": "InteractiveCanvas Prototype (provisional)",
   "workflows": [
     {
       "name": "MetaExport",
@@ -172,11 +172,12 @@
     {
       "name": "InteractiveCanvas Prototype (provisional)",
       "evaluationIds": [
-        "interactive-canvas-clock-prototype"
+        "interactive-canvas-clock-prototype",
+        "interactive-canvas-editor-milestone"
       ],
       "primaryWorkPurpose": "Product work",
-      "status": "Completed",
-      "resumeLabel": "Canvas clock prototype verification",
+      "status": "Active",
+      "resumeLabel": "Canvas editor plan and next slice",
       "resumePath": "./interactive-canvas-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"
     }

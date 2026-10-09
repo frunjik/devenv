@@ -50,6 +50,22 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private drag: CanvasDrag | undefined;
     overviewLoaded = false;
     replacementPending = false;
+    readonly checkedConnections = new Set<SketchConnection>();
+
+    checkConnection(connection: SketchConnection, checked: boolean): void {
+        if (checked) {
+            this.checkedConnections.add(connection);
+        } else {
+            this.checkedConnections.delete(connection);
+        }
+    }
+
+    deleteCheckedConnections(): void {
+        for (const connection of this.checkedConnections) {
+            this.removeConnection(connection);
+        }
+        this.checkedConnections.clear();
+    }
 
     loadOverview(): void {
         if (this.parts.length) {
@@ -65,6 +81,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     confirmOverview(): void {
         const document = validateDiagramDocument(overview);
+        this.checkedConnections.clear();
         this.parts = document.elements.map(element => ({
             id: this.nextPartId++,
             label: element.label,
@@ -217,6 +234,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     removeConnection(connection: SketchConnection): void {
+        this.checkedConnections.delete(connection);
         this.connections = this.connections.filter(candidate => candidate !== connection);
         if (this.selectedItem === connection) {
             this.selectedItem = undefined;
@@ -234,8 +252,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     removeSelectedPart(): void {
         if (this.selectedPart) {
             const removed = this.selectedPart;
-            this.connections = this.connections.filter(connection =>
-                connection.first !== removed && connection.second !== removed);
+            for (const connection of this.connections.filter(connection =>
+                connection.first === removed || connection.second === removed)) {
+                this.removeConnection(connection);
+            }
             this.cancelConnection();
             this.parts = this.parts.filter(part => part !== this.selectedPart);
             this.selectedItem = undefined;

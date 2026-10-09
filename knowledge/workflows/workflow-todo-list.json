@@ -193,7 +193,8 @@
         "canvas-diagram-multiple-parts",
         "canvas-diagram-connections",
         "canvas-shared-label-input",
-        "canvas-devenv-overview"
+        "canvas-devenv-overview",
+        "canvas-connection-picker"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

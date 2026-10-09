@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-connection-picker",
+      "title": "Pick and delete multiple canvas connections",
+      "beneficiary": "DevEnv developer editing sketches with multiple connections",
+      "intendedOutcome": "Choose connections in a compact checkbox picker and delete them with one adjacent button.",
+      "successCondition": "Picker checkboxes do not change canvas label selection. One delete button removes checked connections only and disables when none are checked. Removal/replacement cannot leave stale checked references. Keyboard controls and narrow layout remain usable.",
+      "baseline": "Each connection has a permanently visible description and separate remove button.",
+      "startedAt": "2026-10-09T23:52:52+02:00",
+      "completedAt": "2026-10-09T23:56:26+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved checkbox multi-delete separate from label-edit selection, resumable workflow and evaluation.", "evidence": "interactive-canvas-workflow.md connection picker decisions." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 34 seconds wall-clock to browser acceptance, including approvals and continuation gate; active effort unknown.", "evidence": "Recorded start and verification timestamps; interactive-canvas-workflow.md picker checkpoint." },
+        { "metricId": "outcome-and-quality", "value": "24 editor tests pass with 100% lines/statements/branches/functions; full test-source type-check and client build pass. Visible browser verifies keyboard Enter opens picker, Space checks a line, two selected lines delete leaving four and disabling delete. At 320px labels wrap without horizontal overflow; summary, rows and delete are at least 44px high. Delete is reachable above the fixed toolbar at page bottom. Tests verify independent canvas selection and checked-reference cleanup across deletion/replacement. Follow-up usability unknown.", "evidence": "interactive-canvas-workflow.md picker acceptance; Jest coverage, TypeScript, build, browser and diff checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-devenv-overview",
       "title": "Load a reusable DevEnv overview sketch",
       "beneficiary": "People learning what DevEnv helps a product team do",

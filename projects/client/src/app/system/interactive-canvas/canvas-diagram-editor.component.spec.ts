@@ -186,6 +186,73 @@ describe('CanvasDiagramEditor', () => {
         expect(editor.labelValue).toBe('My preserved draft');
     });
 
+    it('picks multiple connections independently of canvas selection and deletes only the checked lines', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.loadOverview();
+        const host: HTMLElement = fixture.nativeElement;
+        const canvas = host.querySelector('canvas')!;
+        canvas.dispatchEvent(pointer('pointerdown', 390, 131, 1));
+        fixture.detectChanges();
+        const selected = editor.selectedConnection;
+        const retained = editor.connections.slice(2);
+        const picker = host.querySelector<HTMLDetailsElement>('.connection-picker')!;
+        expect(picker.open).toBe(false);
+        const remove = host.querySelector<HTMLButtonElement>('[aria-label="Delete selected connections"]')!;
+        expect(remove.disabled).toBe(true);
+        const checks = host.querySelectorAll<HTMLInputElement>('.connection-picker input[type="checkbox"]');
+        expect(checks).toHaveLength(6);
+        checks[0].click();
+        checks[1].click();
+        fixture.detectChanges();
+        expect(editor.selectedConnection).toBe(selected);
+        expect(editor.labelPurpose).toBe('Connection label');
+        expect(remove.disabled).toBe(false);
+        expect(host.querySelectorAll('.connection-controls button')).toHaveLength(1);
+        remove.click();
+        fixture.detectChanges();
+        expect(editor.connections).toEqual(retained);
+        expect(editor.selectedConnection).toBeUndefined();
+        expect(remove.disabled).toBe(true);
+        expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(0);
+    });
+
+    it('unchecks without deletion and discards stale checked connections after individual removal, part removal and replacement', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        const host: HTMLElement = fixture.nativeElement;
+        editor.loadOverview();
+        fixture.detectChanges();
+        const check = host.querySelector<HTMLInputElement>('.connection-picker input')!;
+        check.click();
+        check.click();
+        fixture.detectChanges();
+        expect(editor.checkedConnections.size).toBe(0);
+        expect(editor.connections).toHaveLength(6);
+        editor.checkConnection(editor.connections[0], true);
+        editor.removeConnection(editor.connections[0]);
+        expect(editor.checkedConnections.size).toBe(0);
+        editor.checkConnection(editor.connections[0], true);
+        const retained = editor.connections[1];
+        editor.checkConnection(retained, true);
+        const canvas = host.querySelector('canvas')!;
+        canvas.dispatchEvent(pointer('pointerdown', 460, 110, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 110, 1));
+        editor.removeSelectedPart();
+        expect([...editor.checkedConnections]).toEqual([retained]);
+        editor.loadOverview();
+        editor.cancelOverview();
+        expect([...editor.checkedConnections]).toEqual([retained]);
+        editor.loadOverview();
+        editor.confirmOverview();
+        expect(editor.checkedConnections.size).toBe(0);
+        fixture.detectChanges();
+        expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(0);
+        expect(host.querySelector<HTMLButtonElement>('[aria-label="Delete selected connections"]')!.disabled).toBe(true);
+    });
+
     it('uses the enabled label input as a preserved custom draft for adding parts', () => {
         const fixture = TestBed.createComponent(CanvasDiagramEditor);
         fixture.detectChanges();
@@ -246,7 +313,7 @@ describe('CanvasDiagramEditor', () => {
         surface.paint();
         expect(surface.lineWidths.at(-1)).toBe(3);
         expect(surface.borders.slice(-2)).toEqual([1, 1]);
-        expect(fixture.nativeElement.querySelectorAll('input')).toHaveLength(1);
+        expect(fixture.nativeElement.querySelectorAll('input.form-control')).toHaveLength(1);
         const connect: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Connect selected part"]');
         expect(connect.disabled).toBe(true);
         editor.addPart();
@@ -439,7 +506,10 @@ describe('CanvasDiagramEditor', () => {
         expect(editor.connections[0].label).toBe('uses');
         editor.renamePart('Client sketch');
         expect(editor.connections).toHaveLength(1);
-        const remove: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Remove connection"]');
+        const check: HTMLInputElement = fixture.nativeElement.querySelector('.connection-picker input');
+        check.click();
+        fixture.detectChanges();
+        const remove: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Delete selected connections"]');
         remove.click();
         expect(editor.connections).toHaveLength(0);
         select(130, 80);

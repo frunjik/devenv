@@ -40,14 +40,22 @@
             Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them. Current time is also shown.
         </canvas>
     </div>
-    <section class="connection-list" aria-label="Connections">
-        @for (connection of connections; track connection.id) {
-            <div class="connection-row">
-                <span>{{ connection.first.label }} - {{ connection.second.label }}</span>
-                <span>{{ connection.label }}</span>
-                <button type="button" aria-label="Remove connection"
-                    (click)="removeConnection(connection)">Remove connection</button>
+    <section class="connection-controls" aria-label="Connections">
+        <details class="connection-picker">
+            <summary>Connections ({{ checkedConnections.size }} selected)</summary>
+            <div class="connection-options">
+                @for (connection of connections; track connection.id) {
+                    <label class="connection-option">
+                        <input #check type="checkbox" [checked]="checkedConnections.has(connection)"
+                            (change)="checkConnection(connection, check.checked)">
+                        <span>{{ connection.first.label }} - {{ connection.second.label }}: {{ connection.label }}</span>
+                    </label>
+                } @empty {
+                    <p>No connections yet.</p>
+                }
             </div>
-        }
+        </details>
+        <button type="button" aria-label="Delete selected connections" [disabled]="checkedConnections.size === 0"
+            (click)="deleteCheckedConnections()">Delete selected</button>
     </section>
 </main>

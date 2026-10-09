@@ -38,29 +38,52 @@
     flex-shrink: 0;
 }
 
-.connection-list {
-    max-height: 12rem;
-    overflow-y: auto;
-    flex-shrink: 0;
-}
-
-.connection-row {
+.connection-controls {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem 1rem;
-    padding: 0.5rem 0;
-
-    span, .form-field {
-        min-width: 0;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-    }
+    flex-shrink: 0;
+    padding-top: 0.5rem;
 
     button {
         min-width: 44px;
         min-height: 44px;
         max-width: 100%;
+    }
+}
+
+.connection-picker {
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 16rem;
+
+    summary {
+        min-height: 44px;
+        cursor: pointer;
+        overflow-wrap: anywhere;
+    }
+}
+
+.connection-options {
+    max-height: 12rem;
+    overflow-y: auto;
+}
+
+.connection-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    cursor: pointer;
+
+    span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    input {
+        flex-shrink: 0;
     }
 }
 

@@ -31,7 +31,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 - Export/import JSON files, without API changes, repository writes, or browser autosave.
 - Treat a successfully initiated export as saved. Display "download started", not a claim that the file was retained.
 - Confirm before leaving, importing a replacement, or clearing a diagram with unexported changes. Canceling or invalid import preserves the current document.
-- Agreed Type names: DiagramDocument, DiagramElement, DiagramPoint, DiagramConnection, DiagramSelection, DiagramInteraction.
+- Agreed Type names: DiagramDocument, DiagramElement, DiagramElementKind, DiagramPoint, DiagramConnection, DiagramSelection, DiagramInteraction.
 
 ## Observable goals
 
@@ -66,6 +66,8 @@ type DiagramElement =
         position: DiagramPoint;
     };
 
+type DiagramElementKind = DiagramElement['kind'];
+
 interface DiagramConnection {
     id: string;
     sourceElementId: string;
@@ -94,6 +96,7 @@ type DiagramInteraction =
 
 - DiagramDocument is the complete transferable diagram, not a screen snapshot.
 - DiagramElement separates palette definitions from independently editable instances. A Note requires text; Rectangle and Ellipse do not acquire arbitrary note-only properties.
+- DiagramElementKind names the supported kinds for palette, creation, rendering, and validation. Derive it from DiagramElement rather than maintaining a second union; retain the specific kind literals in each element variant so Note still requires text. It needs neither a separate file nor an enum, and does not replace runtime validation.
 - DiagramPoint stores an item's top-left position in diagram coordinates. Values must be finite and non-negative in v1.
 - DiagramConnection refers to stable item IDs, not pixels, DOM elements, or CDK references. Source/target are storage endpoint names and do not imply arrows or directional meaning.
 - DiagramSelection distinguishes selecting an item from selecting a line, with no ambiguous optional IDs.

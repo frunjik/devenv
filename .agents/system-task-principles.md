@@ -158,6 +158,19 @@ These principles are active from their recorded date and apply to future work in
 - **Optional method prompt (user, 2026-10-08):** When a decision compares competing optional work candidates, assess whether RICE is appropriate and ask whether to apply it before scoring. Use the [RICE prioritization guidance](../reviews/rice-prioritization.md): comparable contexts, explicit estimates and evidence, and separate decision rationale. Missing evidence is a reason to gather estimates or recommend a simpler comparison, not invent scores. Do not ask routinely for single already-selected tasks, use RICE to rank binding rules, or let it override dependencies and mandatory constraints.
 - **Prioritization example:** The pending Principle Register Organization and Priority Review and Term Editing workflows are actual optional work candidates. RICE could inform their execution order only if a common goal/context and defensible estimates can be established; it would not establish precedence among the P-NNN rules themselves.
 
+### P-017 — Choose TypeScript Declarations by Meaning
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: "The useful distinction is a named value/choice versus properties grouped into a record."
+- **Applies to:** New or substantively revised TypeScript declarations in DevEnv.
+- **Rule:** Use `type` for a named value or choice; use `interface` for properties grouped into a record. This distinguishes declaration forms, not single versus multiple instances or the importance of a domain Type.
+- **Explicit union alternatives (user refinement, 2026-10-09):** Define each structured union alternative as a named interface, then combine those interfaces with a `type` union. Prefer explicit record interfaces over inline anonymous records even when the alternatives are not independently reused. Review new variant names under P-012 before adopting them.
+- **Language boundary:** Unions of records and derived types require a `type` alias. Preserve variant-specific discriminants and their associated required properties; do not flatten a union into an interface with optional fields merely to follow the convention.
+- **Examples:** In the [diagram editor plan](../knowledge/workflows/diagram-editor-workflow.md#minimal-model), `DiagramPoint` is an interface grouping `x` and `y`; `DiagramElementKind = DiagramElement['kind']` is a derived named choice; `DiagramElement` is a union of valid record alternatives. The current sketch uses inline alternatives; bring those into named interfaces when revising that model, after agreeing their names. These are planned declarations, not implemented instances. The user's `type FormID = string` illustrates a named value but is not an established DevEnv Type.
+- **Limits:** A string alias does not create a nominally distinct ID or validate input. Neither declaration form replaces runtime validation. Interfaces support declaration merging; choosing one here does not authorize or require merging.
+- **Scope:** Apply the convention going forward and within agreed changes; do not refactor existing declarations solely for consistency.
+- **Evidence:** The [TypeScript handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces) explains that object-shaped aliases and interfaces overlap and often permit a preference. This rule is the project's readability convention, not a universal TypeScript requirement.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

@@ -92,21 +92,6 @@
         >{{ rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'not set') }}</span>
         <button
             type="button"
-            class="current-entry"
-            aria-label="Refresh current task"
-            [matTooltip]="currentEntry.entry || currentEntry.errorMessage"
-            matTooltipClass="current-entry-tooltip"
-            matTooltipPosition="above"
-            [matTooltipShowDelay]="250"
-            (click)="currentEntry.refresh()"
-        >
-            <span class="current-entry-label">Current task</span>
-            <span class="current-entry-summary">
-                {{ currentEntry.summary || currentEntry.errorMessage }}
-            </span>
-        </button>
-        <button
-            type="button"
             class="current-entry workflow-entry"
             aria-label="Refresh active workflow"
             [matTooltip]="workflowError || activeWorkflow || 'No active workflow selected'"

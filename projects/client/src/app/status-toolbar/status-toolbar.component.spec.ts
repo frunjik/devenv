@@ -103,7 +103,7 @@ describe('StatusToolbarComponent', () => {
         expect(fixture.nativeElement.querySelector('[aria-label="Client busy"]')).toBeNull();
     });
 
-    it('shows no placeholder text while the current task is not known', () => {
+    it('hides the current task control while retaining the workflow display and version errors', () => {
         TestBed.configureTestingModule({
             imports: [StatusToolbarComponent],
             providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
@@ -116,15 +116,16 @@ describe('StatusToolbarComponent', () => {
         fixture.componentRef.setInput('rgrPhase', TestBed.inject(RgrPhaseService));
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim()).toBe('');
-        expect(fixture.nativeElement.textContent).not.toContain('Loading current');
+        expect(fixture.nativeElement.querySelector('[aria-label="Refresh current task"]')).toBeNull();
+        expect(fixture.nativeElement.textContent).not.toContain('Current task');
+        expect(fixture.nativeElement.querySelector('[aria-label="Refresh active workflow"]')).not.toBeNull();
         TestBed.inject(HttpTestingController).expectOne('http://localhost:3000/version')
             .flush({ error: 'Unavailable' }, { status: 500, statusText: 'Unavailable' });
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('.version-info').textContent).toContain('Server vunavailable');
     });
 
-    it('shows "not set" next to the current task when no phase is recorded', () => {
+    it('shows "not set" next to the active workflow when no phase is recorded', () => {
         TestBed.configureTestingModule({
             imports: [StatusToolbarComponent],
             providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],

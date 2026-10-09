@@ -28,6 +28,8 @@
 
 ## Scheduling boundary refinement (2026-10-09)
 
+**View-only follow-up:** User requested removing Current task from the toolbar view. Removed its template control only; retained the service/input, application polling, and commit-message source. Active workflow and phase remain visible. No new domain Type or scheduling change.
+
 - User approved IScheduler as the recurring-work boundary, reopening this workflow with a separate five-metric evaluation (`toolbar-scheduling-boundary`). This is not an IClock: the toolbar schedules refreshes but does not read the current time.
 - Contract: every(milliseconds, callback) registers recurring delivery, with the first callback after the interval, and returns cancellation. Real implementation delegates to setInterval/clearInterval. Angular SCHEDULER token provides the adapter. Existing Subscription owns cancellation on toolbar destruction.
 - Plain MockScheduler records the requested interval and delivers explicit ticks; toolbar tests contain no Jest timer patches. Adapter tests alone use Jest fake time to verify no immediate/early delivery, repeated delivery, and cancellation.

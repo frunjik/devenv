@@ -294,6 +294,17 @@ These principles are active from their recorded date and apply to future work in
 - **Benefit and boundary:** Explicit collaboration replaces global test patching in consumers and makes cancellation and other boundary obligations reviewable. An interface alone does not guarantee those obligations or justify migrating unrelated tests. This extends P-002/P-004/P-014 without authorizing internal collaborator mocks or external I/O.
 - **Clarification (user, 2026-10-09):** Jest spies and similar helpers are explicitly allowed in tests of the boundary adapter or mock/fake itself. This permission is not limited to real adapter tests; for example, a test of MockScheduler may use a Jest callback spy to verify tick delivery. Consumer tests should still use the injected boundary contract rather than patching globals or internal collaborators.
 
+### P-031 — Synchronize the Recorded TDD Phase
+
+- **Recorded:** 2026-10-09
+- **Source:** User request after the toolbar remained NOT SET while TDD phases were reported only in chat.
+- **Applies to:** Agent-led production work using Red-Green-Refactor in this repository.
+- **Rule:** Before entering each phase, replace the repository-root `.rgr-phase` contents with its lowercase value (`red`, `green`, or `refactor`) and explicitly report that phase in chat. Verify the saved value. A chat announcement alone does not update the application.
+- **Lifecycle:** Empty the file when pausing, completing, or switching away from TDD work. On resuming, record the actual phase; do not invent a phase for documentation-only work or backfill historical transitions. A failed test remains Red until implementation begins; passing tests do not justify recording Refactor unless that phase is actually entered.
+- **Verification and errors:** The existing GET `/rgr-phase` endpoint reads the last non-empty line; an empty or missing file yields no recorded phase. When the API is running, verify its response after updating state. The toolbar polls every 30 seconds, so distinguish verified saved/API state from an immediately updated visible label. Report write/read failures rather than silently claiming the state is synchronized.
+- **Shared-work boundary:** This file is repository-wide, not session-specific. If another worker is using the same phase state, surface the conflict and coordinate ownership rather than overwriting their work. These writes are operational agent actions, never test-scenario filesystem mutations; P-014 still applies.
+- **Concrete instance:** During the toolbar scheduling refinement, Red/Green/Refactor announcements were made in chat while the API returned null and the toolbar correctly displayed NOT SET. This rule closes that reporting gap without changing the phase API or adding automatic enforcement.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

@@ -272,6 +272,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Prefer the smallest useful slice that fulfills the agreed outcome over implementing every available model, provider, or option. Defer optional expansion unless the user agrees, while keeping the required behavior accurate and explicit.
 - **Practice:** State the initial slice and leave optional capabilities as future work rather than silently expanding scope. For example, the Copilot AI Credit Estimator begins with one normalized JSON paste-and-estimate flow; adding configurable modes or persistence is not required for that slice.
 
+### P-029 — Apply and Report Evidence-Based Process Improvements
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: "if you think the changes are beneficiary and have evidence, you can make the change without asking, but always report it"
+- **Applies to:** Proposed improvements to project principles, processes, and related working guidance.
+- **Rule:** When concrete evidence supports that a change to a principle or process would benefit the work, make the improvement without asking for prior approval. Always report the change, its evidence, and its expected impact.
+- **Practice:** Distinguish evidence from judgment and state material uncertainty or tradeoffs. Keep the change scoped to the demonstrated improvement; do not silently generalize it into unrelated policy.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

@@ -7,6 +7,11 @@ import type { WorkflowTodoList, WorkEvaluationDataset } from '@shared';
 import { BackendService } from '../../backend.service';
 import { formatElapsedDuration } from './evaluation-duration';
 
+const evaluationIdsByWorkflowName: Readonly<Record<string, string>> = {
+    'Minimal Typed Diagram Editor': 'diagram-selection-and-movement',
+    'TODO View (DevEnv system layer)': 'workflow-todo-value-metrics-view',
+};
+
 @Component({
     selector: 'app-workflow-todo',
     standalone: true,
@@ -40,11 +45,6 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
             };
         });
     }
-    get completedEvaluations(): WorkEvaluationDataset['evaluations'] {
-        return this.evaluationDataset === null
-            ? []
-            : this.evaluationDataset.evaluations.filter(evaluation => evaluation.completedAt !== null);
-    }
     loading = true;
     errorMessage = '';
     evaluationDataset: WorkEvaluationDataset | null = null;
@@ -54,8 +54,18 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
 
     constructor(private readonly backend: BackendService) {}
 
-    formatElapsedDuration(startedAt: string | null, completedAt: string | null): string {
-        return formatElapsedDuration(startedAt, completedAt);
+    completedEvaluationSummary(workflowName: string): string {
+        const evaluationId = evaluationIdsByWorkflowName[workflowName];
+        if (evaluationId === undefined || this.evaluationDataset === null) {
+            return '—';
+        }
+        const evaluation = this.evaluationDataset.evaluations.find(item =>
+            item.id === evaluationId && item.completedAt !== null,
+        );
+        if (evaluation === undefined) {
+            return '—';
+        }
+        return `${evaluation.title} (${formatElapsedDuration(evaluation.startedAt, evaluation.completedAt)})`;
     }
 
     ngOnInit(): void {

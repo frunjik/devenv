@@ -30,7 +30,7 @@ describe('WorkflowTodoComponent', () => {
     it('shows loading, then all JSON fields and the active workflow', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
         expect(fixture.componentInstance.metricSummary).toEqual([]);
-        expect(fixture.componentInstance.completedEvaluations).toEqual([]);
+        expect(fixture.componentInstance.completedEvaluationSummary('Minimal Typed Diagram Editor')).toBe('—');
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
@@ -56,6 +56,28 @@ describe('WorkflowTodoComponent', () => {
         expect(text).not.toContain('Loading workflows');
     });
 
+    it('uses the same explicit column sizing for product and meta workflow tables', () => {
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
+        fixture.detectChanges();
+
+        const workflowTables = Array.from(
+            fixture.nativeElement.querySelectorAll('.workflow-group table') as NodeListOf<HTMLTableElement>,
+        );
+        expect(workflowTables).toHaveLength(2);
+        const columnClasses = workflowTables.map(table =>
+            Array.from(table.querySelectorAll('colgroup col') as NodeListOf<HTMLTableColElement>)
+                .map(column => column.className),
+        );
+        expect(columnClasses[0]).toEqual([
+            'workflow-name-column',
+            'workflow-purpose-column',
+            'workflow-status-column',
+            'workflow-concern-column',
+            'workflow-evaluation-column',
+        ]);
+        expect(columnClasses[1]).toEqual(columnClasses[0]);
+    });
+
     it('shows a metric availability summary and links to evaluation details', () => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
@@ -65,8 +87,24 @@ describe('WorkflowTodoComponent', () => {
             resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
             relatedConcern: 'Not assigned',
         };
+        const diagramWorkflow = {
+            name: 'Minimal Typed Diagram Editor',
+            primaryWorkPurpose: 'Product work',
+            status: 'Paused',
+            resumeLabel: 'Document-operations checkpoint',
+            resumePath: './diagram-editor-workflow.md#checkpoint',
+            relatedConcern: 'Not assigned',
+        };
+        const todoViewWorkflow = {
+            name: 'TODO View (DevEnv system layer)',
+            primaryWorkPurpose: 'Meta work',
+            status: 'Completed',
+            resumeLabel: 'Implementation and review checkpoint',
+            resumePath: './todo-view-workflow.md#checkpoint',
+            relatedConcern: 'Not assigned',
+        };
         http.expectOne('http://localhost:3000/workflow-todo')
-            .flush({ data: { workflows: [...workflows, metricWorkflow] } });
+            .flush({ data: { workflows: [...workflows, metricWorkflow, diagramWorkflow, todoViewWorkflow] } });
         fixture.detectChanges();
         const loadingMetrics = fixture.nativeElement.querySelector(
             '[aria-label="DevEnv value evaluation metrics"]',
@@ -106,6 +144,24 @@ describe('WorkflowTodoComponent', () => {
                         evidence: 'Client tests.',
                     }],
                 }, {
+                    id: 'workflow-todo-value-metrics-view',
+                    title: 'Show current evaluation metrics on the Workflow TODO view',
+                    beneficiary: 'DevEnv developers reviewing current work and evidence',
+                    intendedOutcome: 'Display metric definitions and current work evaluations.',
+                    successCondition: 'Known values and explicit Unknown values are distinguishable.',
+                    baseline: 'The Workflow TODO view showed no evaluation metrics.',
+                    startedAt: '2026-10-09T13:40:17+02:00',
+                    completedAt: '2026-10-09T13:59:12+02:00',
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: 'About 19 minutes wall-clock; active effort is unknown.',
+                        evidence: 'Recorded start and completion timestamps.',
+                    }, {
+                        metricId: 'outcome-and-quality',
+                        value: 'Passed acceptance checks.',
+                        evidence: 'Client tests.',
+                    }],
+                }, {
                     id: 'diagram-selection-and-movement',
                     title: 'Diagram selection and movement',
                     beneficiary: 'Developer using the diagram editor',
@@ -132,24 +188,44 @@ describe('WorkflowTodoComponent', () => {
         ) as HTMLElement;
         expect(metrics.textContent).toContain('Delivery flow and effort');
         expect(metrics.textContent).toContain('Outcome and quality');
-        expect(metrics.textContent).toContain('Metric availability across 2 work evaluations');
+        expect(metrics.textContent).toContain('Metric availability across 3 work evaluations');
         expect(metrics.textContent).toContain('Recorded evaluations');
         expect(metrics.textContent).toContain('Unknown evaluations');
         expect(metrics.textContent).toContain('0');
         expect(metrics.textContent).toContain('2');
         const metricRows = Array.from(metrics.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
         expect(metricRows[0].textContent).toContain('Delivery flow and effort');
-        expect(metricRows[0].textContent).toContain('0');
+        expect(metricRows[0].textContent).toContain('1');
         expect(metricRows[0].textContent).toContain('2');
         expect(metricRows[1].textContent).toContain('Outcome and quality');
-        expect(metricRows[1].textContent).toContain('2');
+        expect(metricRows[1].textContent).toContain('3');
         expect(metricRows[1].textContent).toContain('0');
         expect(metrics.textContent).not.toContain('Show current evaluation metrics in the Workflow TODO view');
         expect(metrics.querySelector('a[href="/workflow-evaluations"]')).not.toBeNull();
-        const completed = fixture.nativeElement.querySelector('.completed-evaluations') as HTMLElement;
-        expect(completed.textContent).toContain('Diagram selection and movement');
-        expect(completed.textContent).toContain('16m 45s');
-        expect(completed.textContent).not.toContain('Show current evaluation metrics in the Workflow TODO view');
+        const workflowRows = Array.from(
+            fixture.nativeElement.querySelectorAll('.workflow-group tbody tr') as NodeListOf<HTMLTableRowElement>,
+        );
+        const diagramRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
+            === 'Minimal Typed Diagram Editor');
+        const todoViewRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
+            === 'TODO View (DevEnv system layer)');
+        const evaluationPilotRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
+            === 'DevEnv Value Evaluation');
+        expect(diagramRow?.textContent).toContain('Diagram selection and movement (16m 45s)');
+        expect(todoViewRow?.textContent)
+            .toContain('Show current evaluation metrics on the Workflow TODO view (18m 55s)');
+        expect(evaluationPilotRow?.textContent).toContain('—');
+        expect(fixture.nativeElement.querySelector('.completed-evaluations')).toBeNull();
+
+        const todoViewEvaluation = fixture.componentInstance.evaluationDataset?.evaluations.find(
+            evaluation => evaluation.id === 'workflow-todo-value-metrics-view',
+        );
+        expect(todoViewEvaluation).toBeDefined();
+        if (todoViewEvaluation) {
+            todoViewEvaluation.completedAt = null;
+            expect(fixture.componentInstance.completedEvaluationSummary('TODO View (DevEnv system layer)'))
+                .toBe('—');
+        }
     });
 
     it('reports evaluation data load failures instead of presenting an empty dataset', () => {

@@ -106,8 +106,14 @@ The combined focused suites pass (25 tests); route, toolbar, workflow, and evalu
 
 ### Follow-up: completed durations on workflow view
 
-The user requested that completed-item durations also appear on the Workflow TODO view. It now lists completed evaluation titles and derived elapsed wall-clock durations beneath the metric availability summary, using the same formatter as the evaluation detail page. Incomplete evaluations are excluded; unavailable timestamps remain explicit. The data source and Types are unchanged.
+The user clarified that completed-item durations should appear on the workflow items themselves, not in a separate list beneath the metric summary. The view now displays each associated completed evaluation title and derived elapsed wall-clock duration in a new column on the corresponding workflow row, using the same formatter as the evaluation detail page. The two current presentation mappings associate Diagram selection and movement with Minimal Typed Diagram Editor and Show current evaluation metrics on the Workflow TODO view with TODO View (DevEnv system layer). Unmatched workflows show no associated evaluated item; incomplete evaluations are not associated. The source data and Types are unchanged.
 
-The focused workflow/evaluation suites pass (14 tests); both components and the shared formatter have 100% statement, branch, function, and line coverage. The client development TypeScript check, client build, and `git diff --check` pass. No new domain Type was warranted: elapsed duration is derived presentation from the existing nullable start/completion timestamps, not active effort or a new stored measure.
+The focused workflow/evaluation suites pass (14 tests); the workflow component, evaluation component, and shared duration formatter have 100% statement, branch, function, and line coverage. The client development TypeScript check, client build, and `git diff --check` pass. No browser visual verification was performed.
 
-**Next:** User review of the completed-duration summary. Keep this follow-up separate from commit `c4369f8`.
+**Next:** User review of the inline workflow-row presentation. Changes remain uncommitted, separate from commit `7bc3cc2`.
+
+### Follow-up: align grouped workflow columns
+
+The user requested aligning the Product and Meta table columns. Both tables now have the same five named column definitions and fixed layout with matching widths, so corresponding column edges align regardless of each group's contents. The narrow-screen horizontal-scroll container remains unchanged.
+
+**Next:** Verify focused tests/coverage, the client TypeScript check/build, and diff hygiene; then ask for review. This presentation-only follow-up remains uncommitted.

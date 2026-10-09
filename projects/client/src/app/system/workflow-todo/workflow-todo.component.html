@@ -17,15 +17,23 @@
                 aria-label="End-user tools and capabilities"
                 aria-describedby="workflow-table-scroll-hint"
             >
-                <table>
+                <table class="workflow-table">
                     <caption>Product work workflows</caption>
-                    <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Related concern</th></tr></thead>
+                    <colgroup>
+                        <col class="workflow-name-column">
+                        <col class="workflow-purpose-column">
+                        <col class="workflow-status-column">
+                        <col class="workflow-concern-column">
+                        <col class="workflow-evaluation-column">
+                    </colgroup>
+                    <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Related concern</th><th scope="col">Completed evaluated item</th></tr></thead>
                     <tbody>
                         <tr *ngFor="let workflow of endUserWorkflows" [class.active]="workflow.status === 'Active'">
                             <th scope="row">{{ workflow.name }}</th>
                             <td>{{ workflow.primaryWorkPurpose }}</td>
                             <td><span class="status">{{ workflow.status }}</span></td>
                             <td>{{ workflow.relatedConcern }}</td>
+                            <td>{{ completedEvaluationSummary(workflow.name) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -40,15 +48,23 @@
                 aria-label="DevEnv meta work"
                 aria-describedby="workflow-table-scroll-hint"
             >
-                <table>
+                <table class="workflow-table">
                     <caption>Meta work workflows</caption>
-                    <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Related concern</th></tr></thead>
+                    <colgroup>
+                        <col class="workflow-name-column">
+                        <col class="workflow-purpose-column">
+                        <col class="workflow-status-column">
+                        <col class="workflow-concern-column">
+                        <col class="workflow-evaluation-column">
+                    </colgroup>
+                    <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Related concern</th><th scope="col">Completed evaluated item</th></tr></thead>
                     <tbody>
                         <tr *ngFor="let workflow of metaWorkflows" [class.active]="workflow.status === 'Active'">
                             <th scope="row">{{ workflow.name }}</th>
                             <td>{{ workflow.primaryWorkPurpose }}</td>
                             <td><span class="status">{{ workflow.status }}</span></td>
                             <td>{{ workflow.relatedConcern }}</td>
+                            <td>{{ completedEvaluationSummary(workflow.name) }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -84,26 +100,6 @@
                         </tbody>
                     </table>
             </div>
-            <section *ngIf="completedEvaluations.length" class="completed-evaluations">
-                    <h3>Completed item durations</h3>
-                    <div class="table-scroll">
-                        <table>
-                            <caption>Elapsed wall-clock duration for completed evaluations</caption>
-                            <thead>
-                                <tr>
-                                    <th scope="col">Completed item</th>
-                                    <th scope="col">Elapsed duration</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let evaluation of completedEvaluations">
-                                    <th scope="row">{{ evaluation.title }}</th>
-                                    <td>{{ formatElapsedDuration(evaluation.startedAt, evaluation.completedAt) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-            </section>
         </ng-container>
     </section>
 </section>

@@ -72,6 +72,8 @@ The user proposed comparing the current way of working with a reduced set of pra
 
 **Decision gate:** Agree the inventory, profile contents, protected constraints, metrics definition, and pilot design with the user before implementation or any rule is switched off. If the agent cannot reliably verify the active profile, report that limitation and stop rather than presenting an uncontrolled comparison as evidence.
 
+**Version history:** The [practice-set version registry](../practices/practice-set-versions.generated.md) records version 1 as the pre-extraction baseline and version 2 as the TDD/Type Detector skill extraction coordinated by Diligent Coder. Each snapshot is pinned to its source Git commit. For future changes, commit the practice-set change first, then record its version in a follow-up commit pinned to that prior commit; a commit cannot contain its own Git hash. The active version and activation/deactivation timestamps are currently unverified; do not infer actual time in use from commit timestamps. Once an activation is verified in the client, record its UTC timestamp and evidence in the authoritative JSON, set `asOf` when measuring an open period, and regenerate the Markdown view with `npm run generate:practice-set-versions:markdown`.
+
 ## Upkeep checkpoint: streamed test-run extraction
 
 The user requested extracting `runTests` from the client `BackendService`. The implementation moves the streaming HTTP request and event parser into `TestRunnerService`; test-run cache/status requests remain in `BackendService`, and the new service reads the host from that existing service rather than duplicating host configuration. The runner component now delegates execution to `TestRunnerService`. No shared Types or API behavior changed.

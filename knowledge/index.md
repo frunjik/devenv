@@ -123,6 +123,7 @@ These documents distinguish hypotheses and candidates from validated conclusions
 | [TDD skill](../.agents/skills/tdd/SKILL.md) | Reusable Red-Green-Refactor method for production behavior changes. |
 | [Type Detector skill](../.agents/skills/type-detector/SKILL.md) | Evidence-first Type-detection and review lens used at checkpoints. |
 | [Type Detector findings (2026-10-07)](../reviews/type-detector-2026-10-07.json) | Authoritative future-enhancement record; distinguishes proposed refinements, unresolved questions, and leave-as-is conclusions. No implementation authorized. |
+| [Repository practice set history](./practices/practice-set-versions.generated.md) | Generated version history of repository-controlled development rules and practices. JSON is authoritative; activation dates remain unknown until verified. |
 | [C4 research and recommendations (2026-10-07)](./research/c4-research-2026-10-07.json) | Sources, DevEnv view recommendations, evidence limits, and the requested diagram follow-up. |
 | [DevEnv C4 views](./architecture/devenv-c4.md) | Authoritative JSON model and generated context, container, and local-development diagrams; current-architecture drafts for review. |
 | [Portable practices and Glossary checklist](./practices/portable-practices-checklist.generated.md) | Preparation checklist for proposed cross-domain guidance; JSON owns checklist state, and existing project rules remain unchanged. |

@@ -16,6 +16,7 @@
     "test:all:coverage": "node scripts/run-all-tests-coverage.cjs",
     "export:meta:markdown": "node -e \"require('./scripts/meta-export-markdown.cjs').writeMarkdown('knowledge/knowledge-transfer/meta-export-example.json', 'knowledge/knowledge-transfer/meta-export-example.generated.md', require('node:fs'))\"",
     "generate:glossary:markdown": "tsx scripts/generate-glossary-markdown.ts",
+    "generate:practice-set-versions:markdown": "node -e \"require('./scripts/practice-set-versions-markdown.cjs').writeMarkdown('knowledge/practices/practice-set-versions.json', 'knowledge/practices/practice-set-versions.generated.md', require('node:fs'))\"",
     "generate:workflow-todo:markdown": "tsx scripts/generate-workflow-todo-markdown.ts"
   },
   "private": true,

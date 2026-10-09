@@ -86,6 +86,20 @@
     "domains": []
   },
   {
+    "term": "Practice Set Version",
+    "definitions": [
+      "A numbered designation for a particular, explicitly scoped revision of a collection of rules and practices, distinguished by its recorded contents and source revision."
+    ],
+    "examples": [
+      "Practice Set Version (DevEnv version 2) is the registry snapshot pinned to commit 47fced67cde5b94c813559090dedb4d76c793938; its actual activation period remains unknown.",
+      "An Angular package version identifies a software release, not the development practices used to produce it."
+    ],
+    "domains": [
+      "DevEnv",
+      "Meta"
+    ]
+  },
+  {
     "term": "System",
     "definitions": [
       "A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior."

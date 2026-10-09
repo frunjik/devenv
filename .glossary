@@ -130,6 +130,22 @@ _No examples recorded._
 
 _Unknown or unrecorded._
 
+## Practice Set Version
+
+### Definitions
+
+- A numbered designation for a particular, explicitly scoped revision of a collection of rules and practices, distinguished by its recorded contents and source revision\.
+
+### Examples
+
+- Practice Set Version \(DevEnv version 2\) is the registry snapshot pinned to commit 47fced67cde5b94c813559090dedb4d76c793938; its actual activation period remains unknown\.
+- An Angular package version identifies a software release, not the development practices used to produce it\.
+
+### Domain usage
+
+- DevEnv
+- Meta
+
 ## System
 
 ### Definitions

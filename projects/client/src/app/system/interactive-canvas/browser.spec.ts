@@ -4,11 +4,17 @@ import { BROWSER } from './browser';
 
 describe('IBrowser adapter', () => {
     const originalObserver = globalThis.ResizeObserver;
+    const originalMatchMedia = Object.getOwnPropertyDescriptor(window, 'matchMedia');
 
     afterEach(() => {
         TestBed.resetTestingModule();
         jest.restoreAllMocks();
         globalThis.ResizeObserver = originalObserver;
+        if (originalMatchMedia) {
+            Object.defineProperty(window, 'matchMedia', originalMatchMedia);
+        } else {
+            Reflect.deleteProperty(window, 'matchMedia');
+        }
     });
 
     it('delegates frame scheduling and cancellation to the browser', () => {
@@ -75,6 +81,22 @@ describe('IBrowser adapter', () => {
     }
 
     it('subscribes to element and window resize and cleans up both', () => {
+        const queries: MediaQueryList[] = [];
+        const matchMedia = jest.fn((media: string): MediaQueryList => {
+            const events = new EventTarget();
+            const query: MediaQueryList = {
+                media, matches: true, onchange: null,
+                addListener: () => {},
+                removeListener: () => {},
+                addEventListener: events.addEventListener.bind(events),
+                removeEventListener: events.removeEventListener.bind(events),
+                dispatchEvent: events.dispatchEvent.bind(events),
+            };
+            queries.push(query);
+            return query;
+        });
+        Object.defineProperty(window, 'matchMedia', { configurable: true, value: matchMedia });
+        jest.replaceProperty(window, 'devicePixelRatio', 1);
         let notify = () => {};
         let observed: Element | undefined;
         let disconnected = false;
@@ -93,9 +115,21 @@ describe('IBrowser adapter', () => {
         notify();
         window.dispatchEvent(new Event('resize'));
         expect(notifications).toBe(2);
+        expect(matchMedia).toHaveBeenLastCalledWith('(resolution: 1dppx)');
+        jest.replaceProperty(window, 'devicePixelRatio', 3);
+        queries[0].dispatchEvent(new Event('change'));
+        expect(notifications).toBe(3);
+        expect(matchMedia).toHaveBeenLastCalledWith('(resolution: 3dppx)');
+        queries[0].dispatchEvent(new Event('change'));
+        expect(notifications).toBe(3);
+        jest.replaceProperty(window, 'devicePixelRatio', 2);
+        queries[1].dispatchEvent(new Event('change'));
+        expect(notifications).toBe(4);
+        expect(matchMedia).toHaveBeenLastCalledWith('(resolution: 2dppx)');
         stop();
         expect(disconnected).toBe(true);
         window.dispatchEvent(new Event('resize'));
-        expect(notifications).toBe(2);
+        queries[2].dispatchEvent(new Event('change'));
+        expect(notifications).toBe(4);
     });
 });

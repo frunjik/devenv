@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Active - sizing, frame scheduling, and pointer-coordinate conversion are green; visible-browser resizing, clock delivery, and real mouse coordinates verified at DPR 1. Real high-density rendering remains outstanding; foundation slice 1 is not complete.
+**Status:** Active - foundation slice 1 complete. Sizing, frame scheduling, pointer conversion, viewport stretch, and live pixel-density transitions are verified. Slice 2 awaits the sketch-versus-architecture-view and editing decisions.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
@@ -18,7 +18,16 @@
 
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
-**Next:** Verify rendering on a real high-density display (DPR greater than 1) to finish sizing acceptance. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+**Next:** Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+
+### High-density acceptance and correction (2026-10-09 22:34:13 CEST)
+
+- Visible browser changed from DPR 1 to 3 without a CSS resize; this exposed stale 260 x 357 backing dimensions instead of 780 x 1071. Existing element/window resize listeners did not cover density-only transitions.
+- Red adapter test confirmed no resolution-query subscription. Green added a resolution media-query change listener inside IBrowser.observeResize; it re-registers at the new density and triggers the existing sizing callback. Cleanup removes the current listener alongside element/window observation.
+- Twelve component/adapter tests pass with 100% statement, branch, function, and line coverage for both production modules; client build passes. No canvas test-source diagnostics; unrelated existing test errors remain.
+- Visible DPR 3 gives 780 x 1071 backing pixels and changing clock pixels. A subsequent live DPR 5 transition, with unchanged 260 x 357 CSS content size and no synthetic resize or reload, automatically gives 1300 x 1785. This verifies the actual density-change listener, not merely initialization.
+- Type review: observation of size and density is one consumer sizing boundary; retain IBrowser and plain component MockBrowser. Resolution APIs are patched only in adapter tests. No new Type/name or broader timer change. Refactor review found no necessary cleanup. No new meta-level insight identified.
+- Responsive-sizing evaluation is now complete. Foundation slice 1 accepted; no slice 2 production model adopted. TDD phase file cleared on completion. Changes remain uncommitted.
 
 ### Viewport stretch checkpoint (2026-10-09 22:03:56 CEST)
 
@@ -115,9 +124,7 @@ Assess whether this approach feels better than the existing editor; tests alone 
 
 ### Open decisions
 
-- Is the picture a free-form sketch or a view of the existing architecture model?
-- Does editing a part change architectural facts or only its visual label/layout?
-- Is saving required in the first milestone, or may it initially be in-memory?
+- **Agreed for the initial picture (2026-10-09):** In-memory free-form sketch first. Labels/layout are sketch data, not edits to architectural facts; no architecture linkage or persistence is introduced in slice 2. Persistence remains a later slice unless scope is revised.
 - Are parts added with a palette, an Add button, or a canvas gesture?
 - Does grouping represent actual containment or only visual organization? Resolve before slice 6.
 - Candidate Type names and refinements require review and explicit adoption before becoming established.

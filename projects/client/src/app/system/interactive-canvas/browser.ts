@@ -38,9 +38,18 @@ export const BROWSER = new InjectionToken<IBrowser>('BROWSER', {
             const observer = new ResizeObserver(callback);
             observer.observe(canvas);
             window.addEventListener('resize', callback);
+            let density = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+            const densityChanged = () => {
+                density.removeEventListener('change', densityChanged);
+                density = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+                density.addEventListener('change', densityChanged);
+                callback();
+            };
+            density.addEventListener('change', densityChanged);
             return () => {
                 observer.disconnect();
                 window.removeEventListener('resize', callback);
+                density.removeEventListener('change', densityChanged);
             };
         },
     }),

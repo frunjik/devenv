@@ -6,7 +6,7 @@
   "workflows": [
     {
       "name": "Client Test Repair",
-      "evaluationIds": ["client-shell-test-repair"],
+      "evaluationIds": ["client-shell-test-repair", "client-coverage-repair", "current-entry-scheduler-boundary"],
       "primaryWorkPurpose": "Meta work",
       "status": "Completed",
       "resumeLabel": "Test repair checkpoint",

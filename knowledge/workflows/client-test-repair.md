@@ -2,6 +2,19 @@
 
 ## Checkpoint
 
+- Same-task test-clarity refinement approved: split combined polling scenario into eight behavior-specific tests (start, duplicate start, tick, stop-before-start, repeated stop, restart, error and successful refresh), retaining nine summary cases. Shared local scheduler boundary setup; strict HTTP verification and polling cleanup after each test. Tick/restart retain two requests because their lifecycle needs a prior start.
+- All 17 service tests pass with 100% statement/branch/function/line coverage; test-source TypeScript check and diff check pass. Test-only change; no production behavior or new Types. Append quality evidence without altering original scheduler completion/elapsed interval; follow-up effort unknown. Changes uncommitted.
+
+- Same-task scheduler cleanup approved: retain tracking/metrics and migrate only CurrentEntryService to the existing IScheduler boundary. Preserve immediate refresh, 30-second ticks, idempotent start/stop and restart. Baseline is direct RxJS timer plus global Jest fake timers; next observe injected-scheduler test failing before production change.
+- Scheduler cleanup complete: observed Red (scheduler never invoked), then Green with the existing SCHEDULER token and cancellation callback. Local scheduler mock replaces Jest global timers and verifies interval, immediate refresh, duplicate start, error recovery, repeat stop and restart. Ten service tests and full 49 suites/774 tests pass; both focused and global coverage are 100% on all four metrics, test-source type-check, client build, diagnostics and diff check pass.
+- Type review: reuse IScheduler, whose every/cancel protocol already fits polling; callback ownership is explicit and tested. No new Type or further refactoring justified. No UI behavior change; runtime UI check not required for this dependency-only refactor. Phase cleared. Completion 01:46:40.493+02:00 gives 1m 21.466s wall-clock, not active effort. Metrics recorded; changes uncommitted.
+
+- Coverage repair follow-up: tracking here and separate WorkEvaluation opted in. Baseline full client coverage: statements/lines 96.49%, branches 93.66%, functions 96.25%; all 733 tests pass. Gaps are CurrentEntryService polling/error recovery and shared WorkflowTodoList validation/rendering.
+- Acceptance: maintained full client coverage reaches 100% on all four metrics without exclusions, weakened thresholds or production behavior changes. Add boundary/public-interface tests; no new Type justified. Next: focused coverage, test-source type-check, then full coverage verification.
+- Coverage repair completed: 49 suites/774 tests pass, full client statements/branches/functions/lines all 100%; test-source TypeScript check passes. New tests exercise polling idempotence, interval updates, error recovery, stopping, summary formats, valid/invalid workflow authority, active-selection consistency and Markdown escaping through public interfaces. HTTP and timers are boundary mocks; no test filesystem writes.
+- Initial polling test incorrectly assumed an immediate timer tick; corrected to the existing 30-second interval. Type-check caught a Jest-returning cleanup callback; corrected its void return. No production or coverage configuration edits.
+- Completion at 2026-10-10T01:43:23.339+02:00: 2m 23.345s wall-clock, active effort/overhead unknown. Metrics updated, workflow completed. Test-only, so no new build/runtime check required. Changes uncommitted; next user review or requested commit.
+
 - User opted into resumable tracking and WorkEvaluation metrics.
 - Acceptance: full maintained client Jest suite and test-source type-check pass without reverting intended workflow display or Tools dropdown behavior.
 - Baseline: 47 suites, 733 tests; 20 failures in AppComponent, 46 passing suites. Stale current-task assertions, dropdown queries outside the overlay, and unhandled workflow HTTP requests are observed causes.

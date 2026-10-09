@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Subscription, timer } from 'rxjs';
 import { BackendService } from './backend.service';
+import { SCHEDULER } from './scheduler';
 
 @Injectable({ providedIn: 'root' })
 export class CurrentEntryService {
@@ -8,7 +8,8 @@ export class CurrentEntryService {
     errorMessage = '';
 
     private readonly backend = inject(BackendService);
-    private polling?: Subscription;
+    private readonly scheduler = inject(SCHEDULER);
+    private polling?: () => void;
 
     get summary(): string {
         if (!this.entry) {
@@ -31,11 +32,11 @@ export class CurrentEntryService {
             return;
         }
         this.refresh();
-        this.polling = timer(30_000, 30_000).subscribe(this.refresh.bind(this));
+        this.polling = this.scheduler.every(30_000, () => this.refresh());
     }
 
     stopPolling(): void {
-        this.polling?.unsubscribe();
+        this.polling?.();
         this.polling = undefined;
     }
 

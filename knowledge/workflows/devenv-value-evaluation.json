@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "current-entry-scheduler-boundary",
+      "title": "Reuse scheduler boundary for current-entry polling",
+      "beneficiary": "DevEnv contributors maintaining polling tests",
+      "intendedOutcome": "Replace global timer manipulation with a local scheduling boundary while preserving behavior.",
+      "successCondition": "CurrentEntryService uses existing IScheduler; tests verify immediate refresh, 30000ms scheduling, duplicate-start guard, cancellation and restart. Full client coverage stays 100% on all four metrics; type-check and client build pass.",
+      "baseline": "CurrentEntryService uses RxJS timer directly and its tests replace Jest global timers.",
+      "startedAt": "2026-10-10T01:45:19.027+02:00",
+      "completedAt": "2026-10-10T01:46:40.493+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved narrow CurrentEntryService cleanup; existing tracking and metrics choices retained.", "evidence": "client-test-repair.md scheduler checkpoint. Subsequent test-only clarity refinement splits polling into eight behavior-specific cases plus nine summary cases: all 17 pass with 100% all-four service coverage, test-source type-check and diff check. Original elapsed interval unchanged; follow-up effort unknown." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 21.466 seconds wall-clock from approval to verification; active effort and waiting duration unknown.", "evidence": "Recorded approval/completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Injected-scheduler test failed before implementation; ten service tests and full 49-suite/774-test client run pass. Focused and global statement, branch, function and line coverage all 100%. Test-source type-check, client build, diagnostics and diff check pass. Boundary tests verify immediate refresh, 30000ms scheduling, duplicate-start guard, error recovery, cancellation and restart without Jest global timers. Existing IScheduler reused; no further Type/refactor needed. UI runtime check not required for this dependency-only change; user impact and follow-up defects unknown.", "evidence": "client-test-repair.md scheduler checkpoint and focused/full verification." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "client-coverage-repair",
+      "title": "Restore full client test coverage",
+      "beneficiary": "DevEnv contributors relying on coverage checks",
+      "intendedOutcome": "Cover missing service lifecycle and shared workflow contract behavior.",
+      "successCondition": "Full client coverage reaches 100% on all four metrics and test-source type-check passes without exclusions, threshold changes or production edits.",
+      "baseline": "All 733 tests pass; statements/lines 96.49%, branches 93.66%, functions 96.25%. Gaps in CurrentEntryService and workflow-todo.types.",
+      "startedAt": "2026-10-10T01:40:59.994+02:00",
+      "completedAt": "2026-10-10T01:43:23.339+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User requested coverage repair and opted into tracking and metrics; preserve production behavior and full thresholds.", "evidence": "client-test-repair.md coverage checkpoint." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 23.345 seconds wall-clock including opt-ins and verification; active effort and waiting duration unknown.", "evidence": "Recorded request/completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Full client coverage passes: 49 suites/774 tests and 100% statements, branches, functions and lines; test-source TypeScript check passes. Public-interface tests cover service polling/recovery/summary and shared workflow validation/rendering. No production edits, exclusions or threshold reductions. Test-only: no new build/runtime check required. User impact and follow-up defects unknown.", "evidence": "client-test-repair.md coverage checkpoint and full maintained Jest coverage report." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "client-shell-test-repair",
       "title": "Repair stale client shell integration tests",
       "beneficiary": "DevEnv contributors relying on client regression checks",

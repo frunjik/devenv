@@ -51,6 +51,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Coding tasks that reach a validated, stable state.
 - **Current rule:** Do not initiate a commit or commit-approval prompt at a stable checkpoint. Commit only after the user explicitly requests it. Keep the commit scoped to the approved work and follow the repository's commit-message conventions.
 - **Before committing:** Verify the requested scope. After an explicit commit request, draft a short, subject-only message by default and obtain the user's approval before running the commit. The subject preference is revisable; check P-011 for concern-specific subjects and current attribution preferences.
+- **Stable-summary suggestion (user, 2026-10-09):** When work reaches a stable checkpoint and a commit subject can reasonably be proposed, include a suggested subject in the status summary. It is informational only: it neither requests a commit nor constitutes approval. If the user later explicitly requests a commit, verify scope, present the subject for approval, and wait for approval before committing.
 
 - **History:** The original automatic-commit instruction was superseded by the user's 2026-10-07 override. The current rule above preserves the resulting policy without treating the superseded instruction as active.
 

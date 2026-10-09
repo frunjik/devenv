@@ -1,6 +1,6 @@
 # DevEnv
 
-DevEnv exists to help make intended outcomes explicit and support the work of achieving them. It is a workspace for connecting Goals to the work, project artifacts, tests, and changes that contribute to those outcomes. Its central concern is what the System is meant to achieve; the software and tools are means to that end.
+DevEnv helps product teams—including developers, testers, salespeople, and project managers—make intended outcomes explicit and support the work of achieving them. Inspired in part by the strategy-to-technology connection described in Gregor Hohpe's [*The Software Architect Elevator*](https://architectelevator.com/book/), DevEnv connects Goals to the problems, decisions, work, evidence, and changes that contribute to those outcomes. Its central concern is what the System is meant to achieve; the software and tools are means to that end.
 
 In this README, **Glossary**, **Term**, **Type**, and **Contract** are defined terms; see the [project glossary](./.glossary) for their meanings.
 

@@ -55,6 +55,23 @@ Existing coding-process affordances make this feasible as a manual pilot, but th
 - Report completeness, collection effort, outcomes, and limitations without filling unknowns.
 - Decide whether to continue, adapt, or stop measurement and whether a broader team pilot is justified.
 
+## Proposed follow-up: compare practice profiles
+
+The user proposed comparing the current way of working with a reduced set of practices, while retaining Workflow TODO upkeep and evaluation metrics. This is a proposal for a later meta-work experiment, not approval to disable rules or a change to the current coding workflow.
+
+**Feasibility:** A controlled comparison is plausible, but a literal switch for every rule is not yet established. First inventory where applicable instructions come from and which are under project control; rules may be supplied by more than one layer. Verify in the intended VS Code/Copilot setup that each experimental profile actually changes the instructions the agent receives. Do not claim a rule is disabled merely because a repository file was edited. Security, privacy, platform, organization, and user constraints are outside the experimental set and remain in force.
+
+**Preparation before any trial:**
+
+1. Inventory practices and rules, recording their source and classifying each as fixed constraint, explicitly retained practice, experimental practice, or out of scope. Agree what “metrics rules” means, including whether code-coverage expectations are retained or varied.
+2. Define a reproducible full-practice profile and a reduced-practice profile. The reduced profile would retain Workflow TODO maintenance and the agreed metrics collection, while excluding only the practices explicitly selected for comparison.
+3. Check that both profiles can be selected and verified in the actual client. If they cannot be separated reliably, do not run the comparison; choose a supported, auditable setup first.
+4. Before changing metric records or their shared contract, agree what exposure information must be recorded. The existing evaluation data does not yet identify a practice profile; keep current records and metrics authoritative and unchanged until that decision.
+
+**Trial design:** Use small, low-risk, comparable coding tasks with the same acceptance conditions and tool/model setup. Alternate or randomize profiles across matched tasks where practical; start isolated sessions and record the selected profile and its revision so prior context or a profile change cannot silently contaminate the comparison. Preserve pre-work success conditions, outcome evidence, elapsed time, estimated active effort, process overhead, defects/rework, and unknowns. Compare outcomes and burdens separately rather than collapsing them into one score. Treat a small sample as descriptive; do not infer causation or generalize beyond the tested work.
+
+**Decision gate:** Agree the inventory, profile contents, protected constraints, metrics definition, and pilot design with the user before implementation or any rule is switched off. If the agent cannot reliably verify the active profile, report that limitation and stop rather than presenting an uncontrolled comparison as evidence.
+
 ## Upkeep checkpoint: streamed test-run extraction
 
 The user requested extracting `runTests` from the client `BackendService`. The implementation moves the streaming HTTP request and event parser into `TestRunnerService`; test-run cache/status requests remain in `BackendService`, and the new service reads the host from that existing service rather than duplicating host configuration. The runner component now delegates execution to `TestRunnerService`. No shared Types or API behavior changed.

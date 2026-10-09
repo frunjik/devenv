@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "toolbar-status-order-and-workflow-alignment",
+      "title": "Right-align active workflow and move TDD before Tests",
+      "beneficiary": "DevEnv contributors scanning toolbar status",
+      "intendedOutcome": "Right-align active-workflow content and group TDD immediately before test status.",
+      "successCondition": "Active-workflow content aligns to the right within its allocated desktop region; TDD precedes Tests in DOM and visual order at 1280, 768 and 320px without page overflow. Existing actions, phase labels, colors, tooltips, hover and focus remain unchanged.",
+      "baseline": "Active-workflow content was left-justified; TDD followed test status beside the active workflow. Baseline and success condition recorded retrospectively after implementation, not before work.",
+      "startedAt": "2026-10-10T01:21:43.881+02:00",
+      "completedAt": "2026-10-10T01:23:11.724+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Two explicit same-task user refinements; acceptance criteria documented retrospectively rather than measured before implementation.", "evidence": "todo-view-workflow.md toolbar refinement checkpoint and user requests." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 27.843 seconds wall-clock from first refinement request to final build completion, including the interval before the second request. Not active effort; active effort and blocked time unknown. Retrospectively recorded from available timestamps.", "evidence": "User request timestamp 01:21:43.881 and client build completion 23:23:11.724Z." },
+        { "metricId": "outcome-and-quality", "value": "Right justification verified in the running browser. TDD-order regression failed before the template move; all 6 toolbar tests and client build then passed. Browser confirms TDD before Tests on the same row at 1280, 768 and 320px without document overflow. Diagnostics and diff check pass. Commit preflight subsequently confirms 100% statement, branch, function and line coverage for StatusToolbarComponent; user usefulness and follow-up defects remain unobserved.", "evidence": "todo-view-workflow.md toolbar refinement checkpoint; focused Jest, coverage, build and browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "toolbar-global-grid-alignment",
       "title": "Align meta and status toolbars with global grid",
       "beneficiary": "DevEnv contributors navigating the workspace",

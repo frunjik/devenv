@@ -15,6 +15,23 @@
         [matTooltipShowDelay]="250"
         aria-live="polite"
     >{{ gitStatus.count }}</a>
+    <span
+        class="rgr-phase"
+        role="status"
+        [ngClass]="{
+            'rgr-phase-red': rgrPhase.phase === 'red',
+            'rgr-phase-green': rgrPhase.phase === 'green',
+            'rgr-phase-refactor': rgrPhase.phase === 'refactor',
+            'rgr-phase-error': !!rgrPhase.errorMessage
+        }"
+        [attr.aria-label]="'Red-Green-Refactor phase: ' + (rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'idle'))"
+        [matTooltip]="rgrPhase.errorMessage
+            ? 'Could not load the current phase: ' + rgrPhase.errorMessage
+            : rgrPhase.phase
+                ? 'Current phase: ' + rgrPhase.phase
+                : 'Idle: no TDD phase is currently recorded'"
+        matTooltipPosition="above"
+    >TDD: {{ rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'idle') }}</span>
     <a
         mat-button
         routerLink="/tests"
@@ -73,23 +90,6 @@
     >Client v{{ clientVersion }} | Server v{{ serverVersion }}</span>
     <span class="toolbar-spacer"></span>
     <div class="current-row">
-        <span
-            class="rgr-phase"
-            role="status"
-            [ngClass]="{
-                'rgr-phase-red': rgrPhase.phase === 'red',
-                'rgr-phase-green': rgrPhase.phase === 'green',
-                'rgr-phase-refactor': rgrPhase.phase === 'refactor',
-                'rgr-phase-error': !!rgrPhase.errorMessage
-            }"
-            [attr.aria-label]="'Red-Green-Refactor phase: ' + (rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'idle'))"
-            [matTooltip]="rgrPhase.errorMessage
-                ? 'Could not load the current phase: ' + rgrPhase.errorMessage
-                : rgrPhase.phase
-                    ? 'Current phase: ' + rgrPhase.phase
-                    : 'Idle: no TDD phase is currently recorded'"
-            matTooltipPosition="above"
-        >TDD: {{ rgrPhase.errorMessage ? 'unavailable' : (rgrPhase.phase || 'idle') }}</span>
         <button
             type="button"
             class="current-entry workflow-entry"

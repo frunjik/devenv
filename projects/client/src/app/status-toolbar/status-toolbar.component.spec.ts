@@ -125,7 +125,7 @@ describe('StatusToolbarComponent', () => {
         expect(fixture.nativeElement.querySelector('.version-info').textContent).toContain('Server vunavailable');
     });
 
-    it('labels an unrecorded TDD phase as idle next to the refreshable active workflow', () => {
+    it('labels an unrecorded TDD phase as idle before the test status', () => {
         TestBed.configureTestingModule({
             imports: [StatusToolbarComponent],
             providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
@@ -142,7 +142,7 @@ describe('StatusToolbarComponent', () => {
         expect(phase.textContent.trim()).toBe('TDD: idle');
         expect(phase.getAttribute('aria-label')).toBe('Red-Green-Refactor phase: idle');
         expect(fixture.nativeElement.querySelector('.workflow-refresh').textContent.trim()).toBe('Refresh');
-        expect(phase.compareDocumentPosition(fixture.nativeElement.querySelector('.current-entry'))
+        expect(phase.compareDocumentPosition(fixture.nativeElement.querySelector('.test-run-status'))
             & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
 

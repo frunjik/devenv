@@ -64,6 +64,7 @@
 .current-entry {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.65rem;
     max-width: none;
     flex: 1 1 auto;
@@ -162,10 +163,10 @@
 @media (max-width: 60rem) {
     .bottom-toolbar {
         display: grid;
-        grid-template-columns: auto auto auto minmax(0, 1fr);
+        grid-template-columns: auto auto auto auto minmax(0, 1fr);
         grid-template-areas:
-            "git tests busy version"
-            "current current current current";
+            "git phase tests busy version"
+            "current current current current current";
         gap: 0.25rem 0.4rem;
         height: auto;
         min-height: 76px;
@@ -174,6 +175,7 @@
     }
 
     .git-status-indicator { grid-area: git; }
+    .rgr-phase { grid-area: phase; }
     .test-run-status { grid-area: tests; }
     .busy-indicator { grid-area: busy; }
 

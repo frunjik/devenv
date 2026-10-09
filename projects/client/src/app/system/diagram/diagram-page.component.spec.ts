@@ -58,6 +58,68 @@ describe('DiagramPageComponent', () => {
         expect(item.getAttribute('aria-pressed')).toBe('true');
     });
 
+    it('rejects a workspace drag start without its item element', () => {
+        expect(() => fixture.componentInstance.startWorkspaceElementDrag(
+            new MouseEvent('mousedown'),
+        )).toThrow('Invalid Diagram drag: workspace item element is unavailable');
+    });
+
+    it('rejects a touch drag start without touch coordinates', () => {
+        const item = element.querySelector('[aria-label="Diagram workspace"]') as HTMLElement;
+        const touchEvent = new Event('touchstart');
+        Object.defineProperties(touchEvent, {
+            currentTarget: { value: item },
+            touches: { value: [] },
+            changedTouches: { value: [] },
+        });
+
+        expect(() => fixture.componentInstance.startWorkspaceElementDrag(
+            touchEvent as TouchEvent,
+        )).toThrow('Invalid Diagram drag: pointer position is unavailable');
+    });
+
+    it('preserves the initial grab offset when CDK drag starts after pointer movement', () => {
+        element.querySelector<HTMLButtonElement>('button[aria-label="Add Rectangle"]')?.click();
+        fixture.detectChanges();
+
+        const workspace = element.querySelector('[aria-label="Diagram workspace"]') as HTMLElement;
+        const item = element.querySelector('[data-element-id="diagram-element-1"]') as HTMLElement;
+        jest.spyOn(workspace, 'getBoundingClientRect').mockReturnValue({
+            x: 100, y: 200, left: 100, top: 200, right: 600, bottom: 600, width: 500, height: 400,
+            toJSON: () => ({}),
+        });
+        jest.spyOn(item, 'getBoundingClientRect').mockReturnValue({
+            x: 110, y: 220, left: 110, top: 220, right: 254, bottom: 284, width: 144, height: 64,
+            toJSON: () => ({}),
+        });
+        item.dispatchEvent(new MouseEvent('mousedown', {
+            bubbles: true,
+            button: 0,
+            buttons: 1,
+            clientX: 120,
+            clientY: 230,
+            detail: 1,
+        }));
+        const drag = fixture.debugElement.query(By.css('[data-element-id="diagram-element-1"]'))
+            .injector.get(CdkDrag);
+        const workspaceList = fixture.debugElement.query(By.css('#workspace'))
+            .injector.get(CdkDropList);
+        workspaceList.dropped.emit({
+            item: drag,
+            currentIndex: 0,
+            previousIndex: 0,
+            container: workspaceList,
+            previousContainer: workspaceList,
+            isPointerOverContainer: true,
+            distance: { x: 80, y: 70 },
+            dropPoint: { x: 200, y: 300 },
+            event: new MouseEvent('mouseup'),
+        });
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.document.elements[0].position).toEqual({ x: 90, y: 90 });
+    });
+
     it('persists dragged workspace coordinates with workspace offset and scroll', () => {
         element.querySelector<HTMLButtonElement>('button[aria-label="Add Rectangle"]')?.click();
         fixture.detectChanges();
@@ -82,10 +144,14 @@ describe('DiagramPageComponent', () => {
         if (!drag) {
             return;
         }
-        drag.started.emit({
-            source: drag,
-            event: new MouseEvent('mousedown', { clientX: 10, clientY: 15 }),
-        });
+        item.dispatchEvent(new MouseEvent('mousedown', {
+            bubbles: true,
+            button: 0,
+            buttons: 1,
+            clientX: 10,
+            clientY: 15,
+            detail: 1,
+        }));
 
         const workspaceList = fixture.debugElement.queryAll(By.directive(CdkDropList))
             .map(debugElement => debugElement.injector.get(CdkDropList))
@@ -109,8 +175,8 @@ describe('DiagramPageComponent', () => {
     });
 
     it.each([
-        { touches: [{ clientX: 10, clientY: 15 }], changedTouches: [] },
-        { touches: [], changedTouches: [{ clientX: 10, clientY: 15 }] },
+        { touches: [{ clientX: 10, clientY: 15, pageX: 10, pageY: 15 }], changedTouches: [] },
+        { touches: [], changedTouches: [{ clientX: 10, clientY: 15, pageX: 10, pageY: 15 }] },
     ])('persists workspace drags that start with touch coordinates', ({ touches, changedTouches }) => {
         element.querySelector<HTMLButtonElement>('button[aria-label="Add Rectangle"]')?.click();
         fixture.detectChanges();
@@ -128,14 +194,15 @@ describe('DiagramPageComponent', () => {
             x: 0, y: 0, left: 0, top: 0, right: 144, bottom: 64, width: 144, height: 64,
             toJSON: () => ({}),
         });
-        const drag = fixture.debugElement.query(By.css('[data-element-id="diagram-element-1"]'))
-            .injector.get(CdkDrag);
         const touchEvent = new Event('touchstart');
         Object.defineProperties(touchEvent, {
             touches: { value: touches },
             changedTouches: { value: changedTouches },
+            targetTouches: { value: touches.length ? touches : changedTouches },
         });
-        drag.started.emit({ source: drag, event: touchEvent as TouchEvent });
+        item.dispatchEvent(touchEvent);
+        const drag = fixture.debugElement.query(By.css('[data-element-id="diagram-element-1"]'))
+            .injector.get(CdkDrag);
         const workspaceList = fixture.debugElement.queryAll(By.directive(CdkDropList))
             .map(debugElement => debugElement.injector.get(CdkDropList))
             .find(dropList => dropList.id === 'workspace');
@@ -154,20 +221,6 @@ describe('DiagramPageComponent', () => {
 
         expect(item.style.left).toBe('110px');
         expect(item.style.top).toBe('145px');
-    });
-
-    it('reports a touch drag start without a pointer position', () => {
-        const drag = fixture.debugElement.query(By.directive(CdkDrag)).injector.get(CdkDrag);
-        const touchEvent = new Event('touchstart');
-        Object.defineProperties(touchEvent, {
-            touches: { value: [] },
-            changedTouches: { value: [] },
-        });
-
-        expect(() => fixture.componentInstance.startWorkspaceElementDrag({
-            source: drag,
-            event: touchEvent as TouchEvent,
-        })).toThrow('Invalid Diagram drag: pointer position is unavailable');
     });
 
     it.each([
@@ -255,12 +308,14 @@ describe('DiagramPageComponent', () => {
         });
         const drags = fixture.debugElement.queryAll(By.directive(CdkDrag))
             .map(debugElement => debugElement.injector.get(CdkDrag));
-        const workspaceDrag = fixture.debugElement.query(By.css('[data-element-id="diagram-element-1"]'))
-            .injector.get(CdkDrag);
-        workspaceDrag.started.emit({
-            source: workspaceDrag,
-            event: new MouseEvent('mousedown', { clientX: 30, clientY: 40 }),
-        });
+        workspaceItem.dispatchEvent(new MouseEvent('mousedown', {
+            bubbles: true,
+            button: 0,
+            buttons: 1,
+            clientX: 30,
+            clientY: 40,
+            detail: 1,
+        }));
 
         const [paletteList, workspaceList] = fixture.debugElement
             .queryAll(By.directive(CdkDropList))

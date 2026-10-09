@@ -64,7 +64,8 @@
                 [style.top.px]="element.position.y"
                 cdkDrag
                 [cdkDragData]="element.id"
-                (cdkDragStarted)="startWorkspaceElementDrag($event)"
+                (mousedown)="startWorkspaceElementDrag($event)"
+                (touchstart)="startWorkspaceElementDrag($event)"
                 role="button"
                 tabindex="0"
                 (click)="selectElement(element.id)"

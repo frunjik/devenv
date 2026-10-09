@@ -217,6 +217,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "diagram-editor-drag-interaction",
+      "title": "Diagnose and fix workspace item movement",
+      "beneficiary": "Developer using the diagram editor",
+      "intendedOutcome": "Move an existing diagram item interactively and persist its new position in the diagram document.",
+      "successCondition": "A real user drag starts from a workspace item, produces a workspace drop, and visibly persists the item's coordinates; the behavior is covered by an interaction-level regression test and existing document-operation checks.",
+      "baseline": "Headless Edge 155 real mouse press/move/release reproduced the failure: the CDK workspace-to-workspace drop callback received the moved pointer, but the persisted item position remained (0, 0) and inline position styles cleared. CDK drag-start fires on the threshold-crossing mousemove, so using its coordinates as the initial grab point canceled the traveled distance.",
+      "startedAt": "2026-10-09T17:40:09+02:00",
+      "completedAt": "2026-10-09T19:02:55+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The user-visible failure, beneficiary, persistence outcome, and gap in existing test evidence were recorded before investigation.",
+          "evidence": "User report and this WorkEvaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "About 1 hour 23 minutes wall-clock from recorded start to verified completion, including time between sessions and pauses; active effort is unknown.",
+          "evidence": "Evaluation startedAt and completedAt timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "The user-visible movement failure is fixed: a real Edge 155 mouse drag moved the item by (100, 80) screen pixels and updated both persisted document position and rendered coordinates; no browser exceptions occurred. All 41 client suites and 573 tests pass. The changed Diagram Page component has 100% statement, branch, function, and line coverage. The full-project coverage command exits nonzero because unchanged shared workflow-todo.types.ts is only 3.17% covered in this client suite; global metrics are 95.57% statements, 91.82% branches, 95.59% functions, and 95.54% lines. Shared and client builds pass. Longer-term user outcome and rework remain unobserved.",
+          "evidence": "Headless Edge 155 real mouse interaction against /diagram; full client Jest suite; targeted Jest coverage for diagram-page.component.ts; shared and client Angular builds. Coverage details and scope are recorded in diagram-editor-workflow.md."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

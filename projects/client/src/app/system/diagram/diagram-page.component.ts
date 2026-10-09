@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
-import type { CdkDragDrop, CdkDragStart } from '@angular/cdk/drag-drop';
+import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { createDiagramElement, moveDiagramElement } from './diagram-operations';
 import type { DiagramDocument, DiagramElementKind, DiagramPoint } from '@shared';
 
@@ -59,9 +59,12 @@ export class DiagramPageComponent {
         this.createElement(kind, { x: index * 24, y: index * 24 });
     }
 
-    startWorkspaceElementDrag(event: CdkDragStart<string>): void {
-        const bounds = event.source.element.nativeElement.getBoundingClientRect();
-        const pointer = getPointerPosition(event.event);
+    startWorkspaceElementDrag(event: MouseEvent | TouchEvent): void {
+        if (!(event.currentTarget instanceof HTMLElement)) {
+            throw new Error('Invalid Diagram drag: workspace item element is unavailable');
+        }
+        const bounds = event.currentTarget.getBoundingClientRect();
+        const pointer = getPointerPosition(event);
         this.dragOffset = {
             x: pointer.x - bounds.left,
             y: pointer.y - bounds.top,

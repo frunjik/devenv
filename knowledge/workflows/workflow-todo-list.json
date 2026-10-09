@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "title": "Workflow TODO List",
   "introduction": "Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.",
-  "activeWorkflow": "DevEnv Value Evaluation",
+  "activeWorkflow": "Minimal Typed Diagram Editor",
   "workflows": [
     {
       "name": "MetaExport",
@@ -101,11 +101,12 @@
     {
       "name": "Minimal Typed Diagram Editor",
       "evaluationIds": [
-        "diagram-selection-and-movement"
+        "diagram-selection-and-movement",
+        "diagram-editor-drag-interaction"
       ],
       "primaryWorkPurpose": "Product work",
-      "status": "Paused",
-      "resumeLabel": "Document-operations checkpoint",
+      "status": "Active",
+      "resumeLabel": "Movement fix verified; connections next",
       "resumePath": "./diagram-editor-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"
     },
@@ -113,7 +114,7 @@
       "name": "DevEnv Value Evaluation",
       "evaluationIds": [],
       "primaryWorkPurpose": "Meta work",
-      "status": "Active",
+      "status": "Paused",
       "resumeLabel": "Measurement-feasibility pilot",
       "resumePath": "./devenv-value-evaluation-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"

@@ -4,14 +4,17 @@
 
 ### Definitions
 
-- The environment in which code executes, including the runtime and available APIs or capabilities\. It is distinct from the code's client or server role and from JavaScript's execution context for function execution and scope\.
+- The environment and APIs in which code executes, distinct from its client/server role and JavaScript execution context\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 - Runtime Environment \(DevEnv browser client\): Angular application code runs in a browser with browser APIs\.
 - Runtime Environment \(DevEnv Node\.js server\): Express application code runs in Node\.js with Node APIs\.
 - DevEnv client tests run in Node\.js with a simulated browser environment; being client code does not itself establish a browser runtime\.
 - DevEnv diagram validation is runtime\-neutral code: its implementation uses standard JavaScript compatible with both browser and Node\.js environments\. Public exports and transitive dependencies must also be compatible before claiming the shared package is runtime\-neutral\.
+
+</details>
 
 ### Domain usage
 
@@ -23,9 +26,12 @@
 
 - A word or phrase with a specific, agreed meaning within a Domain or System\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -37,9 +43,12 @@ _Unknown or unrecorded._
 
 - A bounded context of activity in which concepts, entities, relationships, and rules have particular meanings\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -51,9 +60,12 @@ _Unknown or unrecorded._
 
 - The Domain being investigated or supported\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -65,9 +77,12 @@ _No examples recorded._
 
 - A subject used to classify knowledge, potentially spanning multiple Domains\. Membership does not establish shared meaning, rules, or ownership\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -79,9 +94,12 @@ _No examples recorded._
 
 - A named perspective from which another system, activity, or its description is examined, described, governed, or evaluated\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -92,11 +110,14 @@ _No examples recorded._
 
 ### Definitions
 
-- The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand\.
+- Focusing on essential ideas or functions by removing detail while preserving distinctions and context needed for the purpose\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -108,9 +129,12 @@ _Unknown or unrecorded._
 
 - A System that helps people define, inspect, validate, and evolve a Domain's Terms, Types, relationships, rules, and supporting evidence\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -122,9 +146,12 @@ _Unknown or unrecorded._
 
 - A versioned description of a Domain, including its context, Glossary, Types, relationships, and applicable Contracts\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -134,12 +161,15 @@ _Unknown or unrecorded._
 
 ### Definitions
 
-- A numbered designation for a particular, explicitly scoped revision of a collection of rules and practices, distinguished by its recorded contents and source revision\.
+- A numbered, scoped revision of a collection of practices, identified by its contents and source revision\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 - Practice Set Version \(DevEnv version 2\) is the registry snapshot pinned to commit 47fced67cde5b94c813559090dedb4d76c793938; its actual activation period remains unknown\.
 - An Angular package version identifies a software release, not the development practices used to produce it\.
+
+</details>
 
 ### Domain usage
 
@@ -150,12 +180,15 @@ _Unknown or unrecorded._
 
 ### Definitions
 
-- A numbered designation for a tracked revision of one repository\-controlled agent or skill, identified by its kind and path and pinned to the commit containing that content\.
+- A numbered revision of one repository agent or skill, identified by kind, path, and source commit\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 - Practice Customization Version \(Diligent Coder v1\) identifies the agent content at commit 47fced67cde5b94c813559090dedb4d76c793938; it does not establish when the agent entered use\.
 - Practice Set Version \(DevEnv v2\) identifies a combined repository\-practice snapshot and is not the same as Diligent Coder v1\.
+
+</details>
 
 ### Domain usage
 
@@ -168,9 +201,12 @@ _Unknown or unrecorded._
 
 - A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -180,11 +216,14 @@ _Unknown or unrecorded._
 
 ### Definitions
 
-- A topic or uncertainty that needs attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items\. It is not itself necessarily a Work Item\.
+- A topic or uncertainty needing attention in shaping or evaluating a System; it may lead to evidence, a decision, or Work Items, but is not itself a Work Item\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -196,9 +235,12 @@ _Unknown or unrecorded._
 
 - A desired outcome or condition that a System is intended to achieve\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -208,11 +250,14 @@ _Unknown or unrecorded._
 
 ### Definitions
 
-- A context\-bound description of an undesirable or inadequate current condition, including who or what is affected and why it matters; its framing may be uncertain or contested and should be supported by observations or evidence\.
+- A context\-bound account of an undesirable or inadequate condition, who or what it affects, and why; framing may be uncertain and needs evidence\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -222,11 +267,14 @@ _Unknown or unrecorded._
 
 ### Definitions
 
-- A purposeful, revisable investigation into a question or uncertainty relevant to a Goal, using evidence and reasoning to record findings or decisions with rationale; it may be revisited as understanding changes\.
+- A revisable, evidence\-based investigation of a Goal\-related question or uncertainty, recording findings or decisions with rationale\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -238,9 +286,12 @@ _Unknown or unrecorded._
 
 - A bounded unit of work undertaken to contribute to a Goal or satisfy an Acceptance Criterion\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -252,9 +303,12 @@ _Unknown or unrecorded._
 
 - The current lifecycle state of a Work Item: ready, in progress, blocked, completed, or cancelled\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -266,9 +320,12 @@ _Unknown or unrecorded._
 
 - A relationship in which one Work Item must be completed or otherwise resolved before another can proceed\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -280,9 +337,12 @@ _Unknown or unrecorded._
 
 - An unresolved condition preventing a Work Item from making progress\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -294,9 +354,12 @@ _Unknown or unrecorded._
 
 - An Artifact produced or changed by completing a Work Item\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -308,9 +371,12 @@ _Unknown or unrecorded._
 
 - A summary of advancement in Work Items or Acceptance Criteria; Work Item progress is not itself proof that a Goal has been achieved\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -322,9 +388,12 @@ _Unknown or unrecorded._
 
 - A determination of whether a Goal's Acceptance Criteria are satisfied by evidence\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -336,9 +405,12 @@ _Unknown or unrecorded._
 
 - A definition that groups things by their shared meaning, properties, relationships, and rules\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -350,9 +422,12 @@ _Unknown or unrecorded._
 
 - A machine\-readable description of a Type's identity, fields, relationships, constraints, variants, and version\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -364,9 +439,12 @@ _Unknown or unrecorded._
 
 - A particular value whose structure and validity are described by a Type\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -378,9 +456,12 @@ _Unknown or unrecorded._
 
 - The process of constructing a Type Instance from serialized data using its Type Description\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -392,9 +473,12 @@ _Unknown or unrecorded._
 
 - An explicit mapping that converts data from one Type or representation to another while stating semantic differences or information loss\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -406,9 +490,12 @@ _Unknown or unrecorded._
 
 - An agreed specification of the obligations and guarantees between parts of a System\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -420,9 +507,12 @@ _Unknown or unrecorded._
 
 - An organized collection of defined Terms used within a Domain or System\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -434,9 +524,12 @@ _Unknown or unrecorded._
 
 - An observable condition that must hold for a Goal to count as achieved\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -448,9 +541,12 @@ _Unknown or unrecorded._
 
 - An observation or Artifact used to support or challenge a claim, including whether an Acceptance Criterion holds\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -462,9 +558,12 @@ _Unknown or unrecorded._
 
 - A recorded, directly observable behavior or state of a System\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -476,9 +575,12 @@ _Unknown or unrecorded._
 
 - A persistent work product or System output that can be inspected as evidence\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -490,9 +592,12 @@ _Unknown or unrecorded._
 
 - A defined stimulus and expected observable result used to evaluate a System behavior, Contract, or Type rule\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -504,9 +609,12 @@ _Unknown or unrecorded._
 
 - The observed outcome of executing a Test Case, including whether its expected result held\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -518,9 +626,12 @@ _Unknown or unrecorded._
 
 - An organized collection of Test Cases executed together for a stated purpose\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -532,9 +643,12 @@ _Unknown or unrecorded._
 
 - The set of source files and code units included in a particular coverage measurement\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -546,9 +660,12 @@ _Unknown or unrecorded._
 
 - A measured proportion of covered code units, such as statements, branches, functions, or lines, within a Coverage Scope\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -560,9 +677,12 @@ _Unknown or unrecorded._
 
 - A record of Coverage Metrics and thresholds for a declared Coverage Scope\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -574,9 +694,12 @@ _Unknown or unrecorded._
 
 - A rule that every valid instance of a Type must satisfy\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -588,9 +711,12 @@ _Unknown or unrecorded._
 
 - A proposed feature, initiative, or Work Item being considered for investment\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -602,9 +728,12 @@ _Unknown or unrecorded._
 
 - A stated value for an uncertain quantity, accompanied by its rationale and supporting evidence\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -616,9 +745,12 @@ _Unknown or unrecorded._
 
 - A declared set of Impact levels used consistently to estimate and compare candidate outcomes\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -630,9 +762,12 @@ _Unknown or unrecorded._
 
 - A prioritization method that divides Reach multiplied by Impact and Confidence by Effort\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -644,9 +779,12 @@ _Unknown or unrecorded._
 
 - A contextualized set of Reach, Impact, Confidence, and Effort estimates for one Prioritization Candidate, with its calculated score and supporting rationale\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -658,9 +796,12 @@ _Unknown or unrecorded._
 
 - A recorded selection, deferral, or rejection of a Prioritization Candidate, linked to the assessment and rationale used\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -672,9 +813,12 @@ _Unknown or unrecorded._
 
 - The estimated number of people or occurrences affected by a Prioritization Candidate within a defined time period and population\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -686,9 +830,12 @@ _Unknown or unrecorded._
 
 - The estimated magnitude of a Prioritization Candidate's effect on a stated user or System outcome, measured with a declared scale\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -700,9 +847,12 @@ _Unknown or unrecorded._
 
 - The estimated degree of certainty that the Reach, Impact, and Effort estimates are reasonable, represented from 0 to 1\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -714,9 +864,12 @@ _Unknown or unrecorded._
 
 - The estimated team work required to deliver a Prioritization Candidate, measured in a declared unit such as person\-months\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -728,9 +881,12 @@ _Unknown or unrecorded._
 
 - The time period, target population, outcome, impact scale, and effort unit that make RICE Assessments interpretable and comparable\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -740,11 +896,14 @@ _Unknown or unrecorded._
 
 ### Definitions
 
-- The calculated value \(Reach × Impact × Confidence\) ÷ Effort for one RICE Assessment; it ranks relative expected impact per effort within a comparable Scoring Context\.
+- For one assessment, \(Reach × Impact × Confidence\) ÷ Effort; compares expected impact per effort only within comparable Scoring Contexts\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -756,9 +915,12 @@ _Unknown or unrecorded._
 
 - An estimated financial expenditure expressed as an amount and currency; it is distinct from Effort\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 
@@ -770,9 +932,12 @@ _Unknown or unrecorded._
 
 - A comparison of estimated financial benefit and cost for the same candidate, currency, and time period, separate from a RICE Score\.
 
-### Examples
+<details>
+<summary>Examples</summary>
 
 _No examples recorded._
+
+</details>
 
 ### Domain usage
 

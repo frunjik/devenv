@@ -2,7 +2,7 @@
   {
     "term": "Runtime Environment",
     "definitions": [
-      "The environment in which code executes, including the runtime and available APIs or capabilities. It is distinct from the code's client or server role and from JavaScript's execution context for function execution and scope."
+      "The environment and APIs in which code executes, distinct from its client/server role and JavaScript execution context."
     ],
     "examples": [
       "Runtime Environment (DevEnv browser client): Angular application code runs in a browser with browser APIs.",
@@ -64,7 +64,7 @@
   {
     "term": "Abstraction",
     "definitions": [
-      "The process of removing complex, specific details to focus on core concepts, general ideas, or essential functions, while preserving the distinctions and context needed for the purpose at hand."
+      "Focusing on essential ideas or functions by removing detail while preserving distinctions and context needed for the purpose."
     ],
     "examples": [],
     "domains": []
@@ -88,7 +88,7 @@
   {
     "term": "Practice Set Version",
     "definitions": [
-      "A numbered designation for a particular, explicitly scoped revision of a collection of rules and practices, distinguished by its recorded contents and source revision."
+      "A numbered, scoped revision of a collection of practices, identified by its contents and source revision."
     ],
     "examples": [
       "Practice Set Version (DevEnv version 2) is the registry snapshot pinned to commit 47fced67cde5b94c813559090dedb4d76c793938; its actual activation period remains unknown.",
@@ -102,7 +102,7 @@
   {
     "term": "Practice Customization Version",
     "definitions": [
-      "A numbered designation for a tracked revision of one repository-controlled agent or skill, identified by its kind and path and pinned to the commit containing that content."
+      "A numbered revision of one repository agent or skill, identified by kind, path, and source commit."
     ],
     "examples": [
       "Practice Customization Version (Diligent Coder v1) identifies the agent content at commit 47fced67cde5b94c813559090dedb4d76c793938; it does not establish when the agent entered use.",
@@ -124,7 +124,7 @@
   {
     "term": "System Concern",
     "definitions": [
-      "A topic or uncertainty that needs attention while shaping or evaluating a System; it may be resolved through evidence or a decision, or lead to one or more Work Items. It is not itself necessarily a Work Item."
+      "A topic or uncertainty needing attention in shaping or evaluating a System; it may lead to evidence, a decision, or Work Items, but is not itself a Work Item."
     ],
     "examples": [],
     "domains": []
@@ -140,7 +140,7 @@
   {
     "term": "Problem",
     "definitions": [
-      "A context-bound description of an undesirable or inadequate current condition, including who or what is affected and why it matters; its framing may be uncertain or contested and should be supported by observations or evidence."
+      "A context-bound account of an undesirable or inadequate condition, who or what it affects, and why; framing may be uncertain and needs evidence."
     ],
     "examples": [],
     "domains": []
@@ -148,7 +148,7 @@
   {
     "term": "Inquiry",
     "definitions": [
-      "A purposeful, revisable investigation into a question or uncertainty relevant to a Goal, using evidence and reasoning to record findings or decisions with rationale; it may be revisited as understanding changes."
+      "A revisable, evidence-based investigation of a Goal-related question or uncertainty, recording findings or decisions with rationale."
     ],
     "examples": [],
     "domains": []
@@ -444,7 +444,7 @@
   {
     "term": "RICE Score",
     "definitions": [
-      "The calculated value (Reach × Impact × Confidence) ÷ Effort for one RICE Assessment; it ranks relative expected impact per effort within a comparable Scoring Context."
+      "For one assessment, (Reach × Impact × Confidence) ÷ Effort; compares expected impact per effort only within comparable Scoring Contexts."
     ],
     "examples": [],
     "domains": []

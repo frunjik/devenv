@@ -55,11 +55,11 @@ export function glossaryEntriesToMarkdown(value: unknown): string {
         lines.push(...(entry.definitions.length
             ? entry.definitions.map(definition => `- ${escapeMarkdown(definition)}`)
             : ['_No definitions recorded._']));
-        lines.push('', '### Examples', '');
+        lines.push('', '<details>', '<summary>Examples</summary>', '');
         lines.push(...(entry.examples.length
             ? entry.examples.map(example => `- ${escapeMarkdown(example)}`)
             : ['_No examples recorded._']));
-        lines.push('', '### Domain usage', '');
+        lines.push('', '</details>', '', '### Domain usage', '');
         lines.push(...(entry.domains.length
             ? entry.domains.map(domain => `- ${escapeMarkdown(domain)}`)
             : ['_Unknown or unrecorded._']));

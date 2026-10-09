@@ -50,10 +50,12 @@ describe('glossaryEntriesToMarkdown', () => {
             '# Glossary', '',
             '## A \\*term\\*', '', '### Definitions', '',
             '- A \\(definition\\)\\.', '',
-            '### Examples', '', '- An \\[example\\]', '',
+            '<details>', '<summary>Examples</summary>', '',
+            '- An \\[example\\]', '', '</details>', '',
             '### Domain usage', '', '- DevEnv', '',
             '## Unknown', '', '### Definitions', '', '_No definitions recorded._', '',
-            '### Examples', '', '_No examples recorded._', '',
+            '<details>', '<summary>Examples</summary>', '',
+            '_No examples recorded._', '', '</details>', '',
             '### Domain usage', '', '_Unknown or unrecorded._', '',
         ].join('\n'));
     });

@@ -27,7 +27,7 @@ Explore making DevEnv available alongside another system or as its hosting envir
 
 ## Checkpoint
 
-**Status:** Paused at the requested green-tests milestone; implementation is wired through the UI, but the export trial's remaining safety and full-coverage verification is not complete.
+**Status:** Paused after restoring full test coverage. Implementation is wired through the UI; the export trial's remaining safety and running-UI verification is not complete.
 
 **Verification scope override (user, 2026-10-07):** Continue until all tests are green; 100% coverage is not required at this checkpoint. This does not complete the later full-coverage checkpoint.
 
@@ -47,7 +47,19 @@ Explore making DevEnv available alongside another system or as its hosting envir
 - No real export destination was written during this milestone; new clone tests use boundary mocks.
 - Type review: the agreed request/result contracts remain appropriate; no new domain Type is proposed at this checkpoint.
 
-**Next:** Before treating the export trial as complete, review protected destinations beyond source overlap (such as the user's home), source symlinks, concurrent exports, and the curated package's runnable configuration/dependency completeness. Cover copier rollback and cleanup outcomes and API error responses, perform the deferred full-coverage verification, and validate the UI/export outcome. Broader sibling/hosting architecture remains undecided.
+**Next:** Before treating the export trial as complete, review protected destinations beyond source overlap (such as the user's home), source symlinks, concurrent exports, and the curated package's runnable configuration/dependency completeness, and validate the UI/export outcome. Copier rollback, cleanup outcomes, API error responses, and full-coverage verification are now tested as recorded below. Broader sibling/hosting architecture remains undecided.
+
+### Overall coverage restoration checkpoint (2026-10-09)
+
+- The user requested restoring overall test coverage to 100%; coverage thresholds and collection scope remain unchanged.
+- Added public-interface clone tests for invalid requests, destination resolution failures, package exclusions, installation/rollback failures, cleanup failures and warnings, API refusal/error responses, and default filesystem wiring. Filesystem writes use the existing boundary mock; default filesystem tests only read and reject the source as a destination.
+- Full server coverage now passes: 23 suites, 264 tests, and 100% statements, branches, functions, and lines. Server test TypeScript checking and `git diff --check` pass.
+- Client baseline: 37 suites and 351 tests passed, with 99.81% statements, 98.85% branches, 99.66% functions, and 99.8% lines. Added public-interface tests for duplicate submission/closing during export, malformed HTTP error responses, response-processing and transport failures, and shared service construction through Angular injection. HTTP failures use boundary mocks.
+- Final `npm run test:all:coverage` passes: client 38 suites / 362 tests and server 23 suites / 264 tests, each with 100% statements, branches, functions, and lines. The script persisted the successful result in `test-run-cache/last-test-run.json`.
+- Client and server test TypeScript checks and `git diff --check` pass.
+- No production code or coverage configuration changed. No new domain Type is needed for these existing failure scenarios. Changes remain uncommitted.
+- **Resume next:** Coverage restoration is complete. Remaining export work is the separate safety and UI review above, not further coverage changes.
+- These coverage results do not complete the export trial's separate safety and running-UI review above.
 
 ### Clone dialog feedback follow-up (2026-10-07)
 

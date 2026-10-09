@@ -112,4 +112,117 @@ describe('DevEnv clone package', () => {
             .rejects.toBe(failure);
         expect(fileSystem.rm).toHaveBeenCalledWith(stage, { recursive: true, force: true });
     });
+
+    it.each(['', '  ', 'relative-destination'])('rejects invalid destination %p before filesystem access', async destination => {
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toThrow('must be an absolute');
+        expect(fileSystem.realpath).not.toHaveBeenCalled();
+    });
+
+    it.each(['.env', '.env.local', 'output.log', 'partial.tmp', 'node_modules'])(
+        'excludes %s from the staged package', async name => {
+            await cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem);
+            expect(fileSystem.cp.mock.calls[0][2].filter(join(root, name), '')).toBe(false);
+        },
+    );
+
+    it('reports a missing destination parent without creating staging', async () => {
+        fileSystem.realpath.mockResolvedValueOnce(root)
+            .mockRejectedValueOnce(Object.assign(new Error('Not found'), { code: 'ENOENT' }));
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toThrow('parent folder must already exist');
+        expect(fileSystem.mkdtemp).not.toHaveBeenCalled();
+    });
+
+    it.each([new Error('Permission denied'), 'filesystem unavailable'])(
+        'preserves unexpected parent lookup failure %p', async failure => {
+            fileSystem.realpath.mockResolvedValueOnce(root).mockRejectedValueOnce(failure);
+            await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+                .rejects.toBe(failure);
+            expect(fileSystem.mkdtemp).not.toHaveBeenCalled();
+        },
+    );
+
+    it('preserves unexpected destination inspection failures', async () => {
+        const failure = new Error('Permission denied');
+        fileSystem.lstat.mockRejectedValue(failure);
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toBe(failure);
+        expect(fileSystem.mkdtemp).not.toHaveBeenCalled();
+    });
+
+    it('rejects an existing directory resolving into the source', async () => {
+        fileSystem.lstat.mockResolvedValue({ isDirectory: () => true, isSymbolicLink: () => false });
+        fileSystem.realpath.mockResolvedValueOnce(root)
+            .mockResolvedValueOnce(dirname(destination)).mockResolvedValueOnce(root);
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toThrow('must be outside');
+        expect(fileSystem.mkdtemp).not.toHaveBeenCalled();
+    });
+
+    it('rejects the source itself as a destination', async () => {
+        await expect(cloneDevEnv(root, { destination: root, replaceExisting: true }, fileSystem))
+            .rejects.toThrow('must be outside');
+    });
+
+    it('cleans staging when installing a new destination fails', async () => {
+        const failure = new Error('Install failed');
+        fileSystem.rename.mockRejectedValueOnce(failure);
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toBe(failure);
+        expect(fileSystem.rm).toHaveBeenCalledWith(stage, { recursive: true, force: true });
+    });
+
+    it('restores the previous destination when installation fails', async () => {
+        const failure = new Error('Install failed');
+        fileSystem.lstat.mockResolvedValue({ isDirectory: () => true, isSymbolicLink: () => false });
+        fileSystem.rename.mockResolvedValueOnce(undefined).mockRejectedValueOnce(failure);
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toBe(failure);
+        expect(fileSystem.rename).toHaveBeenNthCalledWith(3, `${stage}-previous`, destination);
+        expect(fileSystem.rm).toHaveBeenCalledWith(stage, { recursive: true, force: true });
+    });
+
+    it('reports both installation and rollback failures while retaining the backup', async () => {
+        const installFailure = new Error('Install failed');
+        const rollbackFailure = new Error('Rollback failed');
+        fileSystem.lstat.mockResolvedValue({ isDirectory: () => true, isSymbolicLink: () => false });
+        fileSystem.rename.mockResolvedValueOnce(undefined)
+            .mockRejectedValueOnce(installFailure).mockRejectedValueOnce(rollbackFailure);
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toMatchObject({
+                errors: [installFailure, rollbackFailure],
+                message: expect.stringContaining(`${stage}-previous`),
+            });
+        expect(fileSystem.rm).toHaveBeenCalledTimes(1);
+        expect(fileSystem.rm).toHaveBeenCalledWith(stage, { recursive: true, force: true });
+    });
+
+    it.each([new Error('Cleanup denied'), 'cleanup failed'])(
+        'returns a successful clone with an explicit backup cleanup warning for %p', async failure => {
+            fileSystem.lstat.mockResolvedValue({ isDirectory: () => true, isSymbolicLink: () => false });
+            fileSystem.rm.mockRejectedValueOnce(failure);
+            await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+                .resolves.toEqual({
+                    destination,
+                    replacedExisting: true,
+                    warning: expect.stringContaining(
+                        failure instanceof Error ? failure.message : 'Unknown filesystem error',
+                    ),
+                });
+            expect(fileSystem.rm).toHaveBeenCalledTimes(1);
+        },
+    );
+
+    it('reports the original failure and staging cleanup failure together', async () => {
+        const copyFailure = new Error('Copy failed');
+        const cleanupFailure = new Error('Cleanup failed');
+        fileSystem.cp.mockRejectedValueOnce(copyFailure);
+        fileSystem.rm.mockRejectedValueOnce(cleanupFailure);
+        await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
+            .rejects.toMatchObject({
+                errors: [copyFailure, cleanupFailure],
+                message: expect.stringContaining(stage),
+            });
+    });
 });

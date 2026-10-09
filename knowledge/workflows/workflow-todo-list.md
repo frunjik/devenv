@@ -14,7 +14,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | TODO View (DevEnv system layer) | Completed | [Implementation and review checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
 | UI Design Review Fixes | Completed | [Implementation and verification checkpoint](./ui-design-review-workflow.md#checkpoint) | Not assigned |
 | Term Editing (DevEnv glossary UI) | Pending | [Starting checkpoint](./term-editing-workflow.md#checkpoint) | Not assigned |
-| DevEnv Export (sibling or hosting system) | Paused | [Green-tests checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
+| DevEnv Export (sibling or hosting system) | Paused | [Full-coverage checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
 | Portable Practices and Glossary | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
 | Knowledge Organization Migration | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
 | Principle Register Organization and Priority Review | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |

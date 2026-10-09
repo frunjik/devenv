@@ -1,4 +1,6 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription, timer } from 'rxjs';
+import type { WorkflowTodoList } from '@shared';
 import { DatePipe, NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,7 +22,7 @@ import { BusyIndicatorService } from '../busy-indicator.service';
     templateUrl: './status-toolbar.component.html',
     styleUrl: './status-toolbar.component.scss',
 })
-export class StatusToolbarComponent implements OnInit {
+export class StatusToolbarComponent implements OnInit, OnDestroy {
     @Input({ required: true }) gitStatus!: GitStatusService;
     @Input({ required: true }) currentEntry!: CurrentEntryService;
     @Input({ required: true }) testRunCacheStatus!: TestRunCacheStatusService;
@@ -29,11 +31,16 @@ export class StatusToolbarComponent implements OnInit {
     readonly clientVersion = clientPackage.version;
     serverVersion = 'loading';
     versionError = '';
+    activeWorkflow: WorkflowTodoList['activeWorkflow'] = null;
+    workflowLoading = true;
+    workflowError = '';
+    private readonly subscriptions = new Subscription();
+    private workflowRequest = new Subscription();
 
     constructor(private backend: BackendService) {}
 
     ngOnInit(): void {
-        this.backend.getServerVersion().subscribe({
+        this.subscriptions.add(this.backend.getServerVersion().subscribe({
             next: version => {
                 this.serverVersion = version;
             },
@@ -41,6 +48,30 @@ export class StatusToolbarComponent implements OnInit {
                 this.serverVersion = 'unavailable';
                 this.versionError = error.message;
             },
+        }));
+        this.refreshWorkflow();
+        this.subscriptions.add(timer(30_000, 30_000).subscribe(() => this.refreshWorkflow()));
+    }
+
+    refreshWorkflow(): void {
+        this.workflowRequest.unsubscribe();
+        this.workflowLoading = true;
+        this.workflowError = '';
+        this.workflowRequest = this.backend.getWorkflowTodo().subscribe({
+            next: list => {
+                this.activeWorkflow = list.activeWorkflow;
+                this.workflowLoading = false;
+            },
+            error: (error: Error) => {
+                this.activeWorkflow = null;
+                this.workflowError = error.message;
+                this.workflowLoading = false;
+            },
         });
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+        this.workflowRequest.unsubscribe();
     }
 }

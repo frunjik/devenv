@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@jest/globals';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -11,6 +11,53 @@ import { TestRunCacheStatusService } from '../test-run-cache-status.service';
 import { busyIndicatorInterceptor } from '../busy-indicator.interceptor';
 
 describe('StatusToolbarComponent', () => {
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
+    it('loads the selected workflow, refreshes on click and every 30 seconds, and stops on destruction', () => {
+        jest.useFakeTimers();
+        TestBed.configureTestingModule({
+            imports: [StatusToolbarComponent],
+            providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+        });
+        const fixture = TestBed.createComponent(StatusToolbarComponent);
+        fixture.componentRef.setInput('gitStatus', TestBed.inject(GitStatusService));
+        fixture.componentRef.setInput('currentEntry', TestBed.inject(CurrentEntryService));
+        fixture.componentRef.setInput('testRunCacheStatus', TestBed.inject(TestRunCacheStatusService));
+        fixture.componentRef.setInput('rgrPhase', TestBed.inject(RgrPhaseService));
+        fixture.detectChanges();
+        const http = TestBed.inject(HttpTestingController);
+        http.expectOne('http://localhost:3000/version').flush({ data: '0.0.1' });
+        const button = fixture.nativeElement.querySelector('[aria-label="Refresh active workflow"]') as HTMLButtonElement;
+        expect(button).not.toBeNull();
+        expect(button.textContent).toContain('Loading');
+        const initial = http.expectOne('http://localhost:3000/workflow-todo');
+        button.click();
+        expect(initial.cancelled).toBe(true);
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { activeWorkflow: 'InteractiveCanvas Prototype (provisional)' } });
+        fixture.detectChanges();
+        expect(button.textContent).toContain('InteractiveCanvas Prototype (provisional)');
+        button.click();
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { activeWorkflow: null } });
+        fixture.detectChanges();
+        expect(button.textContent).toContain('None active');
+        jest.advanceTimersByTime(30_000);
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ error: 'Unavailable' }, { status: 500, statusText: 'Unavailable' });
+        fixture.detectChanges();
+        expect(button.textContent).toContain('unavailable');
+        jest.advanceTimersByTime(30_000);
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { activeWorkflow: 'Recovered workflow' } });
+        fixture.detectChanges();
+        expect(button.textContent).toContain('Recovered workflow');
+        button.click();
+        const pending = http.expectOne('http://localhost:3000/workflow-todo');
+        fixture.destroy();
+        expect(pending.cancelled).toBe(true);
+        jest.advanceTimersByTime(30_000);
+        http.expectNone('http://localhost:3000/workflow-todo');
+        http.verify();
+    });
     it('shows a busy indicator while an HTTP request is pending', () => {
         TestBed.configureTestingModule({
             imports: [StatusToolbarComponent],
@@ -32,6 +79,8 @@ describe('StatusToolbarComponent', () => {
 
         const request = TestBed.inject(HttpTestingController).expectOne('http://localhost:3000/version');
         request.flush({ data: '0.0.1' });
+        TestBed.inject(HttpTestingController).expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { activeWorkflow: null } });
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('[aria-label="Client busy"]')).toBeNull();
@@ -52,6 +101,10 @@ describe('StatusToolbarComponent', () => {
 
         expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim()).toBe('');
         expect(fixture.nativeElement.textContent).not.toContain('Loading current');
+        TestBed.inject(HttpTestingController).expectOne('http://localhost:3000/version')
+            .flush({ error: 'Unavailable' }, { status: 500, statusText: 'Unavailable' });
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('.version-info').textContent).toContain('Server vunavailable');
     });
 
     it('shows "not set" next to the current task when no phase is recorded', () => {
@@ -114,4 +167,3 @@ describe('StatusToolbarComponent', () => {
         expect(phase.classList).toContain('rgr-phase-error');
     });
 });
-

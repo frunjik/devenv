@@ -19,6 +19,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-width: 0;
 }
 
 .rgr-phase {
@@ -60,6 +61,7 @@
     align-items: center;
     gap: 0.65rem;
     max-width: min(50vw, 48rem);
+    min-width: 0;
     padding: 0.2rem 0.65rem;
     border: 1px solid var(--border-default);
     border-radius: 0.35rem;
@@ -173,6 +175,7 @@
         grid-area: current;
         width: 100%;
         min-width: 0;
+        flex-wrap: wrap;
     }
 
     .current-entry {

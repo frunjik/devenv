@@ -10,6 +10,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 
 | Workflow | Primary work purpose | Status | Resume reference | Related concern |
 | --- | --- | --- | --- | --- |
+| Active workflow in status toolbar | Meta work | Completed | [Toolbar refresh implementation checkpoint](./active-workflow-toolbar-workflow.md#checkpoint) | Not assigned |
 | MetaExport | Meta work | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
 | Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Meta work | Completed | [Implementation and review checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
 | Full Glossary Export | Product work | Completed | [Implementation and verification checkpoint](./full-glossary-export-workflow.md#checkpoint) | Not assigned |

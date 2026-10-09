@@ -105,5 +105,19 @@
                 {{ currentEntry.summary || currentEntry.errorMessage }}
             </span>
         </button>
+        <button
+            type="button"
+            class="current-entry workflow-entry"
+            aria-label="Refresh active workflow"
+            [matTooltip]="workflowError || activeWorkflow || 'No active workflow selected'"
+            matTooltipPosition="above"
+            (click)="refreshWorkflow()"
+            aria-live="polite"
+        >
+            <span class="current-entry-label">Active workflow</span>
+            <span class="current-entry-summary">
+                {{ workflowLoading ? 'Loading…' : workflowError ? 'unavailable' : activeWorkflow || 'None active' }}
+            </span>
+        </button>
     </div>
 </mat-toolbar>

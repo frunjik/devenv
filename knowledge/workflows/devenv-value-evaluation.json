@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "active-workflow-status-toolbar",
+      "title": "Active workflow in status toolbar",
+      "beneficiary": "DevEnv developer following the current registered work",
+      "intendedOutcome": "See the saved active workflow throughout the application without opening the workflow list.",
+      "successCondition": "Toolbar loads the selected workflow immediately, refreshes every 30 seconds and on click, reports loading/error/no-selection, recovers after errors, and stops requests when destroyed; existing task and commit-message behavior remain unchanged.",
+      "baseline": "Toolbar Current task reads only the feature-store entry, not the active workflow.",
+      "startedAt": "2026-10-09T22:07:57+02:00",
+      "completedAt": "2026-10-09T22:12:59+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User agreed to the registered workflow display with immediate loading, 30-second polling and manual refresh; existing task source remains separate.", "evidence": "User discussion and active-workflow-toolbar-workflow.md." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 2 seconds wall-clock including pause, discussion, permission and visibility waits; active effort is unknown.", "evidence": "Recorded start and completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Six focused tests pass with 100% four-metric component coverage and passing client build. Changed-file test type errors resolved; unrelated existing test-source errors remain. Visible desktop/narrow layouts fit without canvas overlap after approved reservation adjustment. Manual refresh and automatic pickup of restored canvas selection verified without reloading. Existing task and commit-message source unchanged. Follow-up user outcome unknown.", "evidence": "active-workflow-toolbar-workflow.md verification and live refresh checkpoint; focused Jest coverage, client build and test-source check." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "interactive-canvas-viewport-stretch",
       "title": "Fill available canvas viewport space",
       "beneficiary": "DevEnv developer exploring the canvas editor",

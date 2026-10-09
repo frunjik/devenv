@@ -196,6 +196,16 @@ These principles are active from their recorded date and apply to future work in
 - **Verification and scope:** Verify executable shared additions in both contexts when claiming cross-runtime compatibility. Preserve existing consumers until a migration is explicitly scoped; this note does not authorize relocating exports, changing packaging, or introducing a shared logger.
 - **Authorized cleanup (user, 2026-10-09):** Removed unused shared Angular component/service scaffolding, their exports/tests, and Angular runtime peers. Retained the existing package build tooling. The Node public-API regression and native Node execution of the built package validate diagram-document execution without Angular; shared/client builds and both test type-checks pass. No runtime-specific consumer required relocation.
 
+### P-020 — Review Duplication After Green
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction to review duplication during TDD's Green stage and extract reusable functions where appropriate.
+- **Applies to:** Production-code TDD slices.
+- **Rule:** After the focused test is Green, inspect the changed code for duplicated behavior and consider whether it can be extracted at a cohesive functional boundary that can be reused. Extract when it clarifies a responsibility or gives meaningful reuse; do not abstract coincidental similarity, trivial expressions, or code without a clear caller.
+- **Concrete instance:** Diagram `moveDiagramElement`, `editDiagramElementLabel`, and `editDiagramNoteText` share required element lookup. The private `requireDiagramElementIndex` helper centralizes that rule and preserves Note-specific error wording.
+- **Sequence:** Keep Red focused on one behavior; implement only what makes that test pass; review duplication at Green; then validate the Refactor without behavior change, maintaining type safety and full in-scope coverage.
+- **Scope:** This is a review obligation, not a requirement to extract code whenever lines look alike, and it does not authorize unrelated refactoring.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

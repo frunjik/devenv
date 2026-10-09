@@ -66,6 +66,7 @@ Follow the maintained [system task principles](.agents/system-task-principles.md
 
 - For production code, use Red-Green-Refactor as defined in `.github/agents/test-driven-developer.agent.md`.
 - When doing TDD, explicitly mention the current state: Red, Green, or Refactor. See P-001.
+- After each TDD slice reaches Green, review changed code for duplication and extract a cohesive reusable function when it clarifies a responsibility or provides meaningful reuse; avoid abstraction for coincidental similarity. See P-020.
 - At the defined checkpoints, review the domain and implementation for missing or refinable Types using `.github/agents/type-detector.agent.md`; report justified Type convictions and unresolved candidates to the user.
 - Before completing a TypeScript coding task, run an appropriate TypeScript-aware type-check or build for the changed code and resolve type errors; report any check that could not run.
 - For in-scope production code, require 100% line, statement, branch, and function coverage using domain-derived tests through public interfaces; allow simple mocks only at boundaries. Do not change production code for testability except after proving code is unreachable and cannot otherwise be covered, as detailed in the principle register.

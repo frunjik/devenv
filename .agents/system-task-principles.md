@@ -194,6 +194,7 @@ These principles are active from their recorded date and apply to future work in
 - **Boundary:** Keep browser-only APIs, Node-only modules, Angular-specific integrations, and runtime-specific adapters in their respective projects. Shared logic may express runtime-neutral contracts; implementations at external boundaries remain context-specific.
 - **Concrete instance:** Diagram document Types and validation use standard JavaScript without browser or Node dependencies. The existing shared Angular component and service are migration debt under this rule, not evidence that the current package is fully runtime-neutral.
 - **Verification and scope:** Verify executable shared additions in both contexts when claiming cross-runtime compatibility. Preserve existing consumers until a migration is explicitly scoped; this note does not authorize relocating exports, changing packaging, or introducing a shared logger.
+- **Authorized cleanup (user, 2026-10-09):** Removed unused shared Angular component/service scaffolding, their exports/tests, and Angular runtime peers. Retained the existing package build tooling. The Node public-API regression and native Node execution of the built package validate diagram-document execution without Angular; shared/client builds and both test type-checks pass. No runtime-specific consumer required relocation.
 
 ## Applying the Register
 

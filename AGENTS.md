@@ -5,7 +5,7 @@
 This workspace contains an Angular client and libraries, plus an Express API:
 
 - `projects/client`: Angular application.
-- `projects/shared`: shared API contracts and Angular services, imported as `@shared`.
+- `projects/shared`: runtime-neutral API contracts and validation, imported as `@shared`.
 - `projects/server`: Express API and server tests.
 
 Keep changes scoped to the relevant project and follow the existing patterns in nearby files.
@@ -51,7 +51,7 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 - Light Problem Ticket cards define dark body and heading text locally rather than inheriting the global dark theme's light text. Ticket-list controls have a minimum 44px width and height; preserve wrapping and narrow-screen fit when adding controls.
 - Native text controls can opt into the global `.form-field` label/control layout and `.form-control` appearance. Keep feature spacing local; do not apply these classes indiscriminately to Material controls, radios, or specialized editor controls.
 - Prefer shared API contracts in `projects/shared` and import them from `@shared`.
-- `@shared` should contain only code valid in both the browser client and Node server, including its transitive dependencies. Keep runtime-specific integrations in their respective projects. Existing Angular-specific shared exports are migration debt, not precedent for new additions; do not relocate them without agreed scope. See P-019.
+- `@shared` should contain only code valid in both the browser client and Node server, including its transitive dependencies. Keep runtime-specific integrations in their respective projects. The unused Angular scaffold exports and runtime peers have been removed; Angular CLI/ng-packagr remains build tooling only. See P-019.
 - Use `type` for a named value or choice and `interface` for properties grouped into a record. Define structured union alternatives as named interfaces, then combine them with a `type` union instead of inline anonymous records. Derived types still use `type`; preserve discriminated-union constraints. This is a declaration convention, not runtime validation or a reason to rewrite existing code. See P-017 in the System Task Principles.
 - When changing API behavior, check both its server implementation and related client/shared callers and tests.
 - Prefer structured data storage in this order: Typed JSON (JSON with an explicit interface), then YAML, then Markdown. Unless otherwise specified, generate human-readable Markdown from the authoritative structured source, not the reverse; do not maintain two independent sources of truth. Interfaces do not replace runtime validation. Record justified exceptions and preserve existing sources unless migration is agreed. See P-015 in the System Task Principles.

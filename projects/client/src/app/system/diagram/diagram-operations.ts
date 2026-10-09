@@ -15,3 +15,18 @@ export function createDiagramElement(
         elements: [...document.elements, element],
     });
 }
+
+export function moveDiagramElement(
+    document: DiagramDocument,
+    elementId: string,
+    position: DiagramPoint,
+): DiagramDocument {
+    const elementIndex = document.elements.findIndex(element => element.id === elementId);
+    if (elementIndex < 0) {
+        throw new Error(`Invalid Diagram: element "${elementId}" does not exist`);
+    }
+    const elements = document.elements.map((element, index) => index === elementIndex
+        ? { ...element, position }
+        : element);
+    return validateDiagramDocument({ ...document, elements });
+}

@@ -18,7 +18,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | Portable Practices and Glossary | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
 | Knowledge Organization Migration | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
 | Principle Register Organization and Priority Review | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |
-| Minimal Typed Diagram Editor | Paused | [Element-creation checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
+| Minimal Typed Diagram Editor | Paused | [Move-operation checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
 
 Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 import { validateDiagramDocument, type DiagramDocument } from '@shared';
-import { createDiagramElement } from './diagram-operations';
+import { createDiagramElement, moveDiagramElement } from './diagram-operations';
 
 describe('Creating diagram elements', () => {
     it('creates a Rectangle at the supplied position without changing the original document', () => {
@@ -13,6 +13,7 @@ describe('Creating diagram elements', () => {
             ...document,
             elements: [{ id: 'rectangle-1', kind: 'rectangle', label: '', position }],
         });
+
         expect(document.elements).toEqual([]);
         expect(result).not.toBe(document);
         expect(result.elements[0].position).not.toBe(position);
@@ -69,5 +70,53 @@ describe('Creating diagram elements', () => {
         expect(() => createDiagramElement(existing, 'rectangle', 'new', position))
             .toThrow('Invalid Diagram');
         expect(JSON.stringify(existing)).toBe(before);
+    });
+});
+
+describe('Moving diagram elements', () => {
+    const document: DiagramDocument = {
+        schemaVersion: 1,
+        title: 'DevEnv overview',
+        elements: [
+            { id: 'r', kind: 'rectangle', label: 'Problem', position: { x: 10, y: 20 } },
+            { id: 'n', kind: 'note', label: 'Reminder', text: 'Explore', position: { x: 80, y: 30 } },
+        ],
+        connections: [{ id: 'c', sourceElementId: 'r', targetElementId: 'n', label: 'Inquiry' }],
+    };
+
+    it('moves the requested element while preserving the rest of the document and source', () => {
+        const before = JSON.stringify(document);
+        const result = moveDiagramElement(document, 'r', { x: 100, y: 200 });
+
+        expect(result).toEqual({
+            ...document,
+            elements: [
+                { ...document.elements[0], position: { x: 100, y: 200 } },
+                document.elements[1],
+            ],
+        });
+        expect(result.connections).toEqual(document.connections);
+        expect(result).not.toBe(document);
+        expect(result.elements[0]).not.toBe(document.elements[0]);
+        expect(result.elements[1]).not.toBe(document.elements[1]);
+        expect(JSON.stringify(document)).toBe(before);
+    });
+
+    it('rejects a missing element ID without changing the document', () => {
+        const before = JSON.stringify(document);
+
+        expect(() => moveDiagramElement(document, 'missing', { x: 1, y: 2 }))
+            .toThrow('Invalid Diagram');
+        expect(JSON.stringify(document)).toBe(before);
+    });
+
+    it.each([
+        { x: -1, y: 0 }, { x: 0, y: -1 }, { x: NaN, y: 0 },
+        { x: 0, y: Infinity }, { x: -Infinity, y: 0 },
+    ])('rejects invalid position %p without changing the document', position => {
+        const before = JSON.stringify(document);
+
+        expect(() => moveDiagramElement(document, 'r', position)).toThrow('Invalid Diagram');
+        expect(JSON.stringify(document)).toBe(before);
     });
 });

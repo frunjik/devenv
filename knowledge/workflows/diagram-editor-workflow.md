@@ -8,7 +8,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 ## Checkpoint
 
-**Status:** Document contract and pure element-creation slice implemented. The empty `/diagram` page and navigation exist. Remaining operations, canvas interactions, file workflow, and departure guard are not started.
+**Status:** Document contract and pure create/move operation slices implemented. The empty `/diagram` page and navigation exist. Remaining operations, canvas interactions, file workflow, and departure guard are not started.
 
 **Authority:** This document is the maintained plan. The session-local plan points here rather than maintaining a separate copy.
 
@@ -16,7 +16,9 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 **Open questions:** None blocking the agreed minimal scope. Future ports, viewport state, and diagram-library selection remain outside this plan.
 
-**Next step:** Continue document operations with a failing move-element test. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+**Next step:** Continue document operations with a failing label-edit test. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+
+**Move checkpoint (2026-10-09):** Added pure `moveDiagramElement(document, elementId, position)`. It replaces the requested element immutably, preserves all other elements and connections, rejects unknown IDs explicitly, and delegates coordinate/document invariants to `validateDiagramDocument`. No browser or filesystem behavior and no new Type. The 19 operation tests plus 96 contract tests pass with 100% statements, branches, functions, and lines for both modules; client production and test TypeScript checks pass. Tests have zero external side effects. UI movement is not wired yet. Changes are uncommitted.
 
 **Creation checkpoint (2026-10-09):** Added feature-local `createDiagramElement(document, kind, id, position)` as a pure operation. Caller-supplied IDs avoid hidden random/browser dependencies. New elements start with an empty label; Notes also start with empty text. Creation appends a fresh instance and reuses shared document validation, rejecting invalid coordinates or empty/duplicate IDs without altering the original. Existing elements, connections, and title are preserved without sharing mutable records. No UI creation is wired yet, and no new Type is needed beyond the agreed document, kind, and point contracts. Twelve creation tests plus 96 contract tests pass with 100% coverage on all four metrics for both modules; client production and test TypeScript checks pass. Tests use in-memory data only. Changes are uncommitted.
 

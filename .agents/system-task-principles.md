@@ -212,6 +212,22 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Responses that end a coding task, pause work, or request commit-message approval.
 - **Rule:** At each applicable stopping point, include a clearly labeled `Status:` line with either `Stable` or `Not stable`. Ground it in relevant test results, 100% statements/branches/functions/lines coverage for in-scope production code, and a passing type-check/build. Distinguish successful build/test execution from running the application in its actual UI/runtime; say when that has not been verified. If a criterion is unmet or pending, report `Not stable` and name the gap.
 
+### P-022 — Keep Unagreed Names Provisional
+
+- **Recorded:** 2026-10-09
+- **Source:** User agreement to use provisional names during implementation and review them before adoption.
+- **Applies to:** New Types, Terms, and other meaningful domain names whose final wording has not been agreed.
+- **Rule:** Use a clearly marked provisional name when implementation needs one before its meaning or wording is settled. Do not present it as an agreed or durable domain name. Before completing the work, compare it with existing names as required by P-012 and report whether it remains a candidate, should be refined, or is ready for the user's decision.
+- **Practice:** Explain the candidate's meaning and evidence using a concrete instance and a contrasting case where available. Keep an explicitly approved name distinct from its provisional supporting names. For example, `WorkEvaluation` is approved for a unit-of-work evaluation, while `EvaluationMetric` and `WorkEvaluationDataset` in the DevEnv value-evaluation JSON remain provisional pending review.
+
+### P-023 — Include the Global TODO and Metrics in Status Reports
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: "when showing the status, also show me a report of the global todo list with its status and metrics."
+- **Applies to:** Responses that present a `Status:` line.
+- **Rule:** Alongside the stability status, report every workflow in the global Workflow TODO List with its current registered status, and summarize the available value-evaluation metrics from their authoritative source.
+- **Practice:** Include status counts and metric coverage/missingness, and connect an evaluation to a workflow only when the source explicitly supports that link. Keep workflow lifecycle status separate from measured outcomes: completion, activity, tests, or coverage alone do not prove value. Preserve unknowns as unknown and identify the source and evaluation sample size.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

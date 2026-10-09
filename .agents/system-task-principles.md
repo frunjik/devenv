@@ -21,7 +21,7 @@ These principles are active from their recorded date and apply to future work in
 - **Source:** User instruction; `.agents/skills/type-detector/SKILL.md`
 - **Applies to:** Domain modeling, workflow design, and implementation that changes domain concepts or their representation.
 - **Rule:** Regularly inspect the model for concepts that need a Type and existing Types whose boundaries or structure should be refined. Report a justified conviction that a Type is needed to the user; distinguish confirmed Types from candidates and unresolved questions.
-- **Checkpoints:** After identifying the workflow concepts; after considering scope variation and important exceptions; and before completing the task.
+- **Sequence:** (1) Derive candidate meanings and constraints from evidence, using a concrete instance and contrasting example where possible. (2) Review candidate names under P-012 and keep unapproved names provisional under P-022. (3) Choose declarations by meaning under P-017, preserving runtime validation. (4) Check for disproportionate existing-Type complexity under P-027 and report candidates rather than refactoring without approval. Revisit the model after considering scope variation and important exceptions, then once before completion. Apply each check when relevant; do not repeat it without new evidence.
 - **Review prompts:** Are distinct lifecycle states, outcomes, evidence, decisions, scope levels, roles, or relationships being collapsed into strings or unstructured fields? Does a proposed Type have a distinct meaning, constraints, or lifecycle? Would separating it clarify the model, or merely add ceremony?
 - **Complexity signal:** When an existing Type appears to make a scoped behavior unnecessarily complex, report it as a refactoring candidate with concrete alternatives rather than silently working around it; see P-027.
 
@@ -96,7 +96,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Stable pauses under P-008 and feature-slice completion.
 - **Rule:** Briefly check for a concrete, reusable meta-level insight that is not already captured. Record a note only when such an insight exists; do not create a note or extend the task merely to satisfy this check.
 - **Practice:** Record the note in `knowledge/domain-models/problem-inquiry-system/concerns.md` under "Meta Notes", numbered `Meta-NNN` in the order added (introduced 2026-10-06, same 3-digit style as `SC-NNN`/`P-NNN`). Notes are observations and proposals, not decisions; raise consequential ones with the user.
-- **Meta-meta cadence (recorded 2026-10-06):** After roughly every 10 implemented feature slices (real code and tests; documentation-only or principle-only changes do not count), briefly evaluate whether the accumulated principles and conventions still serve the learning-sandbox purpose, then report the conclusion. Track the count in the session database and reset it after the evaluation. This is a periodic review, not an additional checkpoint for every task.
+- **Meta-meta cadence (recorded 2026-10-06):** After roughly every 10 implemented feature slices (real code and tests; documentation-only or principle-only changes do not count), briefly evaluate whether the accumulated principles and conventions still serve the learning-sandbox purpose, then report the conclusion. Treat the count as approximate; use available history or checkpoints and do not require a session-database counter that may not persist across sessions. This is a periodic review, not an additional checkpoint for every task.
 
 ### P-011 — Identify the Referenced Concern in Commit Messages
 
@@ -121,6 +121,7 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** When a candidate name surfaces — whether I consider it mid-reasoning (per P-002/P-009) or the user proposes it directly — do not silently accept it or only record it in the artifact. Check it against existing names in `.glossary`, the shared Types, and the principle register for consistency (style, collisions with an existing meaning), then either ask the user for their view (if I raised the candidate) or report my honest assessment (if they raised it) before it is adopted.
 - **Practice:** Keep this to genuine candidate Type/Term *names*, not every passing word already noted in the register. Use the `ask_user` tool when I raise a candidate; report findings plainly when the user raises one. Final agreement on any name still rests with the user; this is a check-and-surface step, not a veto.
 
+- **Adoption threshold (user, 2026-10-09):** Treat every new or candidate name/Term as provisional, including one proposed by the user, until the user explicitly states that it is adopted or approved. A proposal, example, or use of a name is not by itself approval. Existing names already explicitly established remain established.
 - **Definition and reference policy (user, 2026-10-07):** Glossary entries explain Terms; instructions for how we refer to them belong in working guidance, not their definitions. When referring to our current SubjectDomain, write `SubjectDomain (WMS)` to make the concrete subject explicit. This qualifies the reference, not the abstract Term's meaning.
 - **Concrete reference rule (user, 2026-10-07):** For concepts we introduce, including process names and Terms, accompany the abstract name with a named concrete instance from the actual system or meta practice, for example `SubjectDomain (WMS)` or `KnowledgeStatement (commit-attribution)`. This improves reader understanding without equating the concept with that instance. Use a genuine instance, not an invented mapping; if none is known, make that gap explicit. Keep abstract Glossary definitions separate from this reference policy.
 - **Example selection preference (user, 2026-10-07):** Prefer Term examples from SubjectDomain (WMS), DevEnv, or our meta practices. Choose a clear, genuine example; do not force a fit or invent domain facts. These are preferred example contexts, not a decision that each is a separate formal Domain.
@@ -130,16 +131,16 @@ These principles are active from their recorded date and apply to future work in
 
 - **Recorded:** 2026-10-06; retired 2026-10-06. Originally "Verify User-Suggested Names for Consistency and Sense" — the user pointed out, while asking for an honest evaluation of the pace of recent principle additions, that this was the same topic as P-012 split across two entries. Merged into P-012 rather than deleted, so the record of the change stays visible.
 
-### P-014 — Keep Tests Free of Filesystem Mutations
+### P-014 — Keep Tests Free of External I/O
 
 - **Recorded:** 2026-10-06
 - **Source:** User instruction; SC-053
 - **Applies to:** Test setup, cleanup, and application/subprocess behavior exercised by tests.
-- **Rule:** Do not write to or otherwise mutate the real filesystem from tests, including temporary fixtures. Reads are allowed. Use simple Boundary Mocks at filesystem or subprocess boundaries, retaining actual application/domain behavior under test.
-- **Exception (user, 2026-10-06):** The test runner may write coverage reports and caches.
+- **Rule:** Test scenarios and application/subprocess behavior invoked by tests must not perform external I/O or mutate the real filesystem. Read-only filesystem access is allowed. Use simple Boundary Mocks at external-I/O boundaries while retaining actual application/domain behavior under test.
+- **Infrastructure exception (user, 2026-10-06; reaffirmed 2026-10-09):** Runner-generated coverage reports and caches are allowed; see "Allowed exceptions."
 - **Migration:** Existing suites that perform mutations are tracked in SC-053. Migrate them in bounded slices without silently dropping persistence or Git behavior coverage.
-- **External-side-effect override (user, 2026-10-09):** Tests must have zero external side effects, including real filesystem mutations and real network activity. This covers setup, cleanup, and application/subprocess behavior invoked by tests; localhost servers, socket listeners, and loopback requests are not exempt. Use simple Boundary Mocks at external I/O boundaries while retaining actual application/domain behavior.
-- **Allowed boundaries:** Console logging is allowed. Test-runner coverage output remains explicitly allowed (reconfirmed by the user, 2026-10-09), and the existing runner-cache exception remains in force. These infrastructure exceptions do not authorize filesystem writes or network activity by test scenarios or invoked application code. Read-only filesystem access remains allowed; isolated test-local memory and DOM changes are not external side effects.
+- **External-I/O boundary (user, 2026-10-09):** Prohibited test I/O includes real network activity; localhost servers, socket listeners, and loopback requests are not exempt. This applies to setup, cleanup, and application/subprocess behavior invoked by tests.
+- **Allowed exceptions:** Console logging is allowed. Test-runner coverage output and caches are explicitly allowed infrastructure artifacts; these do not authorize filesystem writes or network activity by test scenarios or invoked application code. Isolated test-local memory and DOM changes are not external I/O.
 - **Concrete example:** The DevEnv backend service, file browser, and file editor client tests now use `HttpTestingController` instead of starting Express and accessing real fixture files. Existing server tests using Supertest or TCP listeners still require migration under this broader rule; passing coverage does not establish side-effect compliance.
 - **Logging candidate:** The existing client `LoggerService` provides a console-error boundary that tests can capture with a simple Boundary Mock. A dedicated test logger is suggested, not adopted; do not add another abstraction or treat the client Angular service as an agreed server logger.
 
@@ -160,7 +161,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Requested work, user proposals/actions encountered during that work, and the assistant's own approach.
 - **Rule:** Use confirmed, applicable good practices rather than unverified assumptions. Check existing project processes first and consult maintained guidance, official documentation, or credible evidence where needed. Do not claim a preference or plausible recommendation is a confirmed standard.
 - **Reporting:** When an approach conflicts with good practice or differs from an existing process, provide a concise report in the conversation: observation, applicable process or practice with evidence, likely impact, and recommended alternative. Distinguish a harmful practice from a legitimate variation; make uncertainty explicit. A separate persisted report is not required unless requested or needed by the existing workflow.
-- **Decision boundary:** Raise consequential conflicts before implementing them and seek a decision where needed. Do not silently override project policy, automatically adopt an external recommendation, or expand the task into unrelated cleanup. An intentional deviation may be valid; record its agreed rationale in the appropriate existing checkpoint.
+- **Decision boundary:** Raise consequential conflicts before implementing them and seek a decision where needed. Do not silently override project policy, automatically adopt an external recommendation, or expand the task into unrelated cleanup. P-029 permits narrow, reversible, low-impact process improvements when concrete evidence supports them; consequential, hard-to-reverse, or materially uncertain changes still require a decision. Record intentional deviations in the appropriate existing checkpoint.
 - **Actual instance:** DevEnv skills were initially stored in root `skills`, which is not a standard Copilot discovery location. The corrected project location is `.agents/skills`; file placement follows documented discovery conventions, while discovery on a receiving client still requires verification.
 - **Optional method prompt (user, 2026-10-08):** When a decision compares competing optional work candidates, assess whether RICE is appropriate and ask whether to apply it before scoring. Use the [RICE prioritization guidance](../reviews/rice-prioritization.md): comparable contexts, explicit estimates and evidence, and separate decision rationale. Missing evidence is a reason to gather estimates or recommend a simpler comparison, not invent scores. Do not ask routinely for single already-selected tasks, use RICE to rank binding rules, or let it override dependencies and mandatory constraints.
 - **Prioritization example:** The pending Principle Register Organization and Priority Review and Term Editing workflows are actual optional work candidates. RICE could inform their execution order only if a common goal/context and defensible estimates can be established; it would not establish precedence among the P-NNN rules themselves.
@@ -217,9 +218,9 @@ These principles are active from their recorded date and apply to future work in
 ### P-022 — Keep Unagreed Names Provisional
 
 - **Recorded:** 2026-10-09
-- **Source:** User agreement to use provisional names during implementation and review them before adoption.
-- **Applies to:** New Types, Terms, and other meaningful domain names whose final wording has not been agreed.
-- **Rule:** A provisional name may be used when implementation needs a name before it is agreed. Mark it as provisional and do not present it as an adopted domain name. Apply P-012 before adopting it.
+- **Source:** User instruction to treat all names and Terms as provisional until explicitly stated.
+- **Applies to:** New or candidate names for Types, Terms, mappings, and other meaningful concepts, in discussion and artifacts.
+- **Rule:** Treat every new or candidate name as provisional until the user explicitly states that it is adopted or approved, whether the candidate came from the user or the assistant. A proposal, example, or use of a name is not by itself approval. If an interim name is needed, mark it as provisional and do not present it as established; apply P-012 before adoption. Existing names already explicitly established remain established.
 - **Practice:** Keep an explicitly approved name distinct from provisional supporting names. For example, `WorkEvaluation` is approved for a unit-of-work evaluation; `EvaluationMetric` and `WorkEvaluationDataset` in the DevEnv value-evaluation JSON remain provisional.
 
 ### P-023 — Include the Global TODO and Metrics in Status Reports
@@ -270,15 +271,16 @@ These principles are active from their recorded date and apply to future work in
 - **Source:** User instruction: "dont go overboard adding every feature and option available a simple start is good for now"
 - **Applies to:** Scope selection for design and implementation.
 - **Rule:** Prefer the smallest useful slice that fulfills the agreed outcome over implementing every available model, provider, or option. Defer optional expansion unless the user agrees, while keeping the required behavior accurate and explicit.
-- **Practice:** State the initial slice and leave optional capabilities as future work rather than silently expanding scope. For example, the Copilot AI Credit Estimator begins with one normalized JSON paste-and-estimate flow; adding configurable modes or persistence is not required for that slice.
+- **Practice:** State the initial slice and leave optional capabilities as future work rather than silently expanding scope. A task-specific instruction remains scoped to that task unless the user says it is general or concrete evidence supports generalizing it under P-029; report any generalization. For example, the Copilot AI Credit Estimator began with one normalized JSON paste-and-estimate flow; that instance alone would not establish a universal scope policy.
 
 ### P-029 — Apply and Report Evidence-Based Process Improvements
 
 - **Recorded:** 2026-10-09
 - **Source:** User instruction: "if you think the changes are beneficiary and have evidence, you can make the change without asking, but always report it"
 - **Applies to:** Proposed improvements to project principles, processes, and related working guidance.
-- **Rule:** When concrete evidence supports that a change to a principle or process would benefit the work, make the improvement without asking for prior approval. Always report the change, its evidence, and its expected impact.
-- **Practice:** Distinguish evidence from judgment and state material uncertainty or tradeoffs. Keep the change scoped to the demonstrated improvement; do not silently generalize it into unrelated policy.
+- **Rule:** Make a process improvement without prior approval only when concrete evidence supports its benefit and the change is narrow, reversible, and low-impact. Always report the change, its evidence, and its expected impact.
+- **Decision boundary:** Ask before making consequential, hard-to-reverse, or materially uncertain process changes, consistent with P-016.
+- **Practice:** Evidence may include an observed recurring friction or a verified practice applicable to this project; plausibility alone is insufficient. Distinguish evidence from judgment, state material uncertainty or tradeoffs, and keep the change scoped to the demonstrated improvement. A task-specific user instruction is not automatically a standing rule; generalize it only when the user says it is general or concrete evidence justifies the broader benefit, and report that generalization.
 
 ## Applying the Register
 

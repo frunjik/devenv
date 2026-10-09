@@ -6,6 +6,7 @@
     --layout-columns: 12;
     --layout-space-small: .5rem;
     --layout-space-section: 1.5rem;
+    --layout-shell-inset: calc(.5rem + 2px);
     --surface-card: #1e2821;
     --border-default: #37443b;
     --border-accent: #596b5d;
@@ -21,7 +22,7 @@
 }
 
 @media (max-width: 42rem) {
-    :root { --layout-columns: 1; }
+    :root { --layout-columns: 1; --layout-shell-inset: calc(.25rem + 1px); }
 }
 
 html,

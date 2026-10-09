@@ -1,16 +1,18 @@
 mat-toolbar.mat-toolbar-single-row {
     height: auto;
     min-height: 40px;
-    padding: 0.1rem 1rem;
+    padding: 0.1rem calc(var(--layout-margin) + var(--layout-shell-inset));
+    gap: var(--layout-gutter);
     font-size: 0.8rem;
     white-space: nowrap;
 }
 
 .toolbar-title {
     display: flex;
-    flex: 0 0 auto;
+    flex: 0 0 calc((100% - 2 * var(--layout-gutter)) / 3);
     align-items: center;
-    margin-right: 0.75rem;
+    margin-right: 0;
+    min-width: 0;
 }
 
 .meta-badge {
@@ -26,7 +28,9 @@ mat-toolbar.mat-toolbar-single-row {
 }
 
 .toolbar-brand {
-    flex: 0 0 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    white-space: normal;
 }
 
 nav {
@@ -61,12 +65,14 @@ nav {
     mat-toolbar.mat-toolbar-single-row {
         align-items: flex-start;
         flex-direction: column;
-        padding: 0.25rem 0.75rem;
+        padding: .25rem calc(var(--layout-margin) + var(--layout-shell-inset));
+        gap: var(--layout-space-small);
         white-space: normal;
     }
 
     .toolbar-title {
         margin-right: 0;
+        flex-basis: auto;
     }
 
     nav {

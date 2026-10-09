@@ -46,7 +46,8 @@
         "workflow-todo-value-metrics-view",
         "workflow-todo-compact-navigation",
         "workflow-todo-summed-elapsed",
-        "workflow-todo-group-totals"
+        "workflow-todo-group-totals",
+        "toolbar-global-grid-alignment"
       ],
       "primaryWorkPurpose": "Meta work",
       "status": "Completed",

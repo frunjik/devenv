@@ -17,6 +17,14 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Toolbar global-grid alignment
+
+- Same-task follow-up: user approved transparent active-workflow refresh control and requested review of further improvements. Remove resting background/visible border, retain border geometry, subtle hover surface and existing focus outline. Action and dimensions unchanged; no new tracking/metrics opt-in required. Additional recommendations remain review-only.
+- Verified transparent resting surface/border, 8% hover surface after transition and 2px keyboard focus outline on running page; final client build/diagnostics/diff check pass. Desktop/narrow screenshots suggest further review-only candidates: mobile workflow-name truncation, secondary navigation dominating the wide toolbar, and Refresh sitting beside the name rather than at the allocated region's right edge. Existing alignment, palette and native controls retained; no new Type warranted.
+- Tracking and WorkEvaluation separately opted in. Align outer toolbar content to the framed page boundary with a shared shell-inset token. Top brand occupies four guides; navigation starts at column 5. Bottom current-workflow group occupies the final eight guides. Preserve existing actions, fixed footer reservation and mobile wrapping. Style-only: no TDD phase or new Types required.
+- Baseline recorded in toolbar-global-grid-alignment; outcome and effort initially unknown. Next: measured wide/narrow alignment, relevant toolbar tests and client build.
+- Completion: 12 navigation/status tests and final client build pass. Browser confirms exact page/top/bottom edges at 1280/768/320, wide column-5 starts within .04px and no narrow document overflow. At medium width controls pushed beyond their guide; user approved stacked footer below 60rem and matching shell 132px clearance. Measured stacked height 97.78px fits reserved space. Shared shell inset matches existing frame, no runtime/Type changes. Evaluation completed; latency/effort/overhead remain unknown. Uncommitted.
+
 ### Workflow TODO grid alignment
 
 - User requested better use of global grid guides in Workflow TODO. Semantic table columns now span 4/2/2/4 guides, with shared gutters reserved on each non-final cell. Subtotal text aligns to columns 1/5/9; separators sit in gutters instead of indenting labels. Active-workflow heading shares the page edge, and active-row accent sits below the name without shifting content. Section spacing reuses the shared token.

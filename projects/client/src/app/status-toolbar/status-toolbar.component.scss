@@ -10,7 +10,8 @@
     left: 0;
     height: 44px;
     min-height: 44px;
-    padding-inline: 1rem;
+    padding-inline: calc(var(--layout-margin) + var(--layout-shell-inset));
+    box-sizing: border-box;
     border-top: 1px solid var(--border-default);
     font-size: 0.75rem;
 }
@@ -20,6 +21,7 @@
     align-items: center;
     gap: 0.5rem;
     min-width: 0;
+    flex: 0 0 calc((100% + var(--layout-gutter)) * 2 / 3 - var(--layout-gutter));
 }
 
 .rgr-phase {
@@ -63,12 +65,13 @@
     display: flex;
     align-items: center;
     gap: 0.65rem;
-    max-width: min(50vw, 48rem);
+    max-width: none;
+    flex: 1 1 auto;
     min-width: 0;
     padding: 0.2rem 0.65rem;
-    border: 1px solid var(--border-default);
+    border: 1px solid transparent;
     border-radius: 0.35rem;
-    background: #26332b;
+    background: transparent;
     color: var(--text-heading);
     font-family: inherit;
     font-size: 0.75rem;
@@ -81,8 +84,7 @@
     transition: background-color 120ms ease, border-color 120ms ease;
 
     &:hover {
-        background: #2d3b33;
-        border-color: var(--border-accent);
+        background: rgba(174, 187, 176, 0.08);
     }
 
     &:focus-visible {
@@ -157,7 +159,7 @@
     white-space: nowrap;
 }
 
-@media (max-width: 42rem) {
+@media (max-width: 60rem) {
     .bottom-toolbar {
         display: grid;
         grid-template-columns: auto auto auto minmax(0, 1fr);
@@ -168,7 +170,7 @@
         height: auto;
         min-height: 76px;
         align-content: center;
-        padding: 0.4rem 0.5rem;
+        padding: .4rem calc(var(--layout-margin) + var(--layout-shell-inset));
     }
 
     .git-status-indicator { grid-area: git; }

@@ -48,11 +48,13 @@
     border-radius: 0.35rem;
 }
 
-@media (max-width: 42rem) {
+@media (max-width: 60rem) {
     :host {
         padding-bottom: 132px;
     }
+}
 
+@media (max-width: 42rem) {
     .inner-app.framed {
         margin: 0.25rem;
         border-width: 1px;

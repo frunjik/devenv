@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "toolbar-global-grid-alignment",
+      "title": "Align meta and status toolbars with global grid",
+      "beneficiary": "DevEnv contributors navigating the workspace",
+      "intendedOutcome": "Align toolbar content with workflow-page margins and column guides.",
+      "successCondition": "Top and bottom content edges match framed page content; top navigation and bottom current-workflow region start on column 5 on wide screens. Narrow controls wrap without page overflow; existing actions remain unchanged.",
+      "baseline": "Toolbars have independent fixed padding and content-fit positioning unrelated to shared page guides.",
+      "startedAt": "2026-10-10T01:13:20+02:00",
+      "completedAt": "2026-10-10T01:14:51+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Scoped toolbar alignment with preserved actions and narrow reflow.", "evidence": "todo-view-workflow.md toolbar grid slice." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 31 seconds wall-clock including validation and approval; active effort unknown.", "evidence": "Recorded start and completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "12 toolbar tests and client build pass. Browser measurements confirm top/bottom/page edges agree at 1280, 768 and 320px; wide navigation/current-workflow groups start on column 5. Footer stacks below 60rem with approved matching shell clearance. No page overflow at 320px; user usefulness and follow-up defects unobserved.", "evidence": "todo-view-workflow.md toolbar grid slice and running-page measurements." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "workflow-todo-group-totals",
       "title": "Show product/meta evaluated subtotals and grand total",
       "beneficiary": "DevEnv contributors reviewing evaluated work",

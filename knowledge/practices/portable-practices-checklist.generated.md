@@ -61,7 +61,7 @@ npx.cmd tsc --noEmit --strict --skipLibCheck --resolveJsonModule --esModuleInter
 
 **Sources:**
 - [system-task-principles.md](../../.agents/system-task-principles.md)
-- [type-detector.agent.md](../../.github/agents/type-detector.agent.md)
+- [SKILL.md](../../.agents/skills/type-detector/SKILL.md)
 - [demolition-worker.agent.md](../../.github/agents/demolition-worker.agent.md)
 - [SKILL.md](../../.agents/skills/domain-type-design/SKILL.md)
 - [.glossary.json](../../.glossary.json)

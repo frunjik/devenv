@@ -18,7 +18,8 @@ Generate a derived Markdown view of the experimental MetaExport JSON with `npm r
 
 Custom agents live in [`.github/agents`](./.github/agents), the standard project-level
 Copilot agent discovery location. Their YAML metadata declares names, descriptions,
-and tool permissions; Type Detector is read-only. Folder exports include this specific
+and tool permissions. The Diligent Coder coordinates implementation using the
+repository's TDD and Type Detector skills. Folder exports include this specific
 directory, not unrelated GitHub configuration. Copy complete agent files to the same
 location in another project and verify them in the receiving client's agent picker.
 

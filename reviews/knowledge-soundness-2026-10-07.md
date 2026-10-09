@@ -77,7 +77,7 @@ The index warns about historical material, but [DEVENVOPDEV.md](../DEVENVOPDEV.m
 **Importance:** Medium-High
 **Disposition:** Proposed; not agreed or addressed.
 
-The [Type reviewer guidance](../.github/agents/type-detector.agent.md) treats a concept that "smells like" a Type as grounds for conviction, weaker than P-002's justification through meaning, constraints, or lifecycle.
+At the time of this review, the Type Detector guidance treated a concept that "smells like" a Type as grounds for conviction, weaker than P-002's justification through meaning, constraints, or lifecycle. That former agent guidance has since been replaced by the evidence-first [Type Detector skill](../.agents/skills/type-detector/SKILL.md).
 
 The [demolition worker guidance](../.github/agents/demolition-worker.agent.md) treats absent references or a closed reference loop as grounds for removal. Static references alone do not establish non-use: external consumers, configuration, registration, and runtime entry points matter.
 

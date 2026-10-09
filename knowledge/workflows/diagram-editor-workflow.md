@@ -8,7 +8,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 ## Checkpoint
 
-**Status:** Implementation started. An empty `/diagram` page (route, page component, and secondary "Diagram" toolbar link) exists with tests. The document contract, operations, canvas, file workflow, and departure guard are not started.
+**Status:** Document-contract slice implemented. The empty `/diagram` page and navigation exist; shared document Types and runtime validation now exist. Operations, canvas interactions, file workflow, and departure guard are not started.
 
 **Authority:** This document is the maintained plan. The session-local plan points here rather than maintaining a separate copy.
 
@@ -16,7 +16,11 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 **Open questions:** None blocking the agreed minimal scope. Future ports, viewport state, and diagram-library selection remain outside this plan.
 
-**Next step:** Begin the document-contract todo (shared Types and validation) with a failing test.
+**Next step:** Begin document operations with a failing creation test. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+
+**Refactor follow-up (2026-10-09):** Split document validation into document orchestration, single-element validation, and connection collection validation. Helpers stay private; collection-wide ID and pair checks retain their context and validation order. No new domain Type or public API is introduced. Short cohesive functions at functional boundaries are now recorded as P-018.
+
+**Contract checkpoint (2026-10-09):** User approved `DiagramRectangleElement`, `DiagramEllipseElement`, and `DiagramNoteElement` as separate record interfaces, combined by `DiagramElement`; derive `DiagramElementKind` from that union. Added runtime-neutral shared validation following the existing throw-on-invalid-input convention. Empty and populated JSON round-trips, exact fields, kinds, coordinates, IDs, endpoint references, self-connections, and undirected duplicates are covered through the public `@shared` API. All 96 focused tests pass with 100% statements, branches, functions, and lines; shared build and client test type-check pass. Tests use in-memory data only. This verifies the document contract, not browser file import/export or UI interactions. No new Glossary meaning or additional Type candidate is adopted.
 
 ## Confirmed decisions
 
@@ -51,20 +55,29 @@ interface DiagramPoint {
     y: number;
 }
 
-type DiagramElement =
-    | {
-        id: string;
-        kind: 'rectangle' | 'ellipse';
-        label: string;
-        position: DiagramPoint;
-    }
-    | {
-        id: string;
-        kind: 'note';
-        label: string;
-        text: string;
-        position: DiagramPoint;
-    };
+interface DiagramRectangleElement {
+    id: string;
+    kind: 'rectangle';
+    label: string;
+    position: DiagramPoint;
+}
+
+interface DiagramEllipseElement {
+    id: string;
+    kind: 'ellipse';
+    label: string;
+    position: DiagramPoint;
+}
+
+interface DiagramNoteElement {
+    id: string;
+    kind: 'note';
+    label: string;
+    text: string;
+    position: DiagramPoint;
+}
+
+type DiagramElement = DiagramRectangleElement | DiagramEllipseElement | DiagramNoteElement;
 
 type DiagramElementKind = DiagramElement['kind'];
 
@@ -109,7 +122,7 @@ type DiagramInteraction =
 - Exported content does not include selection, hover, drag previews, connection previews, dirty state, or calculated SVG geometry.
 - Types document structure; validation and public operations enforce cross-reference and numeric invariants.
 
-No actual DiagramDocument or DiagramElement instance exists in this system yet. A future demonstration may label items with existing DevEnv concepts, such as Problem and Inquiry, but that would be a drawing example, not a new formal domain relationship. Contrast: a Note is annotation text, not a ProblemTicket or a GlossaryEntry.
+The contract tests now contain a DiagramDocument instance titled "DevEnv overview", with Rectangle "Problem", Ellipse "Inquiry", and a Note explaining that the drawn connection is not a formal relationship. This is a drawing example, not a new formal domain relationship. No UI-created document exists yet. Contrast: a Note is annotation text, not a ProblemTicket or a GlossaryEntry.
 
 ### Type review conclusions
 

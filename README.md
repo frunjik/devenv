@@ -67,6 +67,11 @@ The System Plan supports case-insensitive search by concern ID, title, or displa
 
 The meta toolbar's **Workflow TODO** link opens `/workflow-todo`, a read-only workflow table. `GET /workflow-todo` derives its JSON from the authoritative `knowledge/workflows/workflow-todo-list.md` on each request; no duplicate JSON list is maintained. Resume buttons show the complete workflow Markdown document and its checkpoint reference, without editing, changing workflow selection, or jumping to a heading. The existing **TODO** file-browser link remains separate. List and document loading failures are shown explicitly.
 
+The secondary navigation's **Diagram** link opens `/diagram`, currently an empty workspace.
+The shared document contract supports Rectangle, Ellipse, Note, and undirected connections,
+with explicit runtime validation of versioned JSON. Creating items and browser import/export
+are not implemented yet; see the [diagram editor checkpoint](knowledge/workflows/diagram-editor-workflow.md#checkpoint).
+
 The meta toolbar's **Clone DevEnv** action opens a folder-export dialog (under **More** on mobile).
 Enter an absolute folder path on the API server's machine; its parent must already exist.
 The dialog requires acknowledgement that existing destination contents will be replaced.

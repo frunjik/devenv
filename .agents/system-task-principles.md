@@ -13,6 +13,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Production-code changes.
 - **Rule:** Follow the TDD sequence: write and run the smallest focused test that fails; write only enough production code to pass it; once green, refactor without changing behavior and keep tests green.
 - **Practice:** Do not write production code before a failing test. Treat compile failures as red. For non-code design work, make no claim of TDD execution.
+- **Phase reporting (user, 2026-10-09):** When doing TDD, explicitly mention the current state: Red, Green, or Refactor. For example, report Red before running a new failing diagram-document validation test, and Green when implementing its behavior.
 
 ### P-002 — Review for Missing or Refinable Types
 
@@ -174,6 +175,25 @@ These principles are active from their recorded date and apply to future work in
 - **Limits:** A string alias does not create a nominally distinct ID or validate input. Neither declaration form replaces runtime validation. Interfaces support declaration merging; choosing one here does not authorize or require merging.
 - **Scope:** Apply the convention going forward and within agreed changes; do not refactor existing declarations solely for consistency.
 - **Evidence:** The [TypeScript handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#differences-between-type-aliases-and-interfaces) explains that object-shaped aliases and interfaces overlap and often permit a preference. This rule is the project's readability convention, not a universal TypeScript requirement.
+
+### P-018 — Split Functions at Functional Boundaries
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction to keep functions short and split them at functional boundaries.
+- **Applies to:** New code and explicitly requested refactoring.
+- **Rule:** Prefer short, cohesive functions. Extract distinct responsibilities that make sense on their own; do not impose an arbitrary line limit or add trivial forwarding helpers merely to shorten a function.
+- **Concrete instance:** Diagram document validation orchestrates document-level checks, element validation, and connection collection validation. Connection collection validation owns duplicate IDs and undirected pairs; element validation owns kind-specific records and position checks.
+- **Verification:** Refactor from a green baseline, preserving observable behavior, validation order, explicit errors, type safety, and full in-scope coverage through the public interface.
+- **Scope:** This preference does not authorize unrelated refactors or new domain Types.
+
+### P-019 — Keep Shared Code Valid in Both Runtime Contexts
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction that `@shared` should contain only code valid for both client and server.
+- **Rule:** Shared contracts and executable code must be valid in both the browser client and Node server. Apply this requirement to transitive dependencies and the public export/package surface, not merely a function's implementation.
+- **Boundary:** Keep browser-only APIs, Node-only modules, Angular-specific integrations, and runtime-specific adapters in their respective projects. Shared logic may express runtime-neutral contracts; implementations at external boundaries remain context-specific.
+- **Concrete instance:** Diagram document Types and validation use standard JavaScript without browser or Node dependencies. The existing shared Angular component and service are migration debt under this rule, not evidence that the current package is fully runtime-neutral.
+- **Verification and scope:** Verify executable shared additions in both contexts when claiming cross-runtime compatibility. Preserve existing consumers until a migration is explicitly scoped; this note does not authorize relocating exports, changing packaging, or introducing a shared logger.
 
 ## Applying the Register
 

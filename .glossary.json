@@ -1,5 +1,20 @@
 [
   {
+    "term": "Runtime Environment",
+    "definitions": [
+      "The environment in which code executes, including the runtime and available APIs or capabilities. It is distinct from the code's client or server role and from JavaScript's execution context for function execution and scope."
+    ],
+    "examples": [
+      "Runtime Environment (DevEnv browser client): Angular application code runs in a browser with browser APIs.",
+      "Runtime Environment (DevEnv Node.js server): Express application code runs in Node.js with Node APIs.",
+      "DevEnv client tests run in Node.js with a simulated browser environment; being client code does not itself establish a browser runtime.",
+      "DevEnv diagram validation is runtime-neutral code: its implementation uses standard JavaScript compatible with both browser and Node.js environments. Public exports and transitive dependencies must also be compatible before claiming the shared package is runtime-neutral."
+    ],
+    "domains": [
+      "DevEnv"
+    ]
+  },
+  {
     "term": "Term",
     "definitions": [
       "A word or phrase with a specific, agreed meaning within a Domain or System."

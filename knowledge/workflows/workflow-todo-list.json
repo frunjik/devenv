@@ -168,6 +168,17 @@
       "resumeLabel": "Implementation and verification complete",
       "resumePath": "./ai-credit-estimator-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "InteractiveCanvas Prototype (provisional)",
+      "evaluationIds": [
+        "interactive-canvas-clock-prototype"
+      ],
+      "primaryWorkPurpose": "Product work",
+      "status": "Completed",
+      "resumeLabel": "Canvas clock prototype verification",
+      "resumePath": "./interactive-canvas-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
     }
   ],
   "registrationNote": "Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.",

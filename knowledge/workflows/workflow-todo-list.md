@@ -27,6 +27,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | Workflow Evaluation Associations | Meta work | Completed | [Association model and verification checkpoint](./workflow-evaluation-associations.md#checkpoint) | Not assigned |
 | Test Boundary Mocks | Meta work | Pending | [Starting checkpoint](./test-boundary-mocks.md#checkpoint) | Not assigned |
 | Copilot AI Credit Estimator | Meta work | Completed | [Implementation and verification complete](./ai-credit-estimator-workflow.md#checkpoint) | Not assigned |
+| InteractiveCanvas Prototype (provisional) | Product work | Completed | [Canvas clock prototype verification](./interactive-canvas-workflow.md#checkpoint) | Not assigned |
 
 **Registration:** Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

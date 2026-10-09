@@ -365,6 +365,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "interactive-canvas-clock-prototype",
+      "title": "InteractiveCanvas clock prototype (provisional)",
+      "beneficiary": "DevEnv developer evaluating a canvas-based editor foundation",
+      "intendedOutcome": "Try an HTML Canvas-based foundation as an alternative direction for the Diagram Editor, without replacing the current editor.",
+      "successCondition": "An isolated client route displays an HTML canvas that visibly renders the current time and updates on a one-second cadence, while the existing /diagram route remains unchanged.",
+      "baseline": "The existing /diagram page renders editor items as HTML with SVG connections and does not include an HTML canvas clock prototype.",
+      "startedAt": "2026-10-09T21:15:41+02:00",
+      "completedAt": "2026-10-09T21:20:53+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Beneficiary, alternative direction, isolation from the existing Diagram page, and observable canvas-clock acceptance condition were recorded before the first implementation test.",
+          "evidence": "User request and this WorkEvaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "5 minutes 12 seconds wall-clock from the recorded request through browser verification; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T21:15:41+02:00 and completion at 2026-10-09T21:20:53+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "The isolated canvas route visibly renders local time and updates it each second; the existing /diagram route remains available. Focused tests pass with 100% coverage for both changed TypeScript modules, the client build passes, and browser pixel verification showed the canvas changed after a one-second wait. Follow-up usability and rework are unknown.",
+          "evidence": "InteractiveCanvasComponent and app routes Jest suites (10 tests); focused statement/branch/function/line coverage; Angular client build; browser verification on /interactive-canvas and /diagram. The browser pixel-readback check itself emitted a Canvas2D readback performance warning."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,11 @@
+.interactive-canvas-page {
+    padding: 1.5rem;
+}
+
+canvas {
+    display: block;
+    width: min(100%, 640px);
+    height: auto;
+    border: 1px solid #777;
+    background: #fff;
+}

@@ -1,6 +1,7 @@
 <main class="interactive-canvas-page">
     <h1>Canvas Diagram Editor</h1>
     <div class="canvas-controls">
+        <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load DevEnv overview</button>
         <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
             (click)="addPart()">Add part</button>
         <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
@@ -15,18 +16,30 @@
         </label>
     </div>
     <p class="connection-status" role="status">{{ connectionMessage }}</p>
-    <canvas
-        #canvas
-        width="640"
-        height="360"
-        (pointermove)="movePointer($event)"
-        (pointerdown)="selectPart($event)"
-        (pointerup)="endDrag($event)"
-        (pointercancel)="endDrag($event)"
-        (lostpointercapture)="endDrag($event)"
-        aria-label="Sketch workspace and current time rendered on an HTML canvas">
-        Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them. Current time is also shown.
-    </canvas>
+    @if (replacementPending) {
+        <div class="canvas-controls" role="group" aria-label="Replace current sketch">
+            <span>Replace the current sketch? Unsaved boxes and connections will be lost.</span>
+            <button type="button" aria-label="Confirm replacement" (click)="confirmOverview()">Confirm replacement</button>
+            <button type="button" aria-label="Cancel replacement" (click)="cancelOverview()">Cancel</button>
+        </div>
+    }
+    @if (overviewLoaded) {
+        <p>Explanatory sketch of DevEnv's purpose, not a formal architecture. Boxes and undirected links are editable.</p>
+    }
+    <div class="canvas-viewport" [class.overview-workspace]="overviewLoaded">
+        <canvas
+            #canvas
+            width="640"
+            height="360"
+            (pointermove)="movePointer($event)"
+            (pointerdown)="selectPart($event)"
+            (pointerup)="endDrag($event)"
+            (pointercancel)="endDrag($event)"
+            (lostpointercapture)="endDrag($event)"
+            aria-label="Sketch workspace and current time rendered on an HTML canvas">
+            Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them. Current time is also shown.
+        </canvas>
+    </div>
     <section class="connection-list" aria-label="Connections">
         @for (connection of connections; track connection.id) {
             <div class="connection-row">

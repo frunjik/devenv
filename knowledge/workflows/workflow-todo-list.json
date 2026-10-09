@@ -192,7 +192,8 @@
         "canvas-editor-surface-separation",
         "canvas-diagram-multiple-parts",
         "canvas-diagram-connections",
-        "canvas-shared-label-input"
+        "canvas-shared-label-input",
+        "canvas-devenv-overview"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

@@ -26,6 +26,7 @@ class MockCanvas implements ICanvas {
     destroyed = false;
     requests = 0;
     draws: [string, number, number][] = [];
+    textWidths: (number | undefined)[] = [];
     boxes: number[][] = [];
     borders: number[] = [];
     paths: number[][][] = [];
@@ -36,7 +37,10 @@ class MockCanvas implements ICanvas {
     private render: Parameters<ICanvas['initialize']>[1] | undefined;
     private pending = false;
     private readonly context = {
-        fillText: (text: string, x: number, y: number) => { this.draws.push([text, x, y]); },
+        fillText: (text: string, x: number, y: number, maxWidth?: number) => {
+            this.draws.push([text, x, y]);
+            this.textWidths.push(maxWidth);
+        },
         strokeRect: (x: number, y: number, width: number, height: number) => {
             this.operations.push('box');
             this.boxes.push([x, y, width, height]);
@@ -92,6 +96,94 @@ describe('CanvasDiagramEditor', () => {
 
     afterEach(() => {
         TestBed.resetTestingModule();
+    });
+
+    it('loads the six explanatory DevEnv parts and editable connections through the overview button', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const button: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Load DevEnv overview"]');
+        button.click();
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        expect(editor.parts.map(part => part.label)).toEqual([
+            'People / product team', 'Goals & intended outcomes', 'Problems & inquiry',
+            'Knowledge & decisions', 'Work & changes', 'Evidence & learning',
+        ]);
+        expect(editor.connections.map(connection => [
+            connection.first.label, connection.second.label, connection.label,
+        ])).toEqual([
+            ['People / product team', 'Goals & intended outcomes', 'defines'],
+            ['Goals & intended outcomes', 'Problems & inquiry', 'focuses inquiry'],
+            ['Problems & inquiry', 'Knowledge & decisions', 'informs'],
+            ['Knowledge & decisions', 'Work & changes', 'guides'],
+            ['Work & changes', 'Evidence & learning', 'produces'],
+            ['Evidence & learning', 'People / product team', 'supports learning'],
+        ]);
+        expect(new Set(editor.parts.map(part => part.id)).size).toBe(6);
+        expect(fixture.nativeElement.textContent).toContain('Explanatory sketch');
+        expect(fixture.nativeElement.querySelector('.canvas-viewport').classList.contains('overview-workspace')).toBe(true);
+        surface.paint();
+        expect(surface.boxes.slice(-6)).toEqual([
+            [40, 40, 180, 80], [340, 40, 180, 80], [640, 40, 180, 80],
+            [640, 320, 180, 80], [340, 320, 180, 80], [40, 320, 180, 80],
+        ]);
+        expect(surface.textWidths.slice(-6)).toEqual([164, 164, 164, 164, 164, 164]);
+    });
+
+    it('requires explicit replacement confirmation, preserves cancelled work and resets interaction references on reload', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        const host: HTMLElement = fixture.nativeElement;
+        const canvas = host.querySelector('canvas')!;
+        const click = (label: string) => {
+            host.querySelector<HTMLButtonElement>(`[aria-label="${label}"]`)!.click();
+            fixture.detectChanges();
+        };
+        editor.editLabel('My preserved draft');
+        editor.addPart();
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        const originalPart = editor.parts[0];
+        click('Load DevEnv overview');
+        expect(editor.parts).toEqual([originalPart]);
+        expect(editor.selectedPart).toBe(originalPart);
+        expect(host.textContent).toContain('Replace the current sketch?');
+        click('Cancel replacement');
+        expect(editor.parts).toEqual([originalPart]);
+        expect(editor.selectedPart).toBe(originalPart);
+        expect(host.querySelector('[aria-label="Confirm replacement"]')).toBeNull();
+        click('Load DevEnv overview');
+        click('Confirm replacement');
+        expect(editor.selectedPart).toBeUndefined();
+        expect(editor.selectedConnection).toBeUndefined();
+        expect(editor.labelValue).toBe('My preserved draft');
+        canvas.dispatchEvent(pointer('pointermove', 800, 400, 1));
+        expect(originalPart.position).toEqual({ x: 24, y: 24 });
+        expect(editor.parts.every(part => part.id > originalPart.id)).toBe(true);
+        const firstParts = editor.parts;
+        const firstConnections = editor.connections;
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 2));
+        editor.startConnection();
+        click('Load DevEnv overview');
+        click('Cancel replacement');
+        expect(editor.connectionSource).toBe(firstParts[0]);
+        click('Load DevEnv overview');
+        click('Confirm replacement');
+        expect(editor.connectionSource).toBeUndefined();
+        expect(editor.connectionMessage).toBe('');
+        expect(editor.parts.every(part => part.id > firstParts[5].id)).toBe(true);
+        expect(editor.connections.every(connection =>
+            connection.id > firstConnections[5].id
+            && editor.parts.includes(connection.first) && editor.parts.includes(connection.second))).toBe(true);
+        canvas.dispatchEvent(pointer('pointerdown', 390, 131, 3));
+        expect(editor.selectedConnection).toBe(editor.connections[0]);
+        editor.editLabel('Edited overview link');
+        expect(editor.connections[0].label).toBe('Edited overview link');
+        click('Load DevEnv overview');
+        click('Confirm replacement');
+        expect(editor.selectedConnection).toBeUndefined();
+        expect(editor.connections[0].label).toBe('defines');
+        expect(editor.labelValue).toBe('My preserved draft');
     });
 
     it('uses the enabled label input as a preserved custom draft for adding parts', () => {

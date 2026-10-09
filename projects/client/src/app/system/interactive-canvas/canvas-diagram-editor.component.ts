@@ -3,6 +3,8 @@ import { CANVAS } from './canvas';
 import type { ICanvas } from './canvas';
 import { InteractiveCanvas } from './interactive-canvas';
 import { SCHEDULER } from '../../scheduler';
+import { validateDiagramDocument } from '@shared';
+import overview from './devenv-overview.json';
 
 interface SketchPart {
     readonly id: number;
@@ -46,6 +48,41 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private draftLabel = 'Part 1';
     private customDraft = false;
     private drag: CanvasDrag | undefined;
+    overviewLoaded = false;
+    replacementPending = false;
+
+    loadOverview(): void {
+        if (this.parts.length) {
+            this.replacementPending = true;
+            return;
+        }
+        this.confirmOverview();
+    }
+
+    cancelOverview(): void {
+        this.replacementPending = false;
+    }
+
+    confirmOverview(): void {
+        const document = validateDiagramDocument(overview);
+        this.parts = document.elements.map(element => ({
+            id: this.nextPartId++,
+            label: element.label,
+            position: { ...element.position },
+        }));
+        this.connections = document.connections.map(connection => ({
+            id: this.nextConnectionId++,
+            first: this.parts[document.elements.findIndex(element => element.id === connection.sourceElementId)],
+            second: this.parts[document.elements.findIndex(element => element.id === connection.targetElementId)],
+            label: connection.label,
+        }));
+        this.selectedItem = undefined;
+        this.drag = undefined;
+        this.cancelConnection();
+        this.overviewLoaded = true;
+        this.replacementPending = false;
+        this.surface.requestDraw();
+    }
 
     get selectedPart(): SketchPart | undefined {
         return this.selectedItem && 'position' in this.selectedItem ? this.selectedItem : undefined;
@@ -257,7 +294,11 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             context.lineWidth = part === this.selectedPart ? 3 : 1;
             context.strokeRect(x, y, 180, 80);
             context.font = '16px sans-serif';
-            context.fillText(part.label, x + 90, y + 40);
+            if (this.overviewLoaded) {
+                context.fillText(part.label, x + 90, y + 40, 164);
+            } else {
+                context.fillText(part.label, x + 90, y + 40);
+            }
         }
     }
 }

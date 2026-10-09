@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-devenv-overview",
+      "title": "Load a reusable DevEnv overview sketch",
+      "beneficiary": "People learning what DevEnv helps a product team do",
+      "intendedOutcome": "Load and edit six explanatory boxes and their labelled connections.",
+      "successCondition": "Validated example JSON loads fresh sketch identities and correct endpoint references; existing work requires inline confirmation. Cancellation preserves work, replacement clears interaction state and preserves draft. All six boxes are visible in a scrollable 900 x 560 workspace without arrows or enclosing boundary.",
+      "baseline": "Editor supports free-form parts and connections but has no reloadable overview example.",
+      "startedAt": "2026-10-09T23:42:58+02:00",
+      "completedAt": "2026-10-09T23:50:00+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved reusable overview, replacement confirmation, scrollable layout and existing DiagramDocument contract for source data.", "evidence": "interactive-canvas-workflow.md DevEnv overview decisions." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "7 minutes 2 seconds wall-clock from recorded task start to final verification, including design decisions and continuation gates; active effort unknown.", "evidence": "interactive-canvas-workflow.md overview checkpoint and recorded start/completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "22 editor tests pass with 100% all-four coverage; shared/client builds and full client test-source type-check pass. Visible desktop shows all six boxes, fitted labels and loop links; 320px viewport scrolls a 900 x 560 surface horizontally and vertically without document overflow. Inline confirmation visible; cancellation preserves all six links. No new Types or browser dependencies. Follow-up learning benefit unknown.", "evidence": "interactive-canvas-workflow.md overview verification, focused Jest coverage, TypeScript/build and browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-shared-label-input",
       "title": "Reuse one input for canvas labels",
       "beneficiary": "DevEnv developer creating and editing canvas sketches",

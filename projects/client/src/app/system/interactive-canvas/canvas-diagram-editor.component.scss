@@ -64,6 +64,20 @@
     }
 }
 
+.canvas-viewport {
+    display: flex;
+    flex: 1 1 0px;
+    min-width: 0;
+    min-height: 180px;
+    overflow: auto;
+
+    &.overview-workspace canvas {
+        flex: none;
+        min-width: 900px;
+        min-height: 560px;
+    }
+}
+
 canvas {
     display: block;
     flex: 1 1 0px;

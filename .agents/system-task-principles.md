@@ -230,6 +230,7 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** Responses that present a `Status:` line.
 - **Rule:** Alongside the stability status, report every workflow in the global Workflow TODO List with its current registered status, and summarize the available value-evaluation metrics from their authoritative source.
 - **Default format:** List every workflow name and status compactly, grouped by status where practical; include counts. Summarize the metric sample size, recorded-versus-unknown coverage, and material limitations without repeating every evaluation field. Expand to per-evaluation detail when requested or needed to explain a decision.
+- **Ordering (user, 2026-10-09):** End the status report with the `Status:` line. If a proposed commit message is relevant, place it immediately after that line as the final line of the report.
 - **Interpretation:** Connect an evaluation to a workflow only when the source explicitly supports that link. Keep workflow lifecycle status separate from measured outcomes: completion, activity, tests, or coverage alone do not prove value. Preserve unknowns as unknown and identify the source.
 
 ### P-024 — Treat View Changes as Presentation-Only by Default

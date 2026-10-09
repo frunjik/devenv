@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "workflow-todo-summed-elapsed",
+      "title": "Show summed evaluated elapsed time per workflow",
+      "beneficiary": "DevEnv contributors reviewing evaluated work",
+      "intendedOutcome": "See the sum of recorded completed evaluation durations without opening history.",
+      "successCondition": "Each history count shows summed elapsed, excluding incomplete evaluations and explicitly reporting missing or invalid durations; waiting/overlap are not presented as effort.",
+      "baseline": "History count and individual elapsed durations exist without an aggregate.",
+      "startedAt": "2026-10-10T00:14:00+02:00",
+      "completedAt": "2026-10-10T00:16:45+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved per-workflow sum and explicit missing-duration treatment.", "evidence": "todo-view-workflow.md summed elapsed slice." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 45 seconds wall-clock including approvals; active effort unknown.", "evidence": "Recorded start/completion and todo-view-workflow.md summed elapsed slice." },
+        { "metricId": "outcome-and-quality", "value": "37 tests across duration/TODO/evaluation consumers pass with 100% all-four changed-module coverage, full test-source type-check and client build. Tests verify precise sum before rounding, incomplete exclusion, known zero and missing/invalid/reversed durations. Visible desktop shows 13 completed / 2h 12m 33s and narrow 320px layout remains within scroll region. Follow-up usefulness unknown.", "evidence": "todo-view-workflow.md summed elapsed acceptance; focused Jest, TypeScript/build/browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "workflow-todo-compact-navigation",
       "title": "Compact workflow navigation and expandable evaluation history",
       "beneficiary": "DevEnv contributors finding resumable work",

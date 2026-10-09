@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { validateWorkEvaluationDataset } from '@shared';
 import type { WorkflowTodoList, WorkEvaluationDataset } from '@shared';
 import { BackendService } from '../../backend.service';
-import { formatElapsedDuration } from './evaluation-duration';
+import { formatElapsedDuration, formatSummedElapsedDuration } from './evaluation-duration';
 
 @Component({
     selector: 'app-workflow-todo',
@@ -81,6 +81,7 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
         if (this.evaluationDataset === null) {
             return [];
         }
+
         const dataset = this.evaluationDataset;
         const summaries = evaluationIds.flatMap(evaluationId => {
             const evaluation = dataset.evaluations.find(item =>
@@ -91,6 +92,14 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
                 : [];
         });
         return summaries;
+    }
+
+    summedEvaluationElapsed(evaluationIds: string[]): string {
+        if (this.evaluationDataset === null) {
+            return '—';
+        }
+        return formatSummedElapsedDuration(this.evaluationDataset.evaluations.filter(evaluation =>
+            evaluationIds.includes(evaluation.id)));
     }
 
     ngOnInit(): void {

@@ -17,6 +17,16 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Summed evaluated elapsed time slice
+
+- User approved per-workflow total beside completed count, labelled Summed elapsed (not effort). Sum completed evaluation durations only; missing timestamps remain explicit, never zero. Overlap/waiting caveat remains visible. Record workflow and evaluation before Red.
+- Existing duration formatter and WorkEvaluation contract are prior art; reuse HTTP boundary mocks and pure duration tests. No domain/API/source-format change. Next: exact summation Red, reuse duration parsing/formatting, missing/invalid/reversed/incomplete tests, coverage/type/build/browser.
+- Completion: exact 10m 56s UI sum failed before implementation; six aggregate cases failed for missing helper before implementation. 37 tests across duration, TODO and existing evaluation consumers pass at 100% all-four changed-module coverage. Full test-source type-check, client build, diagnostics and diff checks pass; generated workflow view twice identically.
+- Refactor reuses private elapsed parsing and formatting for individual/aggregate displays, preserving Unknown/Unavailable distinctions and summing milliseconds before rounding. An initial misplaced method insertion caused a syntax failure; corrected before final passing checks. No hidden test I/O or new dependencies. Existing WorkEvaluation timestamp projection reused; no new domain Type.
+- Type review: elapsed parsing returns numeric milliseconds or existing explicit display failure strings; distinguishing known zero from missing duration is required and tested. Example: zero-duration completed evaluation counts as known; null start does not. A richer named result could replace display strings if another consumer needs structured failure reasons; not justified for this display-only slice.
+- Visible desktop verifies collapsed active history reads 13 completed / Summed elapsed: 2h 12m 33s. At 320px summary >=44px high, document width305 <= viewport320 and existing horizontal table scrolling preserved. Total is sum of intervals, not effort or deduplicated wall-clock; disclaimer explains waiting/overlap and excluded unknown/unavailable counts.
+- Global workflow remains active canvas exploration; this TODO-view follow-up complete, uncommitted, phase idle. Evaluation records acceptance, not user benefit; latency/effort/overhead unknown. Suggested subject: Show summed evaluated elapsed time per workflow.
+
 ### Compact workflow navigation slice
 
 - Approved: keep grouped table, remove repeated purpose column, top-align cells, collapse completed evaluations into count/disclosure with a vertical elapsed-time list and evidence navigation. Add View checkpoint using existing resume fields without switching workflows.

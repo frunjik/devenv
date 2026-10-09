@@ -61,6 +61,7 @@ describe('WorkflowTodoComponent', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
         expect(fixture.componentInstance.metricSummary).toEqual([]);
         expect(fixture.componentInstance.completedEvaluationItems(['diagram-selection-and-movement'])).toEqual([]);
+        expect(fixture.componentInstance.summedEvaluationElapsed(['diagram-selection-and-movement'])).toBe('—');
         http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
@@ -260,6 +261,7 @@ describe('WorkflowTodoComponent', () => {
         const history = reviewRow!.querySelector<HTMLDetailsElement>('details')!;
         expect(history.open).toBe(false);
         expect(history.querySelector('summary')!.textContent).toContain('2 completed');
+        expect(history.querySelector('summary')!.textContent).toContain('Summed elapsed: 10m 56s');
         expect(history.querySelectorAll('li')).toHaveLength(2);
         expect(history.textContent).toContain('Elapsed time');
     });

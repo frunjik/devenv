@@ -82,8 +82,8 @@
     <ng-template #evaluationHistory let-ids>
         <ng-container *ngIf="completedEvaluationItems(ids) as items">
             <details *ngIf="items.length; else noCompletedHistory" class="evaluation-history">
-                <summary>{{ items.length }} completed</summary>
-                <p>Elapsed time, not active effort.</p>
+                <summary>{{ items.length }} completed · Summed elapsed: {{ summedEvaluationElapsed(ids) }}</summary>
+                <p>Elapsed time, not active effort. Includes waiting; overlapping intervals are added, not deduplicated. Unknown or unavailable durations are excluded from the sum and counted separately.</p>
                 <ul><li *ngFor="let item of items">{{ item }}</li></ul>
                 <a routerLink="/workflow-evaluations">View evaluation evidence</a>
             </details>

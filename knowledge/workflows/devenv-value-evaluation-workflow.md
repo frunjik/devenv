@@ -12,27 +12,17 @@ Test whether DevEnv's practices, tools, and workflows help teams clarify goals, 
 
 **Current process:** TDD links behavior to tests; coverage, type-checks/builds, runtime checks, and workflow checkpoints record implementation and verification evidence. We do not consistently record pre-work success conditions, a comparable baseline, decision/delivery elapsed time, human effort, process overhead, or post-delivery outcomes.
 
-**Next step:** Begin the next planned diagram-editor slice, selection and movement, with a pre-work record before implementation. Continue the existing TDD and verification process; add only the measurement record below. Review measurement feasibility after three consecutive eligible coding slices. Treat this small sample as descriptive, not proof of improved performance.
+**Next step:** Selection and movement are complete and recorded. After this metrics-view change is committed, resume the next planned diagram-editor slice (the connection workflow) with a pre-work record before implementation. Continue the existing TDD and verification process; add only the measurement record below. Review measurement feasibility after three consecutive eligible coding slices. Treat this small sample as descriptive, not proof of improved performance.
 
 **Open limits:** Historical slices lack consistent start/end and effort records, so do not invent a retrospective baseline. The first prospective records describe the current DevEnv-supported coding process; they are not a without-DevEnv control group and cannot show causal improvement. Coding-task evidence does not establish product impact after deployment. A later comparison with a credible alternative workflow and evidence from other product roles is required for broader claims.
 
 ## Measures
 
-Record a small set of complementary measures. Do not combine them into a single score.
+Record a small set of complementary measures. Do not combine them into a single score. The [value-evaluation JSON](./devenv-value-evaluation.json) is the authoritative source for metric definitions and individual `WorkEvaluation` records. Each evaluation has one measure for every defined metric; use JSON `null` when a value or its evidence is unknown.
 
-| Measure | Operational definition | Evidence and interpretation |
-| --- | --- | --- |
-| **Goal and success clarity** | Before work starts, record the intended outcome, affected user/team, problem or uncertainty, and observable success condition. At completion, mark each as clear, partial, or unknown. | Work record and user confirmation. A clarity rate is a leading process signal, not proof of impact. |
-| **Decision latency** | Elapsed time from a material question or uncertainty being recorded to a decision and actionable next step. | Record timestamps when they are known; distinguish waiting from active effort. Missing timestamps stay unknown. |
-| **Delivery flow and effort** | Elapsed time from agreed success conditions to verified completion; separately record blocked/waiting time and approximate active effort. | Start/end checkpoints and participant estimate. Never infer human effort from chat, tool, or build durations. |
-| **Outcome and quality** | Whether the pre-agreed success condition was met, with linked evidence; record follow-up defects, reversals, or rework during a follow-up window agreed before the slice. | Tests/builds establish implementation behavior, not user impact. If user outcome evidence is unavailable, mark it unevaluated. |
-| **DevEnv process overhead** | Approximate active effort spent on DevEnv-specific workflow, documentation, measurement, and upkeep. Record friction or duplicated work. | Participant estimate and short note. Consider alongside delivery effort and outcomes; overhead is a cost, not automatically waste. |
+The JSON contains a completed example (diagram selection and movement) and a completed meta-work evaluation (this metrics view). These records preserve unknown measures without inventing outcomes. The meta-work record is useful for tracking measurement and upkeep overhead, but is not counted as an eligible regular coding slice in the three-slice feasibility pilot.
 
-For each slice, record:
-
-| Slice / date | Beneficiary and intended outcome | Success condition and baseline | Decision and delivery elapsed time | Active effort / DevEnv overhead | Result and linked evidence | Follow-up / unknowns |
-| --- | --- | --- | --- | --- | --- | --- |
-| Diagram selection and movement / 2026-10-09 13:22 CEST | Developer using the diagram editor can select and reposition diagram items. | Selection is visibly and accessibly indicated; dragging an item updates its persisted diagram coordinates. Baseline: selection and movement were not implemented; no historical timing or effort baseline. | Verified 13:38 CEST; wall-clock span about 16 minutes, including user-review pauses. Pause/wait breakdown and decision latency are unavailable; work was preselected. | Active effort and DevEnv-specific overhead: not tracked. | Acceptance behavior implemented. All client tests pass (39 suites, 513 tests), with 100% statements, branches, functions, and lines globally and for the changed page component; shared and client builds pass. | No real-browser interaction or beneficiary outcome evidence. Follow-up window not yet agreed. |
+The view at `/workflow-todo` displays these definitions and records read-only. This view was explicitly requested after the earlier pilot scope was written; it does not add application instrumentation or automatic collection. Continue to record measures manually and update the JSON source.
 
 Do not use completed tasks, tool usage, test count, or coverage alone as value measures. They show activity or implementation assurance. Preserve missing data and uncertainty explicitly; collect only role or product information needed for the evaluation.
 
@@ -48,8 +38,8 @@ Existing coding-process affordances make this feasible as a manual pilot, but th
 
 ## Maintenance and visualization
 
-- Keep this workflow's table as the pilot record and link to the relevant work item, tests, and evidence. Do not create a second independent dataset.
-- **Temporary format choice:** Keep pilot observations in this Markdown workflow while definitions and fields are exploratory and include narrative uncertainty. Do not treat the table as an established application data contract; reconsider a typed structured source if recurring collection establishes stable fields and consumers.
+- Keep workflow purpose, process, limitations, and next steps in this Markdown document. Maintain metric definitions and individual work records only in the [value-evaluation JSON](./devenv-value-evaluation.json); do not duplicate them here.
+- The JSON has an explicit `schemaVersion` and is checked at runtime against the shared interfaces and validator in [value-evaluation.types.ts](../../projects/shared/src/lib/value-evaluation.types.ts). Update the validator and its tests when intentionally changing the data contract.
 - Maintain metric definitions, time boundaries, follow-up window, source, sample size, missingness, and any definition changes.
 - First visualize results in a compact scorecard: show a baseline only where one is credible and comparable; otherwise mark it unavailable. Include sample size, period, outcome evidence, effort, overhead, and unknowns.
 - Show elapsed-time distributions or trends only when repeated observations make them interpretable. Segment by role or work type only with enough comparable observations; do not rank individuals.
@@ -57,7 +47,7 @@ Existing coding-process affordances make this feasible as a manual pilot, but th
 
 ## Type review
 
-No new formal domain Type is adopted for this pilot. The measures are evaluation criteria and the table is a lightweight working record. Revisit structured metric Types only if repeated collection demonstrates stable fields, definitions, and consumers.
+`WorkEvaluation` is the agreed name for one unit-of-work evaluation, independent of its size. `EvaluationMetric` and `WorkEvaluationDataset` are provisional supporting names pending review. The shared contracts are implementation representations; the JSON validator enforces field sets, references, uniqueness, and complete per-evaluation metric sets at runtime. Revisit whether these concepts need Glossary entries as the evaluation model is reviewed.
 
 ## Completion criteria
 

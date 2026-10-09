@@ -41,6 +41,110 @@ describe('WorkflowTodoComponent', () => {
         expect(text).not.toContain('Loading workflows');
     });
 
+    it('shows evaluation metrics from the typed data file and labels unavailable values Unknown', () => {
+        const metricWorkflow = {
+            name: 'DevEnv Value Evaluation',
+            status: 'Active',
+            resumeLabel: 'Measurement-feasibility pilot',
+            resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
+            relatedConcern: 'Not assigned',
+        };
+        http.expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { workflows: [...workflows, metricWorkflow] } });
+        fixture.detectChanges();
+        const loadingMetrics = fixture.nativeElement.querySelector(
+            '[aria-label="DevEnv value evaluation metrics"]',
+        ) as HTMLElement;
+        expect((loadingMetrics.querySelector('[role="status"]') as HTMLElement).textContent)
+            .toContain('Loading evaluation metrics');
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: JSON.stringify({
+                schemaVersion: 1,
+                metrics: [{
+                    id: 'delivery-flow-and-effort',
+                    name: 'Delivery flow and effort',
+                    definition: 'Record delivery elapsed time and active effort separately.',
+                    interpretation: 'Do not infer active effort from tool runtime.',
+                }],
+                evaluations: [{
+                    id: 'metrics-workflow-todo-view',
+                    title: 'Show current evaluation metrics in the Workflow TODO view',
+                    beneficiary: 'DevEnv developer',
+                    intendedOutcome: 'Current metric definitions and work observations are visible.',
+                    successCondition: 'Known values and explicit Unknown values are distinguishable.',
+                    baseline: 'The Workflow TODO view showed no evaluation metrics.',
+                    startedAt: '2026-10-09T13:40:17+02:00',
+                    completedAt: null,
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: null,
+                        evidence: null,
+                    }],
+                }],
+            }) });
+        fixture.detectChanges();
+
+        const metrics = fixture.nativeElement.querySelector(
+            '[aria-label="DevEnv value evaluation metrics"]',
+        ) as HTMLElement;
+        expect(metrics.textContent).toContain('Delivery flow and effort');
+        expect(metrics.textContent).toContain('Record delivery elapsed time and active effort separately.');
+        expect(metrics.textContent).toContain('Show current evaluation metrics in the Workflow TODO view');
+        expect(metrics.textContent).toContain('Unknown');
+    });
+
+    it('reports evaluation data load failures instead of presenting an empty dataset', () => {
+        const metricWorkflow = {
+            name: 'DevEnv Value Evaluation',
+            status: 'Active',
+            resumeLabel: 'Measurement-feasibility pilot',
+            resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
+            relatedConcern: 'Not assigned',
+        };
+        http.expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { workflows: [metricWorkflow] } });
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({}, { status: 500, statusText: 'Server Error' });
+        fixture.detectChanges();
+
+        const metrics = fixture.nativeElement.querySelector(
+            '[aria-label="DevEnv value evaluation metrics"]',
+        ) as HTMLElement;
+        expect((metrics.querySelector('[role="alert"]') as HTMLElement).textContent).toContain('500');
+        expect(metrics.textContent).not.toContain('Loading evaluation metrics');
+        expect(metrics.querySelector('table')).toBeNull();
+    });
+
+    it.each([
+        { label: 'invalid JSON', contents: '{', expectedError: 'SyntaxError:' },
+        {
+            label: 'invalid evaluation data',
+            contents: '{"schemaVersion":1,"metrics":[],"evaluations":[]}',
+            expectedError: 'Invalid WorkEvaluationDataset',
+        },
+    ])('reports $label from the evaluation data file', ({ contents, expectedError }) => {
+        const metricWorkflow = {
+            name: 'DevEnv Value Evaluation',
+            status: 'Active',
+            resumeLabel: 'Measurement-feasibility pilot',
+            resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
+            relatedConcern: 'Not assigned',
+        };
+        http.expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { workflows: [metricWorkflow] } });
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: contents });
+        fixture.detectChanges();
+
+        const metrics = fixture.nativeElement.querySelector(
+            '[aria-label="DevEnv value evaluation metrics"]',
+        ) as HTMLElement;
+        expect(metrics.getAttribute('aria-live')).toBe('polite');
+        expect((metrics.querySelector('[role="alert"]') as HTMLElement).textContent)
+            .toContain(expectedError);
+        expect(metrics.textContent).not.toContain('Loading evaluation metrics');
+    });
+
     it('provides a visible, accessible cue for horizontally scrolling the workflow table', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();

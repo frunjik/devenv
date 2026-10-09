@@ -28,6 +28,66 @@
             </tbody>
         </table>
     </div>
+    <section
+        *ngIf="evaluationLoading || evaluationError || evaluationDataset"
+        class="evaluation"
+        aria-label="DevEnv value evaluation metrics"
+        aria-live="polite"
+    >
+        <h2>DevEnv value evaluation</h2>
+        <p *ngIf="evaluationLoading" role="status">Loading evaluation metrics...</p>
+        <p *ngIf="evaluationError" role="alert">Could not load evaluation metrics: {{ evaluationError }}</p>
+        <ng-container *ngIf="evaluationDataset as dataset">
+            <h3>Metric definitions</h3>
+            <div class="table-scroll">
+                <table>
+                    <caption>Current value-evaluation measures</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Metric</th>
+                            <th scope="col">Definition</th>
+                            <th scope="col">Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let metric of dataset.metrics">
+                            <th scope="row">{{ metric.name }}</th>
+                            <td>{{ metric.definition }}</td>
+                            <td>{{ metric.interpretation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div *ngFor="let evaluation of dataset.evaluations" class="work-evaluation">
+                <h3>{{ evaluation.title }}</h3>
+                <p><strong>Beneficiary:</strong> {{ evaluation.beneficiary }}</p>
+                <p><strong>Intended outcome:</strong> {{ evaluation.intendedOutcome }}</p>
+                <p><strong>Success condition:</strong> {{ evaluation.successCondition }}</p>
+                <p><strong>Baseline:</strong> {{ evaluation.baseline }}</p>
+                <p><strong>Started:</strong> {{ evaluation.startedAt ?? 'Unknown' }}</p>
+                <p><strong>Completed:</strong> {{ evaluation.completedAt ?? 'Unknown' }}</p>
+                <div class="table-scroll">
+                    <table>
+                        <caption>Measures for {{ evaluation.title }}</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Metric ID</th>
+                                <th scope="col">Observed value</th>
+                                <th scope="col">Evidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let measure of evaluation.measures">
+                                <th scope="row">{{ measure.metricId }}</th>
+                                <td>{{ measure.value ?? 'Unknown' }}</td>
+                                <td>{{ measure.evidence ?? 'Unknown' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </ng-container>
+    </section>
     <section *ngIf="documentReference" aria-label="Workflow document" aria-live="polite">
         <h2>Workflow document</h2>
         <p class="reference">Checkpoint reference: {{ documentReference }}</p>

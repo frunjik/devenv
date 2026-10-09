@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
-import type { WorkflowTodoList } from '@shared';
+import { validateWorkEvaluationDataset } from '@shared';
+import type { WorkflowTodoList, WorkEvaluationDataset } from '@shared';
 import { BackendService } from '../../backend.service';
 
 @Component({
@@ -19,6 +20,9 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
     documentError = '';
     documentText = '';
     documentReference = '';
+    evaluationDataset: WorkEvaluationDataset | null = null;
+    evaluationLoading = false;
+    evaluationError = '';
     private readonly subscriptions = new Subscription();
     private documentSubscription = new Subscription();
 
@@ -29,6 +33,10 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
             next: list => {
                 this.workflows = list.workflows;
                 this.loading = false;
+                if (list.workflows.some(workflow =>
+                    workflow.resumePath.startsWith('./devenv-value-evaluation-workflow.md#'))) {
+                    this.loadEvaluationDataset();
+                }
             },
             error: (error: Error) => {
                 this.errorMessage = error.message;
@@ -57,6 +65,28 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
                 this.documentLoading = false;
             },
         });
+    }
+
+    private loadEvaluationDataset(): void {
+        this.evaluationLoading = true;
+        this.subscriptions.add(this.backend.loadFile(
+            'knowledge\\workflows\\devenv-value-evaluation.json',
+        ).subscribe({
+            next: text => {
+                try {
+                    const value: unknown = JSON.parse(text);
+                    this.evaluationDataset = validateWorkEvaluationDataset(value);
+                    this.evaluationLoading = false;
+                } catch (error) {
+                    this.evaluationError = String(error);
+                    this.evaluationLoading = false;
+                }
+            },
+            error: (error: Error) => {
+                this.evaluationError = error.message;
+                this.evaluationLoading = false;
+            },
+        }));
     }
 
     ngOnDestroy(): void {

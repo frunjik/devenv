@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "metrics": [
+    {
+      "id": "goal-success-clarity",
+      "name": "Goal and success clarity",
+      "definition": "Before work, record the intended outcome, beneficiary, problem or uncertainty, and observable success condition. At completion, assess each as clear, partial, or unknown.",
+      "interpretation": "Clarity is a leading process signal, not proof of impact."
+    },
+    {
+      "id": "decision-latency",
+      "name": "Decision latency",
+      "definition": "Elapsed time from a material question or uncertainty being recorded to a decision and actionable next step.",
+      "interpretation": "Distinguish waiting from active effort. Unrecorded timestamps remain unknown."
+    },
+    {
+      "id": "delivery-flow-and-effort",
+      "name": "Delivery flow and effort",
+      "definition": "Elapsed time from agreed success conditions to verified completion, with blocked or waiting time and approximate active effort recorded separately.",
+      "interpretation": "Never infer human effort from chat, tool, or build durations."
+    },
+    {
+      "id": "outcome-and-quality",
+      "name": "Outcome and quality",
+      "definition": "Assess the pre-agreed success condition against linked evidence, including follow-up defects, reversals, or rework during an agreed follow-up window.",
+      "interpretation": "Tests and builds establish implementation behavior, not user impact. Unobserved user outcomes remain unknown."
+    },
+    {
+      "id": "devenv-process-overhead",
+      "name": "DevEnv process overhead",
+      "definition": "Approximate active effort spent on DevEnv-specific workflow, documentation, measurement, and upkeep; record friction or duplicated work.",
+      "interpretation": "Overhead is a cost to consider alongside outcomes, not automatically waste."
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "diagram-selection-and-movement",
+      "title": "Diagram selection and movement",
+      "beneficiary": "Developer using the diagram editor",
+      "intendedOutcome": "Select diagram items and reposition them by dragging.",
+      "successCondition": "Selection is visibly and accessibly indicated; dragging an item updates its persisted diagram coordinates.",
+      "baseline": "Selection and movement were not implemented. No historical timing or effort baseline exists.",
+      "startedAt": "2026-10-09T13:22:00+02:00",
+      "completedAt": "2026-10-09T13:38:45+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The beneficiary, intended outcome, and acceptance condition were recorded before implementation.",
+          "evidence": "Diagram editor workflow checkpoint."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "About 16 minutes wall-clock, including pauses; active effort is unknown.",
+          "evidence": "Recorded start and verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Implementation acceptance checks passed; beneficiary outcome and real-browser interaction are unknown.",
+          "evidence": "513 client tests passed with 100% four-metric coverage; shared and client builds passed."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
+    },
+    {
+      "id": "workflow-todo-value-metrics-view",
+      "title": "Show current evaluation metrics on the Workflow TODO view",
+      "beneficiary": "DevEnv developers reviewing current work and evidence",
+      "intendedOutcome": "Display metric definitions and current work evaluations, distinguishing known values from missing data.",
+      "successCondition": "The Workflow TODO view renders metric definitions and each work evaluation; missing values appear as Unknown.",
+      "baseline": "The Workflow TODO view showed the workflow register but no value-evaluation metrics or observations.",
+      "startedAt": "2026-10-09T13:40:17+02:00",
+      "completedAt": "2026-10-09T13:59:12+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The intended outcome and display acceptance condition were recorded before implementing the model and view.",
+          "evidence": "User request and this evaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "About 19 minutes wall-clock, including pauses; active effort is unknown.",
+          "evidence": "Recorded start and completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Metrics and evaluations render with unknown values distinguished; no real-browser interaction or beneficiary outcome was verified.",
+          "evidence": "563 client tests passed with 100% four-metric coverage; shared and client builds and Jest-source TypeScript check passed."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
+    }
+  ]
+}

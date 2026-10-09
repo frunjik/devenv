@@ -13,6 +13,7 @@ export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
     private refreshTimer: ReturnType<typeof setInterval> | undefined;
     private readonly browser = inject(BROWSER);
     private stopObserving: (() => void) | undefined;
+    private pendingFrame: number | undefined;
 
     ngAfterViewInit(): void {
         const canvas = this.canvas.nativeElement;
@@ -21,14 +22,23 @@ export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
             throw new Error('Unable to initialize canvas clock: 2D context is unavailable.');
         }
 
+        const requestDraw = () => {
+            if (this.pendingFrame !== undefined) {
+                return;
+            }
+            this.pendingFrame = this.browser.requestAnimationFrame(() => {
+                this.pendingFrame = undefined;
+                this.drawTime(canvas, context);
+            });
+        };
         const resizeCanvas = () => {
             canvas.width = Math.round(this.browser.displayedWidth(canvas) * this.browser.devicePixelRatio());
             canvas.height = Math.round(this.browser.displayedHeight(canvas) * this.browser.devicePixelRatio());
-            this.drawTime(canvas, context);
+            requestDraw();
         };
         resizeCanvas();
         this.stopObserving = this.browser.observeResize(canvas, resizeCanvas);
-        this.refreshTimer = setInterval(() => this.drawTime(canvas, context), 1000);
+        this.refreshTimer = setInterval(requestDraw, 1000);
     }
 
     ngOnDestroy(): void {
@@ -36,6 +46,9 @@ export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
             clearInterval(this.refreshTimer);
         }
         this.stopObserving?.();
+        if (this.pendingFrame !== undefined) {
+            this.browser.cancelAnimationFrame(this.pendingFrame);
+        }
     }
 
     private drawTime(

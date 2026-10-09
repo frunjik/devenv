@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "interactive-canvas-frame-scheduling",
+      "title": "Change-driven canvas frame scheduling",
+      "beneficiary": "DevEnv developer building responsive canvas interactions",
+      "intendedOutcome": "Coalesce redraw requests into browser paint frames without an idle render loop.",
+      "successCondition": "Initial rendering, resize, and clock ticks request at most one pending frame; completed frames permit later redraws; destruction cancels pending work including frame ID zero.",
+      "baseline": "Initial rendering, every resize notification, and clock ticks draw immediately.",
+      "startedAt": "2026-10-09T21:47:55+02:00",
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Coalescing, no idle loop, and cancellation acceptance defined for foundation slice 1.", "evidence": "Canvas plan and focused coalescing test." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "Automated scheduling acceptance passes: 8 tests and 100% four-metric coverage for component and browser adapter; client build passes. Coalescing, later redraw, idle behavior, and cancellation including ID zero are covered. Visible-browser frame delivery and user responsiveness remain unverified.", "evidence": "Focused canvas component/adapter suites and client build; animation-frame checkpoint in interactive-canvas-workflow.md." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "interactive-canvas-typed-boundary",
       "title": "Typed canvas boundary and plain browser fake",
       "beneficiary": "DevEnv developer maintaining canvas tests",

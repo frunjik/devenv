@@ -12,6 +12,19 @@ class MockBrowser implements IBrowser {
     disconnected = false;
     draws: [string, number, number][] = [];
     transforms: unknown[][] = [];
+    frames = new Map<number, () => void>();
+    private nextFrame = 0;
+    requestAnimationFrame(callback: () => void): number {
+        const id = this.nextFrame++;
+        this.frames.set(id, callback);
+        return id;
+    }
+    cancelAnimationFrame(id: number): void { this.frames.delete(id); }
+    paint(): void {
+        const callbacks = [...this.frames.values()];
+        this.frames.clear();
+        callbacks.forEach(callback => callback());
+    }
     context: ReturnType<IBrowser['getContext']> = {
         clearRect: () => {},
         setTransform: (...values: unknown[]) => { this.transforms.push(values); },
@@ -51,10 +64,12 @@ describe('InteractiveCanvasComponent', () => {
     it('renders current time and refreshes after one second', () => {
         const fixture = TestBed.createComponent(InteractiveCanvasComponent);
         fixture.detectChanges();
+        browser.paint();
         expect(fixture.nativeElement.querySelector('canvas')).not.toBeNull();
         expect(browser.draws.at(-1)).toEqual([currentTime(), 160, 90]);
         const initialTime = browser.draws.at(-1)?.[0];
         jest.advanceTimersByTime(1000);
+        browser.paint();
         expect(browser.draws.at(-1)?.[0]).toBe(currentTime());
         expect(browser.draws.at(-1)?.[0]).not.toBe(initialTime);
     });
@@ -71,16 +86,19 @@ describe('InteractiveCanvasComponent', () => {
     it('resizes the bitmap and centers drawing in CSS pixels at different densities', () => {
         const fixture = TestBed.createComponent(InteractiveCanvasComponent);
         fixture.detectChanges();
+        browser.paint();
         const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
         expect([canvas.width, canvas.height]).toEqual([640, 360]);
         expect(browser.transforms.at(-1)).toEqual([2, 0, 0, 2, 0, 0]);
         browser.width = 240;
         browser.height = 135;
         browser.resize();
+        browser.paint();
         expect([canvas.width, canvas.height]).toEqual([480, 270]);
         expect(browser.draws.at(-1)).toEqual([currentTime(), 120, 67.5]);
         browser.pixelRatio = 1;
         browser.resize();
+        browser.paint();
         expect([canvas.width, canvas.height]).toEqual([240, 135]);
         expect(browser.transforms.at(-1)).toEqual([1, 0, 0, 1, 0, 0]);
     });
@@ -94,6 +112,26 @@ describe('InteractiveCanvasComponent', () => {
         jest.advanceTimersByTime(2000);
         expect(browser.draws).toHaveLength(count);
         expect(browser.disconnected).toBe(true);
+        expect(browser.frames.size).toBe(0);
+    });
+
+    it('coalesces changes into one frame and does not start an idle render loop', () => {
+        const fixture = TestBed.createComponent(InteractiveCanvasComponent);
+        fixture.detectChanges();
+        browser.resize();
+        browser.resize();
+        expect(browser.draws).toHaveLength(0);
+        expect(browser.frames.size).toBe(1);
+        browser.paint();
+        expect(browser.draws).toHaveLength(1);
+        expect(browser.frames.size).toBe(0);
+        browser.resize();
+        jest.advanceTimersByTime(1000);
+        expect(browser.frames.size).toBe(1);
+        browser.paint();
+        expect(browser.draws).toHaveLength(2);
+        fixture.destroy();
+        expect(browser.frames.size).toBe(0);
     });
 });
 

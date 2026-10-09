@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Active - responsive sizing/pixel-density implementation is at a green checkpoint. Visible-browser resize verification remains outstanding; foundation slice 1 is not complete.
+**Status:** Active - responsive sizing and change-driven animation-frame scheduling are at a green checkpoint. Visible-browser verification and pointer conversion remain outstanding; foundation slice 1 is not complete.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
@@ -18,7 +18,15 @@
 
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
-**Next:** Verify automatic resizing in a visible browser tab, including a high-density display. Then continue slice 1 with pointer-coordinate conversion and change-driven animation-frame scheduling. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+**Next:** Verify automatic resizing and scheduled drawing in a visible browser tab, including a high-density display. Continue slice 1 with pointer-coordinate conversion. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+
+### Animation-frame checkpoint (2026-10-09)
+
+- Initial rendering, resize notifications, and one-second clock ticks now request drawing through IBrowser.requestAnimationFrame. Multiple notifications share one pending frame; a completed frame returns the component to idle without scheduling another frame.
+- Destruction cancels pending work, including a frame with ID zero, and retains timer/resize cleanup. The clock interval remains an invalidation source, not a rendering loop.
+- TDD Red observed three immediate drawings instead of one deferred drawing. Green passes 8 component/adapter tests with 100% statement/branch/function/line coverage for both production modules; client build and editor diagnostics pass.
+- Refactor/Type review: a browser frame handle plus undefined expresses the scheduled/idle lifecycle adequately. Plain MockBrowser controls paint delivery and records pending callbacks. Browser API spies remain confined to adapter tests. No new Type or Glossary entry is justified.
+- Runtime frame delivery is not verified in the shared hidden tab. Do not equate automated scheduling acceptance with verified user responsiveness. No additional meta-level insight identified.
 
 ### Responsive sizing checkpoint (2026-10-09)
 

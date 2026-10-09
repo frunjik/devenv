@@ -11,6 +11,17 @@ describe('IBrowser adapter', () => {
         globalThis.ResizeObserver = originalObserver;
     });
 
+    it('delegates frame scheduling and cancellation to the browser', () => {
+        const request = jest.spyOn(window, 'requestAnimationFrame').mockReturnValue(7);
+        const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+        const callback = () => {};
+        const browser = TestBed.inject(BROWSER);
+        expect(browser.requestAnimationFrame(callback)).toBe(7);
+        expect(request).toHaveBeenCalledWith(callback);
+        browser.cancelAnimationFrame(7);
+        expect(cancel).toHaveBeenCalledWith(7);
+    });
+
     it('delegates context and dimensions to the browser', () => {
         const canvas = document.createElement('canvas');
         const getContext = jest.spyOn(canvas, 'getContext').mockReturnValue(null);

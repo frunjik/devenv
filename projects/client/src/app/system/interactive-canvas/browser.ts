@@ -1,6 +1,8 @@
 import { InjectionToken } from '@angular/core';
 
 export interface IBrowser {
+    requestAnimationFrame(callback: () => void): number;
+    cancelAnimationFrame(id: number): void;
     getContext(canvas: HTMLCanvasElement): Pick<CanvasRenderingContext2D,
         'clearRect' | 'setTransform' | 'fillText' | 'textAlign' | 'textBaseline' | 'font'> | null;
     displayedWidth(canvas: HTMLCanvasElement): number;
@@ -12,6 +14,8 @@ export interface IBrowser {
 export const BROWSER = new InjectionToken<IBrowser>('BROWSER', {
     providedIn: 'root',
     factory: () => ({
+        requestAnimationFrame: callback => window.requestAnimationFrame(callback),
+        cancelAnimationFrame: id => window.cancelAnimationFrame(id),
         getContext: canvas => canvas.getContext('2d'),
         displayedWidth: canvas => canvas.clientWidth,
         displayedHeight: canvas => canvas.clientHeight,

@@ -175,7 +175,8 @@
         "interactive-canvas-clock-prototype",
         "interactive-canvas-editor-milestone",
         "interactive-canvas-responsive-sizing",
-        "interactive-canvas-typed-boundary"
+        "interactive-canvas-typed-boundary",
+        "interactive-canvas-frame-scheduling"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

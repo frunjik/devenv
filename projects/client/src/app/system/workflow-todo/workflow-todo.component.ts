@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { validateWorkEvaluationDataset } from '@shared';
 import type { WorkflowTodoList, WorkEvaluationDataset } from '@shared';
 import { BackendService } from '../../backend.service';
+import { formatElapsedDuration } from './evaluation-duration';
 
 @Component({
     selector: 'app-workflow-todo',
@@ -39,6 +40,11 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
             };
         });
     }
+    get completedEvaluations(): WorkEvaluationDataset['evaluations'] {
+        return this.evaluationDataset === null
+            ? []
+            : this.evaluationDataset.evaluations.filter(evaluation => evaluation.completedAt !== null);
+    }
     loading = true;
     errorMessage = '';
     evaluationDataset: WorkEvaluationDataset | null = null;
@@ -47,6 +53,10 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
     private readonly subscriptions = new Subscription();
 
     constructor(private readonly backend: BackendService) {}
+
+    formatElapsedDuration(startedAt: string | null, completedAt: string | null): string {
+        return formatElapsedDuration(startedAt, completedAt);
+    }
 
     ngOnInit(): void {
         this.subscriptions.add(this.backend.getWorkflowTodo().subscribe({

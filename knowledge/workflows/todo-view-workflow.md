@@ -103,3 +103,11 @@ The evaluations view derives elapsed wall-clock duration for completed records f
 The combined focused suites pass (25 tests); route, toolbar, workflow, and evaluations components each have 100% statement, branch, function, and line coverage. The client development TypeScript check and client build pass. Browser visual verification was not performed.
 
 **Next:** User review of the combined workflow/evaluation presentation. Changes remain uncommitted.
+
+### Follow-up: completed durations on workflow view
+
+The user requested that completed-item durations also appear on the Workflow TODO view. It now lists completed evaluation titles and derived elapsed wall-clock durations beneath the metric availability summary, using the same formatter as the evaluation detail page. Incomplete evaluations are excluded; unavailable timestamps remain explicit. The data source and Types are unchanged.
+
+The focused workflow/evaluation suites pass (14 tests); both components and the shared formatter have 100% statement, branch, function, and line coverage. The client development TypeScript check, client build, and `git diff --check` pass. No new domain Type was warranted: elapsed duration is derived presentation from the existing nullable start/completion timestamps, not active effort or a new stored measure.
+
+**Next:** User review of the completed-duration summary. Keep this follow-up separate from commit `c4369f8`.

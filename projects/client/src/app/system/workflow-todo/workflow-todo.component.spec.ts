@@ -30,6 +30,7 @@ describe('WorkflowTodoComponent', () => {
     it('shows loading, then all JSON fields and the active workflow', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
         expect(fixture.componentInstance.metricSummary).toEqual([]);
+        expect(fixture.componentInstance.completedEvaluations).toEqual([]);
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
@@ -104,6 +105,24 @@ describe('WorkflowTodoComponent', () => {
                         value: 'Passed acceptance checks.',
                         evidence: 'Client tests.',
                     }],
+                }, {
+                    id: 'diagram-selection-and-movement',
+                    title: 'Diagram selection and movement',
+                    beneficiary: 'Developer using the diagram editor',
+                    intendedOutcome: 'Select diagram items and reposition them by dragging.',
+                    successCondition: 'Dragging an item updates its persisted diagram coordinates.',
+                    baseline: 'Selection and movement were not implemented.',
+                    startedAt: '2026-10-09T13:22:00+02:00',
+                    completedAt: '2026-10-09T13:38:45+02:00',
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: null,
+                        evidence: null,
+                    }, {
+                        metricId: 'outcome-and-quality',
+                        value: 'Passed acceptance checks.',
+                        evidence: 'Client tests.',
+                    }],
                 }],
             }) });
         fixture.detectChanges();
@@ -113,20 +132,24 @@ describe('WorkflowTodoComponent', () => {
         ) as HTMLElement;
         expect(metrics.textContent).toContain('Delivery flow and effort');
         expect(metrics.textContent).toContain('Outcome and quality');
-        expect(metrics.textContent).toContain('Metric availability across 1 work evaluations');
+        expect(metrics.textContent).toContain('Metric availability across 2 work evaluations');
         expect(metrics.textContent).toContain('Recorded evaluations');
         expect(metrics.textContent).toContain('Unknown evaluations');
         expect(metrics.textContent).toContain('0');
-        expect(metrics.textContent).toContain('1');
+        expect(metrics.textContent).toContain('2');
         const metricRows = Array.from(metrics.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
         expect(metricRows[0].textContent).toContain('Delivery flow and effort');
         expect(metricRows[0].textContent).toContain('0');
-        expect(metricRows[0].textContent).toContain('1');
+        expect(metricRows[0].textContent).toContain('2');
         expect(metricRows[1].textContent).toContain('Outcome and quality');
-        expect(metricRows[1].textContent).toContain('1');
+        expect(metricRows[1].textContent).toContain('2');
         expect(metricRows[1].textContent).toContain('0');
         expect(metrics.textContent).not.toContain('Show current evaluation metrics in the Workflow TODO view');
         expect(metrics.querySelector('a[href="/workflow-evaluations"]')).not.toBeNull();
+        const completed = fixture.nativeElement.querySelector('.completed-evaluations') as HTMLElement;
+        expect(completed.textContent).toContain('Diagram selection and movement');
+        expect(completed.textContent).toContain('16m 45s');
+        expect(completed.textContent).not.toContain('Show current evaluation metrics in the Workflow TODO view');
     });
 
     it('reports evaluation data load failures instead of presenting an empty dataset', () => {

@@ -3,6 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { validateWorkEvaluationDataset } from '@shared';
 import type { WorkEvaluationDataset } from '@shared';
 import { BackendService } from '../../backend.service';
+import { formatElapsedDuration } from './evaluation-duration';
 
 @Component({
     selector: 'app-workflow-evaluations',
@@ -19,27 +20,7 @@ export class WorkflowEvaluationsComponent implements OnInit {
     constructor(private readonly backend: BackendService) {}
 
     formatElapsedDuration(startedAt: string | null, completedAt: string | null): string {
-        if (startedAt === null || completedAt === null) {
-            return 'Unknown';
-        }
-
-        const start = Date.parse(startedAt);
-        const completion = Date.parse(completedAt);
-        if (!Number.isFinite(start) || !Number.isFinite(completion)) {
-            return 'Unavailable (invalid timestamp)';
-        }
-
-        const elapsedSeconds = Math.floor((completion - start) / 1000);
-        if (elapsedSeconds < 0) {
-            return 'Unavailable (completion precedes start)';
-        }
-
-        const hours = Math.floor(elapsedSeconds / 3600);
-        const minutes = Math.floor((elapsedSeconds % 3600) / 60);
-        const seconds = elapsedSeconds % 60;
-        return hours > 0
-            ? `${hours}h ${minutes}m ${seconds}s`
-            : `${Math.floor(elapsedSeconds / 60)}m ${seconds}s`;
+        return formatElapsedDuration(startedAt, completedAt);
     }
 
     ngOnInit(): void {

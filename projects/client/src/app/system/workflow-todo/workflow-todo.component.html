@@ -84,6 +84,26 @@
                         </tbody>
                     </table>
             </div>
+            <section *ngIf="completedEvaluations.length" class="completed-evaluations">
+                    <h3>Completed item durations</h3>
+                    <div class="table-scroll">
+                        <table>
+                            <caption>Elapsed wall-clock duration for completed evaluations</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Completed item</th>
+                                    <th scope="col">Elapsed duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let evaluation of completedEvaluations">
+                                    <th scope="row">{{ evaluation.title }}</th>
+                                    <td>{{ formatElapsedDuration(evaluation.startedAt, evaluation.completedAt) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            </section>
         </ng-container>
     </section>
 </section>

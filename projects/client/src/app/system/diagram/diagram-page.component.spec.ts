@@ -26,4 +26,21 @@ describe('DiagramPageComponent', () => {
         expect(workspace.children.length).toBe(0);
         expect(element.textContent).toContain('No items yet');
     });
+
+    it.each([
+        ['rectangle', 'Add Rectangle'],
+        ['ellipse', 'Add Ellipse'],
+        ['note', 'Add Note'],
+    ] as const)('adds a %s to the workspace from its palette button', (kind, buttonLabel) => {
+        const button = element.querySelector(`button[aria-label="${buttonLabel}"]`) as HTMLButtonElement;
+
+        expect(button).not.toBeNull();
+        button.click();
+        fixture.detectChanges();
+
+        const item = element.querySelector(`[data-kind="${kind}"]`);
+        expect(item).not.toBeNull();
+        expect(item?.textContent?.trim()).toBe(kind);
+        expect(element.textContent).not.toContain('No items yet');
+    });
 });

@@ -7,6 +7,7 @@ import {
     connectDiagramElements,
     editDiagramConnectionLabel,
     deleteDiagramElement,
+    clearDiagramDocument,
     moveDiagramElement,
 } from './diagram-operations';
 
@@ -323,6 +324,35 @@ describe('Deleting diagram elements', () => {
         const before = JSON.stringify(document);
 
         expect(() => deleteDiagramElement(document, 'missing')).toThrow('Invalid Diagram');
+        expect(JSON.stringify(document)).toBe(before);
+    });
+});
+
+describe('Clearing a diagram document', () => {
+    const document: DiagramDocument = {
+        schemaVersion: 1,
+        title: 'DevEnv overview',
+        elements: [
+            { id: 'r', kind: 'rectangle', label: 'Problem', position: { x: 10, y: 20 } },
+            { id: 'e', kind: 'ellipse', label: 'Inquiry', position: { x: 80, y: 30 } },
+        ],
+        connections: [{ id: 'c', sourceElementId: 'r', targetElementId: 'e', label: 'relates to' }],
+    };
+
+    it('removes all elements and connections while preserving metadata and source data', () => {
+        const before = JSON.stringify(document);
+
+        const result = clearDiagramDocument(document);
+
+        expect(result).toEqual({
+            schemaVersion: document.schemaVersion,
+            title: document.title,
+            elements: [],
+            connections: [],
+        });
+        expect(result).not.toBe(document);
+        expect(result.elements).not.toBe(document.elements);
+        expect(result.connections).not.toBe(document.connections);
         expect(JSON.stringify(document)).toBe(before);
     });
 });

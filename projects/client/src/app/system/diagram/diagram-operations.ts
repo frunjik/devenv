@@ -106,3 +106,11 @@ export function deleteDiagramElement(document: DiagramDocument, elementId: strin
             connection.sourceElementId !== elementId && connection.targetElementId !== elementId),
     });
 }
+
+export function clearDiagramDocument(document: DiagramDocument): DiagramDocument {
+    return validateDiagramDocument({
+        ...document,
+        elements: [],
+        connections: [],
+    });
+}

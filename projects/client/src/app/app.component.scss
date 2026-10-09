@@ -1,6 +1,16 @@
 ﻿:host {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    box-sizing: border-box;
     padding-bottom: 44px;
+}
+
+.inner-app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
 .inner-nav {
@@ -10,6 +20,7 @@
     gap: 0.25rem 1rem;
     padding: 0.4rem 1rem;
     border-bottom: 1px solid rgb(128 128 128 / 35%);
+    flex-shrink: 0;
 
     .meta-toggle {
         margin-left: auto;

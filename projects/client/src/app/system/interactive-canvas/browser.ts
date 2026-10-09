@@ -8,6 +8,10 @@ export interface IBrowser {
     displayedWidth(canvas: HTMLCanvasElement): number;
     displayedHeight(canvas: HTMLCanvasElement): number;
     devicePixelRatio(): number;
+    canvasPoint(
+        canvas: HTMLCanvasElement,
+        event: Pick<MouseEvent, 'clientX' | 'clientY'>,
+    ): { x: number; y: number };
     observeResize(canvas: HTMLCanvasElement, callback: () => void): () => void;
 }
 
@@ -20,6 +24,16 @@ export const BROWSER = new InjectionToken<IBrowser>('BROWSER', {
         displayedWidth: canvas => canvas.clientWidth,
         displayedHeight: canvas => canvas.clientHeight,
         devicePixelRatio: () => window.devicePixelRatio,
+        canvasPoint: (canvas, event) => {
+            const bounds = canvas.getBoundingClientRect();
+            if (bounds.width <= 0 || bounds.height <= 0) {
+                throw new Error('Unable to convert canvas pointer: canvas has no rendered area.');
+            }
+            return {
+                x: (event.clientX - bounds.left) * canvas.offsetWidth / bounds.width - canvas.clientLeft,
+                y: (event.clientY - bounds.top) * canvas.offsetHeight / bounds.height - canvas.clientTop,
+            };
+        },
         observeResize: (canvas, callback) => {
             const observer = new ResizeObserver(callback);
             observer.observe(canvas);

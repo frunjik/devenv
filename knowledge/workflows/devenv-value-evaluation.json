@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "interactive-canvas-viewport-stretch",
+      "title": "Fill available canvas viewport space",
+      "beneficiary": "DevEnv developer exploring the canvas editor",
+      "intendedOutcome": "Use the available route width and remaining viewport height without stretching an unchanged bitmap.",
+      "successCondition": "At desktop and narrow viewport sizes, the canvas fills the space after navigation, heading, padding, and toolbar reservation; optional meta framing is respected, no unwanted page overflow occurs, and bitmap dimensions follow content dimensions.",
+      "baseline": "Canvas width is capped at 640px with a fixed 16:9 aspect ratio.",
+      "startedAt": "2026-10-09T21:59:09+02:00",
+      "completedAt": "2026-10-09T22:03:56+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Available width and remaining viewport height agreed; user approved the narrow shared-shell flex layout change.", "evidence": "User request and permission; viewport stretch checkpoint in interactive-canvas-workflow.md." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "4 minutes 47 seconds wall-clock through visible-browser acceptance, including permission and visibility waits; active effort is unknown.", "evidence": "Recorded request and visible-browser completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Visible DPR 1 checks pass at 1200 x 900 and 380 x 800, including narrow meta mode: available width/height filled, no page overflow or toolbar overlap, bitmap dimensions match canvas content, and clock pixels change. Existing Diagram loads and Workflow TODO still scrolls. 12 focused tests retain 100% four-metric coverage and client build passes. Real high-DPR rendering and follow-up user outcome remain unknown.", "evidence": "Browser geometry, backing dimensions, and pixel-change checks recorded in interactive-canvas-workflow.md; focused Jest coverage and client build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "interactive-canvas-pointer-coordinates",
+      "title": "Canvas pointer-coordinate conversion",
+      "beneficiary": "DevEnv developer implementing canvas editor interactions",
+      "intendedOutcome": "Expose pointer positions in the same logical CSS-pixel space as drawing.",
+      "successCondition": "Pointer movement emits coordinates relative to canvas content, excluding borders and accounting for axis-aligned display scaling and viewport offsets. Pixel density does not multiply logical coordinates; zero rendered area reports an explicit error.",
+      "baseline": "Canvas has no pointer-coordinate conversion or movement output.",
+      "startedAt": "2026-10-09T21:54:33+02:00",
+      "completedAt": "2026-10-09T21:57:38+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Coordinate space, border and scaling behavior, public movement output, and zero-area failure recorded before Red.", "evidence": "Foundation slice 1 and this record." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 5 seconds elapsed through visible-browser verification, including user wait; active effort is unknown.", "evidence": "Start 2026-10-09T21:54:33+02:00; completion 2026-10-09T21:57:38+02:00." },
+        { "metricId": "outcome-and-quality", "value": "12 component/adapter tests pass with 100% four-metric coverage and passing client build. Border, position, axis-aligned scale, DPR independence, output wiring, and zero-area errors covered. Real browser mouse movement emitted content coordinates within 0.1 CSS pixel of expected at DPR 1. No canvas test-source errors; unrelated existing test errors remain. Real high-DPR rendering and follow-up user outcome remain unverified.", "evidence": "Focused tests, coverage, client build, test-source check, and visible-browser checkpoint in interactive-canvas-workflow.md." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "interactive-canvas-frame-scheduling",
       "title": "Change-driven canvas frame scheduling",
       "beneficiary": "DevEnv developer building responsive canvas interactions",
@@ -41,12 +75,12 @@
       "successCondition": "Initial rendering, resize, and clock ticks request at most one pending frame; completed frames permit later redraws; destruction cancels pending work including frame ID zero.",
       "baseline": "Initial rendering, every resize notification, and clock ticks draw immediately.",
       "startedAt": "2026-10-09T21:47:55+02:00",
-      "completedAt": null,
+      "completedAt": "2026-10-09T21:57:38+02:00",
       "measures": [
         { "metricId": "goal-success-clarity", "value": "Coalescing, no idle loop, and cancellation acceptance defined for foundation slice 1.", "evidence": "Canvas plan and focused coalescing test." },
         { "metricId": "decision-latency", "value": null, "evidence": null },
-        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
-        { "metricId": "outcome-and-quality", "value": "Automated scheduling acceptance passes: 8 tests and 100% four-metric coverage for component and browser adapter; client build passes. Coalescing, later redraw, idle behavior, and cancellation including ID zero are covered. Visible-browser frame delivery and user responsiveness remain unverified.", "evidence": "Focused canvas component/adapter suites and client build; animation-frame checkpoint in interactive-canvas-workflow.md." },
+        { "metricId": "delivery-flow-and-effort", "value": "9 minutes 43 seconds elapsed through visible-browser verification, including intervening discussion, commit, other work, and user waits; active effort is unknown.", "evidence": "Start 2026-10-09T21:47:55+02:00; completion 2026-10-09T21:57:38+02:00. Earlier green build checkpoint at 21:48:53." },
+        { "metricId": "outcome-and-quality", "value": "Coalescing, later redraw, idle behavior, and cancellation including ID zero pass automated tests; latest 12-test canvas suites retain 100% four-metric coverage and passing client build. Visible-browser canvas image changed after a 1.1-second wait and automatic resizing redrew matching bitmap dimensions. No measured editor responsiveness or follow-up user outcome is available.", "evidence": "Focused canvas suites and client build; visible-browser checkpoint in interactive-canvas-workflow.md." },
         { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
       ]
     },

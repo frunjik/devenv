@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, Output, ViewChild, inject } from '@angular/core';
 import { BROWSER } from './browser';
 import type { IBrowser } from './browser';
 
@@ -9,11 +9,16 @@ import type { IBrowser } from './browser';
     styleUrl: './interactive-canvas.component.scss',
 })
 export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
+    @Output() readonly pointerMoved = new EventEmitter<ReturnType<IBrowser['canvasPoint']>>();
     @ViewChild('canvas', { static: true }) private canvas!: ElementRef<HTMLCanvasElement>;
     private refreshTimer: ReturnType<typeof setInterval> | undefined;
     private readonly browser = inject(BROWSER);
     private stopObserving: (() => void) | undefined;
     private pendingFrame: number | undefined;
+
+    movePointer(event: PointerEvent): void {
+        this.pointerMoved.emit(this.browser.canvasPoint(this.canvas.nativeElement, event));
+    }
 
     ngAfterViewInit(): void {
         const canvas = this.canvas.nativeElement;

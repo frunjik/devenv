@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Active - responsive sizing and change-driven animation-frame scheduling are at a green checkpoint. Visible-browser verification and pointer conversion remain outstanding; foundation slice 1 is not complete.
+**Status:** Active - sizing, frame scheduling, and pointer-coordinate conversion are green; visible-browser resizing, clock delivery, and real mouse coordinates verified at DPR 1. Real high-density rendering remains outstanding; foundation slice 1 is not complete.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
@@ -18,7 +18,31 @@
 
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
-**Next:** Verify automatic resizing and scheduled drawing in a visible browser tab, including a high-density display. Continue slice 1 with pointer-coordinate conversion. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+**Next:** Verify rendering on a real high-density display (DPR greater than 1) to finish sizing acceptance. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+
+### Viewport stretch checkpoint (2026-10-09 22:03:56 CEST)
+
+- User approved the narrow shared-shell layout change. The shell is now a viewport-minimum-height flex column with the existing bottom-toolbar reservation; long pages can still grow and scroll. The canvas fills the remaining route space after navigation, heading, padding, and optional meta framing, without a 640px cap or fixed aspect ratio.
+- TDD browser Red at 1200 x 900 measured 642px canvas width against 1152px available width, and bottom 471.781px against expected 832px. A narrow-screen intrinsic-sizing feedback failure was also observed and corrected with a zero-pixel canvas flex basis. No bitmap attributes determine its CSS height.
+- Visible-browser Green at DPR 1: 1200 x 900 gives 1150 x 720 content/backing pixels and bottom 832px; 380 x 800 gives 330 x 544 and bottom 688px. Both fill available width with no page overflow. Narrow meta mode gives 320 x 401 content/backing pixels, ending at 683px above the toolbar at 707.844px. The clock image changes after 1.1 seconds.
+- Existing Diagram workspace still renders; Workflow TODO remains vertically scrollable with bottom padding retained. Focused canvas suites pass all 12 tests at 100% statement, branch, function, and line coverage; client build passes. Browser geometry is the layout acceptance evidence, not a jsdom/source-string proxy.
+- Type review: CSS layout constraints do not justify a new domain Type or browser operation. Existing IBrowser sizing/observation continues to resize the backing bitmap. Real high-density rendering remains outstanding. No new meta-level insight identified.
+- The browser became hidden during verification; those bitmap checks were not accepted as runtime evidence. After the user restored visibility, automatic resize and paint delivery were reverified. Elapsed time includes permission and visibility waits; active effort and follow-up outcome remain unknown. Changes remain uncommitted.
+
+### Visible-browser verification (2026-10-09 21:57:38 CEST)
+
+- After the user made the page visible, document visibility reported visible at DPR 1.
+- Without synthetic resize events, viewport widths of 900 and 380 produced matching backing/display dimensions of 640 x 360 and 332 x 187. The canvas image changed over a 1.1-second wait, confirming real animation-frame delivery for clock updates.
+- A real mouse move 101px right and 51px down from the canvas border emitted approximately (100, 50.068) content coordinates, within 0.1 CSS pixel of the intended (100, 50); fractional layout versus integer DOM dimensions accounts for rounding. The diagnostic subscription and attribute were removed afterward.
+- Frame scheduling and pointer-coordinate evaluations now record verified completion and elapsed times. Real high-density rendering is still unverified; sizing evaluation and broader milestone remain incomplete. Tests cover DPR 2 and a subsequent DPR 1 change.
+
+### Pointer conversion checkpoint (2026-10-09 21:56:12 CEST)
+
+- IBrowser.canvasPoint converts viewport coordinates to content-relative logical CSS pixels, subtracting borders and accounting for axis-aligned display scaling. Device pixel ratio does not multiply pointer coordinates. Zero rendered area throws explicitly. Rotated/skewed transforms and padded canvas layouts are not supported by this slice; the current canvas has no padding or transform.
+- The component exposes pointerMoved through a native pointermove template binding. Plain MockBrowser provides the coordinates in component tests; adapter tests cover position, border, scale, DPR independence, outside/border positions, and zero width/height.
+- TDD Red confirmed missing conversion and output. Green: 12 tests, 100% four-metric coverage for both production modules, and passing client build. Test-source type-check has no canvas errors but retains existing errors in untouched test files.
+- Type review: content-relative coordinates can be negative (for example at the border), unlike validated non-negative DiagramPoint. Keep the anonymous coordinate shape and reuse its return type in the output; a separately named coordinate-space Type remains a possible refinement if multiple spaces later interact. No new Type name or Glossary entry adopted.
+- Reconciled scheduling elapsed time to its recorded green-checkpoint timestamp, not completion. Pointer conversion has 1 minute 39 seconds elapsed to this checkpoint; no active-effort estimate is inferred. Visible runtime acceptance remains outstanding. No new meta-level insight identified.
 
 ### Animation-frame checkpoint (2026-10-09)
 

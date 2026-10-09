@@ -37,6 +37,9 @@ class MockBrowser implements IBrowser {
     displayedWidth(): number { return this.width; }
     displayedHeight(): number { return this.height; }
     devicePixelRatio(): number { return this.pixelRatio; }
+    canvasPoint(_canvas: HTMLCanvasElement, event: Pick<MouseEvent, 'clientX' | 'clientY'>) {
+        return { x: event.clientX - 101, y: event.clientY - 51 };
+    }
     observeResize(_canvas: HTMLCanvasElement, callback: () => void): () => void {
         this.resize = callback;
         return () => { this.disconnected = true; this.resize = () => {}; };
@@ -132,6 +135,16 @@ describe('InteractiveCanvasComponent', () => {
         expect(browser.draws).toHaveLength(2);
         fixture.destroy();
         expect(browser.frames.size).toBe(0);
+    });
+
+    it('emits logical canvas coordinates for pointer movement', () => {
+        const fixture = TestBed.createComponent(InteractiveCanvasComponent);
+        fixture.detectChanges();
+        const points: { x: number; y: number }[] = [];
+        fixture.componentInstance.pointerMoved.subscribe(point => points.push(point));
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        canvas.dispatchEvent(new MouseEvent('pointermove', { clientX: 261, clientY: 141 }));
+        expect(points).toEqual([{ x: 160, y: 90 }]);
     });
 });
 

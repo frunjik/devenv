@@ -36,6 +36,44 @@ describe('IBrowser adapter', () => {
         expect(browser.devicePixelRatio()).toBe(2);
     });
 
+    it('converts viewport coordinates to logical CSS pixels, excluding the border', () => {
+        const canvas = document.createElement('canvas');
+        let bounds = rectangle(100, 50, 322, 182);
+        jest.spyOn(canvas, 'getBoundingClientRect').mockImplementation(() => bounds);
+        jest.spyOn(canvas, 'offsetWidth', 'get').mockReturnValue(322);
+        jest.spyOn(canvas, 'offsetHeight', 'get').mockReturnValue(182);
+        jest.spyOn(canvas, 'clientLeft', 'get').mockReturnValue(1);
+        jest.spyOn(canvas, 'clientTop', 'get').mockReturnValue(1);
+        const browser = TestBed.inject(BROWSER);
+        expect(browser.canvasPoint(canvas, { clientX: 261, clientY: 141 }))
+            .toEqual({ x: 160, y: 90 });
+        jest.replaceProperty(window, 'devicePixelRatio', 2);
+        expect(browser.canvasPoint(canvas, { clientX: 261, clientY: 141 }))
+            .toEqual({ x: 160, y: 90 });
+        bounds = rectangle(20, 30, 644, 364);
+        expect(browser.canvasPoint(canvas, { clientX: 342, clientY: 212 }))
+            .toEqual({ x: 160, y: 90 });
+        expect(browser.canvasPoint(canvas, { clientX: 20, clientY: 30 }))
+            .toEqual({ x: -1, y: -1 });
+    });
+
+    it.each([
+        rectangle(0, 0, 0, 180),
+        rectangle(0, 0, 320, 0),
+    ])('reports when pointer conversion has no rendered area', bounds => {
+        const canvas = document.createElement('canvas');
+        jest.spyOn(canvas, 'getBoundingClientRect').mockReturnValue(bounds);
+        expect(() => TestBed.inject(BROWSER).canvasPoint(canvas, { clientX: 0, clientY: 0 }))
+            .toThrow('Unable to convert canvas pointer: canvas has no rendered area.');
+    });
+
+    function rectangle(x: number, y: number, width: number, height: number): DOMRect {
+        return {
+            x, y, width, height, left: x, top: y, right: x + width, bottom: y + height,
+            toJSON: () => ({ x, y, width, height }),
+        };
+    }
+
     it('subscribes to element and window resize and cleans up both', () => {
         let notify = () => {};
         let observed: Element | undefined;

@@ -176,7 +176,9 @@
         "interactive-canvas-editor-milestone",
         "interactive-canvas-responsive-sizing",
         "interactive-canvas-typed-boundary",
-        "interactive-canvas-frame-scheduling"
+        "interactive-canvas-frame-scheduling",
+        "interactive-canvas-pointer-coordinates",
+        "interactive-canvas-viewport-stretch"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

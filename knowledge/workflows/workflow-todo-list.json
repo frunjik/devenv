@@ -187,7 +187,8 @@
         "interactive-canvas-typed-boundary",
         "interactive-canvas-frame-scheduling",
         "interactive-canvas-pointer-coordinates",
-        "interactive-canvas-viewport-stretch"
+        "interactive-canvas-viewport-stretch",
+        "interactive-canvas-one-editable-part"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

@@ -12,6 +12,9 @@ class MockBrowser implements IBrowser {
     disconnected = false;
     draws: [string, number, number][] = [];
     transforms: unknown[][] = [];
+    boxes: number[][] = [];
+    captured: number[] = [];
+    capturePointer(_canvas: HTMLCanvasElement, pointerId: number): void { this.captured.push(pointerId); }
     frames = new Map<number, () => void>();
     private nextFrame = 0;
     requestAnimationFrame(callback: () => void): number {
@@ -29,9 +32,11 @@ class MockBrowser implements IBrowser {
         clearRect: () => {},
         setTransform: (...values: unknown[]) => { this.transforms.push(values); },
         fillText: (text, x, y) => { this.draws.push([text, x, y]); },
+        strokeRect: (x, y, width, height) => { this.boxes.push([x, y, width, height]); },
         textAlign: 'center',
         textBaseline: 'middle',
         font: '',
+        lineWidth: 1,
     };
     getContext(): ReturnType<IBrowser['getContext']> { return this.context; }
     displayedWidth(): number { return this.width; }
@@ -75,6 +80,73 @@ describe('InteractiveCanvasComponent', () => {
         browser.paint();
         expect(browser.draws.at(-1)?.[0]).toBe(currentTime());
         expect(browser.draws.at(-1)?.[0]).not.toBe(initialTime);
+    });
+
+    it('creates one labelled sketch box through Add part and prevents a second box in this slice', () => {
+        const fixture = TestBed.createComponent(InteractiveCanvasComponent);
+        fixture.detectChanges();
+        browser.paint();
+        const add: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Add part"]');
+        expect(add).not.toBeNull();
+        add.click();
+        fixture.detectChanges();
+        browser.paint();
+        expect(browser.boxes.at(-1)).toEqual([24, 24, 180, 80]);
+        expect(browser.draws).toContainEqual(['DevEnv client', 114, 64]);
+        expect(add.disabled).toBe(true);
+    });
+
+    it('selects, renames, drags without a jump, and deselects the box', () => {
+        const fixture = TestBed.createComponent(InteractiveCanvasComponent);
+        fixture.detectChanges();
+        fixture.componentInstance.addPart();
+        fixture.detectChanges();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        const editor: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Part label"]');
+        expect(editor).not.toBeNull();
+        expect(editor.disabled).toBe(true);
+        canvas.dispatchEvent(pointer('pointerdown', 135, 85, 1));
+        fixture.detectChanges();
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Part label"]');
+        expect(input).not.toBeNull();
+        input.value = 'Client sketch';
+        input.dispatchEvent(new Event('input'));
+        canvas.dispatchEvent(pointer('pointermove', 155, 115, 2));
+        expect(fixture.componentInstance.part?.position).toEqual({ x: 24, y: 24 });
+        canvas.dispatchEvent(pointer('pointermove', 155, 115, 1));
+        browser.paint();
+        expect(browser.boxes.at(-1)).toEqual([44, 54, 180, 80]);
+        expect(browser.draws).toContainEqual(['Client sketch', 134, 94]);
+        expect(browser.captured).toEqual([1]);
+        canvas.dispatchEvent(pointer('pointerup', 155, 115, 2));
+        canvas.dispatchEvent(pointer('pointerup', 155, 115, 1));
+        canvas.dispatchEvent(pointer('pointermove', 175, 135, 1));
+        expect(fixture.componentInstance.part?.position).toEqual({ x: 44, y: 54 });
+        canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
+        fixture.detectChanges();
+        expect(input.disabled).toBe(true);
+    });
+
+    it.each(['pointercancel', 'lostpointercapture'])('stops a drag on %s and ignores unsupported starts', end => {
+        const fixture = TestBed.createComponent(InteractiveCanvasComponent);
+        fixture.detectChanges();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        fixture.componentInstance.renamePart('No box');
+        canvas.dispatchEvent(pointer('pointerdown', 135, 85, 1));
+        canvas.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+        fixture.componentInstance.addPart();
+        canvas.dispatchEvent(pointer('pointerdown', 135, 85, 1));
+        canvas.dispatchEvent(pointer('pointerdown', 150, 100, 2));
+        expect(browser.captured).toEqual([1]);
+        canvas.dispatchEvent(pointer(end, 135, 85, 1));
+        canvas.dispatchEvent(pointer('pointermove', 155, 115, 1));
+        expect(fixture.componentInstance.part?.position).toEqual({ x: 24, y: 24 });
+        for (const [x, y] of [[125, 75], [305, 155], [306, 155], [125, 156], [124, 75], [125, 74]]) {
+            canvas.dispatchEvent(pointer('pointerdown', x, y, 1));
+            canvas.dispatchEvent(pointer('pointerup', x, y, 1));
+        }
+        fixture.componentInstance.renamePart('');
+        expect(fixture.componentInstance.part?.label).toBe('');
     });
 
     it('reports an unavailable context and safely destroys the failed view', () => {
@@ -152,4 +224,10 @@ function currentTime(): string {
     return new Date().toLocaleTimeString(undefined, {
         hour: '2-digit', minute: '2-digit', second: '2-digit',
     });
+}
+
+function pointer(type: string, clientX: number, clientY: number, pointerId: number): MouseEvent {
+    const event = new MouseEvent(type, { clientX, clientY, button: 0 });
+    Object.defineProperty(event, 'pointerId', { value: pointerId });
+    return event;
 }

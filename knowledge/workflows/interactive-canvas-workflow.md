@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Active - foundation slice 1 complete. Sizing, frame scheduling, pointer conversion, viewport stretch, and live pixel-density transitions are verified. Slice 2 awaits the sketch-versus-architecture-view and editing decisions.
+**Status:** Active - foundation slice 1 and one-editable-part slice 2 complete. Next is slice 3: multiple sketch parts with stable identities, drawing order, hit testing, and removal.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
@@ -18,7 +18,33 @@
 
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
-**Next:** Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+**Next:** Slice 3: several independently arranged sketch parts. Review stable identity and selection representation before adopting new Types. Keep `/diagram` unchanged.
+
+### Slice 2 acceptance (2026-10-09 22:42:03 CEST)
+
+- One in-memory SketchPart can be created, selected, moved with pointer capture, and renamed through an HTML control. Add part is disabled after creation in this single-part slice. CanvasDrag preserves grab offset and owning pointer; release, cancellation, and lost capture end dragging without rolling back movement already applied.
+- Real narrow-screen Red found that conditionally revealing the label editor shifted canvas origin by about 80px during drag. Kept the editor rendered but disabled without selection; tests assert this stable control lifecycle. Real repeat keeps canvas bounds unchanged and moves (24, 24) to approximately (44, 54.047) for a 20px-right/30px-down gesture.
+- Desktop acceptance after fresh reload: real pointer travels outside the canvas and back while captured, finishes at approximately (44, 54.019), then renames to Client sketch. Ink readback confirms rendering; backing dimensions match content times DPR. Empty-space click deselects and disables editing; Add part remains disabled.
+- Seventeen focused tests pass with 100% statement, branch, function, and line coverage for both production modules; client build passes. Test-source check has no canvas diagnostics; unrelated existing test errors remain. Clock and existing Diagram code preserved.
+- Local approved Types are SketchPart (sketch label and logical position) and CanvasDrag (owning pointer and grab offset). Single-part selection is adequately represented by a boolean until multiple identities are introduced. No architecture reference, persistent model, or extra clock/scheduler abstraction introduced.
+- Evaluation records acceptance and elapsed time; the structured record was added at this checkpoint rather than before Red. Outcome/baseline had been agreed in the saved plan and conversation, but this timing is a tracking gap, not retroactive evidence of a pre-work record. Active effort and follow-up usability unknown.
+- TDD phase cleared after acceptance. Changes uncommitted. No additional meta-level insight identified.
+
+### Slice 2 creation checkpoint (2026-10-09)
+
+- User chose an Add part button that creates DevEnv client. Approved local Type names SketchPart (label and position) and CanvasDrag (pointer ownership and grab offset, not implemented yet). Fixed 180 x 80 logical-pixel dimensions for the first box; in-memory sketch only.
+- Red confirmed missing Add part control. Green adds one box at (24, 24), labelled DevEnv client, using the existing coalesced drawing frame. Button disables after creation; later slices add multiple parts. Clock retained.
+- Thirteen component/adapter tests pass with 100% four-metric coverage for both modules; client build passes. Drawing boundary adds strokeRect, recorded by plain MockBrowser.
+- Runtime creation changes component state and disables the button. However, after hot reload the visible shared browser reports DPR 5 and CSS content 260 x 297 while backing remains 640 x 360; no ink was detected in the expected box area. Runtime drawing acceptance is pending, not claimed. Investigate this delivery/sizing discrepancy before expanding interactions; earlier foundation DPR transition evidence remains historical, not proof of this checkpoint.
+- Selection, drag ownership/offset, pointer capture/cancellation, and HTML label editing remain unimplemented. No commit yet. Phase cleared at continuation gate.
+
+### Slice 2 interaction checkpoint (2026-10-09)
+
+- Selection, 3px selected border, HTML label input, grab-offset dragging owned by a pointer ID, capture, pointer release/cancellation/lost-capture cleanup implemented. Other pointers cannot move/end the active drag; secondary-button starts are ignored. Empty labels currently remain allowed.
+- Seventeen focused tests pass with 100% four-metric coverage for both production modules; client build passes. Boundary-adapter pointer-capture test uses a Jest callback; component uses plain MockBrowser. No unsafe context casts.
+- Fresh reload resolves the earlier hot-reload bitmap mismatch: live DPR 5 backing matches CSS dimensions. Add part creates state and disables its control. Full drag/rename runtime acceptance remains pending: fresh browser interaction stalled while waiting for a visible/stable Add part control.
+- Before accepting drag behavior, check whether showing the label control moves the canvas during pointerdown on narrow screens; this could shift the coordinate origin despite a correct grab offset. If confirmed, keep editor layout stable across selection, with a disabled label control when unavailable, rather than ignoring coordinate changes.
+- Next: restore visible browser, verify real dragging/rename/deselection/capture and narrow layout, add regression if needed, run test-source check and final tests/build. Slice 2 not complete. Phase cleared at continuation gate; changes uncommitted.
 
 ### High-density acceptance and correction (2026-10-09 22:34:13 CEST)
 

@@ -28,6 +28,14 @@ describe('IBrowser adapter', () => {
         expect(cancel).toHaveBeenCalledWith(7);
     });
 
+    it('delegates pointer capture to the canvas', () => {
+        const canvas = document.createElement('canvas');
+        const capture = jest.fn();
+        Object.defineProperty(canvas, 'setPointerCapture', { value: capture });
+        TestBed.inject(BROWSER).capturePointer(canvas, 7);
+        expect(capture).toHaveBeenCalledWith(7);
+    });
+
     it('delegates context and dimensions to the browser', () => {
         const canvas = document.createElement('canvas');
         const getContext = jest.spyOn(canvas, 'getContext').mockReturnValue(null);

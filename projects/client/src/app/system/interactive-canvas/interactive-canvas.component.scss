@@ -13,6 +13,25 @@
     padding: 1.5rem;
 }
 
+.canvas-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+
+    .form-field {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
 canvas {
     display: block;
     flex: 1 1 0px;
@@ -22,4 +41,5 @@ canvas {
     box-sizing: border-box;
     border: 1px solid #777;
     background: #fff;
+    touch-action: none;
 }

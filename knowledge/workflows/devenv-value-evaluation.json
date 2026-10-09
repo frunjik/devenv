@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "interactive-canvas-one-editable-part",
+      "title": "Create and edit one canvas sketch part",
+      "beneficiary": "DevEnv developer exploring a free-form canvas editor",
+      "intendedOutcome": "Create, select, move, and rename one in-memory labelled box without a position jump.",
+      "successCondition": "Add part creates DevEnv client once; selecting shows a distinct border and enables HTML label editing; dragging preserves grab offset and pointer ownership, including outside-canvas capture; release/cancellation/lost capture stop movement; deselection disables editing without shifting canvas layout.",
+      "baseline": "Foundation renders a responsive clock and emits pointer positions but has no sketch parts or editing interactions.",
+      "startedAt": "2026-10-09T22:35:46+02:00",
+      "completedAt": "2026-10-09T22:42:03+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Slice outcome agreed in existing plan; user chose Add part creation and approved SketchPart/CanvasDrag names. Structured record added at completion, not before Red.", "evidence": "interactive-canvas-workflow.md plan, creation decision and acceptance checkpoint." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "6 minutes 17 seconds wall-clock including naming discussion, continuation gates and browser visibility waits; active effort unknown.", "evidence": "Recorded continuation request and runtime acceptance timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Seventeen tests pass at 100% four-metric coverage; client build passes. Visible narrow regression exposed canvas shifting on selection; stable disabled editor corrected it. Narrow and desktop real gestures move box within 0.1 CSS pixel of expected; desktop outside-canvas capture, rename, drawing ink, DPR backing and deselection verified. No canvas test-source diagnostics; unrelated errors remain. Follow-up usability unknown.", "evidence": "interactive-canvas-workflow.md slice 2 acceptance and focused test/build/browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "toolbar-design-refinement",
       "title": "Refine status toolbar visual design",
       "beneficiary": "DevEnv developer reading and refreshing toolbar status",

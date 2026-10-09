@@ -1,11 +1,22 @@
 <main class="interactive-canvas-page">
     <h1>Interactive Canvas (provisional)</h1>
+    <div class="canvas-controls">
+        <button type="button" aria-label="Add part" [disabled]="!!part" (click)="addPart()">Add part</button>
+        <label class="form-field">Part label
+            <input #label class="form-control" aria-label="Part label"
+                [disabled]="!selected || !part" [value]="part?.label || ''" (input)="renamePart(label.value)">
+        </label>
+    </div>
     <canvas
         #canvas
         width="640"
         height="360"
         (pointermove)="movePointer($event)"
-        aria-label="Current time rendered on an HTML canvas">
-        Current time is shown on this canvas.
+        (pointerdown)="selectPart($event)"
+        (pointerup)="endDrag($event)"
+        (pointercancel)="endDrag($event)"
+        (lostpointercapture)="endDrag($event)"
+        aria-label="Sketch workspace and current time rendered on an HTML canvas">
+        Sketch workspace. Use Add part, select the box to edit its label, and drag it to move it. Current time is also shown.
     </canvas>
 </main>

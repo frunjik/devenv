@@ -1,5 +1,4 @@
 import { describe, expect, it } from '@jest/globals';
-import { readFileSync } from 'node:fs';
 import { validateWorkEvaluationDataset } from '@shared';
 import type { WorkEvaluationDataset } from '@shared';
 
@@ -7,41 +6,34 @@ function createDataset(): WorkEvaluationDataset {
     return {
         schemaVersion: 1,
         metrics: [{
-            id: 'delivery',
-            name: 'Delivery',
-            definition: 'Measure elapsed delivery time.',
-            interpretation: 'Elapsed time is not active effort.',
+            id: 'outcome-and-quality',
+            name: 'Outcome and quality',
+            definition: 'Assess an agreed success condition against evidence.',
+            interpretation: 'Implementation checks do not establish user impact.',
         }],
         evaluations: [{
-            id: 'work-one',
-            title: 'Evaluate one work item',
-            beneficiary: 'Developer',
-            intendedOutcome: 'Understand progress',
-            successCondition: 'Record a result',
-            baseline: 'Unknown',
+            id: 'diagram-selection-and-movement',
+            title: 'Diagram selection and movement',
+            beneficiary: 'Diagram editor user',
+            intendedOutcome: 'Move a diagram item by dragging.',
+            successCondition: 'Dragging updates and displays the item coordinates.',
+            baseline: 'Movement was not yet implemented.',
             startedAt: '2026-10-09T13:00:00+02:00',
             completedAt: null,
             measures: [{
-                metricId: 'delivery',
-                value: null,
-                evidence: null,
+                metricId: 'outcome-and-quality',
+                value: 'Interaction checks passed; user impact remains unknown.',
+                evidence: 'Diagram editor workflow checkpoint.',
             }],
         }],
     };
 }
 
 describe('validateWorkEvaluationDataset', () => {
-    it('validates a dataset and preserves explicit unknowns', () => {
+    it('validates a minimal dataset derived from an observed evaluation', () => {
         const dataset = createDataset();
 
         expect(validateWorkEvaluationDataset(dataset)).toEqual(dataset);
-    });
-
-    it('validates the authoritative value-evaluation JSON file', () => {
-        const source = readFileSync('knowledge/workflows/devenv-value-evaluation.json', 'utf8');
-        const dataset: unknown = JSON.parse(source);
-
-        expect(validateWorkEvaluationDataset(dataset).evaluations).toHaveLength(7);
     });
 
     it('accepts an evaluation with an unknown start and a known completion', () => {

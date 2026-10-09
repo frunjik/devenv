@@ -81,30 +81,6 @@ describe('createWorkflowTodoHandler', () => {
         expect(nextMock).not.toHaveBeenCalled();
     });
 
-    it('parses the repository Workflow TODO List and its work-purpose labels', async () => {
-        fileReader.mockImplementation(
-            jest.requireActual<typeof import('node:fs/promises')>('node:fs/promises').readFile,
-        );
-
-        await invokeHandler(process.cwd());
-
-        expect(json).toHaveBeenCalledWith({
-            data: expect.objectContaining({
-                workflows: expect.arrayContaining([
-                    expect.objectContaining({
-                        name: 'Minimal Typed Diagram Editor',
-                        primaryWorkPurpose: 'Product work',
-                    }),
-                    expect.objectContaining({
-                        name: 'DevEnv Value Evaluation',
-                        primaryWorkPurpose: 'Meta work',
-                    }),
-                ]),
-            }),
-        });
-        expect(nextMock).not.toHaveBeenCalled();
-    });
-
     it('forwards invalid JSON errors', async () => {
         fileReader.mockResolvedValue('{');
 

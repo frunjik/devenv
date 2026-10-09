@@ -23,6 +23,7 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Regularly inspect the model for concepts that need a Type and existing Types whose boundaries or structure should be refined. Report a justified conviction that a Type is needed to the user; distinguish confirmed Types from candidates and unresolved questions.
 - **Checkpoints:** After identifying the workflow concepts; after considering scope variation and important exceptions; and before completing the task.
 - **Review prompts:** Are distinct lifecycle states, outcomes, evidence, decisions, scope levels, roles, or relationships being collapsed into strings or unstructured fields? Does a proposed Type have a distinct meaning, constraints, or lifecycle? Would separating it clarify the model, or merely add ceremony?
+- **Complexity signal:** When an existing Type appears to make a scoped behavior unnecessarily complex, report it as a refactoring candidate with concrete alternatives rather than silently working around it; see P-027.
 
 - **Knowledge-transfer modeling pattern (user, 2026-10-07):** Use [Example-Led Knowledge Modeling](../knowledge/practices/example-led-knowledge-modeling.md): meaning, a concrete Markdown example, a candidate Type, JSON, and a check that meaning is preserved. Try a contrasting example before choosing an authoritative representation. Ask for names before adopting them; do not equate a serialization format with the conceptual Type.
 
@@ -253,6 +254,15 @@ These principles are active from their recorded date and apply to future work in
 - **Applies to:** A new, substantive user-requested task, before implementation begins.
 - **Rule:** Ask separately whether the user wants the task registered in the Workflow TODO List as resumable work and whether an eligible coding slice should receive a WorkEvaluation record. Wait for the user's choices before implementation; do not assume either choice from the other.
 - **Practice:** Explain that a Workflow TODO entry is for work the user wants to track as resumable, while a WorkEvaluation records the agreed outcome and measures for an eligible coding slice. If the task is not eligible for evaluation, say so. Do not repeat the prompt when continuing an already-started task or answering a follow-up within it.
+
+### P-027 — Report Disproportionate Type Complexity
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: when an existing Type makes a solution more complicated than necessary, report it for refactoring with suggestions.
+- **Applies to:** Type review during implementation, modeling, or maintenance.
+- **Rule:** When evidence shows that an existing Type adds disproportionate complexity to the required behavior or obstructs a scoped solution that could be expressed more simply without losing meaningful constraints, report it to the user as a refactoring candidate and offer concrete alternatives.
+- **Practice:** Identify the Type and its callers, explain which complexity is unnecessary for the current goals, compare a simpler representation against meaningful invariants and other consumers, and state likely tradeoffs. Distinguish confirmed waste from an unresolved candidate. Do not silently work around the Type, rename or weaken it, or perform the refactor without agreement; retain it when its constraints protect other known behavior.
+- **Concrete contrast:** `DiagramConnection` captures persistent endpoints and a label with document-level non-self and duplicate-pair invariants; its structural detail enables validation and should not be called needless merely because a UI needs transient connect mode. The selected `readFileSync` in the evaluation test reads authoritative JSON and is not a Type-complexity instance.
 
 ## Applying the Register
 

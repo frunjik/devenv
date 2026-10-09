@@ -1,22 +1,15 @@
-.workflow-todo { max-width: 76rem; margin: 0 auto; padding: clamp(.75rem, 4vw, 3rem); }
+.workflow-evaluations { max-width: 76rem; margin: 0 auto; padding: clamp(.75rem, 4vw, 3rem); }
 h1, h2 { color: var(--text-heading); }
-p, td, pre { color: var(--text-secondary); }
+p, td { color: var(--text-secondary); }
 .table-scroll { overflow-x: auto; }
 .table-scroll:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 caption { text-align: left; padding: .75rem 0; color: var(--text-secondary); }
 th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); }
 th { color: var(--text-heading); }
-.active { border-left: 3px solid var(--border-accent); }
-.status { white-space: nowrap; }
-.workflow-group + .workflow-group { margin-top: 2rem; }
-.evaluation { margin-top: 2rem; }
 .work-evaluation { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-default); border-radius: .4rem; }
-.work-evaluation h3 { color: var(--text-heading); }
 .work-evaluation p { overflow-wrap: anywhere; }
-.scroll-hint { display: none; }
 
 @media (max-width: 42rem) {
     .table-scroll table { min-width: 42rem; }
-    .scroll-hint { display: block; }
 }

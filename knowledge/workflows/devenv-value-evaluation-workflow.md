@@ -22,7 +22,7 @@ Record a small set of complementary measures. Do not combine them into a single 
 
 The JSON contains a completed example (diagram selection and movement) and a completed meta-work evaluation (this metrics view). These records preserve unknown measures without inventing outcomes. The meta-work record is useful for tracking measurement and upkeep overhead, but is not counted as an eligible regular coding slice in the three-slice feasibility pilot.
 
-The view at `/workflow-todo` displays these definitions and records read-only. This view was explicitly requested after the earlier pilot scope was written; it does not add application instrumentation or automatic collection. Continue to record measures manually and update the JSON source.
+The `/workflow-todo` page shows a compact recorded/unknown count for each metric; `/workflow-evaluations` displays metric definitions and full evaluation records read-only. For completed evaluations, that view derives elapsed wall-clock duration from `startedAt` and `completedAt`; this is not active effort, which remains separately recorded or unknown. Missing or unusable timestamps are shown explicitly. Neither view adds application instrumentation or automatic collection. Continue to record measures manually and update the JSON source.
 
 Do not use completed tasks, tool usage, test count, or coverage alone as value measures. They show activity or implementation assurance. Preserve missing data and uncertainty explicitly; collect only role or product information needed for the evaluation.
 

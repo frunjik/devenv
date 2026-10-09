@@ -7,6 +7,7 @@ import { GlossaryComponent } from './system/glossary/glossary.component';
 import { ProblemInquiryPageComponent } from './problem-inquiry/problem-inquiry-page.component';
 import { SystemPlanComponent } from './system-plan/system-plan.component';
 import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.component';
+import { WorkflowEvaluationsComponent } from './system/workflow-todo/workflow-evaluations.component';
 import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 
 export const routes: Routes = [
@@ -17,6 +18,10 @@ export const routes: Routes = [
     {
         path: 'workflow-todo',
         component: WorkflowTodoComponent
+    },
+    {
+        path: 'workflow-evaluations',
+        component: WorkflowEvaluationsComponent
     },
     {
         path: '',

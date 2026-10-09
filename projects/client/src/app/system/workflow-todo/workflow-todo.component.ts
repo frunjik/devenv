@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { validateWorkEvaluationDataset } from '@shared';
 import type { WorkflowTodoList, WorkEvaluationDataset } from '@shared';
@@ -8,12 +9,36 @@ import { BackendService } from '../../backend.service';
 @Component({
     selector: 'app-workflow-todo',
     standalone: true,
-    imports: [NgFor, NgIf],
+    imports: [NgFor, NgIf, RouterLink],
     templateUrl: './workflow-todo.component.html',
     styleUrl: './workflow-todo.component.scss',
 })
 export class WorkflowTodoComponent implements OnInit, OnDestroy {
     workflows: WorkflowTodoList['workflows'] = [];
+    get endUserWorkflows(): WorkflowTodoList['workflows'] {
+        return this.workflows.filter(workflow => workflow.primaryWorkPurpose === 'Product work');
+    }
+    get metaWorkflows(): WorkflowTodoList['workflows'] {
+        return this.workflows.filter(workflow => workflow.primaryWorkPurpose === 'Meta work');
+    }
+    get metricSummary(): { name: string; recorded: number; unknown: number }[] {
+        if (!this.evaluationDataset) {
+            return [];
+        }
+        const dataset = this.evaluationDataset;
+        return dataset.metrics.map(metric => {
+            const recorded = dataset.evaluations.filter(evaluation =>
+                evaluation.measures.some(measure =>
+                    measure.metricId === metric.id && measure.value !== null,
+                ),
+            ).length;
+            return {
+                name: metric.name,
+                recorded,
+                unknown: dataset.evaluations.length - recorded,
+            };
+        });
+    }
     loading = true;
     errorMessage = '';
     evaluationDataset: WorkEvaluationDataset | null = null;

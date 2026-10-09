@@ -71,3 +71,35 @@ Runtime follow-up: `tsx watch` could not resolve the handler's runtime `@shared`
 **Next:** User review of the reduced workflow view.
 
 No global list authority remains in Markdown or API parsing. `WorkflowTodoList` is the already-approved shared Type name. `WorkflowWorkPurpose` has two constrained values; the record shapes remain inline rather than adding a separate row Type.
+
+## Follow-up checkpoint: separate end-user and meta work
+
+**Status:** Implementation and verification complete; user review remains separate.
+
+The user requested visually separating DevEnv meta workflows from end-user tools/capabilities, with meta work last. The view now renders two labelled sections in that order. It filters the existing workflow array only for presentation; source order, JSON records, and shared/API Types are unchanged. Sections are both visible rather than using tabs so users can compare the groups at once.
+
+The focused client suite passes (9 tests), and the component has 100% statement, branch, function, and line coverage. The client build and `git diff --check` pass. Browser visual verification was not performed.
+
+**Next:** User review of the grouped presentation.
+
+## Follow-up checkpoint: separate evaluation details
+
+**Status:** Implementation and verification complete; user review remains separate.
+
+The user requested moving full evaluation details into a separate page/view and showing a metrics summary on the workflow page. The summary now presents each metric's count of recorded versus unknown evaluations and links to `/workflow-evaluations`. That route displays metric definitions and complete per-evaluation context and measures from the existing authoritative JSON. The source data and shared/API Types are unchanged.
+
+Focused workflow/evaluation/route tests pass (20 total), with 100% statement, branch, function, and line coverage for both changed production components. The client source type-check and client build pass. Browser visual verification was not performed.
+
+**Next:** User review of the split presentation.
+
+### Follow-up: direct evaluation navigation
+
+The user asked whether the evaluation route was available in the menu and approved adding it. The toolbar now links directly to `/workflow-evaluations` beside Workflow TODO; the existing in-page link remains. The toolbar and route suites pass (12 tests), toolbar component coverage is 100% for statements, branches, functions, and lines, and the client build passes.
+
+### Follow-up: completed evaluation duration
+
+The evaluations view derives elapsed wall-clock duration for completed records from their existing `startedAt` and `completedAt` values. Incomplete records omit the duration; completed records with missing or invalid timestamps show an explicit unavailable/unknown value. This does not alter the JSON schema or imply active human effort. The display and error cases are covered through the component's public view.
+
+The combined focused suites pass (25 tests); route, toolbar, workflow, and evaluations components each have 100% statement, branch, function, and line coverage. The client development TypeScript check and client build pass. Browser visual verification was not performed.
+
+**Next:** User review of the combined workflow/evaluation presentation. Changes remain uncommitted.

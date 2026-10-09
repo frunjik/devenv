@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { WorkflowTodoComponent } from './workflow-todo.component';
 
 describe('WorkflowTodoComponent', () => {
@@ -18,7 +19,7 @@ describe('WorkflowTodoComponent', () => {
         (window as Window & { host?: string }).host = 'http://localhost:3000/';
         await TestBed.configureTestingModule({
             imports: [WorkflowTodoComponent],
-            providers: [provideHttpClient(), provideHttpClientTesting()],
+            providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
         }).compileComponents();
         http = TestBed.inject(HttpTestingController);
         fixture = TestBed.createComponent(WorkflowTodoComponent);
@@ -28,6 +29,7 @@ describe('WorkflowTodoComponent', () => {
 
     it('shows loading, then all JSON fields and the active workflow', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
+        expect(fixture.componentInstance.metricSummary).toEqual([]);
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
@@ -37,16 +39,26 @@ describe('WorkflowTodoComponent', () => {
             expect(text).toContain(workflow.status);
             expect(text).toContain(workflow.relatedConcern);
         }
+        const groups = fixture.nativeElement.querySelectorAll('.workflow-group') as NodeListOf<HTMLElement>;
+        expect(groups).toHaveLength(2);
+        expect(groups[0].querySelector('h2')?.textContent).toContain('End-user tools and capabilities');
+        expect(groups[1].querySelector('h2')?.textContent).toContain('DevEnv meta work');
+        expect(groups[0].textContent).toContain('DevEnv Export');
+        expect(groups[0].textContent).not.toContain('Glossary Refinement');
+        expect(groups[1].textContent).toContain('Glossary Refinement');
+        expect(groups[1].textContent).not.toContain('DevEnv Export');
         expect(text).not.toContain('Resume reference');
         expect(text).not.toContain('Current checkpoint');
         expect(fixture.nativeElement.querySelector('.resume-button')).toBeNull();
+        expect(text).not.toContain('Show current evaluation metrics in the Workflow TODO view');
         expect(fixture.nativeElement.querySelectorAll('tr.active').length).toBe(1);
         expect(text).not.toContain('Loading workflows');
     });
 
-    it('shows evaluation metrics from the typed data file and labels unavailable values Unknown', () => {
+    it('shows a metric availability summary and links to evaluation details', () => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
+            primaryWorkPurpose: 'Meta work',
             status: 'Active',
             resumeLabel: 'Measurement-feasibility pilot',
             resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
@@ -68,6 +80,11 @@ describe('WorkflowTodoComponent', () => {
                     name: 'Delivery flow and effort',
                     definition: 'Record delivery elapsed time and active effort separately.',
                     interpretation: 'Do not infer active effort from tool runtime.',
+                }, {
+                    id: 'outcome-and-quality',
+                    name: 'Outcome and quality',
+                    definition: 'Check agreed results and rework.',
+                    interpretation: 'Tests do not establish user impact.',
                 }],
                 evaluations: [{
                     id: 'metrics-workflow-todo-view',
@@ -82,6 +99,10 @@ describe('WorkflowTodoComponent', () => {
                         metricId: 'delivery-flow-and-effort',
                         value: null,
                         evidence: null,
+                    }, {
+                        metricId: 'outcome-and-quality',
+                        value: 'Passed acceptance checks.',
+                        evidence: 'Client tests.',
                     }],
                 }],
             }) });
@@ -91,14 +112,27 @@ describe('WorkflowTodoComponent', () => {
             '[aria-label="DevEnv value evaluation metrics"]',
         ) as HTMLElement;
         expect(metrics.textContent).toContain('Delivery flow and effort');
-        expect(metrics.textContent).toContain('Record delivery elapsed time and active effort separately.');
-        expect(metrics.textContent).toContain('Show current evaluation metrics in the Workflow TODO view');
-        expect(metrics.textContent).toContain('Unknown');
+        expect(metrics.textContent).toContain('Outcome and quality');
+        expect(metrics.textContent).toContain('Metric availability across 1 work evaluations');
+        expect(metrics.textContent).toContain('Recorded evaluations');
+        expect(metrics.textContent).toContain('Unknown evaluations');
+        expect(metrics.textContent).toContain('0');
+        expect(metrics.textContent).toContain('1');
+        const metricRows = Array.from(metrics.querySelectorAll('tbody tr')) as HTMLTableRowElement[];
+        expect(metricRows[0].textContent).toContain('Delivery flow and effort');
+        expect(metricRows[0].textContent).toContain('0');
+        expect(metricRows[0].textContent).toContain('1');
+        expect(metricRows[1].textContent).toContain('Outcome and quality');
+        expect(metricRows[1].textContent).toContain('1');
+        expect(metricRows[1].textContent).toContain('0');
+        expect(metrics.textContent).not.toContain('Show current evaluation metrics in the Workflow TODO view');
+        expect(metrics.querySelector('a[href="/workflow-evaluations"]')).not.toBeNull();
     });
 
     it('reports evaluation data load failures instead of presenting an empty dataset', () => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
+            primaryWorkPurpose: 'Meta work',
             status: 'Active',
             resumeLabel: 'Measurement-feasibility pilot',
             resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
@@ -128,6 +162,7 @@ describe('WorkflowTodoComponent', () => {
     ])('reports $label from the evaluation data file', ({ contents, expectedError }) => {
         const metricWorkflow = {
             name: 'DevEnv Value Evaluation',
+            primaryWorkPurpose: 'Meta work',
             status: 'Active',
             resumeLabel: 'Measurement-feasibility pilot',
             resumePath: './devenv-value-evaluation-workflow.md#checkpoint',

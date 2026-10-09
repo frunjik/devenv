@@ -2,11 +2,11 @@
 
 ## Checkpoint
 
-**Status:** Active - canvas editor plan saved and selected on 2026-10-09. The initial clock slice is complete; editor implementation has not started.
+**Status:** Active - responsive sizing/pixel-density implementation is at a green checkpoint. Visible-browser resize verification remains outstanding; foundation slice 1 is not complete.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
-**Provisional names:** `InteractiveCanvas` and `InteractiveCanvas Prototype` are working names only; neither is established terminology.
+**Names:** The user's naming correction on 2026-10-09 supersedes the earlier interface name: `IBrowser` describes the browser boundary, `MockBrowser` implements it in tests, and InteractiveCanvas refers to the component (`InteractiveCanvasComponent`). `InteractiveCanvas Prototype` remains the provisional workflow name. Interface-name approval does not adopt an editor domain model.
 
 **Agreed first-slice outcome:** Add a standalone canvas component on a separate client route. The canvas visibly renders the current time and refreshes once per second. This is an experiment, not yet a decision to replace the existing editor or a commitment to any future editor architecture.
 
@@ -18,7 +18,21 @@
 
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
-**Next:** Begin slice 1 below with a focused failing test for responsive canvas sizing and device-pixel-ratio handling. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+**Next:** Verify automatic resizing in a visible browser tab, including a high-density display. Then continue slice 1 with pointer-coordinate conversion and change-driven animation-frame scheduling. Before slice 2, resolve the sketch-versus-architecture-view and editing decisions below. Keep `/diagram` unchanged.
+
+### Responsive sizing checkpoint (2026-10-09)
+
+- Boundary refinement: component tests now inject a plain `MockBrowser` implementing the approved `IBrowser` interface via the `BROWSER` token. The drawing contract uses a narrow Pick of browser context operations/properties. Removed component-test prototype spies, global ResizeObserver replacement, property patches, jest.fn call recording, and unsafe double casts; Jest fake time remains for the actual clock/timer boundary.
+- The real adapter owns browser context acquisition, displayed dimensions, pixel ratio, and resize subscription/cleanup. Adapter tests alone patch browser APIs; a typed observer fake models notifications and disconnect. Both suites pass (6 tests), both changed production modules have 100% four-metric coverage, the client build passes, and editor diagnostics show no errors. The separate test-source check caught a fake setTransform overload mismatch; corrected without casts, with no remaining canvas errors. Existing unrelated test errors remain. The browser shows non-empty drawn pixels and matching backing/display dimensions after explicit resize; visible automatic resizing remains outstanding.
+- The completed `interactive-canvas-typed-boundary` evaluation preserves all five metrics and records 4 minutes 43 seconds elapsed including user waits, not active effort. The sizing and broader editor evaluations remain incomplete.
+- Type review: the narrow consumer-derived interface is justified by the real canvas versus plain fake contrast and removes assertions claiming an incomplete object implements the entire rendering context. Resize subscription returns its cleanup action; naming alone does not guarantee lifecycle correctness, which remains tested. No further Type or Glossary addition is warranted.
+- Added a Canvas link beside Diagram in the secondary navigation at the user's request, making the isolated prototype discoverable through the existing menu.
+- Added CSS aspect ratio, bitmap dimensions derived from displayed dimensions and device pixel ratio, scaled drawing in CSS pixels, ResizeObserver and window-resize handling, and destruction cleanup.
+- TDD Red confirmed missing scaling and observer cleanup; Green passes all 5 component tests with 100% statement/branch/function/line coverage. Refactor review found no necessary extraction or new domain Type.
+- Client production build passes. The separate Jest-source TypeScript check reports existing errors in untouched Glossary and Workflow TODO tests, but none in the canvas test.
+- In the shared hidden browser tab, explicit resize events produced matching bitmap/display sizes at 900px and 380px viewport widths (640 x 360 and 332 x 187 at DPR 1). Automatic resize/paint callbacks were not observed while the tab was hidden; do not treat this as visible-browser acceptance. DPR 2 and resize to DPR 1 are covered by boundary-mocked tests.
+- Timer and observer lifecycle use existing browser Types; no new Glossary entry or Type is justified. No additional reusable meta-level insight identified.
+- The new sizing WorkEvaluation retains unknown completion and user outcome until visible-browser acceptance. The broader milestone remains incomplete.
 
 ## Canvas editor plan
 

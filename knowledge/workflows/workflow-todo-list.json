@@ -173,7 +173,9 @@
       "name": "InteractiveCanvas Prototype (provisional)",
       "evaluationIds": [
         "interactive-canvas-clock-prototype",
-        "interactive-canvas-editor-milestone"
+        "interactive-canvas-editor-milestone",
+        "interactive-canvas-responsive-sizing",
+        "interactive-canvas-typed-boundary"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

@@ -40,6 +40,15 @@ describe('NavigationToolbarComponent', () => {
         expect(link.textContent?.trim()).toBe('Diagram');
     });
 
+    it('links to the canvas from the secondary navigation', () => {
+        const link = fixture.nativeElement.querySelector(
+            '#secondary-navigation a[href="/interactive-canvas"]',
+        ) as HTMLAnchorElement;
+
+        expect(link).not.toBeNull();
+        expect(link.textContent?.trim()).toBe('Canvas');
+    });
+
     it('expands and collapses secondary navigation on demand', () => {
         const button = fixture.nativeElement.querySelector('.more-navigation-button') as HTMLButtonElement;
         const secondaryNavigation = fixture.nativeElement.querySelector('#secondary-navigation') as HTMLElement;

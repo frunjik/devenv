@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
+import { BROWSER } from './browser';
+import type { IBrowser } from './browser';
 
 @Component({
     selector: 'app-interactive-canvas',
@@ -9,15 +11,23 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@ang
 export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
     @ViewChild('canvas', { static: true }) private canvas!: ElementRef<HTMLCanvasElement>;
     private refreshTimer: ReturnType<typeof setInterval> | undefined;
+    private readonly browser = inject(BROWSER);
+    private stopObserving: (() => void) | undefined;
 
     ngAfterViewInit(): void {
         const canvas = this.canvas.nativeElement;
-        const context = canvas.getContext('2d');
+        const context = this.browser.getContext(canvas);
         if (!context) {
             throw new Error('Unable to initialize canvas clock: 2D context is unavailable.');
         }
 
-        this.drawTime(canvas, context);
+        const resizeCanvas = () => {
+            canvas.width = Math.round(this.browser.displayedWidth(canvas) * this.browser.devicePixelRatio());
+            canvas.height = Math.round(this.browser.displayedHeight(canvas) * this.browser.devicePixelRatio());
+            this.drawTime(canvas, context);
+        };
+        resizeCanvas();
+        this.stopObserving = this.browser.observeResize(canvas, resizeCanvas);
         this.refreshTimer = setInterval(() => this.drawTime(canvas, context), 1000);
     }
 
@@ -25,10 +35,16 @@ export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
         if (this.refreshTimer !== undefined) {
             clearInterval(this.refreshTimer);
         }
+        this.stopObserving?.();
     }
 
-    private drawTime(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): void {
-        context.clearRect(0, 0, canvas.width, canvas.height);
+    private drawTime(
+        canvas: HTMLCanvasElement,
+        context: NonNullable<ReturnType<IBrowser['getContext']>>,
+    ): void {
+        const ratio = this.browser.devicePixelRatio();
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+        context.clearRect(0, 0, canvas.width / ratio, canvas.height / ratio);
         context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.font = '24px sans-serif';
@@ -38,8 +54,8 @@ export class InteractiveCanvasComponent implements AfterViewInit, OnDestroy {
                 minute: '2-digit',
                 second: '2-digit',
             }),
-            canvas.width / 2,
-            canvas.height / 2,
+            canvas.width / ratio / 2,
+            canvas.height / ratio / 2,
         );
     }
 }

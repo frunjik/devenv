@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "interactive-canvas-typed-boundary",
+      "title": "Typed canvas boundary and plain browser fake",
+      "beneficiary": "DevEnv developer maintaining canvas tests",
+      "intendedOutcome": "Use a consumer-derived interface and plain typed fake instead of component-test browser patching and unsafe context casts.",
+      "successCondition": "Component tests inject MockBrowser through the approved IBrowser interface (renamed from InteractiveCanvas after the user's clarification); retain clock, size, error, and cleanup coverage without browser spies or unsafe casts. Limit browser API patching to adapter tests and preserve runtime behavior.",
+      "baseline": "Component tests patched browser dimensions, context, pixel ratio, and global ResizeObserver and double-cast an incomplete context.",
+      "startedAt": "2026-10-09T21:37:00+02:00",
+      "completedAt": "2026-10-09T21:41:43+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "The user requested interface-based mocks and Jest magic only where needed; exact interface and fake names were explicitly approved before implementation.", "evidence": "User instruction and naming approval; interactive-canvas-workflow.md boundary refinement." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "4 minutes 43 seconds elapsed including naming discussion and continuation approval; active effort is unknown.", "evidence": "Request at 2026-10-09T21:37:00+02:00; final verification timestamp 2026-10-09T21:41:43+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Six component/adapter tests pass with 100% four-metric coverage for both production modules; client build passes. Test-source check found a canvas fake overload error, corrected and rechecked; remaining errors are in unrelated existing tests. Browser adapter renders non-empty pixels and matches displayed dimensions after explicit resize. Visible automatic resize and real high-density verification remain outstanding for the earlier sizing slice.", "evidence": "Focused coverage, client build, Jest-source TypeScript check, and browser check; interactive-canvas-workflow.md." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "interactive-canvas-responsive-sizing",
+      "title": "Responsive canvas sizing and pixel density",
+      "beneficiary": "DevEnv developer using the canvas editor foundation",
+      "intendedOutcome": "Keep the canvas clock sharp and centered as its displayed size and pixel density change.",
+      "successCondition": "Canvas backing dimensions follow displayed CSS dimensions multiplied by device pixel ratio; resizing redraws centered text without stretching the layout; destruction removes resize observation and timers.",
+      "baseline": "The clock uses a fixed 640 by 360 backing bitmap scaled by CSS, with no resize observation or pixel-density adjustment.",
+      "startedAt": "2026-10-09T21:30:59+02:00",
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Responsive size, pixel density, centered drawing, and lifecycle cleanup acceptance recorded before TDD Red.", "evidence": "Canvas editor plan slice 1 and this record." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes from recorded start to the 21:32:59 green checkpoint; not a completion duration. Active effort is unknown.", "evidence": "Started 2026-10-09T21:30:59+02:00; checkpoint timestamp 2026-10-09T21:32:59+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Automated acceptance passes: 5 component tests, 100% four-metric coverage, and client production build. Explicit browser resize events match displayed size at wide/narrow widths. Automatic resizing in a visible tab and real high-DPR rendering remain unverified; shared tab was hidden. Separate Jest-source type-check fails in untouched Glossary and Workflow TODO tests, with no canvas errors.", "evidence": "Focused canvas tests and coverage, client build, browser sizing checks, and interactive-canvas-workflow.md responsive sizing checkpoint." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "diagram-selection-and-movement",
       "title": "Diagram selection and movement",
       "beneficiary": "Developer using the diagram editor",

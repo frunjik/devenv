@@ -9,7 +9,7 @@ import { WorkflowTodoComponent } from './workflow-todo.component';
 describe('WorkflowTodoComponent', () => {
     let fixture: ComponentFixture<WorkflowTodoComponent>;
     let http: HttpTestingController;
-    const workflows = [
+    const workflows: WorkflowTodoList['workflows'] = [
         { name: 'Glossary Refinement', primaryWorkPurpose: 'Meta work', status: 'Active', resumeLabel: 'Current checkpoint',
             resumePath: './glossary-refinement.md#checkpoint', relatedConcern: 'SC-027; SC-049', evaluationIds: [] },
         { name: 'DevEnv Export', primaryWorkPurpose: 'Product work', status: 'Pending', resumeLabel: 'Starting checkpoint',
@@ -115,7 +115,7 @@ describe('WorkflowTodoComponent', () => {
     });
 
     it('shows all completed evaluations linked from a workflow independent of its name', () => {
-        const reviewWorkflow = {
+        const reviewWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'Renamed principle review workflow',
             primaryWorkPurpose: 'Meta work',
             status: 'Completed',
@@ -127,7 +127,7 @@ describe('WorkflowTodoComponent', () => {
                 'workflow-association-follow-up',
             ],
         };
-        const evaluationWorkflow = {
+        const evaluationWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'DevEnv Value Evaluation',
             evaluationIds: [],
             primaryWorkPurpose: 'Meta work',
@@ -206,7 +206,7 @@ describe('WorkflowTodoComponent', () => {
     });
 
     it('shows a metric availability summary and links to evaluation details', () => {
-        const metricWorkflow = {
+        const metricWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'DevEnv Value Evaluation',
             evaluationIds: [],
             primaryWorkPurpose: 'Meta work',
@@ -215,7 +215,7 @@ describe('WorkflowTodoComponent', () => {
             resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
             relatedConcern: 'Not assigned',
         };
-        const diagramWorkflow = {
+        const diagramWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'Minimal Typed Diagram Editor',
             evaluationIds: ['diagram-selection-and-movement'],
             primaryWorkPurpose: 'Product work',
@@ -224,7 +224,7 @@ describe('WorkflowTodoComponent', () => {
             resumePath: './diagram-editor-workflow.md#checkpoint',
             relatedConcern: 'Not assigned',
         };
-        const todoViewWorkflow = {
+        const todoViewWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'TODO View (DevEnv system layer)',
             evaluationIds: ['workflow-todo-value-metrics-view'],
             primaryWorkPurpose: 'Meta work',
@@ -361,7 +361,7 @@ describe('WorkflowTodoComponent', () => {
     });
 
     it('reports evaluation data load failures instead of presenting an empty dataset', () => {
-        const metricWorkflow = {
+        const metricWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'DevEnv Value Evaluation',
             evaluationIds: [],
             primaryWorkPurpose: 'Meta work',
@@ -429,7 +429,7 @@ describe('WorkflowTodoComponent', () => {
             expectedError: 'Invalid WorkEvaluationDataset',
         },
     ])('reports $label from the evaluation data file', ({ contents, expectedError }) => {
-        const metricWorkflow = {
+        const metricWorkflow: WorkflowTodoList['workflows'][number] = {
             name: 'DevEnv Value Evaluation',
             evaluationIds: [],
             primaryWorkPurpose: 'Meta work',

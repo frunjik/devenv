@@ -54,7 +54,7 @@ describe('GlossaryComponent', () => {
             .map(item => item.textContent)).toEqual(['A subject classification.']);
         expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-example'))
             .map(item => item.textContent)).toEqual(['Example: Warehouse operations.']);
-        const examples = entry.querySelector('details.glossary-examples');
+        const examples = entry.querySelector<HTMLDetailsElement>('details.glossary-examples');
         expect(examples?.open).toBe(false);
         expect(examples?.querySelector('summary')?.textContent).toBe('Examples (1)');
         expect(Array.from<HTMLElement>(entry.querySelectorAll('.glossary-domain-badge'))
@@ -73,7 +73,8 @@ describe('GlossaryComponent', () => {
         });
         fixture.detectChanges();
 
-        const search = fixture.nativeElement.querySelector<HTMLInputElement>('#glossary-search');
+        const host: HTMLElement = fixture.nativeElement;
+        const search = host.querySelector<HTMLInputElement>('#glossary-search');
         expect(search).not.toBeNull();
         if (search === null) {
             throw new Error('Glossary search input was not rendered');

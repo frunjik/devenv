@@ -3,11 +3,9 @@ import { DatePipe, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Subscription } from 'rxjs';
-import {
-    BackendService,
-    type LastTestRun,
-    type TestOutputStream,
-} from '../../backend.service';
+import type { TestOutputStream } from '@shared';
+import { BackendService, type LastTestRun } from '../../backend.service';
+import { TestRunnerService } from '../../test-runner.service';
 import { TestRunCacheStatusService } from '../../test-run-cache-status.service';
 
 type TestRunResult = Pick<LastTestRun, 'exitCode' | 'stdout' | 'stderr'>;
@@ -29,6 +27,7 @@ export class TestRunnerComponent implements OnDestroy, OnInit {
     private lastTestRunSubscription = Subscription.EMPTY;
     constructor(
         private backend: BackendService,
+        private readonly testRunner: TestRunnerService,
         readonly cacheStatus: TestRunCacheStatusService,
     ) {}
 
@@ -56,7 +55,7 @@ export class TestRunnerComponent implements OnDestroy, OnInit {
         this.errorMessage = '';
 
         this.result = { exitCode: null, stdout: '', stderr: '' };
-        void this.backend.runTests((stream, chunk) => this.appendOutput(stream, chunk))
+        void this.testRunner.runTests((stream, chunk) => this.appendOutput(stream, chunk))
             .then(exitCode => {
                 if (this.result) {
                     this.result.exitCode = exitCode;

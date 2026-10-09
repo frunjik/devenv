@@ -12,7 +12,7 @@ Test whether DevEnv's practices, tools, and workflows help teams clarify goals, 
 
 **Current process:** TDD links behavior to tests; coverage, type-checks/builds, runtime checks, and workflow checkpoints record implementation and verification evidence. We do not consistently record pre-work success conditions, a comparable baseline, decision/delivery elapsed time, human effort, process overhead, or post-delivery outcomes.
 
-**Next step:** Selection and movement are complete and recorded. After this metrics-view change is committed, resume the next planned diagram-editor slice (the connection workflow) with a pre-work record before implementation. Continue the existing TDD and verification process; add only the measurement record below. Review measurement feasibility after three consecutive eligible coding slices. Treat this small sample as descriptive, not proof of improved performance.
+**Next step:** Selection and movement are complete and recorded. A requested DevEnv upkeep detour is extracting streamed test execution from the client `BackendService`; finish its type-check, build, and backend coverage review before resuming the next planned diagram-editor slice (the connection workflow) with a pre-work record before implementation. Continue the existing TDD and verification process; add only the measurement record below. Review measurement feasibility after three consecutive eligible coding slices. Treat this small sample as descriptive, not proof of improved performance.
 
 **Open limits:** Historical slices lack consistent start/end and effort records, so do not invent a retrospective baseline. The first prospective records describe the current DevEnv-supported coding process; they are not a without-DevEnv control group and cannot show causal improvement. Coding-task evidence does not establish product impact after deployment. A later comparison with a credible alternative workflow and evidence from other product roles is required for broader claims.
 
@@ -54,3 +54,13 @@ Existing coding-process affordances make this feasible as a manual pilot, but th
 - At least three consecutive eligible coding slices have records, or an explicit reason the pilot could not collect them.
 - Report completeness, collection effort, outcomes, and limitations without filling unknowns.
 - Decide whether to continue, adapt, or stop measurement and whether a broader team pilot is justified.
+
+## Upkeep checkpoint: streamed test-run extraction
+
+The user requested extracting `runTests` from the client `BackendService`. The implementation moves the streaming HTTP request and event parser into `TestRunnerService`; test-run cache/status requests remain in `BackendService`, and the new service reads the host from that existing service rather than duplicating host configuration. The runner component now delegates execution to `TestRunnerService`. No shared Types or API behavior changed.
+
+Red was observed after migrating the runner service tests and component mocks: both suites failed because `TestRunnerService` did not yet exist. Green: focused runner-service, backend, and component suites pass (52 tests); the new service has 100% statement, branch, function, and line coverage. The full client suite passes all 566 tests. Both changed services (`BackendService` and `TestRunnerService`) have 100% statement, branch, function, and line coverage under the full suite.
+
+The full client coverage command exits nonzero because overall coverage is below the repository's 100% thresholds (95.99% statements, 92.48% branches, 96% lines, 95.52% functions). The report identifies unchanged shared `workflow-todo.types.ts` as the large uncovered area (3.44% statements); all 41 client suites and 566 tests pass. The client development TypeScript check, client production build, and `git diff --check` pass. No new domain Type was warranted: the stream parser and test-run request are a cohesive service responsibility; test cache/status retrieval remains separate in `BackendService`.
+
+**Next:** Review the service extraction. After approval, resume the planned diagram connection slice with a prospective evaluation record; historical effort for this detour remains unknown.

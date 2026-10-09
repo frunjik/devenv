@@ -4,17 +4,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
 import { BackendService, type LastTestRun, type TestRunCacheStatus } from '../../backend.service';
+import { TestRunnerService } from '../../test-runner.service';
 import { TestRunnerComponent } from './test-runner.component';
 
 describe('TestRunnerComponent', () => {
     let fixture: ComponentFixture<TestRunnerComponent>;
     let component: TestRunnerComponent;
-    let runTests: jest.MockedFunction<BackendService['runTests']>;
+    let runTests: jest.MockedFunction<TestRunnerService['runTests']>;
     let getCacheStatus: jest.MockedFunction<BackendService['getTestRunCacheStatus']>;
     let getLastTestRun: jest.MockedFunction<BackendService['getLastTestRun']>;
 
     beforeEach(async () => {
-        runTests = jest.fn<BackendService['runTests']>();
+        runTests = jest.fn<TestRunnerService['runTests']>();
         runTests.mockResolvedValue(0);
         getCacheStatus = jest.fn<BackendService['getTestRunCacheStatus']>();
         getCacheStatus.mockReturnValue(of({
@@ -30,7 +31,10 @@ describe('TestRunnerComponent', () => {
             imports: [TestRunnerComponent],
             providers: [{
                 provide: BackendService,
-                useValue: { runTests, getTestRunCacheStatus: getCacheStatus, getLastTestRun },
+                useValue: { getTestRunCacheStatus: getCacheStatus, getLastTestRun },
+            }, {
+                provide: TestRunnerService,
+                useValue: { runTests },
             }],
         }).compileComponents();
 

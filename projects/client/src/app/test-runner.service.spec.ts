@@ -2,11 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals
 import { provideHttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
-import { BackendService } from './backend.service';
-import { LoggerService } from './logger.service';
+import { TestRunnerService } from './test-runner.service';
 
-describe('BackendService test runner', () => {
-    let service: BackendService;
+describe('TestRunnerService', () => {
+    let service: TestRunnerService;
     let fetchMock: jest.MockedFunction<typeof fetch>;
     const browserWindow = window as Window & { host?: string };
     const originalFetch = globalThis.fetch;
@@ -18,15 +17,9 @@ describe('BackendService test runner', () => {
             value: fetchMock,
         });
         TestBed.configureTestingModule({
-            providers: [
-                provideHttpClient(),
-                {
-                    provide: LoggerService,
-                    useValue: { error: (_message: string, _error: Error) => undefined },
-                },
-            ],
+            providers: [provideHttpClient()],
         });
-        service = TestBed.inject(BackendService);
+        service = TestBed.inject(TestRunnerService);
         browserWindow.host = 'http://localhost:3000/';
     });
 

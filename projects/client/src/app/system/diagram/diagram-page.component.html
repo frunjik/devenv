@@ -51,7 +51,7 @@
         aria-label="Diagram workspace"
         cdkDropList
         cdkDropListConnectedTo="palette"
-        (cdkDropListDropped)="dropPaletteElement($event)"
+        (cdkDropListDropped)="dropWorkspaceItem($event)"
     >
         @for (element of document.elements; track element.id) {
             <div
@@ -59,8 +59,17 @@
                 [attr.data-kind]="element.kind"
                 [attr.data-element-id]="element.id"
                 [attr.aria-label]="element.kind + ' ' + element.id"
+                [attr.aria-pressed]="selectedElementId === element.id"
                 [style.left.px]="element.position.x"
                 [style.top.px]="element.position.y"
+                cdkDrag
+                [cdkDragData]="element.id"
+                (cdkDragStarted)="startWorkspaceElementDrag($event)"
+                role="button"
+                tabindex="0"
+                (click)="selectElement(element.id)"
+                (keydown.enter)="selectElement(element.id)"
+                (keydown.space)="$event.preventDefault(); selectElement(element.id)"
             >
                 <span>{{ element.label || element.kind }}</span>
                 @if (element.kind === 'note') {

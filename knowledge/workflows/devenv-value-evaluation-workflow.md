@@ -32,7 +32,7 @@ For each slice, record:
 
 | Slice / date | Beneficiary and intended outcome | Success condition and baseline | Decision and delivery elapsed time | Active effort / DevEnv overhead | Result and linked evidence | Follow-up / unknowns |
 | --- | --- | --- | --- | --- | --- | --- |
-| — | — | — | — | — | — | — |
+| Diagram selection and movement / 2026-10-09 13:22 CEST | Developer using the diagram editor can select and reposition diagram items. | Selection is visibly and accessibly indicated; dragging an item updates its persisted diagram coordinates. Baseline: selection and movement were not implemented; no historical timing or effort baseline. | Verified 13:38 CEST; wall-clock span about 16 minutes, including user-review pauses. Pause/wait breakdown and decision latency are unavailable; work was preselected. | Active effort and DevEnv-specific overhead: not tracked. | Acceptance behavior implemented. All client tests pass (39 suites, 513 tests), with 100% statements, branches, functions, and lines globally and for the changed page component; shared and client builds pass. | No real-browser interaction or beneficiary outcome evidence. Follow-up window not yet agreed. |
 
 Do not use completed tasks, tool usage, test count, or coverage alone as value measures. They show activity or implementation assurance. Preserve missing data and uncertainty explicitly; collect only role or product information needed for the evaluation.
 

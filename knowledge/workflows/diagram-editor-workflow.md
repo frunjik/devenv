@@ -8,7 +8,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 ## Checkpoint
 
-**Status:** Paused. Document contract and pure create/move/edit/connect/delete/clear operations implemented; click and drag-to-add palette controls create and render the three element kinds. Selection, movement, connections UI, file workflow, and departure guard are not started.
+**Status:** Paused. Document contract and pure create/move/edit/connect/delete/clear operations implemented; click and drag-to-add palette controls create and render the three element kinds. Workspace-item selection and CDK movement persistence are implemented and verified. Connections UI, file workflow, and departure guard remain.
 
 **Authority:** This document is the maintained plan. The session-local plan points here rather than maintaining a separate copy.
 
@@ -16,7 +16,15 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 **Open questions:** None blocking the agreed minimal scope. Future ports, viewport state, and diagram-library selection remain outside this plan.
 
-**Next step:** Implement selection and free dragging of workspace elements with CDK. Convert the drop point to diagram coordinates accounting for workspace offset and scroll, then persist it through `moveDiagramElement` without double-applying the drag transform. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+**Next step:** Implement the connection workflow: select a source element, activate Connect, select a distinct target, and support cancellation. Preserve the document/renderer boundary and use existing connection operations. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+
+**Selection checkpoint (2026-10-09; superseded):** The active DevEnv Value Evaluation pilot began for selection and movement. Recorded the developer beneficiary, intended outcome, acceptance condition, absent-feature baseline, and start time; historical timing and effort are unavailable. Selection is now operable by pointer, Enter, and Space, with `aria-pressed` and a visible outline. The focused page suite passes (7 tests). Movement had not started at this checkpoint; no coverage or build check had been run. The stable checkpoint below supersedes this interim state.
+
+**Movement checkpoint (2026-10-09; superseded, was not stable):** Implemented existing-item drag persistence through `moveDiagramElement`, converting the pointer drop position to workspace coordinates with scroll offsets and the initial pointer-to-item offset. TDD Red was observed for movement and for a canceled-drag offset regression; both pass after implementation. At this interim checkpoint the three diagram suites passed (143 tests), but coverage was incomplete and touch/error cases and the client build remained. The stable checkpoint below supersedes this state.
+
+**Stable checkpoint (2026-10-09 13:33 CEST):** Selection and free dragging of workspace items are implemented. Pointer, Enter, and Space activate selection; dragging persists positions through `moveDiagramElement`, accounting for item grab offset, workspace bounds, and scroll. Touch pointer coordinates and malformed drag states are covered. The full client suite passes (39 suites, 512 tests) with 100% statements, branches, functions, and lines globally and for `diagram-page.component.ts`; shared and client builds pass. The separate Jest-source TypeScript check initially reported TS2345 on the palette-button `it.each` readonly tuples; removed the unnecessary `as const`, and the test TypeScript check now passes. Browser-based visual/real-pointer verification and end-user outcome evidence remain unavailable. No new formal domain Type; selection remains component interaction state and persisted positions reuse `DiagramPoint`. Next: connection workflow.
+
+**Stable checkpoint (2026-10-09 13:38 CEST):** Reverified after the narrow Jest test typing correction. The full client suite passes (39 suites, 513 tests) with 100% statements, branches, functions, and lines globally and for `diagram-page.component.ts`; Jest-source type-check and shared/client builds pass. The `it.each` palette cases now use object records instead of readonly tuples. This supersedes the prior stable checkpoint's type-check note. No visual browser interaction was performed. Next: connection workflow.
 
 **Stable checkpoint (2026-10-09):** Palette drag-to-add is implemented alongside click-to-add. The operation, contract, and page suites pass (140 tests), with 100% statements, branches, functions, and lines for `diagram-operations.ts`, `diagram-page.component.ts`, and `diagram.types.ts`; shared and client builds pass. The running client served `/diagram`; browser rendering and a real drag were not visually verified. The next editor slice is selection and movement. This workflow is paused while the DevEnv value-measurement feasibility pilot is prepared.
 

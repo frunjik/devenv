@@ -43,7 +43,8 @@
     {
       "name": "TODO View (DevEnv system layer)",
       "evaluationIds": [
-        "workflow-todo-value-metrics-view"
+        "workflow-todo-value-metrics-view",
+        "workflow-todo-compact-navigation"
       ],
       "primaryWorkPurpose": "Meta work",
       "status": "Completed",

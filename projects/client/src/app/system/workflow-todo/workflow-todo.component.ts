@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { validateWorkEvaluationDataset } from '@shared';
@@ -10,7 +10,7 @@ import { formatElapsedDuration } from './evaluation-duration';
 @Component({
     selector: 'app-workflow-todo',
     standalone: true,
-    imports: [NgFor, NgIf, RouterLink],
+    imports: [NgFor, NgIf, NgTemplateOutlet, RouterLink],
     templateUrl: './workflow-todo.component.html',
     styleUrl: './workflow-todo.component.scss',
 })
@@ -46,23 +46,51 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
     evaluationDataset: WorkEvaluationDataset | null = null;
     evaluationLoading = false;
     evaluationError = '';
+    checkpoint: WorkflowTodoList['workflows'][number] | undefined;
+    checkpointText = '';
+    checkpointLoading = false;
+    checkpointError = '';
+    private checkpointRead: Subscription | undefined;
     private readonly subscriptions = new Subscription();
 
     constructor(private readonly backend: BackendService) {}
 
-    completedEvaluationSummary(evaluationIds: string[]): string {
+    viewCheckpoint(workflow: WorkflowTodoList['workflows'][number]): void {
+        this.checkpointRead?.unsubscribe();
+        this.checkpoint = workflow;
+        this.checkpointText = '';
+        this.checkpointError = '';
+        this.checkpointLoading = true;
+        const path = workflow.resumePath.split('#')[0]
+            .replace('../practices/', 'knowledge/practices/')
+            .replace('./', 'knowledge/workflows/')
+            .replaceAll('/', '\\');
+        this.checkpointRead = this.backend.loadFile(path).subscribe({
+            next: text => {
+                this.checkpointText = text;
+                this.checkpointLoading = false;
+            },
+            error: (error: Error) => {
+                this.checkpointError = error.message;
+                this.checkpointLoading = false;
+            },
+        });
+    }
+
+    completedEvaluationItems(evaluationIds: string[]): string[] {
         if (this.evaluationDataset === null) {
-            return '—';
+            return [];
         }
+        const dataset = this.evaluationDataset;
         const summaries = evaluationIds.flatMap(evaluationId => {
-            const evaluation = this.evaluationDataset?.evaluations.find(item =>
+            const evaluation = dataset.evaluations.find(item =>
                 item.id === evaluationId && item.completedAt !== null,
             );
             return evaluation
                 ? [`${evaluation.title} (${formatElapsedDuration(evaluation.startedAt, evaluation.completedAt)})`]
                 : [];
         });
-        return summaries.length ? summaries.join('; ') : '—';
+        return summaries;
     }
 
     ngOnInit(): void {
@@ -116,6 +144,7 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.checkpointRead?.unsubscribe();
         this.subscriptions.unsubscribe();
     }
 }

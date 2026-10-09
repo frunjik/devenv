@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "workflow-todo-compact-navigation",
+      "title": "Compact workflow navigation and expandable evaluation history",
+      "beneficiary": "DevEnv contributors finding resumable work",
+      "intendedOutcome": "Scan workflows without long history dominating rows and view checkpoints without switching work.",
+      "successCondition": "Grouped top-aligned table omits repeated purpose column; completed history is collapsed with count, elapsed labels and evidence access. Checkpoints load read-only with reference and explicit errors. Existing selection remains unchanged.",
+      "baseline": "Completed evaluation titles/durations are concatenated inline, inflating rows; checkpoints are not visible.",
+      "startedAt": "2026-10-10T00:05:51+02:00",
+      "completedAt": "2026-10-10T00:11:33+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved compact table and read-only checkpoint document loading.", "evidence": "todo-view-workflow.md compact navigation slice." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 42 seconds wall-clock including approvals and continuation gates; active effort unknown.", "evidence": "Recorded start/completion timestamps and todo-view-workflow.md compact navigation slice." },
+        { "metricId": "outcome-and-quality", "value": "18 component tests pass at 100% all-four coverage; full client test-source type-check and client build pass. Visible desktop verifies 97px collapsed active row, 13 completed items, top alignment, keyboard disclosure and evidence navigation. Checkpoint loads read-only with reference and no change to active workflow. At 320px, table scrolls within 271px region, document width305 <= window320, controls >=44px high and checkpoint text wraps. Follow-up scanning/resumption benefit unknown.", "evidence": "todo-view-workflow.md acceptance; Jest coverage, TypeScript, build and visible browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-connection-picker",
       "title": "Pick and delete multiple canvas connections",
       "beneficiary": "DevEnv developer editing sketches with multiple connections",

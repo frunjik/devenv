@@ -14,13 +14,18 @@ p, td, pre { color: var(--text-secondary); }
 .table-scroll:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 table.workflow-table { table-layout: fixed; }
-.workflow-table .workflow-name-column { width: 23%; }
-.workflow-table .workflow-purpose-column { width: 15%; }
-.workflow-table .workflow-status-column { width: 12%; }
-.workflow-table .workflow-concern-column { width: 18%; }
-.workflow-table .workflow-evaluation-column { width: 32%; }
+.workflow-table .workflow-name-column { width: 35%; }
+.workflow-table .workflow-status-column { width: 15%; }
+.workflow-table .workflow-concern-column { width: 20%; }
+.workflow-table .workflow-evaluation-column { width: 30%; }
 caption { text-align: left; padding: .75rem 0; color: var(--text-secondary); }
-th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); }
+th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertical-align: top; overflow-wrap: anywhere; }
+.evaluation-history summary { min-height: 44px; cursor: pointer; }
+.evaluation-history li { margin-bottom: .5rem; }
+.evaluation-history ul { padding-left: 1.25rem; }
+.checkpoint-button { display: block; min-height: 44px; max-width: 100%; margin-top: .5rem; white-space: normal; text-align: left; }
+.checkpoint { margin-top: 1.5rem; }
+.checkpoint pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 th { color: var(--text-heading); }
 .active { border-left: 3px solid var(--border-accent); }
 .status { white-space: nowrap; }

@@ -60,13 +60,12 @@ describe('WorkflowTodoComponent', () => {
     it('shows loading, then all JSON fields and the active workflow', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
         expect(fixture.componentInstance.metricSummary).toEqual([]);
-        expect(fixture.componentInstance.completedEvaluationSummary(['diagram-selection-and-movement'])).toBe('—');
+        expect(fixture.componentInstance.completedEvaluationItems(['diagram-selection-and-movement'])).toEqual([]);
         http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
         for (const workflow of workflows) {
             expect(text).toContain(workflow.name);
-            expect(text).toContain(workflow.primaryWorkPurpose);
             expect(text).toContain(workflow.status);
             expect(text).toContain(workflow.relatedConcern);
         }
@@ -75,8 +74,9 @@ describe('WorkflowTodoComponent', () => {
             workflowTable.querySelectorAll('.workflow-group-heading') as NodeListOf<HTMLTableRowElement>,
         );
         expect(groupHeadings).toHaveLength(2);
-        expect(groupHeadings[0].textContent).toContain('End-user tools and capabilities');
+        expect(groupHeadings[0].textContent).toContain('Product work: end-user tools and capabilities');
         expect(groupHeadings[1].textContent).toContain('DevEnv meta work');
+        expect(workflowTable.querySelectorAll('thead th')).toHaveLength(4);
         const groupBodies = Array.from(
             workflowTable.querySelectorAll('tbody') as NodeListOf<HTMLTableSectionElement>,
         );
@@ -86,8 +86,7 @@ describe('WorkflowTodoComponent', () => {
         expect(groupBodies[1].textContent).toContain('Glossary Refinement');
         expect(groupBodies[1].textContent).not.toContain('DevEnv Export');
         expect(text).not.toContain('Resume reference');
-        expect(text).not.toContain('Current checkpoint');
-        expect(fixture.nativeElement.querySelector('.resume-button')).toBeNull();
+        expect(text).toContain('Current checkpoint');
         expect(text).not.toContain('Show current evaluation metrics in the Workflow TODO view');
         expect(fixture.nativeElement.querySelectorAll('tr.active').length).toBe(1);
         expect(text).not.toContain('Loading workflows');
@@ -106,12 +105,67 @@ describe('WorkflowTodoComponent', () => {
         ).map(column => column.className);
         expect(columnClasses).toEqual([
             'workflow-name-column',
-            'workflow-purpose-column',
             'workflow-status-column',
             'workflow-concern-column',
             'workflow-evaluation-column',
         ]);
         expect(workflowTables[0].querySelectorAll('tbody')).toHaveLength(2);
+    });
+
+    describe('read-only checkpoint documents', () => {
+        beforeEach(() => {
+            http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
+            fixture.detectChanges();
+        });
+
+        function openCheckpoint(): void {
+            const host: HTMLElement = fixture.nativeElement;
+            host.querySelector<HTMLButtonElement>('[aria-label="View checkpoint for Glossary Refinement"]')!.click();
+            fixture.detectChanges();
+        }
+
+        it('loads the document and shows its reference without switching workflow', () => {
+            openCheckpoint();
+            expect(fixture.nativeElement.textContent).toContain('Loading checkpoint');
+            http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\glossary-refinement.md')
+                .flush({ data: '# Saved checkpoint\nRead-only content.' });
+            fixture.detectChanges();
+            expect(fixture.nativeElement.querySelector('.checkpoint pre').textContent).toContain('Read-only content.');
+            expect(fixture.nativeElement.querySelector('.checkpoint').textContent).toContain('#checkpoint');
+            expect(fixture.componentInstance.activeWorkflow).toBe('Glossary Refinement');
+        });
+
+        it('reports checkpoint load failures explicitly', () => {
+            openCheckpoint();
+            http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\glossary-refinement.md')
+                .flush({ error: 'Checkpoint unavailable' }, { status: 500, statusText: 'Failed' });
+            fixture.detectChanges();
+            expect(fixture.nativeElement.querySelector('.checkpoint [role="alert"]').textContent)
+                .toContain('500 Failed');
+        });
+
+        it('cancels an earlier read when another checkpoint is opened', () => {
+            openCheckpoint();
+            const previous = http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\glossary-refinement.md');
+            const host: HTMLElement = fixture.nativeElement;
+            host.querySelector<HTMLButtonElement>('[aria-label="View checkpoint for DevEnv Export"]')!.click();
+            expect(previous.cancelled).toBe(true);
+            http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-export-workflow.md')
+                .flush({ data: 'Export checkpoint' });
+            fixture.detectChanges();
+            expect(host.querySelector('.checkpoint pre')!.textContent).toBe('Export checkpoint');
+        });
+
+        it('resolves practice checkpoint paths and cancels a pending read on destruction', () => {
+            fixture.componentInstance.workflows = [{
+                ...workflows[0], resumePath: '../practices/example-led-knowledge-modeling.md#example',
+            }];
+            fixture.detectChanges();
+            openCheckpoint();
+            const request = http.expectOne('http://localhost:3000/files?path=knowledge\\practices\\example-led-knowledge-modeling.md');
+            fixture.destroy();
+            expect(request.cancelled).toBe(true);
+        });
     });
 
     it('shows all completed evaluations linked from a workflow independent of its name', () => {
@@ -198,11 +252,16 @@ describe('WorkflowTodoComponent', () => {
             fixture.nativeElement.querySelectorAll(
                 '.workflow-table tbody tr:not(.workflow-group-heading)',
             ) as NodeListOf<HTMLTableRowElement>,
-        ).find(row => row.querySelector('th')?.textContent?.trim()
+        ).find(row => row.querySelector('.workflow-name')?.textContent?.trim()
             === 'Renamed principle review workflow');
 
         expect(reviewRow?.textContent).toContain('Principle register organization review (8m 56s)');
         expect(reviewRow?.textContent).toContain('Association follow-up (2m 0s)');
+        const history = reviewRow!.querySelector<HTMLDetailsElement>('details')!;
+        expect(history.open).toBe(false);
+        expect(history.querySelector('summary')!.textContent).toContain('2 completed');
+        expect(history.querySelectorAll('li')).toHaveLength(2);
+        expect(history.textContent).toContain('Elapsed time');
     });
 
     it('shows a metric availability summary and links to evaluation details', () => {
@@ -337,11 +396,11 @@ describe('WorkflowTodoComponent', () => {
                 '.workflow-table tbody tr:not(.workflow-group-heading)',
             ) as NodeListOf<HTMLTableRowElement>,
         );
-        const diagramRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
+        const diagramRow = workflowRows.find(row => row.querySelector('.workflow-name')?.textContent?.trim()
             === 'Minimal Typed Diagram Editor');
-        const todoViewRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
+        const todoViewRow = workflowRows.find(row => row.querySelector('.workflow-name')?.textContent?.trim()
             === 'TODO View (DevEnv system layer)');
-        const evaluationPilotRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
+        const evaluationPilotRow = workflowRows.find(row => row.querySelector('.workflow-name')?.textContent?.trim()
             === 'DevEnv Value Evaluation');
         expect(diagramRow?.textContent).toContain('Diagram selection and movement (16m 45s)');
         expect(todoViewRow?.textContent)
@@ -355,8 +414,8 @@ describe('WorkflowTodoComponent', () => {
         expect(todoViewEvaluation).toBeDefined();
         if (todoViewEvaluation) {
             todoViewEvaluation.completedAt = null;
-            expect(fixture.componentInstance.completedEvaluationSummary(['workflow-todo-value-metrics-view']))
-                .toBe('—');
+            expect(fixture.componentInstance.completedEvaluationItems(['workflow-todo-value-metrics-view']))
+                .toEqual([]);
         }
     });
 
@@ -547,7 +606,7 @@ describe('WorkflowTodoComponent', () => {
             fixture.nativeElement.querySelectorAll(
                 '.workflow-table tbody tr:not(.workflow-group-heading)',
             ) as NodeListOf<HTMLTableRowElement>,
-        ).find(item => item.querySelector('th')?.textContent?.trim()
+        ).find(item => item.querySelector('.workflow-name')?.textContent?.trim()
             === 'Principle Register Organization and Priority Review');
 
         expect(row?.textContent)

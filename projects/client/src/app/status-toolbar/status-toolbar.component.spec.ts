@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -9,17 +9,33 @@ import { CurrentEntryService } from '../current-entry.service';
 import { RgrPhaseService } from '../rgr-phase.service';
 import { TestRunCacheStatusService } from '../test-run-cache-status.service';
 import { busyIndicatorInterceptor } from '../busy-indicator.interceptor';
+import { SCHEDULER } from '../scheduler';
+import type { IScheduler } from '../scheduler';
+
+class MockScheduler implements IScheduler {
+    interval: number | undefined;
+    private callback: (() => void) | undefined;
+
+    every(milliseconds: number, callback: () => void): () => void {
+        this.interval = milliseconds;
+        this.callback = callback;
+        return () => {
+            this.callback = undefined;
+        };
+    }
+
+    tick(): void {
+        this.callback?.();
+    }
+}
 
 describe('StatusToolbarComponent', () => {
-    afterEach(() => {
-        jest.useRealTimers();
-    });
-
     it('loads the selected workflow, refreshes on click and every 30 seconds, and stops on destruction', () => {
-        jest.useFakeTimers();
+        const scheduler = new MockScheduler();
         TestBed.configureTestingModule({
             imports: [StatusToolbarComponent],
-            providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+            providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([]),
+                { provide: SCHEDULER, useValue: scheduler }],
         });
         const fixture = TestBed.createComponent(StatusToolbarComponent);
         fixture.componentRef.setInput('gitStatus', TestBed.inject(GitStatusService));
@@ -42,11 +58,12 @@ describe('StatusToolbarComponent', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { activeWorkflow: null } });
         fixture.detectChanges();
         expect(button.textContent).toContain('None active');
-        jest.advanceTimersByTime(30_000);
+        expect(scheduler.interval).toBe(30_000);
+        scheduler.tick();
         http.expectOne('http://localhost:3000/workflow-todo').flush({ error: 'Unavailable' }, { status: 500, statusText: 'Unavailable' });
         fixture.detectChanges();
         expect(button.textContent).toContain('unavailable');
-        jest.advanceTimersByTime(30_000);
+        scheduler.tick();
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { activeWorkflow: 'Recovered workflow' } });
         fixture.detectChanges();
         expect(button.textContent).toContain('Recovered workflow');
@@ -54,7 +71,7 @@ describe('StatusToolbarComponent', () => {
         const pending = http.expectOne('http://localhost:3000/workflow-todo');
         fixture.destroy();
         expect(pending.cancelled).toBe(true);
-        jest.advanceTimersByTime(30_000);
+        scheduler.tick();
         http.expectNone('http://localhost:3000/workflow-todo');
         http.verify();
     });

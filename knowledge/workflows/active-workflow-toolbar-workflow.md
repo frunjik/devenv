@@ -25,3 +25,12 @@
 **Next:** Resume the saved canvas checkpoint (real high-density rendering remains outstanding). No feature-store task or commit-message source changes were made. Changes remain uncommitted.
 
 **Pause:** User chose to pause at the three-minute continuation gate. No completion, effort estimate, or runtime acceptance is inferred. The evaluation remains open. No additional meta-level insight identified.
+
+## Scheduling boundary refinement (2026-10-09)
+
+- User approved IScheduler as the recurring-work boundary, reopening this workflow with a separate five-metric evaluation (`toolbar-scheduling-boundary`). This is not an IClock: the toolbar schedules refreshes but does not read the current time.
+- Contract: every(milliseconds, callback) registers recurring delivery, with the first callback after the interval, and returns cancellation. Real implementation delegates to setInterval/clearInterval. Angular SCHEDULER token provides the adapter. Existing Subscription owns cancellation on toolbar destruction.
+- Plain MockScheduler records the requested interval and delivers explicit ticks; toolbar tests contain no Jest timer patches. Adapter tests alone use Jest fake time to verify no immediate/early delivery, repeated delivery, and cancellation.
+- Red: both suites failed because the boundary module was missing. Green: seven tests pass with 100% statement, branch, function, and line coverage for scheduler.ts and status-toolbar.component.ts; client build passes. Test-source check has no scheduler/toolbar diagnostics, but unrelated existing test errors remain.
+- Type review: consumer-derived recurring scheduling is a justified role interface, distinct from canvas current-time reads and animation-frame delivery. No broader timer migration or clock abstraction added. Cancellation is a lifecycle obligation tested behaviorally, not guaranteed by the signature alone. No additional meta-level insight identified.
+- Canvas selection restored; visible-browser toolbar picked it up automatically without a click or reload by 2026-10-09 22:17:16 CEST. Refinement complete. Changes remain uncommitted.

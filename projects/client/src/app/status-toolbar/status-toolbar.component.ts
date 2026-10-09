@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, timer } from 'rxjs';
+import { Subscription } from 'rxjs';
 import type { WorkflowTodoList } from '@shared';
 import { DatePipe, NgClass } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +14,7 @@ import { GitStatusService } from '../git-status.service';
 import { RgrPhaseService } from '../rgr-phase.service';
 import { TestRunCacheStatusService } from '../test-run-cache-status.service';
 import { BusyIndicatorService } from '../busy-indicator.service';
+import { SCHEDULER } from '../scheduler';
 
 @Component({
     selector: 'app-status-toolbar',
@@ -28,6 +29,7 @@ export class StatusToolbarComponent implements OnInit, OnDestroy {
     @Input({ required: true }) testRunCacheStatus!: TestRunCacheStatusService;
     @Input({ required: true }) rgrPhase!: RgrPhaseService;
     readonly busyIndicator = inject(BusyIndicatorService);
+    private readonly scheduler = inject(SCHEDULER);
     readonly clientVersion = clientPackage.version;
     serverVersion = 'loading';
     versionError = '';
@@ -50,7 +52,7 @@ export class StatusToolbarComponent implements OnInit, OnDestroy {
             },
         }));
         this.refreshWorkflow();
-        this.subscriptions.add(timer(30_000, 30_000).subscribe(() => this.refreshWorkflow()));
+        this.subscriptions.add(this.scheduler.every(30_000, () => this.refreshWorkflow()));
     }
 
     refreshWorkflow(): void {

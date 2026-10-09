@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "toolbar-scheduling-boundary",
+      "title": "Explicit toolbar scheduling boundary",
+      "beneficiary": "DevEnv developer maintaining toolbar polling",
+      "intendedOutcome": "Make recurring scheduling an explicit consumer dependency and use a plain fake in toolbar tests.",
+      "successCondition": "Toolbar requests a 30-second recurrence through injected IScheduler, cancels it on destruction, and retains refresh/error behavior. Component tests use no Jest timer patches; adapter tests verify real timer delegation and cancellation.",
+      "baseline": "Toolbar imports RxJS timer directly; component tests patch global time using Jest.",
+      "startedAt": "2026-10-09T22:15:13+02:00",
+      "completedAt": "2026-10-09T22:17:16+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved the scoped IScheduler refinement, reopening the toolbar workflow and measuring all five metrics.", "evidence": "User discussion and active-workflow-toolbar-workflow.md." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 3 seconds wall-clock through runtime acceptance, including workflow/evaluation decisions and visibility wait; active effort unknown.", "evidence": "Recorded start and completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Seven focused tests pass with 100% four-metric coverage for scheduler and toolbar; client build passes. Toolbar tests use plain MockScheduler and no Jest timers; real adapter tests cover recurrence timing and cancellation. Visible browser automatically picked up restored canvas selection without click/reload. No changed-file test type diagnostics; unrelated existing test errors remain. Follow-up user outcome unknown.", "evidence": "Scheduling refinement checkpoint in active-workflow-toolbar-workflow.md; focused coverage, client build, test-source check and live polling verification." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "active-workflow-status-toolbar",
       "title": "Active workflow in status toolbar",
       "beneficiary": "DevEnv developer following the current registered work",

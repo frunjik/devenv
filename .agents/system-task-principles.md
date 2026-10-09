@@ -283,6 +283,17 @@ These principles are active from their recorded date and apply to future work in
 - **Decision boundary:** Ask before making consequential, hard-to-reverse, or materially uncertain process changes, consistent with P-016.
 - **Practice:** Evidence may include an observed recurring friction or a verified practice applicable to this project; plausibility alone is insufficient. Distinguish evidence from judgment, state material uncertainty or tradeoffs, and keep the change scoped to the demonstrated improvement. A task-specific user instruction is not automatically a standing rule; generalize it only when the user says it is general or concrete evidence justifies the broader benefit, and report that generalization.
 
+### P-030 — Find Functional Boundaries Before Test Spies
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: when tests need spyOn calls, find the functional boundary and make or propose an interface and mock for it.
+- **Applies to:** Writing or changing tests that would use spies, global patches, or similar test-framework interception, including fake timers.
+- **Rule:** Before adding interception, trace the consumer's interaction to its functional boundary. Reuse an appropriate existing interface or implement or propose a small consumer-derived role interface with a plain mock/fake, and inject that boundary into consumer tests. Follow existing Type/name approval and surrounding-code scope rules when introducing the interface; do not silently adopt speculative names or expand the task.
+- **Practice:** Derive operations and lifecycle obligations from actual use, not the supplier's entire API. Verify observable results, required arguments, errors, and cleanup through public interfaces. Do not introduce interfaces for internal implementation details merely to enable mocking. Necessary spies or fake time may remain in real boundary-adapter tests; explain why they are needed rather than treating all framework interception as forbidden.
+- **Concrete instances:** InteractiveCanvas uses IBrowser with a plain MockBrowser; its adapter tests patch actual browser APIs. The status toolbar uses IScheduler with a plain MockScheduler to deliver recurring refresh ticks; only the real scheduler adapter tests use Jest fake timers. A current-time reader would have a different role from this recurring scheduler; an IClock remains a candidate rather than an adopted abstraction.
+- **Benefit and boundary:** Explicit collaboration replaces global test patching in consumers and makes cancellation and other boundary obligations reviewable. An interface alone does not guarantee those obligations or justify migrating unrelated tests. This extends P-002/P-004/P-014 without authorizing internal collaborator mocks or external I/O.
+- **Clarification (user, 2026-10-09):** Jest spies and similar helpers are explicitly allowed in tests of the boundary adapter or mock/fake itself. This permission is not limited to real adapter tests; for example, a test of MockScheduler may use a Jest callback spy to verify tick delivery. Consumer tests should still use the injected boundary contract rather than patching globals or internal collaborators.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

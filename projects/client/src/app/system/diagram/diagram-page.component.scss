@@ -9,6 +9,23 @@
     margin-bottom: 1rem;
 }
 
+.palette-item {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+}
+
+.drag-handle {
+    cursor: grab;
+    padding: .4rem;
+    color: var(--text-secondary);
+    touch-action: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
 .workspace {
     position: relative;
     min-height: 24rem;

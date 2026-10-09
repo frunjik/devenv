@@ -1,14 +1,58 @@
 <section class="diagram-page">
     <h1>Diagram</h1>
-    <div class="palette" role="toolbar" aria-label="Diagram element palette">
-        <button type="button" aria-label="Add Rectangle" (click)="addElement('rectangle')">Rectangle</button>
-        <button type="button" aria-label="Add Ellipse" (click)="addElement('ellipse')">Ellipse</button>
-        <button type="button" aria-label="Add Note" (click)="addElement('note')">Note</button>
+    <div
+        class="palette"
+        id="palette"
+        role="toolbar"
+        aria-label="Diagram element palette"
+        cdkDropList
+        cdkDropListConnectedTo="workspace"
+        cdkDropListSortingDisabled
+    >
+        <div class="palette-item">
+            <button type="button" aria-label="Add Rectangle" (click)="addElement('rectangle')">Rectangle</button>
+            <span
+                class="drag-handle"
+                cdkDrag
+                [cdkDragData]="'rectangle'"
+                aria-hidden="true"
+                title="Drag Rectangle into the workspace"
+            >&#x283F;</span>
+        </div>
+        <div class="palette-item">
+            <button type="button" aria-label="Add Ellipse" (click)="addElement('ellipse')">Ellipse</button>
+            <span
+                class="drag-handle"
+                cdkDrag
+                [cdkDragData]="'ellipse'"
+                aria-hidden="true"
+                title="Drag Ellipse into the workspace"
+            >&#x283F;</span>
+        </div>
+        <div class="palette-item">
+            <button type="button" aria-label="Add Note" (click)="addElement('note')">Note</button>
+            <span
+                class="drag-handle"
+                cdkDrag
+                [cdkDragData]="'note'"
+                aria-hidden="true"
+                title="Drag Note into the workspace"
+            >&#x283F;</span>
+        </div>
     </div>
     @if (document.elements.length === 0) {
         <p class="empty-hint" role="status">No items yet.</p>
     }
-    <div class="workspace" role="region" tabindex="0" aria-label="Diagram workspace">
+    <div
+        class="workspace"
+        id="workspace"
+        role="region"
+        tabindex="0"
+        aria-label="Diagram workspace"
+        cdkDropList
+        cdkDropListConnectedTo="palette"
+        (cdkDropListDropped)="dropPaletteElement($event)"
+    >
         @for (element of document.elements; track element.id) {
             <div
                 class="diagram-element"

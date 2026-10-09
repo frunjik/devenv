@@ -2,7 +2,7 @@
 
 Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.
 
-**Active workflow:** None.
+**Active workflow:** DevEnv Value Evaluation.
 
 ## Workflows
 
@@ -19,6 +19,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | Knowledge Organization Migration | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
 | Principle Register Organization and Priority Review | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |
 | Minimal Typed Diagram Editor | Paused | [Document-operations checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
+| DevEnv Value Evaluation | Active | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
 
 Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

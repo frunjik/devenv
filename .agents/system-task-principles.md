@@ -38,22 +38,21 @@ These principles are active from their recorded date and apply to future work in
 
 - **Recorded:** 2026-10-05
 - **Source:** User instruction
-- **Applies to:** Production code changed or relied on in a coding task.
-- **Rule:** Achieve 100% statement, branch, function, and line coverage for the production code in scope. Derive tests, wherever possible, from known Problem Domain tickets, tasks, and scenarios. Exercise behavior through the public interface; do not test private implementation details.
+- **Applies to:** Production modules changed by a coding task.
+- **Rule:** Achieve 100% statement, branch, function, and line coverage for those modules. Include another module when it is also changed as part of the task; merely relying on an unchanged module does not expand the coverage scope. Derive tests, wherever possible, from known Problem Domain tickets, tasks, and scenarios. Exercise behavior through public interfaces; do not test private implementation details.
 - **Test boundaries:** Do not use spies or mock internal collaborators. Simple mocks are permitted only at external/system boundaries. Prefer realistic domain examples and observable outcomes.
 - **Production-change restriction:** Do not change production code merely to make tests easier or coverage rise. If code cannot be covered, first demonstrate that it is unreachable and cannot be tested through the public interface; only then may production code be changed to improve or remove the unreachable behavior.
-- **Verification:** Run coverage for all metrics on the in-scope production code. If 100% cannot be reached, explain the uncovered code and blocker; do not claim the rule is satisfied.
+- **Verification:** Run coverage for all four metrics on every production module changed in the task. If 100% cannot be reached, explain the uncovered code and blocker; do not claim the rule is satisfied.
 
 ### P-005 — Commit at Stable Checkpoints
 
 - **Recorded:** 2026-10-05
 - **Source:** User instruction
 - **Applies to:** Coding tasks that reach a validated, stable state.
-- **Original rule (automatic initiation superseded by the 2026-10-07 override below):** Once all tests are green, in-scope production code has 100% statement, branch, function, and line coverage, and no remaining Type cleanup or refactoring is identified, create a git commit for the completed scope before continuing to the next task step.
-- **Exception:** Do not commit past an explicit user review; pause for that review instead. Keep the commit scoped to the completed work and follow the repository's commit-message conventions.
-- **Message approval (recorded 2026-10-06):** Before running `git commit`, present the drafted commit message to the user and let them approve it, edit it, or choose among alternatives, rather than committing it unilaterally. Applies to every commit, including regular feature work, not only meta/process changes. The current default is short and subject-only, but this is a revisable preference, not a fixed rule — the user may change it at any point, and a past choice of style is not binding on later commits.
+- **Current rule:** Do not initiate a commit or commit-approval prompt at a stable checkpoint. Commit only after the user explicitly requests it. Keep the commit scoped to the approved work and follow the repository's commit-message conventions.
+- **Before committing:** Verify the requested scope. After an explicit commit request, draft a short, subject-only message by default and obtain the user's approval before running the commit. The subject preference is revisable; check P-011 for concern-specific subjects and current attribution preferences.
 
-- **Commit initiation override (user, 2026-10-07):** Do not initiate commits or commit-approval prompts at stable checkpoints. Leave changes uncommitted unless the user explicitly requests a commit. This supersedes automatic initiation in the earlier rule, not the verification requirements or message approval after an explicit request.
+- **History:** The original automatic-commit instruction was superseded by the user's 2026-10-07 override. The current rule above preserves the resulting policy without treating the superseded instruction as active.
 
 ### P-006 — Ask Before Changing Surrounding Code
 
@@ -75,9 +74,10 @@ These principles are active from their recorded date and apply to future work in
 
 - **Recorded:** 2026-10-06
 - **Source:** User instruction
-- **Applies to:** Ongoing tasks that take more than three minutes.
-- **Rule:** After more than three minutes of work, pause at the next stable point and ask the user whether to continue. Do not continue until the user explicitly permits it; stop if they ask to stop.
-- **Loop:** If the user permits continuation, record any new user-provided rule in this register and the relevant project guidance before resuming. Apply the same three-minute gate again while the task remains ongoing.
+- **Applies to:** Ongoing tasks that take more than three minutes of active task work.
+- **Rule:** After each three minutes of active work on the task, pause at the next stable point and ask whether to continue. Do not interrupt a running check or leave the work unstable just to meet the interval.
+- **Clock:** Count focused task work; exclude time waiting for the user, a long-running command, or an intentional pause. Reset the interval when the user permits continuation.
+- **Loop:** Do not continue until the user explicitly permits it. Before resuming, record any new user-provided rule in this register and relevant project guidance. Stop if the user asks to stop.
 
 ### P-009 — Review Domain Wording for Vocabulary and Concerns
 
@@ -91,10 +91,10 @@ These principles are active from their recorded date and apply to future work in
 
 - **Recorded:** 2026-10-06
 - **Source:** User instruction
-- **Applies to:** Ongoing work, after it has been under way for a while (at the same stable points as the P-008 gate).
-- **Rule:** Consider whether the work has produced knowledge worth recording at the outer (meta) level, such as improvements to the SC-NN numbering and concern conventions, or the realization that the same thing has been done repeatedly in different shapes. If so, make a note on the meta level.
+- **Applies to:** Stable pauses under P-008 and feature-slice completion.
+- **Rule:** Briefly check for a concrete, reusable meta-level insight that is not already captured. Record a note only when such an insight exists; do not create a note or extend the task merely to satisfy this check.
 - **Practice:** Record the note in `knowledge/domain-models/problem-inquiry-system/concerns.md` under "Meta Notes", numbered `Meta-NNN` in the order added (introduced 2026-10-06, same 3-digit style as `SC-NNN`/`P-NNN`). Notes are observations and proposals, not decisions; raise consequential ones with the user.
-- **Meta-meta cadence (recorded 2026-10-06):** This whole project is a learning sandbox, not only a system being built. After roughly every 10 implemented feature slices (real code, tests, and a commit — not documentation-only or principle-only changes), step up a level beyond per-slice Meta Notes: evaluate whether the accumulated principles, conventions, and register are still serving that learning purpose, and report the evaluation to the user rather than only acting on it silently. Track the count toward 10 in the session database; reset it after each such evaluation.
+- **Meta-meta cadence (recorded 2026-10-06):** After roughly every 10 implemented feature slices (real code and tests; documentation-only or principle-only changes do not count), briefly evaluate whether the accumulated principles and conventions still serve the learning-sandbox purpose, then report the conclusion. Track the count in the session database and reset it after the evaluation. This is a periodic review, not an additional checkpoint for every task.
 
 ### P-011 — Identify the Referenced Concern in Commit Messages
 
@@ -209,16 +209,16 @@ These principles are active from their recorded date and apply to future work in
 
 - **Recorded:** 2026-10-09
 - **Source:** User instruction: "when you stop doing things (either when done, or pausing or asking commit) show me if we are stable or not (meaning 100 and running code)"
-- **Applies to:** Responses that end a coding task, pause work, or request commit-message approval.
-- **Rule:** At each applicable stopping point, include a clearly labeled `Status:` line with either `Stable` or `Not stable`. Ground it in relevant test results, 100% statements/branches/functions/lines coverage for in-scope production code, and a passing type-check/build. Distinguish successful build/test execution from running the application in its actual UI/runtime; say when that has not been verified. If a criterion is unmet or pending, report `Not stable` and name the gap.
+- **Applies to:** Responses that end a task, pause ongoing work, or request commit-message approval.
+- **Rule:** At each applicable stopping point, include a clearly labeled `Status: Stable` or `Status: Not stable` line. `Stable` means all applicable tests, four-metric coverage for changed production modules, and required type-check/build pass. Run an actual UI/runtime check when the acceptance condition depends on runtime behavior; otherwise state separately when it was not performed. If an applicable check fails or remains pending, report `Not stable` and name the gap. For documentation-only changes, say they are documentation-only and report the relevant diff/format check instead of implying code checks ran.
 
 ### P-022 — Keep Unagreed Names Provisional
 
 - **Recorded:** 2026-10-09
 - **Source:** User agreement to use provisional names during implementation and review them before adoption.
 - **Applies to:** New Types, Terms, and other meaningful domain names whose final wording has not been agreed.
-- **Rule:** Use a clearly marked provisional name when implementation needs one before its meaning or wording is settled. Do not present it as an agreed or durable domain name. Before completing the work, compare it with existing names as required by P-012 and report whether it remains a candidate, should be refined, or is ready for the user's decision.
-- **Practice:** Explain the candidate's meaning and evidence using a concrete instance and a contrasting case where available. Keep an explicitly approved name distinct from its provisional supporting names. For example, `WorkEvaluation` is approved for a unit-of-work evaluation, while `EvaluationMetric` and `WorkEvaluationDataset` in the DevEnv value-evaluation JSON remain provisional pending review.
+- **Rule:** A provisional name may be used when implementation needs a name before it is agreed. Mark it as provisional and do not present it as an adopted domain name. Apply P-012 before adopting it.
+- **Practice:** Keep an explicitly approved name distinct from provisional supporting names. For example, `WorkEvaluation` is approved for a unit-of-work evaluation; `EvaluationMetric` and `WorkEvaluationDataset` in the DevEnv value-evaluation JSON remain provisional.
 
 ### P-023 — Include the Global TODO and Metrics in Status Reports
 
@@ -226,7 +226,8 @@ These principles are active from their recorded date and apply to future work in
 - **Source:** User instruction: "when showing the status, also show me a report of the global todo list with its status and metrics."
 - **Applies to:** Responses that present a `Status:` line.
 - **Rule:** Alongside the stability status, report every workflow in the global Workflow TODO List with its current registered status, and summarize the available value-evaluation metrics from their authoritative source.
-- **Practice:** Include status counts and metric coverage/missingness, and connect an evaluation to a workflow only when the source explicitly supports that link. Keep workflow lifecycle status separate from measured outcomes: completion, activity, tests, or coverage alone do not prove value. Preserve unknowns as unknown and identify the source and evaluation sample size.
+- **Default format:** List every workflow name and status compactly, grouped by status where practical; include counts. Summarize the metric sample size, recorded-versus-unknown coverage, and material limitations without repeating every evaluation field. Expand to per-evaluation detail when requested or needed to explain a decision.
+- **Interpretation:** Connect an evaluation to a workflow only when the source explicitly supports that link. Keep workflow lifecycle status separate from measured outcomes: completion, activity, tests, or coverage alone do not prove value. Preserve unknowns as unknown and identify the source.
 
 ## Applying the Register
 

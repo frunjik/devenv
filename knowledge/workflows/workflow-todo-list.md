@@ -6,22 +6,33 @@ Repository-wide navigation for resumable work. This list does not replace System
 
 ## Workflows
 
-| Workflow | Status | Resume reference | Related concern |
-| --- | --- | --- | --- |
-| MetaExport | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
-| Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Completed | [Implementation and review checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
-| Full Glossary Export | Completed | [Implementation and verification checkpoint](./full-glossary-export-workflow.md#checkpoint) | Not assigned |
-| TODO View (DevEnv system layer) | Completed | [Implementation and review checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
-| UI Design Review Fixes | Completed | [Implementation and verification checkpoint](./ui-design-review-workflow.md#checkpoint) | Not assigned |
-| Term Editing (DevEnv glossary UI) | Pending | [Starting checkpoint](./term-editing-workflow.md#checkpoint) | Not assigned |
-| DevEnv Export (sibling or hosting system) | Paused | [Full-coverage checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
-| Portable Practices and Glossary | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
-| Knowledge Organization Migration | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
-| Principle Register Organization and Priority Review | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |
-| Minimal Typed Diagram Editor | Paused | [Document-operations checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
-| DevEnv Value Evaluation | Active | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
+| Workflow | Primary work purpose | Status | Resume reference | Related concern |
+| --- | --- | --- | --- | --- |
+| MetaExport | Meta work | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
+| Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Meta work | Completed | [Implementation and review checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
+| Full Glossary Export | Product work | Completed | [Implementation and verification checkpoint](./full-glossary-export-workflow.md#checkpoint) | Not assigned |
+| TODO View (DevEnv system layer) | Meta work | Completed | [Implementation and review checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
+| UI Design Review Fixes | Product work | Completed | [Implementation and verification checkpoint](./ui-design-review-workflow.md#checkpoint) | Not assigned |
+| Term Editing (DevEnv glossary UI) | Product work | Pending | [Starting checkpoint](./term-editing-workflow.md#checkpoint) | Not assigned |
+| DevEnv Export (sibling or hosting system) | Product work | Paused | [Full-coverage checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
+| Portable Practices and Glossary | Meta work | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
+| Knowledge Organization Migration | Meta work | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
+| Principle Register Organization and Priority Review | Meta work | Pending | [Starting checkpoint](./principle-register-review.md#checkpoint) | Not assigned |
+| Minimal Typed Diagram Editor | Product work | Paused | [Document-operations checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
+| DevEnv Value Evaluation | Meta work | Active | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
 
 Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
+
+## Classifying Work Purpose
+
+Classify each workflow by its **primary intended outcome**, not by the files changed, implementation method, or whether the work is measured:
+
+- **Product work** primarily adds or changes a capability intended for DevEnv users. Example: the Diagram Editor lets users create and manipulate diagrams.
+- **Meta work** primarily develops, describes, governs, operates, or evaluates DevEnv itself or its development practices. Example: DevEnv Value Evaluation measures the development process and DevEnv's own upkeep.
+
+For work with both effects, record the dominant agreed outcome. Being measured does not turn product work into meta work: diagram selection and movement is product work even though it is part of the evaluation pilot. Conversely, a user-visible tool may be meta work when its primary purpose is to inspect or govern DevEnv's own process, as with the TODO View. Revisit the classification if the intended outcome changes; do not imply that either class is more valuable.
+
+These work-purpose labels are not workflow lifecycle statuses and are not the Glossary Term `MetaLayer`: they classify the intended outcome of a work item, while `MetaLayer` describes a perspective on a system or activity.
 
 ## Maintaining and Switching
 

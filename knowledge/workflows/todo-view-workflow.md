@@ -19,6 +19,8 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ### Top evaluated-work totals
 
+- Subsequent user refinement: each summary total grows equally across the available page width, with a 14rem wrapping basis and border-box sizing. Keep narrow-screen wrapping and the existing grand-total accent.
+- User requested separators specifically between Product, Meta and grand totals. Add palette-based vertical dividers on wide screens; stack totals with horizontal dividers at 50rem and below. Keep the grand-total divider accented and heading text unchanged.
 - User approved moving Product and Meta subtotals and the grand total into a compact wrapping summary above the workflow table, with the subtle explanation directly underneath. Per-workflow elapsed totals stay in their rows; duplicate bottom totals removed. Existing calculation, deduplication and missing-duration semantics unchanged.
 - Observed four top-summary tests fail before implementation. Reuse existing workflow groups and summedWorkflowElapsed; presentation-only rearrangement warrants no new domain Type.
 - Verified: 23 component tests pass with 100% statement/branch/function/line coverage; full test-source type-check, client build, diagnostics and diff formatting pass. Running-page DOM/computed-style check confirms top placement, flex wrapping and no bottom total rows. Browser tab hidden; visible visual acceptance not claimed. No further refactoring needed; changes uncommitted.

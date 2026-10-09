@@ -29,9 +29,18 @@ th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertic
     gap: 1rem 2rem;
     margin: 1rem 0 0;
 }
+.totals-summary .workflow-total {
+    flex: 1 1 14rem;
+    min-width: 0;
+    box-sizing: border-box;
+}
+.totals-summary .workflow-total + .workflow-total {
+    border-left: 1px solid var(--border-default);
+    padding-left: 1rem;
+}
 .totals-summary dt { color: var(--text-heading); font-weight: 600; }
 .totals-summary dd { margin: .25rem 0 0; color: var(--text-secondary); overflow-wrap: anywhere; }
-.totals-summary .grand-total { border-left: 3px solid var(--border-accent); padding-left: 1rem; }
+.totals-summary .workflow-total + .grand-total { border-color: var(--border-accent); }
 .totals-note {
     margin-top: .75rem;
     font-size: .75rem;
@@ -72,6 +81,17 @@ th { color: var(--text-heading); }
 .work-evaluation h3 { color: var(--text-heading); }
 .work-evaluation p { overflow-wrap: anywhere; }
 .scroll-hint { display: none; }
+
+@media (max-width: 50rem) {
+    .totals-summary .workflow-total { flex-basis: 100%; }
+    .totals-summary .workflow-total + .workflow-total {
+        border-left: 0;
+        border-top: 1px solid var(--border-default);
+        padding-left: 0;
+        padding-top: 1rem;
+    }
+    .totals-summary .workflow-total + .grand-total { border-color: var(--border-accent); }
+}
 
 @media (max-width: 42rem) {
     .table-scroll table { min-width: 42rem; }

@@ -62,6 +62,10 @@ describe('WorkflowEvaluationsComponent', () => {
         expect(evaluation.querySelector('summary')!.textContent).toContain('Not completed');
         expect(fixture.nativeElement.querySelector('details.metric-definitions').open).toBe(false);
         expect(fixture.nativeElement.querySelector('details.credit-estimator').open).toBe(false);
+        const header = fixture.nativeElement.querySelector('.evaluation-columns') as HTMLElement;
+        expect(Array.from(header.children).map(column => column.textContent?.trim())).toEqual([
+            'Title', 'Status', 'Duration',
+        ]);
     });
 
     it('shows elapsed duration for completed evaluations only', () => {
@@ -129,7 +133,7 @@ describe('WorkflowEvaluationsComponent', () => {
 
         const text = fixture.nativeElement.textContent as string;
         const durations = Array.from(
-            fixture.nativeElement.querySelectorAll('.evaluation-duration') as NodeListOf<HTMLElement>,
+            fixture.nativeElement.querySelectorAll('.work-evaluation .evaluation-duration') as NodeListOf<HTMLElement>,
         ).map(duration => duration.textContent?.trim());
         expect(durations).toEqual([
             '16m 45s', '—', 'Unknown', 'Unavailable (invalid timestamp)',

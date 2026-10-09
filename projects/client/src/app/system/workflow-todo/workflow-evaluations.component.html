@@ -26,6 +26,11 @@
             </table>
         </div>
         </details>
+        <div class="evaluation-columns" *ngIf="data.evaluations.length">
+            <span>Title</span>
+            <span>Status</span>
+            <span class="evaluation-duration">Duration</span>
+        </div>
         <details *ngFor="let evaluation of data.evaluations" class="work-evaluation">
             <summary>
                 <h2>{{ evaluation.title }}</h2>

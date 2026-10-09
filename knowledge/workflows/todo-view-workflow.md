@@ -17,6 +17,12 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Table-like evaluation rows
+
+- User chose table-like native expandable rows rather than a semantic table rewrite: shared Title/Status/Duration header, no card outlines, tighter spacing and horizontal separators. Keep native disclosure semantics and evidence. Hide the desktop column header when fields stack on narrow screens.
+- Observed missing-column-header Red before implementation. Presentation-only change reuses the existing dataset and formatter; no new Type or lifecycle warranted.
+- Verified six tests with 100% all-four component coverage, full test-source type-check, client build and diagnostics. Scoped duration assertions to evaluation rows after the shared header exposed an overly broad selector. Browser confirms matching header/row column positions, bottom-only 1px borders, zero corner radius, Enter expansion/collapse and 305px document width at 320px. No further refactoring needed; uncommitted.
+
 ### Padded elapsed units
 
 - User chose padding displayed units only: 02m 08s and 01h 02m 08s, still omitting zero hours. Shared formatter applies consistently to evaluation headers and Workflow TODO histories/totals. Unknown/unavailable and incomplete semantics unchanged; hours above 99 retain all digits.

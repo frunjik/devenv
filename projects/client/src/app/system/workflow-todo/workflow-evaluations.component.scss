@@ -7,17 +7,26 @@ table { width: 100%; border-collapse: collapse; text-align: left; }
 caption { text-align: left; padding: .75rem 0; color: var(--text-secondary); }
 th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); }
 th { color: var(--text-heading); }
-.work-evaluation { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-default); border-radius: .4rem; }
+.work-evaluation { margin: 0; padding: .5rem .75rem; border-bottom: 1px solid var(--border-default); }
 .work-evaluation p { overflow-wrap: anywhere; }
 summary { cursor: pointer; min-height: 44px; overflow-wrap: anywhere; }
 summary h2 { display: inline; font-size: 1rem; margin: 0; }
 summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
-.work-evaluation summary {
+.evaluation-columns, .work-evaluation summary {
     display: grid;
     grid-template-columns: 1rem minmax(0, 1fr) 10rem minmax(12rem, .5fr);
     align-items: center;
     gap: .75rem;
 }
+.evaluation-columns {
+    margin-top: 1.5rem;
+    padding: .75rem;
+    border-bottom: 2px solid var(--border-default);
+    color: var(--text-heading);
+    font-weight: 600;
+}
+.evaluation-columns::before { content: ''; }
+.evaluation-columns .evaluation-duration { color: inherit; font-size: inherit; }
 .work-evaluation summary::marker { content: ''; }
 .work-evaluation summary::-webkit-details-marker { display: none; }
 .work-evaluation summary::before { content: ''; border-left: .4rem solid var(--text-secondary); border-top: .3rem solid transparent; border-bottom: .3rem solid transparent; width: 0; height: 0; }
@@ -33,6 +42,8 @@ summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 
 
 @media (max-width: 42rem) {
     .table-scroll table { min-width: 42rem; }
+    .evaluation-columns { display: none; }
+    .evaluation-columns + .work-evaluation { margin-top: 1.5rem; }
     .work-evaluation summary { grid-template-columns: 1rem minmax(0, 1fr); }
     .evaluation-status, .evaluation-duration { grid-column: 2; }
 }

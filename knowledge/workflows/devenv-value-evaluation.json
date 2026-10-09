@@ -55,8 +55,8 @@
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 16 minutes wall-clock, including pauses; active effort is unknown.",
-          "evidence": "Recorded start and verification timestamps."
+          "value": "16 minutes 45 seconds wall-clock, including pauses; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T13:22:00+02:00 and completion at 2026-10-09T13:38:45+02:00."
         },
         {
           "metricId": "outcome-and-quality",
@@ -92,8 +92,8 @@
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 19 minutes wall-clock, including pauses; active effort is unknown.",
-          "evidence": "Recorded start and completion timestamps."
+          "value": "18 minutes 55 seconds wall-clock, including pauses; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T13:40:17+02:00 and completion at 2026-10-09T13:59:12+02:00."
         },
         {
           "metricId": "outcome-and-quality",
@@ -129,8 +129,8 @@
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 3 minutes wall-clock; active effort is unknown.",
-          "evidence": "Recorded start and completion timestamps."
+          "value": "2 minutes 48 seconds wall-clock; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T16:50:11+02:00 and completion at 2026-10-09T16:52:59+02:00."
         },
         {
           "metricId": "outcome-and-quality",
@@ -166,7 +166,7 @@
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 8 minutes 56 seconds from recorded start to the commit timestamp, the latest timestamped completion event. Implementation and verification preceded the commit, but their exact completion time was not recorded. This includes review and approval waits; active effort is unknown.",
+          "value": "8 minutes 56 seconds from recorded start to the commit timestamp, the latest timestamped completion event. Implementation and verification preceded the commit, but their exact completion time was not recorded. This includes review and approval waits; active effort is unknown.",
           "evidence": "Evaluation startedAt; commit c010f12 timestamp 2026-10-09T17:13:14+02:00; review checkpoint."
         },
         {
@@ -203,8 +203,8 @@
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 11 minutes 3 seconds wall-clock from recorded start through verification and workflow completion, including pauses; active effort is unknown.",
-          "evidence": "Evaluation startedAt and completion timestamp; focused client/server test and coverage runs; shared/client builds."
+          "value": "11 minutes 3 seconds wall-clock from recorded start through verification and workflow completion, including pauses; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T17:22:56+02:00 and completion at 2026-10-09T17:33:59+02:00; focused client/server test and coverage runs; shared/client builds."
         },
         {
           "metricId": "outcome-and-quality",
@@ -240,8 +240,8 @@
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 1 hour 23 minutes wall-clock from recorded start to verified completion, including time between sessions and pauses; active effort is unknown.",
-          "evidence": "Evaluation startedAt and completedAt timestamps."
+          "value": "1 hour 22 minutes 46 seconds wall-clock from recorded start to verified completion, including time between sessions and pauses; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T17:40:09+02:00 and completion at 2026-10-09T19:02:55+02:00."
         },
         {
           "metricId": "outcome-and-quality",

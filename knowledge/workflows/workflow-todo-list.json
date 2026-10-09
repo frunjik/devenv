@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "title": "Workflow TODO List",
+  "introduction": "Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.",
+  "activeWorkflow": "DevEnv Value Evaluation",
+  "workflows": [
+    {
+      "name": "MetaExport",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Paused",
+      "resumeLabel": "Current checkpoint and remaining steps",
+      "resumePath": "./meta-export.md#resumable-workflow",
+      "relatedConcern": "SC-049"
+    },
+    {
+      "name": "Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain)",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Completed",
+      "resumeLabel": "Implementation and review checkpoint",
+      "resumePath": "./glossary-refinement.md#checkpoint",
+      "relatedConcern": "SC-027; SC-049 for the subsequent export example"
+    },
+    {
+      "name": "Full Glossary Export",
+      "primaryWorkPurpose": "Product work",
+      "status": "Completed",
+      "resumeLabel": "Implementation and verification checkpoint",
+      "resumePath": "./full-glossary-export-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "TODO View (DevEnv system layer)",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Completed",
+      "resumeLabel": "Implementation and review checkpoint",
+      "resumePath": "./todo-view-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "UI Design Review Fixes",
+      "primaryWorkPurpose": "Product work",
+      "status": "Completed",
+      "resumeLabel": "Implementation and verification checkpoint",
+      "resumePath": "./ui-design-review-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "Term Editing (DevEnv glossary UI)",
+      "primaryWorkPurpose": "Product work",
+      "status": "Pending",
+      "resumeLabel": "Starting checkpoint",
+      "resumePath": "./term-editing-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "DevEnv Export (sibling or hosting system)",
+      "primaryWorkPurpose": "Product work",
+      "status": "Paused",
+      "resumeLabel": "Full-coverage checkpoint and remaining verification",
+      "resumePath": "./devenv-export-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "Portable Practices and Glossary",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Pending",
+      "resumeLabel": "Preparation checklist and checkpoint",
+      "resumePath": "../practices/portable-practices-checklist.generated.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "Knowledge Organization Migration",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Completed",
+      "resumeLabel": "Migration checkpoint",
+      "resumePath": "./knowledge-migration.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "Principle Register Organization and Priority Review",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Pending",
+      "resumeLabel": "Starting checkpoint",
+      "resumePath": "./principle-register-review.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "Minimal Typed Diagram Editor",
+      "primaryWorkPurpose": "Product work",
+      "status": "Paused",
+      "resumeLabel": "Document-operations checkpoint",
+      "resumePath": "./diagram-editor-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "DevEnv Value Evaluation",
+      "primaryWorkPurpose": "Meta work",
+      "status": "Active",
+      "resumeLabel": "Measurement-feasibility pilot",
+      "resumePath": "./devenv-value-evaluation-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    }
+  ],
+  "registrationNote": "Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.",
+  "workPurposeGuidance": {
+    "principle": "Classify each workflow by its primary intended outcome, not by the files changed, implementation method, or whether the work is measured:",
+    "purposes": [
+      {
+        "label": "Product work",
+        "description": "primarily adds or changes a capability intended for DevEnv users.",
+        "example": "the Diagram Editor lets users create and manipulate diagrams"
+      },
+      {
+        "label": "Meta work",
+        "description": "primarily develops, describes, governs, operates, or evaluates DevEnv itself or its development practices.",
+        "example": "DevEnv Value Evaluation measures the development process and DevEnv's own upkeep"
+      }
+    ],
+    "mixedEffects": "For work with both effects, record the dominant agreed outcome. Being measured does not turn product work into meta work: diagram selection and movement is product work even though it is part of the evaluation pilot. Conversely, a user-visible tool may be meta work when its primary purpose is to inspect or govern DevEnv's own process, as with the TODO View. Revisit the classification if the intended outcome changes; do not imply that either class is more valuable.",
+    "distinction": "These work-purpose labels are not workflow lifecycle statuses and are not the Glossary Term `MetaLayer`: they classify the intended outcome of a work item, while `MetaLayer` describes a perspective on a system or activity."
+  },
+  "switchingGuidance": [
+    "Before switching, save the current workflow's decisions, open questions, and exact next step in its detailed document.",
+    "Mark it paused here, unless completed or blocked. For a blocker, record the reason in its detailed document.",
+    "Select the requested workflow, mark it active, and update the active-workflow line. Keep at most one active workflow; none is allowed.",
+    "Read its linked checkpoint and current source rules before resuming. Selection does not authorize unresolved decisions, expanded scope, or commits.",
+    "At a pause or completion, update its detailed checkpoint and this list. Retain completed entries for reference.",
+    "The detailed document owns steps and progress; this list owns selection and status. Resume references link to the current checkpoint rather than duplicating step numbers that can drift."
+  ],
+  "statusGuidance": "Use `Pending` for registered work not yet started, and `Active`, `Paused`, `Blocked`, or `Completed` as document labels, not new domain Types. Add workflows when requested or when resumable work is explicitly established. Ask for clarification if a resume request has multiple possible targets and none is selected."
+}

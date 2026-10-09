@@ -10,8 +10,32 @@ jest.mock('node:fs/promises', () => ({
 }));
 
 const fileReader = jest.mocked(readFile);
-const header = '| Workflow | Primary work purpose | Status | Resume reference | Related concern |\n| --- | --- | --- | --- | --- |';
-const row = '| Minimal Typed Diagram Editor | Product work | Paused | [Checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |';
+const workflowTodo = {
+    schemaVersion: 1,
+    title: 'Workflow TODO List',
+    introduction: 'Repository-wide navigation for resumable work.',
+    activeWorkflow: 'Minimal Typed Diagram Editor',
+    workflows: [{
+        name: 'Minimal Typed Diagram Editor',
+        primaryWorkPurpose: 'Product work',
+        status: 'Active',
+        resumeLabel: 'Checkpoint',
+        resumePath: './diagram-editor-workflow.md#checkpoint',
+        relatedConcern: 'Not assigned',
+    }],
+    registrationNote: 'Only registered workflows are tracked.',
+    workPurposeGuidance: {
+        principle: 'Classify by primary intended outcome.',
+        purposes: [
+            { label: 'Product work', description: 'Builds capabilities.', example: 'Diagram Editor' },
+            { label: 'Meta work', description: 'Evaluates DevEnv.', example: 'TODO View' },
+        ],
+        mixedEffects: 'Use the dominant outcome.',
+        distinction: 'Purpose differs from status.',
+    },
+    switchingGuidance: ['Save the next step.'],
+    statusGuidance: 'Use descriptive status values.',
+};
 
 describe('createWorkflowTodoHandler', () => {
     let response: Response;
@@ -44,22 +68,15 @@ describe('createWorkflowTodoHandler', () => {
     }
 
     it('loads and returns current workflows including their work purpose', async () => {
-        fileReader.mockResolvedValue(`# Workflow TODO List\n\n${header}\n${row}\n`);
+        fileReader.mockResolvedValue(JSON.stringify(workflowTodo));
 
         await invokeHandler('repository-root');
 
         expect(fileReader).toHaveBeenCalledWith(
-            join('repository-root', 'knowledge', 'workflows', 'workflow-todo-list.md'),
+            join('repository-root', 'knowledge', 'workflows', 'workflow-todo-list.json'),
             'utf8',
         );
-        expect(json).toHaveBeenCalledWith({ data: { workflows: [{
-            name: 'Minimal Typed Diagram Editor',
-            primaryWorkPurpose: 'Product work',
-            status: 'Paused',
-            resumeLabel: 'Checkpoint',
-            resumePath: './diagram-editor-workflow.md#checkpoint',
-            relatedConcern: 'Not assigned',
-        }] } });
+        expect(json).toHaveBeenCalledWith({ data: workflowTodo });
         expect(nextMock).not.toHaveBeenCalled();
     });
 
@@ -71,7 +88,7 @@ describe('createWorkflowTodoHandler', () => {
         await invokeHandler(process.cwd());
 
         expect(json).toHaveBeenCalledWith({
-            data: {
+            data: expect.objectContaining({
                 workflows: expect.arrayContaining([
                     expect.objectContaining({
                         name: 'Minimal Typed Diagram Editor',
@@ -82,53 +99,68 @@ describe('createWorkflowTodoHandler', () => {
                         primaryWorkPurpose: 'Meta work',
                     }),
                 ]),
-            },
+            }),
         });
         expect(nextMock).not.toHaveBeenCalled();
     });
 
-    it('forwards malformed table errors', async () => {
-        fileReader.mockResolvedValue('| Workflow | Status |\n| --- | --- |');
+    it('forwards invalid JSON errors', async () => {
+        fileReader.mockResolvedValue('{');
 
         await invokeHandler('repository-root');
 
         expect(json).not.toHaveBeenCalled();
         expect(nextMock).toHaveBeenCalledWith(
-            expect.objectContaining({ message: 'The Workflow TODO List is missing its table header' }),
+            expect.objectContaining({ name: 'SyntaxError' }),
         );
     });
 
     it('rejects unknown work-purpose labels', async () => {
-        fileReader.mockResolvedValue(`${header}\n${row.replace('Product work', 'Other')}\n`);
+        fileReader.mockResolvedValue(JSON.stringify({
+            ...workflowTodo,
+            workflows: workflowTodo.workflows.map(workflow => ({
+                ...workflow,
+                primaryWorkPurpose: 'Other',
+            })),
+        }));
 
         await invokeHandler('repository-root');
 
         expect(json).not.toHaveBeenCalled();
         expect(nextMock).toHaveBeenCalledWith(
-            expect.objectContaining({ message: 'A workflow TODO row must have a valid primary work purpose' }),
+            expect.objectContaining({ message: 'Invalid WorkflowTodoList: unknown primary work purpose' }),
         );
     });
 
     it('rejects malformed workflow rows', async () => {
-        fileReader.mockResolvedValue(`${header}\n| only | two | fields |`);
+        fileReader.mockResolvedValue(JSON.stringify({
+            ...workflowTodo,
+            workflows: [{ name: 'Incomplete' }],
+        }));
 
         await invokeHandler('repository-root');
 
         expect(json).not.toHaveBeenCalled();
         expect(nextMock).toHaveBeenCalledWith(
-            expect.objectContaining({ message: 'A workflow TODO row must contain five non-empty fields' }),
+            expect.objectContaining({ message: 'Invalid WorkflowTodoList: missing or unsupported fields' }),
         );
     });
 
     it('rejects invalid checkpoint links', async () => {
-        fileReader.mockResolvedValue(`${header}\n${row.replace('./diagram-editor-workflow.md#checkpoint', 'https://example.test')}`);
+        fileReader.mockResolvedValue(JSON.stringify({
+            ...workflowTodo,
+            workflows: workflowTodo.workflows.map(workflow => ({
+                ...workflow,
+                resumePath: 'https://example.test',
+            })),
+        }));
 
         await invokeHandler('repository-root');
 
         expect(json).not.toHaveBeenCalled();
         expect(nextMock).toHaveBeenCalledWith(
             expect.objectContaining({
-                message: 'A workflow resume reference must link to a local knowledge Markdown checkpoint',
+                message: 'Invalid WorkflowTodoList: resume references must be local Markdown checkpoints',
             }),
         );
     });

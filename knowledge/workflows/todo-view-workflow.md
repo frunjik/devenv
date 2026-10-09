@@ -53,3 +53,19 @@ The existing API Supertest suite was not run because it uses localhost/socket ac
 `WorkflowWorkPurpose` is a supporting API Type for the two existing labels (`Product work` and `Meta work`). No conflicting existing Type was found; the name accurately distinguishes the value from workflow status and describes its purpose in the API contract. This does not establish a new Glossary Term or a broader domain Type beyond the two registered labels. No global list authority change is proposed.
 
 **Next:** User review of the updated read-only view and its purpose column.
+
+## Follow-up checkpoint: JSON authority migration
+
+**Status:** Implementation and verification complete; user review and commit approval remain separate.
+
+The user approved making Typed JSON authoritative for the global Workflow TODO list. The [workflow-todo-list.json](./workflow-todo-list.json) now contains the 12 workflow records and the prior register's introductory, classification, maintenance, switching, and status guidance. [workflow-todo-list.md](./workflow-todo-list.md) is regenerated as the human-readable view. The `/workflow-todo` handler now reads and runtime-validates the JSON rather than parsing Markdown. The active selection is this workflow; DevEnv Value Evaluation is paused with its next diagram-editor slice preserved in its detailed checkpoint.
+
+Added an explicit `WorkflowTodoList` interface/runtime validator, a deterministic renderer and generator command (`npm run generate:workflow-todo:markdown`), and focused direct-handler/renderer tests. All 30 focused server tests pass; the handler, validator, and exporter each have 100% statement, branch, function, and line coverage. The server TypeScript check and shared/client builds pass; 12 client tests pass. Regenerating twice produced byte-identical Markdown (SHA-256 `FE548BFE247EE56431B883B542DBAD056E1D2F7B3A0A65C39745410F70ADFC74`), 13 local links resolve, and `git diff --check` passes. The prior API Supertest tests were replaced with direct handler tests that do not start a network listener; the repository-backed test reads the JSON source (read-only).
+
+Runtime follow-up: `tsx watch` could not resolve the handler's runtime `@shared` import because the repository alias points to `dist/shared` and is not available to this Node runtime. The handler now imports the validator from the shared source by a relative path. The dev server started successfully and `GET /workflow-todo` returned the validated JSON list.
+
+**Architecture follow-up:** The server currently imports the shared validator directly from the shared source file. This is a compatibility workaround, not the desired package boundary. Improve server runtime module resolution so it can consume the supported `@shared` package entry point consistently in development and production, then remove the direct source-file import. Keep this separate from the JSON-authority migration.
+
+**Next:** Review the final diff, approve a commit subject, and commit only after that approval.
+
+No global list authority remains in Markdown or API parsing. `WorkflowTodoList` is the already-approved shared Type name. `WorkflowWorkPurpose` has two constrained values; the record shapes remain inline rather than adding a separate row Type.

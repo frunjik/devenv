@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "toolbar-design-refinement",
+      "title": "Refine status toolbar visual design",
+      "beneficiary": "DevEnv developer reading and refreshing toolbar status",
+      "intendedOutcome": "Make TDD meaning explicit and improve workflow readability, interaction sizing, and narrow layout.",
+      "successCondition": "Show TDD-prefixed phases and idle for no recorded phase, a visible refresh affordance, workflow controls at least 32px desktop and 44px narrow, compact two-row narrow toolbar at most 100px, accessible full workflow name, and visible keyboard focus without overflow.",
+      "baseline": "Ambiguous NOT SET label, workflow height about 22px, and narrow toolbar about 123px tall.",
+      "startedAt": "2026-10-09T22:26:17+02:00",
+      "completedAt": "2026-10-09T22:29:23+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved all five review findings, the idle interpretation, reopening the toolbar workflow, and all five metrics.", "evidence": "Design review and user approval; active-workflow-toolbar-workflow.md." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 6 seconds wall-clock including tracking decisions, permission and visibility waits; active effort unknown.", "evidence": "Recorded request and verified completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "All five design findings addressed. Six focused tests pass at 100% four-metric component coverage; final client build passes. Visible 1200/380/320px checks meet 32px desktop and 44px narrow workflow heights, with narrow toolbar 97.781px, no overflow/overlap, keyboard focus and accessible full-name tooltip. Refresh contrast 6.79:1 and focus contrast 8.02:1. Actual phase state transitions verified through API; cleared state displays TDD: idle. No changed-file test type diagnostics; unrelated pre-existing test errors remain. Follow-up user outcome unknown.", "evidence": "Toolbar design refinement checkpoint in active-workflow-toolbar-workflow.md; Jest, build, browser geometry, screenshot, focus and contrast checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "toolbar-scheduling-boundary",
       "title": "Explicit toolbar scheduling boundary",
       "beneficiary": "DevEnv developer maintaining toolbar polling",

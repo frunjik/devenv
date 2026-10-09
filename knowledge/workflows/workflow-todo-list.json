@@ -6,7 +6,7 @@
   "workflows": [
     {
       "name": "Active workflow in status toolbar",
-      "evaluationIds": ["active-workflow-status-toolbar", "toolbar-scheduling-boundary"],
+      "evaluationIds": ["active-workflow-status-toolbar", "toolbar-scheduling-boundary", "toolbar-design-refinement"],
       "primaryWorkPurpose": "Meta work",
       "status": "Completed",
       "resumeLabel": "Toolbar refresh implementation checkpoint",

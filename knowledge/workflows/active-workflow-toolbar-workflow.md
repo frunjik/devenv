@@ -4,6 +4,16 @@
 
 **Status:** Completed; canvas selection restored.
 
+## Toolbar design refinement (2026-10-09)
+
+- User approved all five design recommendations and a separate evaluation (`toolbar-design-refinement`). Empty recorded phase is displayed as TDD: idle, explicitly meaning no recorded phase. Errors remain unavailable, not idle.
+- Workflow control is at least 32px tall on desktop and 44px narrow, with 12px label and 13px name, visible Refresh text, keyboard focus outline, full-name tooltip, and deliberate compact label/name arrangement on narrow screens. Phase line-height is explicit; narrow phase and workflow remain side by side in the second toolbar row.
+- TDD Red observed old labels and 22px/123px workflow/toolbar heights. Green: six tests pass with 100% four-metric component coverage and client build passes. Refactor removed redundant spacing; tests stay green. Test-source check has no toolbar diagnostics; unrelated existing test errors remain.
+- Visible geometry at widths 1200, 380, and 320: workflow height 32/44/44px; toolbar 44/97.781/97.781px. No horizontal overflow or canvas overlap. Keyboard navigation activates the 2px focus-visible outline. Existing bottom reservation retained; no shell edits required.
+- Recorded each actual phase in .rgr-phase, verified file/API, and cleared it after TDD completion. Toolbar phase can lag by its 30-second polling interval. Canvas selection restored. Final visible browser shows TDD: idle and the canvas workflow; at 320px the name truncates visually but the full name remains available through the tooltip and accessible description. Narrow screenshot confirms two-row grouping and focus outline. Refresh text contrast is 6.79:1; focus outline contrast against toolbar is 8.02:1. Existing workflow text contrast remains above 4.5:1.
+- Completed at 2026-10-09 22:29:23 CEST. A hidden-tab interaction stalled during verification and was retried only after visibility was restored; the stalled check is not treated as acceptance evidence. Elapsed time includes permission and visibility waits; active effort and follow-up outcome remain unknown.
+- Type review: presentation refinements reuse existing phase and workflow meaning; no new domain Type. No additional meta-level insight identified. Changes remain uncommitted.
+
 **Purpose:** Show the registered active workflow in the bottom toolbar without changing the feature-store Current task or its commit-message use.
 
 **Acceptance:** Load immediately, refresh every 30 seconds and on click, explicitly display loading, failure, and no-active states, recover after failure, and stop polling and cancel outstanding requests on toolbar destruction. Preserve narrow-screen wrapping.

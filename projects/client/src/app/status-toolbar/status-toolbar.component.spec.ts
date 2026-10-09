@@ -125,7 +125,7 @@ describe('StatusToolbarComponent', () => {
         expect(fixture.nativeElement.querySelector('.version-info').textContent).toContain('Server vunavailable');
     });
 
-    it('shows "not set" next to the active workflow when no phase is recorded', () => {
+    it('labels an unrecorded TDD phase as idle next to the refreshable active workflow', () => {
         TestBed.configureTestingModule({
             imports: [StatusToolbarComponent],
             providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
@@ -139,8 +139,9 @@ describe('StatusToolbarComponent', () => {
         fixture.detectChanges();
 
         const phase = fixture.nativeElement.querySelector('.rgr-phase');
-        expect(phase.textContent.trim()).toBe('not set');
-        expect(phase.getAttribute('aria-label')).toBe('Red-Green-Refactor phase: not set');
+        expect(phase.textContent.trim()).toBe('TDD: idle');
+        expect(phase.getAttribute('aria-label')).toBe('Red-Green-Refactor phase: idle');
+        expect(fixture.nativeElement.querySelector('.workflow-refresh').textContent.trim()).toBe('Refresh');
         expect(phase.compareDocumentPosition(fixture.nativeElement.querySelector('.current-entry'))
             & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });
@@ -161,7 +162,7 @@ describe('StatusToolbarComponent', () => {
         fixture.detectChanges();
 
         const phase = fixture.nativeElement.querySelector('.rgr-phase');
-        expect(phase.textContent.trim()).toBe('red');
+        expect(phase.textContent.trim()).toBe('TDD: red');
         expect(phase.classList).toContain('rgr-phase-red');
     });
 
@@ -181,7 +182,7 @@ describe('StatusToolbarComponent', () => {
         fixture.detectChanges();
 
         const phase = fixture.nativeElement.querySelector('.rgr-phase');
-        expect(phase.textContent.trim()).toBe('unavailable');
+        expect(phase.textContent.trim()).toBe('TDD: unavailable');
         expect(phase.classList).toContain('rgr-phase-error');
     });
 });

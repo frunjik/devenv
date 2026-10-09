@@ -1,4 +1,4 @@
-.workflow-evaluations { max-width: 76rem; margin: 0 auto; padding: clamp(.75rem, 4vw, 3rem); }
+.workflow-evaluations { width: 100%; max-width: none; margin: 0; padding: clamp(.75rem, 2vw, 2rem); box-sizing: border-box; }
 h1, h2 { color: var(--text-heading); }
 p, td { color: var(--text-secondary); }
 .table-scroll { overflow-x: auto; }
@@ -12,7 +12,18 @@ th { color: var(--text-heading); }
 summary { cursor: pointer; min-height: 44px; overflow-wrap: anywhere; }
 summary h2 { display: inline; font-size: 1rem; margin: 0; }
 summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
-.evaluation-summary { display: block; margin-top: .35rem; color: var(--text-secondary); font-size: .875rem; }
+.work-evaluation summary {
+    display: grid;
+    grid-template-columns: 1rem minmax(0, 1fr) 10rem minmax(12rem, .5fr);
+    align-items: center;
+    gap: .75rem;
+}
+.work-evaluation summary::marker { content: ''; }
+.work-evaluation summary::-webkit-details-marker { display: none; }
+.work-evaluation summary::before { content: ''; border-left: .4rem solid var(--text-secondary); border-top: .3rem solid transparent; border-bottom: .3rem solid transparent; width: 0; height: 0; }
+.work-evaluation[open] summary::before { transform: rotate(90deg); }
+.evaluation-status, .evaluation-duration { color: var(--text-secondary); font-size: .875rem; }
+.evaluation-duration { text-align: right; }
 .metric-definitions { margin-top: 1.5rem; }
 .credit-estimator { margin-top: 2rem; padding: 1rem; border: 1px solid var(--border-default); border-radius: .4rem; }
 .credit-estimator label, .credit-estimator textarea { display: block; width: 100%; }
@@ -22,4 +33,6 @@ summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 
 
 @media (max-width: 42rem) {
     .table-scroll table { min-width: 42rem; }
+    .work-evaluation summary { grid-template-columns: 1rem minmax(0, 1fr); }
+    .evaluation-status, .evaluation-duration { grid-column: 2; }
 }

@@ -24,9 +24,10 @@ function formatMilliseconds(milliseconds: number): string {
     const hours = Math.floor(elapsedSeconds / 3600);
     const minutes = Math.floor((elapsedSeconds % 3600) / 60);
     const seconds = elapsedSeconds % 60;
+    const minuteAndSecondText = `${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
     return hours > 0
-        ? `${hours}h ${minutes}m ${seconds}s`
-        : `${Math.floor(elapsedSeconds / 60)}m ${seconds}s`;
+        ? `${String(hours).padStart(2, '0')}h ${minuteAndSecondText}`
+        : minuteAndSecondText;
 }
 
 export function formatElapsedDuration(startedAt: string | null, completedAt: string | null): string {

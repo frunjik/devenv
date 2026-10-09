@@ -8,7 +8,7 @@ describe('evaluation elapsed durations', () => {
         expect(formatSummedElapsedDuration([
             { startedAt: start, completedAt: '2026-10-10T01:00:00.600Z' },
             { startedAt: start, completedAt: '2026-10-10T00:00:00.600Z' },
-        ])).toBe('1h 0m 1s');
+        ])).toBe('01h 00m 01s');
     });
 
     it('counts missing completed durations separately and excludes incomplete work', () => {
@@ -16,7 +16,7 @@ describe('evaluation elapsed durations', () => {
             { startedAt: start, completedAt: '2026-10-10T00:02:00Z' },
             { startedAt: null, completedAt: start },
             { startedAt: start, completedAt: null },
-        ])).toBe('2m 0s; 1 unknown');
+        ])).toBe('02m 00s; 1 unknown');
     });
 
     it('does not present all-unknown durations as zero', () => {
@@ -36,7 +36,7 @@ describe('evaluation elapsed durations', () => {
             { startedAt: start, completedAt: start },
             { startedAt: null, completedAt: start },
             { startedAt: start, completedAt: 'invalid' },
-        ])).toBe('0m 0s; 1 unknown; 1 unavailable');
+        ])).toBe('00m 00s; 1 unknown; 1 unavailable');
     });
 
     it('shows no total when there are no completed evaluations', () => {
@@ -50,9 +50,12 @@ describe('evaluation elapsed durations', () => {
         ['invalid', start, 'Unavailable (invalid timestamp)'],
         [start, 'invalid', 'Unavailable (invalid timestamp)'],
         ['2026-10-10T00:01:00Z', start, 'Unavailable (completion precedes start)'],
-        [start, '2026-10-10T00:02:03Z', '2m 3s'],
-        [start, '2026-10-10T01:02:03Z', '1h 2m 3s'],
-    ])('preserves individual formatting for %s to %s', (from, to, expected) => {
+        [start, start, '00m 00s'],
+        [start, '2026-10-10T00:02:03Z', '02m 03s'],
+        [start, '2026-10-10T01:02:03Z', '01h 02m 03s'],
+        [start, '2026-10-10T10:12:13Z', '10h 12m 13s'],
+        [start, '2026-10-14T04:00:00Z', '100h 00m 00s'],
+    ])('formats individual duration for %s to %s', (from, to, expected) => {
         expect(formatElapsedDuration(from, to)).toBe(expected);
     });
 });

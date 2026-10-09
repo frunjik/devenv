@@ -128,21 +128,22 @@ describe('WorkflowEvaluationsComponent', () => {
         fixture.detectChanges();
 
         const text = fixture.nativeElement.textContent as string;
-        expect(text).toContain('Elapsed duration: 16m 45s');
-        expect(text).toContain('Elapsed duration: Unknown');
-        expect(text).toContain('Elapsed duration: Unavailable (invalid timestamp)');
-        expect(text).toContain('Elapsed duration: Unavailable (completion precedes start)');
-        expect(text).toContain('Elapsed duration: 1h 16m 45s');
-        expect(text).toContain('Elapsed duration: 0m 0s');
-        expect(text.match(/Elapsed duration:/g)).toHaveLength(6);
+        const durations = Array.from(
+            fixture.nativeElement.querySelectorAll('.evaluation-duration') as NodeListOf<HTMLElement>,
+        ).map(duration => duration.textContent?.trim());
+        expect(durations).toEqual([
+            '16m 45s', '—', 'Unknown', 'Unavailable (invalid timestamp)',
+            'Unavailable (completion precedes start)', '01h 16m 45s', '00m 00s',
+        ]);
+        expect(text).not.toContain('Elapsed duration:');
         const unfinished = Array.from(
             fixture.nativeElement.querySelectorAll('.work-evaluation') as NodeListOf<HTMLElement>,
         ).find(section => section.querySelector('h2')?.textContent?.trim() === 'Unfinished item');
         expect(unfinished).toBeDefined();
         expect(unfinished?.textContent).not.toContain('Elapsed duration:');
         const completed = fixture.nativeElement.querySelector('.work-evaluation summary') as HTMLElement;
-        expect(completed.textContent).toContain('Completed');
-        expect(completed.textContent).toContain('16m 45s');
+        expect(completed.querySelector('.evaluation-status')!.textContent).toBe('Completed');
+        expect(completed.querySelector('.evaluation-duration')!.textContent?.trim()).toBe('16m 45s');
     });
 
     it('reports evaluation file loading failures', () => {

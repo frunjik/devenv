@@ -17,8 +17,19 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Padded elapsed units
+
+- User chose padding displayed units only: 02m 08s and 01h 02m 08s, still omitting zero hours. Shared formatter applies consistently to evaluation headers and Workflow TODO histories/totals. Unknown/unavailable and incomplete semantics unchanged; hours above 99 retain all digits.
+- Observed seven formatting failures before implementation, including zero duration, summed milliseconds and long durations. Existing elapsed value representation suffices; no new domain Type needed.
+- Verified 45 tests across formatter and both consumers, 100% all-four formatter/evaluation-component coverage, full test-source type-check, client build, diagnostics and diff formatting. Browser confirms padded short/hour values. No remaining Type cleanup or refactoring; changes uncommitted.
+
 ### Compact evaluation disclosures
 
+- User refinement: right-align the duration column and remove the visible Elapsed duration prefix. Keep exact formatted values, unknown/unavailable reasons and the incomplete dash; observed exact-text Red before implementation.
+- Duration refinement verified: six tests and 100% all-four component coverage, full test-source type-check, client build and diagnostics pass. Running-page value is duration-only and computed alignment is right. No Type/data changes or further cleanup needed; changes uncommitted.
+- User requested separate aligned title/status/duration columns and full available page width. Use a grid summary with a disclosure indicator; stack status/duration beneath the title on narrow screens. Incomplete evaluations retain no elapsed-duration claim and display a dash in their duration column. Observed separate-field test Red before implementation; data/Types unchanged.
+- Column refinement verified: six tests, 100% all-four component coverage, test-source type-check, client build, diagnostics and diff formatting pass. Browser confirms matching column positions across desktop rows, stacked fields at 320px with document width 305px, and Enter expansion/collapse. No new Type or remaining refactoring warranted; uncommitted.
+- User refinement: place completion status and elapsed duration inline beside the title, with .75rem separation and natural wrapping on narrow screens. Native disclosure marker and behavior unchanged.
 - User approved compact evaluation headers (title, completion status and elapsed duration) with expandable evidence, plus collapsed metric definitions and credit estimator. Native details/summary retains keyboard interaction and all existing content/controls. Missing completion means Not completed, not an inferred active lifecycle state.
 - Observed two public-view tests fail before implementation. Existing dataset and duration formatter unchanged; no new Type warranted for this presentation-only change.
 - Verified six tests with 100% component coverage, full test-source type-check, client build, diagnostics and diff formatting. Running page has 29 collapsed evaluation disclosures; expansion/collapse works via Enter on the summary. Metric definitions and estimator start collapsed. Corrected a nested closing-tag error during Green; no remaining refactoring or Type cleanup identified. Changes uncommitted.

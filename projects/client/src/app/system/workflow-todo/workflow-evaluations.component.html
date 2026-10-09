@@ -29,9 +29,10 @@
         <details *ngFor="let evaluation of data.evaluations" class="work-evaluation">
             <summary>
                 <h2>{{ evaluation.title }}</h2>
-                <span class="evaluation-summary">
-                    {{ evaluation.completedAt ? 'Completed' : 'Not completed' }}
-                    <span *ngIf="evaluation.completedAt"> · Elapsed duration: {{ formatElapsedDuration(evaluation.startedAt, evaluation.completedAt) }}</span>
+                <span class="evaluation-status">{{ evaluation.completedAt ? 'Completed' : 'Not completed' }}</span>
+                <span class="evaluation-duration">
+                    <ng-container *ngIf="evaluation.completedAt; else unfinishedDuration">{{ formatElapsedDuration(evaluation.startedAt, evaluation.completedAt) }}</ng-container>
+                    <ng-template #unfinishedDuration>—</ng-template>
                 </span>
             </summary>
             <p><strong>Beneficiary:</strong> {{ evaluation.beneficiary }}</p>

@@ -59,15 +59,15 @@ describe('WorkflowTodoComponent', () => {
             const host: HTMLElement = fixture.nativeElement;
             const totals = host.querySelectorAll('.totals-summary .workflow-total');
             expect(totals[0].textContent).toContain('Product work subtotal');
-            expect(totals[0].textContent).toContain('Summed elapsed: 4m 0s');
+            expect(totals[0].textContent).toContain('Summed elapsed: 04m 00s');
             expect(totals[1].textContent).toContain('Meta work subtotal');
-            expect(totals[1].textContent).toContain('Summed elapsed: 3m 0s');
+            expect(totals[1].textContent).toContain('Summed elapsed: 03m 00s');
         });
 
         it('shows the unique associated grand total in the top summary, not the sum of group totals', () => {
             const host: HTMLElement = fixture.nativeElement;
             expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('Grand total');
-            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('Summed elapsed: 6m 0s');
+            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('Summed elapsed: 06m 00s');
             expect(host.textContent).toContain('Each evaluation is counted once');
         });
 
@@ -85,7 +85,7 @@ describe('WorkflowTodoComponent', () => {
             fixture.componentInstance.evaluationDataset!.evaluations[0].startedAt = null;
             fixture.detectChanges();
             const host: HTMLElement = fixture.nativeElement;
-            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('5m 0s; 1 unknown');
+            expect(host.querySelector('.totals-summary .grand-total')!.textContent).toContain('05m 00s; 1 unknown');
         });
     });
 
@@ -318,8 +318,8 @@ describe('WorkflowTodoComponent', () => {
         ).find(row => row.querySelector('.workflow-name')?.textContent?.trim()
             === 'Renamed principle review workflow');
 
-        expect(reviewRow?.textContent).toContain('Principle register organization review (8m 56s)');
-        expect(reviewRow?.textContent).toContain('Association follow-up (2m 0s)');
+        expect(reviewRow?.textContent).toContain('Principle register organization review (08m 56s)');
+        expect(reviewRow?.textContent).toContain('Association follow-up (02m 00s)');
         const history = reviewRow!.querySelector<HTMLDetailsElement>('details')!;
         expect(history.open).toBe(false);
         expect(history.querySelector('summary')!.textContent).toContain('2 completed');
@@ -674,6 +674,6 @@ describe('WorkflowTodoComponent', () => {
             === 'Principle Register Organization and Priority Review');
 
         expect(row?.textContent)
-            .toContain('Review principle register organization and precedence (8m 56s)');
+            .toContain('Review principle register organization and precedence (08m 56s)');
     });
 });

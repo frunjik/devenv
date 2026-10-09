@@ -1,10 +1,12 @@
 <main class="interactive-canvas-page">
     <h1>Canvas Diagram Editor</h1>
     <div class="canvas-controls">
-        <button type="button" aria-label="Add part" [disabled]="!!part" (click)="addPart()">Add part</button>
+        <button type="button" aria-label="Add part" (click)="addPart()">Add part</button>
+        <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
+            (click)="removeSelectedPart()">Remove selected</button>
         <label class="form-field">Part label
             <input #label class="form-control" aria-label="Part label"
-                [disabled]="!selected || !part" [value]="part?.label || ''" (input)="renamePart(label.value)">
+                [disabled]="!selectedPart" [value]="selectedPart?.label || ''" (input)="renamePart(label.value)">
         </label>
     </div>
     <canvas
@@ -17,6 +19,6 @@
         (pointercancel)="endDrag($event)"
         (lostpointercapture)="endDrag($event)"
         aria-label="Sketch workspace and current time rendered on an HTML canvas">
-        Sketch workspace. Use Add part, select the box to edit its label, and drag it to move it. Current time is also shown.
+        Sketch workspace. Use Add part, select a box to edit its label or remove it, and drag it to move it. Current time is also shown.
     </canvas>
 </main>

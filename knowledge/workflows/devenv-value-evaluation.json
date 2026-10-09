@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-diagram-multiple-parts",
+      "title": "Arrange and remove multiple canvas sketch parts",
+      "beneficiary": "DevEnv developer sketching several system parts",
+      "intendedOutcome": "Independently create, select, drag, rename, and remove multiple in-memory boxes.",
+      "successCondition": "Generic sequentially labelled parts have never-reused numeric identities, deterministic creation-order drawing and topmost hit testing. Selection and dragging target one part; removing selection stops its drag. Existing clock, surface sizing and lifecycle remain intact.",
+      "baseline": "One box only; Add part disables after creation, selection is a boolean, and removal is unavailable.",
+      "startedAt": "2026-10-09T23:06:43+02:00",
+      "completedAt": "2026-10-09T23:11:10+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved generic creation, existing Type refinements, placement/order/selection/removal design and recording all five metrics.", "evidence": "interactive-canvas-workflow.md slice 3 checkpoint and user decisions." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "4 minutes 27 seconds wall-clock including design decisions, continuation gate and browser-location assistance; active effort unknown.", "evidence": "Request and final visible acceptance timestamps in interactive-canvas-workflow.md." },
+        { "metricId": "outcome-and-quality", "value": "Ten editor tests pass at 100% all-four coverage; client build passes. Visible desktop verifies topmost selection, independent movement/rename/removal and new identity after removal; 380px/320px checks verify backing size, stable selection origin, no overflow/toolbar overlap and continuing clock. Test-source check has unrelated existing errors but no canvas diagnostics. Checklist trial slice 1 records no identified missed applicable checks and browser-location friction; follow-up user outcome unknown.", "evidence": "interactive-canvas-workflow.md slice 3 acceptance and checklist trial; focused Jest, build, type diagnostics and visible browser measurements." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-surface-separation",
       "title": "Separate canvas surface from diagram editing",
       "beneficiary": "DevEnv developer maintaining the canvas editor",

@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Active - foundation slice 1 and one-editable-part slice 2 complete. Next is slice 3: multiple sketch parts with stable identities, drawing order, hit testing, and removal.
+**Status:** Active - foundation slice 1, one-editable-part slice 2, and multiple-part slice 3 complete. Next is slice 4: relationships, after agreeing their sketch meaning and interaction.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
@@ -18,7 +18,19 @@
 
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
-**Next:** Slice 3: several independently arranged sketch parts. Review stable identity and selection representation before adopting new Types. Keep `/diagram` unchanged.
+**Next:** Slice 4: relationships. Agree sketch connection meaning, direction, labels, and creation interaction before implementing Types. Keep `/diagram` unchanged; do not impose directed relationships on its existing undirected contract.
+
+### Slice 3 checkpoint
+
+- User approved generic Add part creation and evaluation in this existing workflow. Approved refinements: SketchPart has never-reused numeric id; parts array determines creation/drawing order; selectedPart is SketchPart or undefined; CanvasDrag owns the grabbed part. Labels Part 1, Part 2, etc.; creation offsets repeat over a small diagonal pattern. Newest draws and hit-tests on top; selection does not reorder. Remove selected clears selection and drag. No persistence or relationships.
+- Pre-test dependency check: reuse existing ICanvas/MockCanvas and IScheduler/MockScheduler in editor tests; no new boundary or Jest interception. Current-time reading unchanged and tested around synchronous painting. Existing Diagram model is not adopted for free-form sketch semantics.
+- Evaluation recorded before Red. First Red checks repeated Add part draws independently labelled boxes; remaining steps: identity/selection refinement, overlapping hit tests, drag ownership, remove lifecycle, full coverage/build and visible browser acceptance. Checklist trial slice 1 of 3 begins here; record actual misses/corrections/friction at completion.
+- Continuation checkpoint: repeated creation and selection/removal tests failed before production changes. Green implements approved model and controls; nine editor tests pass with 100% statement/branch/function/line coverage. Phase cleared at time gate. Remaining: final Type/refactor review, stronger identity/order/placement assertions as needed, client build/test-source diagnostics, visible desktop/narrow acceptance, evaluation and trial completion. No commit.
+- Acceptance (2026-10-09 23:11:10 CEST): ten editor tests pass with 100% statement/branch/function/line coverage. Exact assertions cover repeating four-position creation pattern, ids not reused after removal, topmost overlap hit, unchanged creation/drawing order on older-part selection, and selected border. Client build passes. Test-source check retains unrelated Glossary/Workflow TODO errors; no canvas diagnostics.
+- Visible desktop: Part 2 selected over Part 1, dragged 20px right/30px down to approximately (68, 78.011), renamed DevEnv API, removed; remaining Part 1 unchanged and next created Part 3 has id 3. Selection/edit/remove controls disabled after removal. Backing matches CSS content. Visible 380px and 320px checks show no horizontal overflow, 44px buttons, matching backing dimensions, stable origin on selection and no toolbar overlap; clock pixels change over 2.1 seconds.
+- Final Type review: approved SketchPart id separates identity from equal/changing labels; selectedPart reference denotes one existing in-memory part or no selection, and CanvasDrag retains that part and pointer ownership. Removal clears selection/drag; tests contrast absent selection with active overlap selection and removal mid-drag. No new Type, persisted format, architecture meaning, or generic collection abstraction justified.
+- Checklist trial slice 1 of 3: dependency check reused both existing mocks before tests; no Jest interception or test external I/O; required design approvals, observed Red, coverage, build, and separate compliance review performed. No missed applicable checks identified in this review; no production correction/rework after first Green. Friction: shared browser location was unclear; opened an integrated page before resuming with permission. Existing test-source errors explicitly reported. Active effort and overhead unknown. Two trial slices remain; effectiveness not yet established.
+- Evaluation completed; elapsed 4 minutes 27 seconds including decisions, gate and browser-location assistance. Phase cleared; changes uncommitted. This checkpoint supersedes historical next-step statements above; next is slice 4, not started.
 
 ### Editor/surface separation checkpoint
 

@@ -189,7 +189,8 @@
         "interactive-canvas-pointer-coordinates",
         "interactive-canvas-viewport-stretch",
         "interactive-canvas-one-editable-part",
-        "canvas-editor-surface-separation"
+        "canvas-editor-surface-separation",
+        "canvas-diagram-multiple-parts"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

@@ -27,6 +27,7 @@ class MockCanvas implements ICanvas {
     requests = 0;
     draws: [string, number, number][] = [];
     boxes: number[][] = [];
+    borders: number[] = [];
     captured: number[] = [];
     element: HTMLCanvasElement | undefined;
     private render: Parameters<ICanvas['initialize']>[1] | undefined;
@@ -35,6 +36,7 @@ class MockCanvas implements ICanvas {
         fillText: (text: string, x: number, y: number) => { this.draws.push([text, x, y]); },
         strokeRect: (x: number, y: number, width: number, height: number) => {
             this.boxes.push([x, y, width, height]);
+            this.borders.push(this.context.lineWidth);
         },
         textAlign: 'center' as const,
         textBaseline: 'middle' as const,
@@ -108,7 +110,7 @@ describe('CanvasDiagramEditor', () => {
         expect(surface.draws.at(-1)?.slice(1)).toEqual([120, 67.5]);
     });
 
-    it('creates one labelled sketch box through Add part and prevents a second box in this slice', () => {
+    it('creates independently labelled boxes through repeated Add part', () => {
         const fixture = TestBed.createComponent(CanvasDiagramEditor);
         fixture.detectChanges();
         const add: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Add part"]');
@@ -116,8 +118,36 @@ describe('CanvasDiagramEditor', () => {
         fixture.detectChanges();
         surface.paint();
         expect(surface.boxes.at(-1)).toEqual([24, 24, 180, 80]);
-        expect(surface.draws).toContainEqual(['DevEnv client', 114, 64]);
-        expect(add.disabled).toBe(true);
+        expect(surface.draws).toContainEqual(['Part 1', 114, 64]);
+        expect(add.disabled).toBe(false);
+        add.click();
+        surface.paint();
+        expect(surface.boxes.slice(-2)).toEqual([[24, 24, 180, 80], [48, 48, 180, 80]]);
+        expect(surface.draws).toContainEqual(['Part 2', 138, 88]);
+    });
+
+    it('repeats the placement pattern without reusing identities and keeps drawing order when selecting an older part', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        for (let i = 0; i < 5; i++) {
+            editor.addPart();
+        }
+        expect(editor.parts.map(part => part.id)).toEqual([1, 2, 3, 4, 5]);
+        expect(editor.parts.map(part => part.position)).toEqual([
+            { x: 24, y: 24 }, { x: 48, y: 48 }, { x: 72, y: 72 }, { x: 96, y: 96 }, { x: 24, y: 24 },
+        ]);
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        expect(editor.selectedPart).toBe(editor.parts[4]);
+        canvas.dispatchEvent(pointer('pointerup', 130, 80, 1));
+        editor.removeSelectedPart();
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        expect(editor.selectedPart).toBe(editor.parts[0]);
+        surface.paint();
+        expect(surface.draws.slice(-4).map(draw => draw[0])).toEqual(['Part 1', 'Part 2', 'Part 3', 'Part 4']);
+        expect(surface.borders.slice(-4)).toEqual([3, 1, 1, 1]);
+        expect(editor.parts.map(part => part.id)).toEqual([1, 2, 3, 4]);
     });
 
     it('selects, renames, drags without a jump, and deselects the box', () => {
@@ -134,7 +164,7 @@ describe('CanvasDiagramEditor', () => {
         input.value = 'Client sketch';
         input.dispatchEvent(new Event('input'));
         canvas.dispatchEvent(pointer('pointermove', 155, 115, 2));
-        expect(fixture.componentInstance.part?.position).toEqual({ x: 24, y: 24 });
+        expect(fixture.componentInstance.parts[0].position).toEqual({ x: 24, y: 24 });
         canvas.dispatchEvent(pointer('pointermove', 155, 115, 1));
         surface.paint();
         expect(surface.boxes.at(-1)).toEqual([44, 54, 180, 80]);
@@ -143,7 +173,7 @@ describe('CanvasDiagramEditor', () => {
         canvas.dispatchEvent(pointer('pointerup', 155, 115, 2));
         canvas.dispatchEvent(pointer('pointerup', 155, 115, 1));
         canvas.dispatchEvent(pointer('pointermove', 175, 135, 1));
-        expect(fixture.componentInstance.part?.position).toEqual({ x: 44, y: 54 });
+        expect(fixture.componentInstance.parts[0].position).toEqual({ x: 44, y: 54 });
         canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
         fixture.detectChanges();
         expect(input.disabled).toBe(true);
@@ -162,13 +192,59 @@ describe('CanvasDiagramEditor', () => {
         expect(surface.captured).toEqual([1]);
         canvas.dispatchEvent(pointer(end, 135, 85, 1));
         canvas.dispatchEvent(pointer('pointermove', 155, 115, 1));
-        expect(fixture.componentInstance.part?.position).toEqual({ x: 24, y: 24 });
+        expect(fixture.componentInstance.parts[0].position).toEqual({ x: 24, y: 24 });
         for (const [x, y] of [[125, 75], [305, 155], [306, 155], [125, 156], [124, 75], [125, 74]]) {
             canvas.dispatchEvent(pointer('pointerdown', x, y, 1));
             canvas.dispatchEvent(pointer('pointerup', x, y, 1));
         }
+        canvas.dispatchEvent(pointer('pointerdown', 135, 85, 1));
+        canvas.dispatchEvent(pointer('pointerup', 135, 85, 1));
         fixture.componentInstance.renamePart('');
-        expect(fixture.componentInstance.part?.label).toBe('');
+        expect(fixture.componentInstance.parts[0].label).toBe('');
+    });
+
+    it('selects the topmost overlap, edits and moves only it, then removes it and never reuses its identity', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        const remove: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Remove selected part"]');
+        expect(remove.disabled).toBe(true);
+        editor.removeSelectedPart();
+        editor.addPart();
+        editor.addPart();
+        const [first, second] = editor.parts;
+        expect(first.id).not.toBe(second.id);
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        expect(editor.selectedPart).toBe(second);
+        editor.renamePart('Same label');
+        expect(first.label).toBe('Part 1');
+        canvas.dispatchEvent(pointer('pointermove', 180, 130, 1));
+        expect(first.position).toEqual({ x: 24, y: 24 });
+        expect(second.position).toEqual({ x: 68, y: 68 });
+        fixture.detectChanges();
+        expect(remove.disabled).toBe(false);
+        remove.click();
+        fixture.detectChanges();
+        expect(editor.parts).toEqual([first]);
+        expect(editor.selectedPart).toBeUndefined();
+        expect(remove.disabled).toBe(true);
+        canvas.dispatchEvent(pointer('pointermove', 200, 150, 1));
+        expect(second.position).toEqual({ x: 68, y: 68 });
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        expect(editor.selectedPart).toBe(first);
+        canvas.dispatchEvent(pointer('pointerup', 160, 110, 1));
+        editor.renamePart('Same label');
+        editor.addPart();
+        expect(editor.parts[1].id).toBeGreaterThan(second.id);
+        expect(editor.parts[1].label).toBe('Part 3');
+        const requests = surface.requests;
+        canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
+        editor.renamePart('Must not rename');
+        editor.removeSelectedPart();
+        expect(first.label).toBe('Same label');
+        expect(editor.parts).toHaveLength(2);
+        expect(surface.requests).toBe(requests + 1);
     });
 
     it('propagates surface initialization errors and safely cleans up a failed view', () => {

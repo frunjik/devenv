@@ -246,6 +246,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Do not use live application or domain records directly as test samples. Create a concise, clearly named transformation of representative data that preserves only the distinctions and constraints required by the test. Omit unrelated fields and details so readers can quickly understand what the example proves.
 - **Practice:** Prefer synthetic, readable values and state when a fixture is illustrative. For example, practice-set history tests use a short generic two-version fixture with synthetic commits and dates rather than copying the live DevEnv registry. Preserve relevant invariants; simplification must not make the example invalid or success-shaped.
 
+### P-026 — Ask How to Track New Tasks
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: ask whether to add a TODO and keep metrics when starting a new task.
+- **Applies to:** A new, substantive user-requested task, before implementation begins.
+- **Rule:** Ask separately whether the user wants the task registered in the Workflow TODO List as resumable work and whether an eligible coding slice should receive a WorkEvaluation record. Wait for the user's choices before implementation; do not assume either choice from the other.
+- **Practice:** Explain that a Workflow TODO entry is for work the user wants to track as resumable, while a WorkEvaluation records the agreed outcome and measures for an eligible coding slice. If the task is not eligible for evaluation, say so. Do not repeat the prompt when continuing an already-started task or answering a follow-up within it.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

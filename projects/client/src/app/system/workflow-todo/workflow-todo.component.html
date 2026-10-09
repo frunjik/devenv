@@ -8,68 +8,57 @@
         Swipe or scroll horizontally to see all workflow details.
     </p>
     <ng-container *ngIf="workflows.length">
-        <section class="workflow-group" *ngIf="endUserWorkflows.length">
-            <h2>End-user tools and capabilities</h2>
-            <div
-                class="table-scroll"
-                role="region"
-                tabindex="0"
-                aria-label="End-user tools and capabilities"
-                aria-describedby="workflow-table-scroll-hint"
-            >
-                <table class="workflow-table">
-                    <caption>Product work workflows</caption>
-                    <colgroup>
-                        <col class="workflow-name-column">
-                        <col class="workflow-purpose-column">
-                        <col class="workflow-status-column">
-                        <col class="workflow-concern-column">
-                        <col class="workflow-evaluation-column">
-                    </colgroup>
-                    <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Related concern</th><th scope="col">Completed evaluated item</th></tr></thead>
-                    <tbody>
-                        <tr *ngFor="let workflow of endUserWorkflows" [class.active]="workflow.status === 'Active'">
-                            <th scope="row">{{ workflow.name }}</th>
-                            <td>{{ workflow.primaryWorkPurpose }}</td>
-                            <td><span class="status">{{ workflow.status }}</span></td>
-                            <td>{{ workflow.relatedConcern }}</td>
-                            <td>{{ completedEvaluationSummary(workflow.name) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-        <section class="workflow-group" *ngIf="metaWorkflows.length">
-            <h2>DevEnv meta work</h2>
-            <div
-                class="table-scroll"
-                role="region"
-                tabindex="0"
-                aria-label="DevEnv meta work"
-                aria-describedby="workflow-table-scroll-hint"
-            >
-                <table class="workflow-table">
-                    <caption>Meta work workflows</caption>
-                    <colgroup>
-                        <col class="workflow-name-column">
-                        <col class="workflow-purpose-column">
-                        <col class="workflow-status-column">
-                        <col class="workflow-concern-column">
-                        <col class="workflow-evaluation-column">
-                    </colgroup>
-                    <thead><tr><th scope="col">Workflow</th><th scope="col">Primary work purpose</th><th scope="col">Status</th><th scope="col">Related concern</th><th scope="col">Completed evaluated item</th></tr></thead>
-                    <tbody>
-                        <tr *ngFor="let workflow of metaWorkflows" [class.active]="workflow.status === 'Active'">
-                            <th scope="row">{{ workflow.name }}</th>
-                            <td>{{ workflow.primaryWorkPurpose }}</td>
-                            <td><span class="status">{{ workflow.status }}</span></td>
-                            <td>{{ workflow.relatedConcern }}</td>
-                            <td>{{ completedEvaluationSummary(workflow.name) }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+        <div
+            class="table-scroll"
+            role="region"
+            tabindex="0"
+            aria-label="Product and meta workflows"
+            aria-describedby="workflow-table-scroll-hint"
+        >
+            <table class="workflow-table">
+                <caption>Product and meta work workflows</caption>
+                <colgroup>
+                    <col class="workflow-name-column">
+                    <col class="workflow-purpose-column">
+                    <col class="workflow-status-column">
+                    <col class="workflow-concern-column">
+                    <col class="workflow-evaluation-column">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th scope="col">Workflow</th>
+                        <th scope="col">Primary work purpose</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Related concern</th>
+                        <th scope="col">Completed evaluated item</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="endUserWorkflows.length">
+                    <tr class="workflow-group-heading">
+                        <th scope="rowgroup" colspan="5">End-user tools and capabilities</th>
+                    </tr>
+                    <tr *ngFor="let workflow of endUserWorkflows" [class.active]="workflow.status === 'Active'">
+                        <th scope="row">{{ workflow.name }}</th>
+                        <td>{{ workflow.primaryWorkPurpose }}</td>
+                        <td><span class="status">{{ workflow.status }}</span></td>
+                        <td>{{ workflow.relatedConcern }}</td>
+                        <td>{{ completedEvaluationSummary(workflow.name) }}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="metaWorkflows.length">
+                    <tr class="workflow-group-heading">
+                        <th scope="rowgroup" colspan="5">DevEnv meta work</th>
+                    </tr>
+                    <tr *ngFor="let workflow of metaWorkflows" [class.active]="workflow.status === 'Active'">
+                        <th scope="row">{{ workflow.name }}</th>
+                        <td>{{ workflow.primaryWorkPurpose }}</td>
+                        <td><span class="status">{{ workflow.status }}</span></td>
+                        <td>{{ workflow.relatedConcern }}</td>
+                        <td>{{ completedEvaluationSummary(workflow.name) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </ng-container>
     <section
         *ngIf="evaluationLoading || evaluationError || evaluationDataset"

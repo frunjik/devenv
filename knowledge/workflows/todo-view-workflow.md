@@ -114,6 +114,16 @@ The focused workflow/evaluation suites pass (14 tests); the workflow component, 
 
 ### Follow-up: align grouped workflow columns
 
-The user requested aligning the Product and Meta table columns. Both tables now have the same five named column definitions and fixed layout with matching widths, so corresponding column edges align regardless of each group's contents. The narrow-screen horizontal-scroll container remains unchanged.
+The user requested aligning the Product and Meta table columns. The two separate tables were replaced with one semantic table containing separate Product and Meta row groups. This makes both groups share exactly one set of columns rather than depending on independently sized tables. The group order, labels, row content, and narrow-screen horizontal scrolling are preserved.
 
-**Next:** Verify focused tests/coverage, the client TypeScript check/build, and diff hygiene; then ask for review. This presentation-only follow-up remains uncommitted.
+The focused workflow component suite passes (10 tests) with 100% statement, branch, function, and line coverage. The client development TypeScript check and client build pass.
+
+**Next:** User review of the shared-table presentation. This presentation-only follow-up remains uncommitted.
+
+### Follow-up: use full page width
+
+The user requested that the workflow table stretch across the page. Removed the Workflow TODO content area's 76rem maximum width, set it to the available width with box-sizing applied, and retained responsive side padding. The table remains 100% width of this expanded content area; narrow screens keep the existing horizontal scroll behavior.
+
+The focused workflow component suite passes (10 tests), the component has 100% statement, branch, function, and line coverage, and the client development TypeScript check and build pass. Browser visual verification was not performed.
+
+**Next:** User review of the full-width workflow table. Changes remain uncommitted.

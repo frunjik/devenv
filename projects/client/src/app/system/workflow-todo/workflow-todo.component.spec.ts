@@ -40,14 +40,21 @@ describe('WorkflowTodoComponent', () => {
             expect(text).toContain(workflow.status);
             expect(text).toContain(workflow.relatedConcern);
         }
-        const groups = fixture.nativeElement.querySelectorAll('.workflow-group') as NodeListOf<HTMLElement>;
-        expect(groups).toHaveLength(2);
-        expect(groups[0].querySelector('h2')?.textContent).toContain('End-user tools and capabilities');
-        expect(groups[1].querySelector('h2')?.textContent).toContain('DevEnv meta work');
-        expect(groups[0].textContent).toContain('DevEnv Export');
-        expect(groups[0].textContent).not.toContain('Glossary Refinement');
-        expect(groups[1].textContent).toContain('Glossary Refinement');
-        expect(groups[1].textContent).not.toContain('DevEnv Export');
+        const workflowTable = fixture.nativeElement.querySelector('.workflow-table') as HTMLTableElement;
+        const groupHeadings = Array.from(
+            workflowTable.querySelectorAll('.workflow-group-heading') as NodeListOf<HTMLTableRowElement>,
+        );
+        expect(groupHeadings).toHaveLength(2);
+        expect(groupHeadings[0].textContent).toContain('End-user tools and capabilities');
+        expect(groupHeadings[1].textContent).toContain('DevEnv meta work');
+        const groupBodies = Array.from(
+            workflowTable.querySelectorAll('tbody') as NodeListOf<HTMLTableSectionElement>,
+        );
+        expect(groupBodies).toHaveLength(2);
+        expect(groupBodies[0].textContent).toContain('DevEnv Export');
+        expect(groupBodies[0].textContent).not.toContain('Glossary Refinement');
+        expect(groupBodies[1].textContent).toContain('Glossary Refinement');
+        expect(groupBodies[1].textContent).not.toContain('DevEnv Export');
         expect(text).not.toContain('Resume reference');
         expect(text).not.toContain('Current checkpoint');
         expect(fixture.nativeElement.querySelector('.resume-button')).toBeNull();
@@ -56,26 +63,25 @@ describe('WorkflowTodoComponent', () => {
         expect(text).not.toContain('Loading workflows');
     });
 
-    it('uses the same explicit column sizing for product and meta workflow tables', () => {
+    it('renders product and meta workflows in one table with one shared column definition', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
         fixture.detectChanges();
 
         const workflowTables = Array.from(
-            fixture.nativeElement.querySelectorAll('.workflow-group table') as NodeListOf<HTMLTableElement>,
+            fixture.nativeElement.querySelectorAll('.workflow-table') as NodeListOf<HTMLTableElement>,
         );
-        expect(workflowTables).toHaveLength(2);
-        const columnClasses = workflowTables.map(table =>
-            Array.from(table.querySelectorAll('colgroup col') as NodeListOf<HTMLTableColElement>)
-                .map(column => column.className),
-        );
-        expect(columnClasses[0]).toEqual([
+        expect(workflowTables).toHaveLength(1);
+        const columnClasses = Array.from(
+            workflowTables[0].querySelectorAll('colgroup col') as NodeListOf<HTMLTableColElement>,
+        ).map(column => column.className);
+        expect(columnClasses).toEqual([
             'workflow-name-column',
             'workflow-purpose-column',
             'workflow-status-column',
             'workflow-concern-column',
             'workflow-evaluation-column',
         ]);
-        expect(columnClasses[1]).toEqual(columnClasses[0]);
+        expect(workflowTables[0].querySelectorAll('tbody')).toHaveLength(2);
     });
 
     it('shows a metric availability summary and links to evaluation details', () => {
@@ -203,7 +209,9 @@ describe('WorkflowTodoComponent', () => {
         expect(metrics.textContent).not.toContain('Show current evaluation metrics in the Workflow TODO view');
         expect(metrics.querySelector('a[href="/workflow-evaluations"]')).not.toBeNull();
         const workflowRows = Array.from(
-            fixture.nativeElement.querySelectorAll('.workflow-group tbody tr') as NodeListOf<HTMLTableRowElement>,
+            fixture.nativeElement.querySelectorAll(
+                '.workflow-table tbody tr:not(.workflow-group-heading)',
+            ) as NodeListOf<HTMLTableRowElement>,
         );
         const diagramRow = workflowRows.find(row => row.querySelector('th')?.textContent?.trim()
             === 'Minimal Typed Diagram Editor');

@@ -2,8 +2,17 @@
   "schemaVersion": 2,
   "title": "Workflow TODO List",
   "introduction": "Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.",
-  "activeWorkflow": "InteractiveCanvas Prototype (provisional)",
+  "activeWorkflow": "Ruleset Reduction",
   "workflows": [
+    {
+      "name": "Ruleset Reduction",
+      "evaluationIds": ["ruleset-reduction"],
+      "primaryWorkPurpose": "Meta work",
+      "status": "Active",
+      "resumeLabel": "MoSCoW review checkpoint",
+      "resumePath": "./ruleset-reduction-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
     {
       "name": "Client Test Repair",
       "evaluationIds": ["client-shell-test-repair", "client-coverage-repair", "current-entry-scheduler-boundary"],
@@ -128,7 +137,7 @@
         "principle-register-organization-review"
       ],
       "primaryWorkPurpose": "Meta work",
-      "status": "In progress",
+      "status": "Paused",
       "resumeLabel": "Concise guidance trial and pending practice version",
       "resumePath": "./principle-register-review.md#checkpoint",
       "relatedConcern": "Not assigned"
@@ -212,7 +221,7 @@
         "canvas-connection-picker"
       ],
       "primaryWorkPurpose": "Product work",
-      "status": "Active",
+      "status": "Paused",
       "resumeLabel": "Canvas editor plan and next slice",
       "resumePath": "./interactive-canvas-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"

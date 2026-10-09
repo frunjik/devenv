@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Active - slices 1 through 4 complete, including undirected labelled sketch connections. Next is slice 5: architectural meaning, after agreeing what the sketch denotes.
+**Status:** Paused for the user-requested Ruleset Reduction workflow on 2026-10-10. Slices 1 through 4 complete, including undirected labelled sketch connections. Resume at slice 5: architectural meaning, after agreeing what the sketch denotes. No canvas scope or modeling decision changed.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 

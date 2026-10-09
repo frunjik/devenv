@@ -4,12 +4,13 @@ Generated from [workflow-todo-list.json](./workflow-todo-list.json). Edit the JS
 
 Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.
 
-**Active workflow:** InteractiveCanvas Prototype (provisional).
+**Active workflow:** Ruleset Reduction.
 
 ## Workflows
 
 | Workflow | Primary work purpose | Status | Resume reference | Related concern |
 | --- | --- | --- | --- | --- |
+| Ruleset Reduction | Meta work | Active | [MoSCoW review checkpoint](./ruleset-reduction-workflow.md#checkpoint) | Not assigned |
 | Client Test Repair | Meta work | Completed | [Test repair checkpoint](./client-test-repair.md#checkpoint) | Not assigned |
 | Active workflow in status toolbar | Meta work | Completed | [Toolbar refresh implementation checkpoint](./active-workflow-toolbar-workflow.md#checkpoint) | Not assigned |
 | MetaExport | Meta work | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |
@@ -22,14 +23,14 @@ Repository-wide navigation for resumable work. This list does not replace System
 | DevEnv Export (sibling or hosting system) | Product work | Paused | [Full-coverage checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |
 | Portable Practices and Glossary | Meta work | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
 | Knowledge Organization Migration | Meta work | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
-| Principle Register Organization and Priority Review | Meta work | In progress | [Concise guidance trial and pending practice version](./principle-register-review.md#checkpoint) | Not assigned |
+| Principle Register Organization and Priority Review | Meta work | Paused | [Concise guidance trial and pending practice version](./principle-register-review.md#checkpoint) | Not assigned |
 | Minimal Typed Diagram Editor | Product work | Paused | [Connection workflow checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
 | DevEnv Value Evaluation | Meta work | Paused | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
 | Process Markdown Typed JSON Inventory | Meta work | Completed | [Audit findings and coverage gaps](./process-markdown-typed-json-inventory.md#checkpoint) | Not assigned |
 | Workflow Evaluation Associations | Meta work | Completed | [Association model and verification checkpoint](./workflow-evaluation-associations.md#checkpoint) | Not assigned |
 | Test Boundary Mocks | Meta work | Pending | [Starting checkpoint](./test-boundary-mocks.md#checkpoint) | Not assigned |
 | Copilot AI Credit Estimator | Meta work | Completed | [Implementation and verification complete](./ai-credit-estimator-workflow.md#checkpoint) | Not assigned |
-| InteractiveCanvas Prototype (provisional) | Product work | Active | [Canvas editor plan and next slice](./interactive-canvas-workflow.md#checkpoint) | Not assigned |
+| InteractiveCanvas Prototype (provisional) | Product work | Paused | [Canvas editor plan and next slice](./interactive-canvas-workflow.md#checkpoint) | Not assigned |
 
 **Registration:** Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

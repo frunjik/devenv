@@ -1,6 +1,6 @@
 # Principle Register Organization and Priority Review
 
-**Status:** In progress: guidance committed; practice version prepared; consistency trial pending.
+**Status:** Paused for the user-requested Ruleset Reduction workflow on 2026-10-10. Guidance/version 4 committed; consistency trial remains unverified. Preserve prior decisions; the new workflow explicitly considers changing obligations, unlike this earlier organization-only review.
 **Source:** User request, 2026-10-08.
 **Scope:** [System task principles](../../.agents/system-task-principles.md) and their summary in [AGENTS.md](../../AGENTS.md).
 

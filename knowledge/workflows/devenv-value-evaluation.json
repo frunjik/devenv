@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "ruleset-reduction",
+      "title": "Create a substantially smaller repository ruleset",
+      "beneficiary": "DevEnv user and contributors working with the assistant",
+      "intendedOutcome": "Keep only agreed essentials and important practices in a new version, with other material optional or excluded.",
+      "successCondition": "Every in-scope practice, process, agent and skill receives a user-reviewed MoSCoW disposition; the replacement meets an agreed size budget and behavior checks, and is versioned against actual committed content after approval.",
+      "baseline": "Latest recorded practice set is version 4; its short entry point still requires the detailed rules. Two repository agents, five repository skills and principle entries P-001 through P-031 including retired P-013. Full inventory, size budget and individual decisions pending.",
+      "startedAt": "2026-10-10T01:51:33.072+02:00",
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User explicitly requested a much smaller new version, item-by-item MoSCoW review, new workflow and metrics. Classification meanings approved; numerical size budget not yet agreed.", "evidence": "ruleset-reduction-workflow.md checkpoint." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": null, "evidence": null },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "current-entry-scheduler-boundary",
       "title": "Reuse scheduler boundary for current-entry polling",
       "beneficiary": "DevEnv contributors maintaining polling tests",

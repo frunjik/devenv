@@ -18,7 +18,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 0.25rem 1rem;
-    padding: 0.4rem 1rem;
+    padding: var(--layout-space-small) var(--layout-margin);
     border-bottom: 1px solid rgb(128 128 128 / 35%);
     flex-shrink: 0;
 

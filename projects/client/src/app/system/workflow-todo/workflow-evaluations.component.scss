@@ -1,4 +1,3 @@
-.workflow-evaluations { width: 100%; max-width: none; margin: 0; padding: clamp(.75rem, 2vw, 2rem); box-sizing: border-box; }
 h1, h2 { color: var(--text-heading); }
 p, td { color: var(--text-secondary); }
 .table-scroll { overflow-x: auto; }
@@ -7,31 +6,34 @@ table { width: 100%; border-collapse: collapse; text-align: left; }
 caption { text-align: left; padding: .75rem 0; color: var(--text-secondary); }
 th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); }
 th { color: var(--text-heading); }
-.work-evaluation { margin: 0; padding: .5rem .75rem; border-bottom: 1px solid var(--border-default); }
+.work-evaluation { margin: 0; padding: var(--layout-space-small) 0; border-bottom: 1px solid var(--border-default); }
 .work-evaluation p { overflow-wrap: anywhere; }
 summary { cursor: pointer; min-height: 44px; overflow-wrap: anywhere; }
 summary h2 { display: inline; font-size: 1rem; margin: 0; }
 summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
 .evaluation-columns, .work-evaluation > summary, .evaluation-context, .evaluation-timing {
     display: grid;
-    grid-template-columns: 1rem minmax(0, 1fr) 10rem minmax(12rem, .5fr);
-    column-gap: .75rem;
+    grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr));
+    column-gap: var(--layout-gutter);
 }
 .evaluation-columns, .work-evaluation > summary {
     align-items: center;
 }
+.evaluation-columns > :first-child, .work-evaluation > summary h2 { grid-column: 1 / 8; padding-left: 1.75rem; }
+.evaluation-columns > :nth-child(2), .evaluation-status { grid-column: 8 / 10; }
+.evaluation-columns > :nth-child(3), .evaluation-duration { grid-column: 10 / -1; }
+.work-evaluation > summary { position: relative; }
 .evaluation-columns {
-    margin-top: 1.5rem;
-    padding: .75rem;
+    margin-top: var(--layout-space-section);
+    padding: .75rem 0;
     border-bottom: 2px solid var(--border-default);
     color: var(--text-heading);
     font-weight: 600;
 }
-.evaluation-columns::before { content: ''; }
 .evaluation-columns .evaluation-duration { color: inherit; font-size: inherit; }
 .work-evaluation > summary::marker { content: ''; }
 .work-evaluation > summary::-webkit-details-marker { display: none; }
-.work-evaluation > summary::before { content: ''; border-left: .4rem solid var(--text-secondary); border-top: .3rem solid transparent; border-bottom: .3rem solid transparent; width: 0; height: 0; }
+.work-evaluation > summary::before { content: ''; position: absolute; left: 0; top: 1rem; border-left: .4rem solid var(--text-secondary); border-top: .3rem solid transparent; border-bottom: .3rem solid transparent; width: 0; height: 0; }
 .work-evaluation[open] > summary::before { transform: rotate(90deg); }
 .evaluation-status, .evaluation-duration { color: var(--text-secondary); font-size: .875rem; }
 .evaluation-duration { text-align: right; }
@@ -40,8 +42,8 @@ summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 
     row-gap: 1.5rem;
     margin: 0;
 }
-.evaluation-context > div:nth-child(odd), .evaluation-timing > div:nth-child(odd) { grid-column: 2; }
-.evaluation-context > div:nth-child(even), .evaluation-timing > div:nth-child(even) { grid-column: 3 / -1; }
+.evaluation-context > div:nth-child(odd), .evaluation-timing > div:nth-child(odd) { grid-column: 1 / 8; padding-left: 1.75rem; }
+.evaluation-context > div:nth-child(even), .evaluation-timing > div:nth-child(even) { grid-column: 8 / -1; }
 .evaluation-context dt { color: var(--text-heading); font-size: 1.125rem; font-weight: 600; }
 .evaluation-context dd, .evaluation-timing dd {
     margin: .5rem 0 0;
@@ -67,10 +69,10 @@ summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 
     .table-scroll table { min-width: 42rem; }
     .evaluation-columns { display: none; }
     .evaluation-columns + .work-evaluation { margin-top: 1.5rem; }
-    .work-evaluation > summary { grid-template-columns: 1rem minmax(0, 1fr); }
-    .evaluation-status, .evaluation-duration { grid-column: 2; }
+    .work-evaluation > summary h2, .evaluation-status, .evaluation-duration { grid-column: 1; }
+    .evaluation-status, .evaluation-duration { padding-left: 1.75rem; }
     .evaluation-detail { padding-left: 0; }
     .evaluation-context, .evaluation-timing { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
-    .evaluation-context > div:nth-child(n), .evaluation-timing > div:nth-child(n) { grid-column: 1; }
+    .evaluation-context > div:nth-child(n), .evaluation-timing > div:nth-child(n) { grid-column: 1; padding-left: 0; }
     .evaluation-evidence { margin-left: 0; }
 }

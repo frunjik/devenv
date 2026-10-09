@@ -1,11 +1,27 @@
 @use '@angular/material/prebuilt-themes/pink-bluegrey.css';
 
 :root {
+    --layout-margin: clamp(.75rem, 2vw, 2rem);
+    --layout-gutter: clamp(.75rem, 1.5vw, 1.5rem);
+    --layout-columns: 12;
+    --layout-space-small: .5rem;
+    --layout-space-section: 1.5rem;
     --surface-card: #1e2821;
     --border-default: #37443b;
     --border-accent: #596b5d;
     --text-heading: #dce6dd;
     --text-secondary: #b1bdb3;
+}
+
+.layout-page {
+    width: 100%;
+    margin: 0;
+    padding: var(--layout-margin);
+    box-sizing: border-box;
+}
+
+@media (max-width: 42rem) {
+    :root { --layout-columns: 1; }
 }
 
 html,

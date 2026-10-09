@@ -51,6 +51,7 @@ describe('WorkflowEvaluationsComponent', () => {
         fixture.detectChanges();
 
         const text = fixture.nativeElement.textContent;
+        expect(fixture.nativeElement.querySelector('.workflow-evaluations').classList.contains('layout-page')).toBe(true);
         expect(text).toContain('Delivery flow and effort');
         expect(text).toContain('Record elapsed time and active effort separately.');
         expect(text).toContain('Diagram selection and movement');

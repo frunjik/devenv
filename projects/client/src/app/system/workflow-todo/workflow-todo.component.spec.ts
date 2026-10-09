@@ -120,6 +120,7 @@ describe('WorkflowTodoComponent', () => {
         http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
+        expect(fixture.nativeElement.querySelector('.workflow-todo').classList.contains('layout-page')).toBe(true);
         for (const workflow of workflows) {
             expect(text).toContain(workflow.name);
             expect(text).toContain(workflow.status);

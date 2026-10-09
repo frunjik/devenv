@@ -17,6 +17,15 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Editorial layout pilot
+
+- User approved a first slice covering Workflow TODO, Workflow evaluations and inner navigation only. Other routed pages and outer meta toolbars remain unchanged; active workflow selection stays canvas.
+- Shared CSS layout contract in client styles: responsive outer margin, gutter, small/section spacing and 12 equal column guides; one column at 42rem and below. Opt-in layout-page owns page padding. Inner navigation consumes the same margin token within the existing shell frame.
+- TODO totals span four columns each; evaluation Title/Status/Duration span 7/2/3 columns. Expanded left fields follow Title (including its disclosure indentation), right fields follow Status and span the remaining five columns. Native disclosures, semantic evidence tables, bounded prose and contained table scrolling remain intact. Six-column intermediate layout, subgrid inheritance and migration of other pages are deferred, not claimed complete.
+- Two page-layout opt-in tests failed before implementation. Final 30 page tests pass with 100% line/statement/branch/function coverage for both page components; full test-source type-check, client build, diagnostics and diff formatting pass. AppComponent suite also attempted: failures report outstanding GET workflow-todo requests in existing test cleanup; no shell behavior or HTTP changes made and the suite remains an encountered validation limitation.
+- Browser measurements at 1280/768/320 confirm shared navigation/page content edges, equally sized TODO totals on wide layouts, stacked narrow layout and no document overflow. Grid spans preserve expanded-field alignment with header content. No new domain Types justified: these are presentation rules over existing WorkflowTodoList and WorkEvaluation values.
+- Stable first slice is uncommitted. Next: user visual review, then decide whether intermediate reflow or a grid-guide overlay is useful before migrating additional routes. Do not expand scope automatically.
+
 ### Expanded evaluation hierarchy
 
 - User refinement: expanded context and timing reuse the header grid. Left fields align with Title; right fields start at Status and span the remaining width. Evidence aligns with Title; narrow layout still stacks without overflow.

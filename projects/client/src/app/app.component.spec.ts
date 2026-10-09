@@ -15,12 +15,20 @@ import { CommitMessageDialogComponent } from './commit-message-dialog/commit-mes
 import { DevEnvCloneDialogComponent } from './devenv-clone-dialog/devenv-clone-dialog.component';
 import { GitLogRefreshService } from './git-log-refresh.service';
 import { META_LAYER_STORAGE } from './meta-layer/meta-layer.service';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('AppComponent', () => {
     let http: HttpTestingController;
     let snackbarOpen: jest.MockedFunction<MatSnackBar['open']>;
     let navigateByUrl: jest.SpiedFunction<Router['navigateByUrl']>;
     let dialogOpen: jest.Mock;
+
+    async function openTools(fixture: ComponentFixture<AppComponent>): Promise<HTMLElement> {
+        fixture.nativeElement.querySelector('.tools-navigation-button').click();
+        fixture.detectChanges();
+        return TestBed.inject(OverlayContainer).getContainerElement();
+    }
 
     async function startCommit(fixture: ComponentFixture<AppComponent>): Promise<void> {
         fixture.componentInstance.commitChanges();
@@ -41,6 +49,7 @@ describe('AppComponent', () => {
                 provideHttpClient(),
                 provideHttpClientTesting(),
                 provideRouter([]),
+                provideNoopAnimations(),
                 { provide: META_LAYER_STORAGE, useValue: { getItem: () => 'true', setItem: () => undefined } },
             ]
         })
@@ -72,7 +81,12 @@ describe('AppComponent', () => {
         http.match('http://localhost:3000/git/status').forEach(request => request.flush({
             data: { branch: null, ahead: 0, behind: 0, clean: true, files: [] },
         }));
-        http.match('http://localhost:3000/version').forEach(request => request.flush({ data: '0.0.1' }));
+        http.match('http://localhost:3000/version').filter(request => !request.cancelled)
+            .forEach(request => request.flush({ data: '0.0.1' }));
+        http.match('http://localhost:3000/workflow-todo').filter(request => !request.cancelled)
+            .forEach(request => request.flush({
+            data: { activeWorkflow: null },
+        }));
         http.verify();
     });
 
@@ -82,10 +96,11 @@ describe('AppComponent', () => {
         expect(app).toBeTruthy();
     });
 
-    it('opens the clone dialog from the navigation toolbar without navigating away', () => {
+    it('opens the clone dialog from the navigation toolbar without navigating away', async () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
-        fixture.nativeElement.querySelector('.clone-button').click();
+        const tools = await openTools(fixture);
+        (tools.querySelector('.clone-button') as HTMLButtonElement).click();
 
         expect(dialogOpen).toHaveBeenCalledWith(DevEnvCloneDialogComponent, {
             width: 'min(48rem, calc(100vw - 2rem))',
@@ -189,58 +204,48 @@ describe('AppComponent', () => {
         fixture.destroy();
     });
 
-    it('shows and updates the latest current entry on the right side of the toolbar', () => {
+    it('shows the selected workflow on the right side of the toolbar', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
-        http.expectOne('http://localhost:3000/current').flush({
-            data: '// [2026-10-04 22:23 +02:00] First current entry',
+        http.expectOne('http://localhost:3000/workflow-todo').flush({
+            data: { activeWorkflow: 'First workflow' },
         });
         fixture.detectChanges();
         expect(fixture.nativeElement.querySelector('.current-entry-label').textContent.trim())
-            .toBe('Current task');
+            .toBe('Active workflow');
         expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim())
-            .toBe('First current entry');
+            .toBe('First workflow');
         expect(fixture.nativeElement.querySelector('.current-entry').getAttribute('aria-label'))
-            .toBe('Refresh current task');
+            .toBe('Refresh active workflow');
         expect(fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip).message)
-            .toBe('// [2026-10-04 22:23 +02:00] First current entry');
+            .toBe('First workflow');
         const currentTooltip = fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip);
-        expect(currentTooltip.tooltipClass).toBe('current-entry-tooltip');
         expect(currentTooltip.position).toBe('above');
 
-        fixture.componentInstance.currentEntry.startPolling();
-        fixture.componentInstance.currentEntry.refresh();
-        http.expectOne('http://localhost:3000/current').flush({
-            data: '// [2026-10-04 22:24 +02:00] Updated current entry',
-        });
-        fixture.detectChanges();
-
         const entry = fixture.nativeElement.querySelector('.current-entry');
-        expect(entry.querySelector('.current-entry-summary').textContent.trim()).toBe('Updated current entry');
         expect(entry.compareDocumentPosition(fixture.nativeElement.querySelector('nav'))
             & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
         fixture.destroy();
-        fixture.componentInstance.currentEntry.stopPolling();
     });
 
-    it('refreshes the current entry when its toolbar control is clicked', () => {
+    it('refreshes the selected workflow when its toolbar control is clicked', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
-        http.expectOne('http://localhost:3000/current').flush({
-            data: '// [2026-10-04 22:23 +02:00] Previous entry',
+        http.expectOne('http://localhost:3000/workflow-todo').flush({
+            data: { activeWorkflow: 'Previous workflow' },
         });
         fixture.detectChanges();
 
         fixture.nativeElement.querySelector('.current-entry').click();
 
-        const refreshRequest = http.expectOne('http://localhost:3000/current');
+        const refreshRequest = http.expectOne('http://localhost:3000/workflow-todo');
         expect(refreshRequest.request.method).toBe('GET');
-        refreshRequest.flush({ data: '// [2026-10-04 22:35 +02:00] Refreshed entry' });
+        refreshRequest.flush({ data: { activeWorkflow: 'Refreshed workflow' } });
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim())
-            .toBe('Refreshed entry');
+            .toBe('Refreshed workflow');
         fixture.destroy();
     });
 
@@ -301,33 +306,37 @@ describe('AppComponent', () => {
         fixture.destroy();
     });
 
-    it('shows an error if the current entry cannot be loaded', () => {
+    it('shows an error if the selected workflow cannot be loaded', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
-        http.expectOne('http://localhost:3000/current').flush(
-            { error: { message: 'Current entry unavailable' } },
+        http.expectOne('http://localhost:3000/workflow-todo').flush(
+            { error: { message: 'Workflow unavailable' } },
             { status: 500, statusText: 'Error' },
         );
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.querySelector('.current-entry').textContent)
+        expect(fixture.nativeElement.querySelector('.current-entry-summary').textContent.trim())
+            .toBe('unavailable');
+        expect(fixture.debugElement.query(By.css('.current-entry')).injector.get(MatTooltip).message)
             .toContain('Http failure response');
         fixture.destroy();
     });
 
-    it('shows a button to commit changes', () => {
+    it('shows a button to commit changes', async () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.textContent).toContain('Commit changes');
+        const tools = await openTools(fixture);
+        expect(tools.querySelector('.commit-button')?.textContent).toContain('Commit changes');
     });
 
-    it('shows a menu link to the git log view', () => {
+    it('shows a menu link to the git log view', async () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
 
-        const gitLogLink = fixture.nativeElement.querySelector('a[href="/git/log"]');
+        const tools = await openTools(fixture);
+        const gitLogLink = tools.querySelector('a[href="/git/log"]') as HTMLAnchorElement;
         expect(gitLogLink.textContent).toContain('Git log');
         expect(fixture.nativeElement.querySelector('a[href*=".workflow"]')).toBeNull();
     });
@@ -373,8 +382,7 @@ describe('AppComponent', () => {
         expect(fixture.componentInstance.gitStatus.tooltip).toContain('one.txt (staged)');
         expect(fixture.componentInstance.gitStatus.tooltip).toContain('two.txt (unstaged)');
         expect(indicator.classList).toContain('git-status-open');
-        const commitButton = fixture.nativeElement.querySelector('.commit-button');
-        expect(commitButton.compareDocumentPosition(indicator) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        expect(fixture.nativeElement.querySelector('.bottom-toolbar').contains(indicator)).toBe(true);
     });
 
     it('shows a clean status when there are no open changes', () => {

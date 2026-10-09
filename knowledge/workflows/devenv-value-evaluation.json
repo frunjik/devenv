@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "client-shell-test-repair",
+      "title": "Repair stale client shell integration tests",
+      "beneficiary": "DevEnv contributors relying on client regression checks",
+      "intendedOutcome": "Restore accurate client tests for the current workflow display and Tools menu without changing production behavior.",
+      "successCondition": "Full client Jest suite and test-source type-check pass; integration tests verify actual workflow refresh and dropdown actions with mocked boundaries.",
+      "baseline": "47 suites and 733 tests: 20 failures in AppComponent, 46 suites passing.",
+      "startedAt": "2026-10-10T01:36:07.495+02:00",
+      "completedAt": "2026-10-10T01:38:52.919+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User requested client test repair and opted into tracking and metrics; preserve production behavior.", "evidence": "client-test-repair.md checkpoint." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 45.424 seconds wall-clock from request to verified completion, including opt-ins and repeated verification. Active effort and waiting duration unknown.", "evidence": "Recorded request/completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "All 38 shell tests and full client suite of 47 suites/733 tests pass; test-source TypeScript check and diff check pass. Tests now verify active-workflow refresh/error display and overlay menu actions, handle live/cancelled HTTP requests correctly, and retain strict boundary verification. No production code changed; production coverage/build not required for this test-only repair. User impact and follow-up defects unknown.", "evidence": "client-test-repair.md checkpoint and maintained Jest/TypeScript checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "toolbar-process-links-and-tools-menu",
       "title": "Separate main process links from toolbar tools",
       "beneficiary": "DevEnv contributors navigating main processes",
@@ -46,7 +63,7 @@
         { "metricId": "goal-success-clarity", "value": "User approved seven direct process links and a final Tools dropdown; tracking and metrics opted in.", "evidence": "todo-view-workflow.md process navigation checkpoint." },
         { "metricId": "decision-latency", "value": null, "evidence": null },
         { "metricId": "delivery-flow-and-effort", "value": "3 minutes 13.425 seconds wall-clock from request to verification, including grouping approval and continuation gate. Active effort and waiting duration unknown.", "evidence": "Recorded request and verification timestamps." },
-        { "metricId": "outcome-and-quality", "value": "Four navigation tests pass with 100% statement, branch, function and line component coverage. Test-source type-check, client build and diagnostics pass. Browser at 1280/768/320px confirms all nine dropdown items, Enter opening, initial Browse focus, ArrowDown focus on Tests, Escape closing and focus restoration to Tools, with no page overflow. Routes/query parameters and clone/commit events including disabled commit are verified in boundary tests. Subsequent user-requested styling refinement right-aligns Tools: browser measures zero gap to the navigation right edge at all three widths, dropdown fits the viewport, and a fresh client build and diagnostics pass. This follow-up is outside the original elapsed interval; its effort is unmeasured. User usefulness and follow-up defects unobserved.", "evidence": "todo-view-workflow.md process navigation checkpoint; focused Jest, TypeScript/build and browser checks." },
+        { "metricId": "outcome-and-quality", "value": "Four navigation tests pass with 100% statement, branch, function and line component coverage. Test-source type-check, client build and diagnostics pass. Browser at 1280/768/320px confirms all nine dropdown items, Enter opening, initial Browse focus, ArrowDown focus on Tests, Escape closing and focus restoration to Tools, with no page overflow. Routes/query parameters and clone/commit events including disabled commit are verified in boundary tests. Subsequent user-requested styling refinement right-aligns Tools: browser measures zero gap to the navigation right edge at all three widths, dropdown fits the viewport, and a fresh client build and diagnostics pass. Later wording refinement renames Server/Client to Edit Server/Edit Client; browser verifies both labels and unchanged query parameters, four navigation tests and fresh client build pass. These follow-ups are outside the original elapsed interval; their effort is unmeasured. User usefulness and follow-up defects unobserved.", "evidence": "todo-view-workflow.md process navigation checkpoint; focused Jest, TypeScript/build and browser checks." },
         { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
       ]
     },

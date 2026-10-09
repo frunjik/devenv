@@ -19,6 +19,7 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ### Main process navigation and Tools dropdown
 
+- Same-task wording refinement: rename Tools items Server and Client to Edit Server and Edit Client. Routes, query parameters and actions unchanged.
 - Same-task styling refinement: right-align Tools with an automatic inline-start margin, preserving final DOM order and Material dropdown behavior. Browser measures zero gap to navigation right edge at 1280/768/320px; dropdown remains within viewport and no document overflow. Fresh client build, diagnostics and diff check pass. Append follow-up quality evidence to the opted-in evaluation without altering original completion/elapsed timestamps; follow-up effort unmeasured.
 - Tracking in TODO View and WorkEvaluation explicitly approved. Keep System plan, Workflow TODO, Evaluations, Terms, Glossary, Diagram and Canvas visible. User approved Tools as the final dropdown label; all other existing toolbar routes/actions move into it.
 - Preserve routes, query parameters, clone/commit events and disabled committing state. Use Angular Material menu for focus, keyboard and overlay lifecycle rather than another custom boolean. No new domain Type warranted for a fixed presentation grouping.

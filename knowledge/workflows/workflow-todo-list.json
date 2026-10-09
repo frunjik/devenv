@@ -5,6 +5,15 @@
   "activeWorkflow": "InteractiveCanvas Prototype (provisional)",
   "workflows": [
     {
+      "name": "Client Test Repair",
+      "evaluationIds": ["client-shell-test-repair"],
+      "primaryWorkPurpose": "Meta work",
+      "status": "Completed",
+      "resumeLabel": "Test repair checkpoint",
+      "resumePath": "./client-test-repair.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
       "name": "Active workflow in status toolbar",
       "evaluationIds": ["active-workflow-status-toolbar", "toolbar-scheduling-boundary", "toolbar-design-refinement"],
       "primaryWorkPurpose": "Meta work",

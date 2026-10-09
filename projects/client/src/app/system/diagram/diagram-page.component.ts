@@ -53,6 +53,10 @@ export class DiagramPageComponent {
     selectedElementId: string | null = null;
     selectedConnectionId: string | null = null;
 
+    get isConnecting(): boolean {
+        return this.connectingSourceElementId !== null;
+    }
+
     selectElement(elementId: string): void {
         if (this.connectingSourceElementId !== null) {
             if (elementId === this.connectingSourceElementId) {

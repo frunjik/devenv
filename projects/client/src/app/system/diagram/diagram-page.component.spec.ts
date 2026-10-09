@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import type { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -118,6 +118,33 @@ describe('DiagramPageComponent', () => {
 
         expect(fixture.componentInstance.document.connections).toHaveLength(0);
         expect(element.querySelector('[role="status"]')).toBeNull();
+    });
+
+    it('rejects starting a connection without a selected source', () => {
+        expect(() => fixture.componentInstance.startConnection())
+            .toThrow('Invalid Diagram connection: select a source item first');
+    });
+
+    it('rejects rendering a connection with a missing source endpoint', () => {
+        const workspace = element.querySelector('[aria-label="Diagram workspace"]') as HTMLElement;
+        expect(() => fixture.componentInstance.connectionLine({
+            id: 'missing-source',
+            sourceElementId: 'not-present',
+            targetElementId: 'also-not-present',
+            label: '',
+        }, workspace)).toThrow('Invalid Diagram connection: endpoint item is unavailable for "missing-source"');
+    });
+
+    it('rejects rendering a connection with a missing target endpoint', () => {
+        element.querySelector<HTMLButtonElement>('button[aria-label="Add Rectangle"]')?.click();
+        fixture.detectChanges();
+        const workspace = element.querySelector('[aria-label="Diagram workspace"]') as HTMLElement;
+        expect(() => fixture.componentInstance.connectionLine({
+            id: 'missing-target',
+            sourceElementId: 'diagram-element-1',
+            targetElementId: 'not-present',
+            label: '',
+        }, workspace)).toThrow('Invalid Diagram connection: endpoint item is unavailable for "missing-target"');
     });
 
     it('rejects a workspace drag start without its item element', () => {

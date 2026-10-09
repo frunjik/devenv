@@ -57,4 +57,45 @@
             </div>
         </section>
     </ng-container>
+    <section class="credit-estimator" aria-labelledby="credit-estimator-heading">
+        <h2 id="credit-estimator-heading">Copilot AI credit estimate</h2>
+        <p>
+            Paste a normalized JSON array with one usage object per model call.
+            Include <code>model</code>, <code>uncachedInputTokens</code>, and <code>outputTokens</code>;
+            <code>cacheReadTokens</code> and <code>cacheWriteTokens</code> are optional.
+            These token categories must be non-overlapping: <code>uncachedInputTokens</code> excludes tokens
+            counted as cached input or cache writes. The Copilot SDK does not document whether
+            <code>assistant.usage.inputTokens</code> includes cache counts, so normalize that data before importing it.
+            Missing cache counts are treated as zero, so estimates may differ from actual billing.
+        </p>
+        <pre>[
+  &#123;"model":"gpt-5.4","uncachedInputTokens":1000,"cacheReadTokens":0,"cacheWriteTokens":0,"outputTokens":200&#125;
+]</pre>
+        <label for="copilot-token-usage">Copilot token usage JSON</label>
+        <textarea
+            id="copilot-token-usage"
+            aria-label="Copilot token usage JSON"
+            [value]="tokenUsageJson"
+            (input)="updateTokenUsage($event)"
+        ></textarea>
+        <button type="button" aria-label="Estimate AI credits" (click)="estimateTokenUsage()">
+            Estimate AI credits
+        </button>
+        <p *ngIf="tokenUsageError" role="alert">{{ tokenUsageError }}</p>
+        <section *ngIf="creditEstimates as estimates" class="credit-estimate-result" aria-live="polite">
+            <h3>Estimated AI credits: {{ estimatedAiCredits.toFixed(2) }}</h3>
+            <p>Estimated model cost: ${{ estimatedUsdCost.toFixed(4) }}</p>
+            <p>Pricing snapshot: {{ pricingAsOf }} — <a [href]="pricingSource" target="_blank" rel="noreferrer">GitHub Copilot model pricing</a></p>
+            <p>
+                Rates are per million tokens; 1 AI Credit = $0.01 USD. Gemini 3.7 and 3.8 Flash promotional
+                pricing through 2026-12-31. Plan discounts and other billing adjustments are not included.
+            </p>
+            <ul>
+                <li *ngFor="let estimate of estimates">
+                    {{ estimate.model }}: {{ estimate.aiCredits.toFixed(2) }} AI credits
+                    across {{ estimate.callCount }} calls.
+                </li>
+            </ul>
+        </section>
+    </section>
 </section>

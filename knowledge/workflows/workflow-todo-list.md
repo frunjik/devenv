@@ -4,7 +4,7 @@ Generated from [workflow-todo-list.json](./workflow-todo-list.json). Edit the JS
 
 Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.
 
-**Active workflow:** Minimal Typed Diagram Editor.
+**Active workflow:** None.
 
 ## Workflows
 
@@ -20,10 +20,11 @@ Repository-wide navigation for resumable work. This list does not replace System
 | Portable Practices and Glossary | Meta work | Pending | [Preparation checklist and checkpoint](../practices/portable-practices-checklist.generated.md#checkpoint) | Not assigned |
 | Knowledge Organization Migration | Meta work | Completed | [Migration checkpoint](./knowledge-migration.md#checkpoint) | Not assigned |
 | Principle Register Organization and Priority Review | Meta work | Completed | [Approved cross-reference update and verification](./principle-register-review.md#checkpoint) | Not assigned |
-| Minimal Typed Diagram Editor | Product work | Active | [Connection workflow checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
+| Minimal Typed Diagram Editor | Product work | Paused | [Connection workflow checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |
 | DevEnv Value Evaluation | Meta work | Paused | [Measurement-feasibility pilot](./devenv-value-evaluation-workflow.md#checkpoint) | Not assigned |
 | Workflow Evaluation Associations | Meta work | Completed | [Association model and verification checkpoint](./workflow-evaluation-associations.md#checkpoint) | Not assigned |
 | Test Boundary Mocks | Meta work | Pending | [Starting checkpoint](./test-boundary-mocks.md#checkpoint) | Not assigned |
+| Copilot AI Credit Estimator | Meta work | Completed | [Implementation and verification complete](./ai-credit-estimator-workflow.md#checkpoint) | Not assigned |
 
 **Registration:** Only workflows explicitly registered here are tracked. Open concerns and historical explorations are not automatically active workflows.
 

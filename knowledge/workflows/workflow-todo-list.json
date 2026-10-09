@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "title": "Workflow TODO List",
   "introduction": "Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.",
-  "activeWorkflow": "Minimal Typed Diagram Editor",
+  "activeWorkflow": null,
   "workflows": [
     {
       "name": "MetaExport",
@@ -106,7 +106,7 @@
         "diagram-connection-workflow"
       ],
       "primaryWorkPurpose": "Product work",
-      "status": "Active",
+      "status": "Paused",
       "resumeLabel": "Connection workflow checkpoint",
       "resumePath": "./diagram-editor-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"
@@ -136,6 +136,17 @@
       "status": "Pending",
       "resumeLabel": "Starting checkpoint",
       "resumePath": "./test-boundary-mocks.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
+      "name": "Copilot AI Credit Estimator",
+      "evaluationIds": [
+        "copilot-ai-credit-estimator"
+      ],
+      "primaryWorkPurpose": "Meta work",
+      "status": "Completed",
+      "resumeLabel": "Implementation and verification complete",
+      "resumePath": "./ai-credit-estimator-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"
     }
   ],

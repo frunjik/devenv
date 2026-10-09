@@ -144,6 +144,84 @@ describe('WorkflowEvaluationsComponent', () => {
         expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('500');
     });
 
+    it('estimates credits from imported Copilot token usage', () => {
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: JSON.stringify({
+                schemaVersion: 1,
+                metrics: [{
+                    id: 'delivery-flow-and-effort',
+                    name: 'Delivery flow and effort',
+                    definition: 'Record elapsed time and active effort separately.',
+                    interpretation: 'Do not infer effort from tool runtime.',
+                }],
+                evaluations: [{
+                    id: 'evaluation-one',
+                    title: 'Sample evaluation',
+                    beneficiary: 'Developer',
+                    intendedOutcome: 'Estimate model usage.',
+                    successCondition: 'Show an estimated credit total.',
+                    baseline: 'No estimate.',
+                    startedAt: null,
+                    completedAt: null,
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: null,
+                        evidence: null,
+                    }],
+                }],
+            }) });
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('Copilot AI credit estimate');
+        expect(fixture.componentInstance.estimatedAiCredits).toBe(0);
+        expect(fixture.componentInstance.estimatedUsdCost).toBe(0);
+        fixture.componentInstance.updateTokenUsage(new Event('input'));
+        expect(fixture.componentInstance.tokenUsageJson).toBe('');
+        const usageInput = fixture.nativeElement.querySelector(
+            'textarea[aria-label="Copilot token usage JSON"]',
+        ) as HTMLTextAreaElement;
+        usageInput.value = JSON.stringify([{
+            model: 'gpt-5.4',
+            uncachedInputTokens: 1000000,
+            outputTokens: 0,
+            cacheReadTokens: 0,
+            cacheWriteTokens: 0,
+        }]);
+        usageInput.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        (fixture.nativeElement.querySelector('button[aria-label="Estimate AI credits"]') as HTMLButtonElement)
+            .click();
+        fixture.detectChanges();
+
+        const estimatorText = fixture.nativeElement.textContent as string;
+        expect(estimatorText).toContain('Estimated AI credits: 500');
+        expect(estimatorText).toContain('uncachedInputTokens');
+        expect(estimatorText).toContain('non-overlapping');
+        expect(estimatorText).toContain('Gemini 3.7 and 3.8 Flash promotional pricing through 2026-12-31');
+        usageInput.value = '{';
+        usageInput.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        (fixture.nativeElement.querySelector('button[aria-label="Estimate AI credits"]') as HTMLButtonElement)
+            .click();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('[role="alert"]').textContent.trim()).not.toBe('');
+        expect(fixture.nativeElement.textContent).not.toContain('Estimated AI credits:');
+        usageInput.value = JSON.stringify([{
+            model: 'unknown-model',
+            uncachedInputTokens: 10,
+            outputTokens: 5,
+        }]);
+        usageInput.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        (fixture.nativeElement.querySelector('button[aria-label="Estimate AI credits"]') as HTMLButtonElement)
+            .click();
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.querySelector('[role="alert"]').textContent)
+            .toContain('No pricing snapshot is available');
+    });
+
     it.each(['{', '{"schemaVersion":1,"metrics":[],"evaluations":[]}'])(
         'reports invalid evaluation data',
         contents => {

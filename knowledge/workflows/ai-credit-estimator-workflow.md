@@ -1,0 +1,23 @@
+# Copilot AI Credit Estimator
+
+## Checkpoint
+
+**Status:** Completed. One basic paste-and-estimate flow is implemented; no selectable modes, persistence, or other optional controls were added.
+
+**Purpose and success condition:** Add an estimator to the existing Workflow Evaluations page. Supported normalized token-usage data produces a clearly labeled AI-credit estimate with a per-model breakdown and pricing source; malformed or unsupported data is reported instead of producing a result. The estimator is not access to this VS Code chat's telemetry and is not an authoritative billing record.
+
+**Agreed scope and decisions:** The user chose a JSON paste/import flow using published model pricing, and asked that the first slice stay simple. Because the Copilot SDK documentation does not specify whether cached tokens overlap `inputTokens`, imports use normalized, non-overlapping categories: `uncachedInputTokens`, optional `cacheReadTokens`, optional `cacheWriteTokens`, and `outputTokens`. The UI warns not to paste an unnormalized `assistant.usage` event, explains that missing cache counts are treated as zero, and shows an example. No AI-credit metric was added to the evaluation dataset because this chat exposes no usable token telemetry.
+
+**Pricing research:** GitHub's official page states that rates are per million tokens and one AI Credit equals $0.01 USD. The pricing snapshot is dated 2026-10-09, and its model rates, cached rates, cache-write rates, and long-context thresholds were compared with the published tables. Gemini 3.7 and 3.8 Flash promotional prices end 2026-12-31. Plan discounts and other billing adjustments are excluded. Copilot SDK `assistant.usage.cost` is a premium-request multiplier, not an AI Credit amount; per-call usage is ephemeral, and this app does not own the current VS Code chat session.
+
+**Implementation:** The estimator is on the Workflow Evaluations page. It validates imported records, groups results by model, and shows estimated USD and AI Credits. The approved feature-local Types are `CopilotTokenUsage` (normalized input evidence), `CopilotModelPricing` (dated rate and context tier), and `CopilotCreditEstimate` (computed output). The narrow, user-authorized Diagram Editor build fix exposes `isConnecting` to the template while keeping the connecting source private.
+
+**Evaluation:** The `copilot-ai-credit-estimator` WorkEvaluation is complete. Goal and acceptance clarity are recorded. Decision latency and DevEnv process overhead remain unknown. Delivery elapsed time is based on the recorded start and completion timestamps and includes pauses; active effort is unknown. The outcome is verified by focused tests, coverage, build, and browser interaction, but no real user token export or post-release user outcome is available.
+
+**Verification:** The Diagram, estimator, and evaluations-page focused suites pass (51 tests). Each of the three changed production modules has 100% statement, branch, function, and line coverage. The Angular client production build passes; TypeScript diagnostics and `git diff --check` report no errors. A browser check on `/workflow-evaluations` calculated 0.55 AI Credits and $0.0055 for the displayed sample, showed the pricing caveats, and rejected raw input containing only `inputTokens`. The client and API ports were already occupied, so the attempted development servers could not bind; the already-running local page responded and reflected the changes. No process started for this check remains running.
+
+**Type review:** The normalized `uncachedInputTokens` category removes ambiguity between un-cached input and cached categories. A raw SDK event with `inputTokens` is a concrete contrasting example and is rejected. The three Types above represent input, pricing, and calculated output respectively; no shared Type or additional abstraction is justified. No disproportionate existing Type complexity was found.
+
+**Glossary review:** AI Credits are an external GitHub billing term linked to the official pricing reference in the UI. The normalized token-category labels are local input fields; no repository Glossary entry is warranted.
+
+**Sources:** [Copilot models and pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing), [usage-based billing](https://docs.github.com/en/copilot/concepts/billing-and-usage/individuals/billing), [Copilot SDK usage and billing](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/usage-and-billing), and [Copilot SDK streaming events](https://docs.github.com/en/copilot/how-tos/copilot-sdk/features/streaming-events).

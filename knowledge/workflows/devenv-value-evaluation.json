@@ -291,6 +291,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "copilot-ai-credit-estimator",
+      "title": "Estimate Copilot AI credits from imported token usage",
+      "beneficiary": "DevEnv developers reviewing work evaluations",
+      "intendedOutcome": "Estimate AI credits from imported per-model token usage using a documented Copilot model-pricing snapshot.",
+      "successCondition": "A supported imported token-usage record produces a clearly labeled estimated AI-credit result on the Workflow Evaluations page, with model breakdown and pricing source; invalid or unsupported input is not presented as a valid estimate.",
+      "baseline": "The Workflow Evaluations page shows work-evaluation records but has no token-usage importer or AI-credit estimator. This VS Code chat exposes no usable token telemetry, and no export for it is available.",
+      "startedAt": "2026-10-09T19:47:55+02:00",
+      "completedAt": "2026-10-09T20:21:00+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Beneficiary, intended outcome, and observable acceptance condition were recorded before the first implementation test.",
+          "evidence": "User selected imported token usage estimated against model pricing, placed on the existing Workflow Evaluations page; this WorkEvaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "33 minutes 5 seconds wall-clock from recorded start through verification, including pauses; active effort is unknown.",
+          "evidence": "Recorded WorkEvaluation start and completion timestamps; chat/tool/build durations are not treated as human effort."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Success condition met for normalized imported usage: supported inputs produce per-model and total estimates; malformed, raw ambiguous, and unsupported inputs are rejected. 51 focused tests pass; all four coverage metrics are 100% for the three changed production modules; the client build and browser calculation pass. No actual user token export or follow-up user outcome is available.",
+          "evidence": "Focused Jest suites for copilot-credit-estimator, workflow-evaluations, and diagram-page; client build; browser check recorded in ai-credit-estimator-workflow.md. Pricing and billing limitations are documented in the UI."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

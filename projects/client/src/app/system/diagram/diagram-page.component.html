@@ -44,11 +44,11 @@
         <button
             type="button"
             aria-label="Connect"
-            [attr.aria-pressed]="connectingSourceElementId !== null"
-            [disabled]="selectedElementId === null || connectingSourceElementId !== null"
+            [attr.aria-pressed]="isConnecting"
+            [disabled]="selectedElementId === null || isConnecting"
             (click)="startConnection()"
         >Connect</button>
-        @if (connectingSourceElementId !== null) {
+        @if (isConnecting) {
             <button type="button" aria-label="Cancel connection" (click)="cancelConnection()">
                 Cancel connection
             </button>

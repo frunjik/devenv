@@ -264,6 +264,14 @@ These principles are active from their recorded date and apply to future work in
 - **Practice:** Identify the Type and its callers, explain which complexity is unnecessary for the current goals, compare a simpler representation against meaningful invariants and other consumers, and state likely tradeoffs. Distinguish confirmed waste from an unresolved candidate. Do not silently work around the Type, rename or weaken it, or perform the refactor without agreement; retain it when its constraints protect other known behavior.
 - **Concrete contrast:** `DiagramConnection` captures persistent endpoints and a label with document-level non-self and duplicate-pair invariants; its structural detail enables validation and should not be called needless merely because a UI needs transient connect mode. The selected `readFileSync` in the evaluation test reads authoritative JSON and is not a Type-complexity instance.
 
+### P-028 — Prefer the Smallest Useful Initial Slice
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: "dont go overboard adding every feature and option available a simple start is good for now"
+- **Applies to:** Scope selection for design and implementation.
+- **Rule:** Prefer the smallest useful slice that fulfills the agreed outcome over implementing every available model, provider, or option. Defer optional expansion unless the user agrees, while keeping the required behavior accurate and explicit.
+- **Practice:** State the initial slice and leave optional capabilities as future work rather than silently expanding scope. For example, the Copilot AI Credit Estimator begins with one normalized JSON paste-and-estimate flow; adding configurable modes or persistence is not required for that slice.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

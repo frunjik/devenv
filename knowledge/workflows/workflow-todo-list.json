@@ -132,6 +132,15 @@
       "relatedConcern": "Not assigned"
     },
     {
+      "name": "Process Markdown Typed JSON Inventory",
+      "evaluationIds": [],
+      "primaryWorkPurpose": "Meta work",
+      "status": "Completed",
+      "resumeLabel": "Audit findings and coverage gaps",
+      "resumePath": "./process-markdown-typed-json-inventory.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
+    {
       "name": "Workflow Evaluation Associations",
       "evaluationIds": ["workflow-evaluation-associations"],
       "primaryWorkPurpose": "Meta work",

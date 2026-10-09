@@ -152,7 +152,7 @@
       "successCondition": "Review all current principles and guidance; assess the three checkpoint scenarios; preserve existing obligations and identifiers; present an evidence-backed proposal and unresolved questions for user approval before changing policy.",
       "baseline": "The principle register is additive and currently has no established priority ranking. Its workflow checkpoint frames navigation/grouping and conflict precedence as separate questions; no changes are approved.",
       "startedAt": "2026-10-09T17:04:18+02:00",
-      "completedAt": "2026-10-09T17:10:02+02:00",
+      "completedAt": "2026-10-09T17:13:14+02:00",
       "measures": [
         {
           "metricId": "goal-success-clarity",
@@ -161,18 +161,18 @@
         },
         {
           "metricId": "decision-latency",
-          "value": null,
-          "evidence": null
+          "value": "About 5 minutes 19 seconds from the recorded evaluation start to the user's approval of the proposed cross-reference. The proposal-presentation time was not recorded, so this includes review time and user wait, not just decision wait.",
+          "evidence": "Evaluation startedAt; user approval timestamp 2026-10-09T17:09:36.756+02:00."
         },
         {
           "metricId": "delivery-flow-and-effort",
-          "value": "About 5 minutes 44 seconds wall-clock from recorded start through approved implementation; this includes review wait, and active effort is unknown.",
-          "evidence": "Recorded start and completion timestamps; approval and implementation are recorded in the Principle Register Organization and Priority Review checkpoint."
+          "value": "About 8 minutes 56 seconds from recorded start to the commit timestamp, the latest timestamped completion event. Implementation and verification preceded the commit, but their exact completion time was not recorded. This includes review and approval waits; active effort is unknown.",
+          "evidence": "Evaluation startedAt; commit c010f12 timestamp 2026-10-09T17:13:14+02:00; review checkpoint."
         },
         {
           "metricId": "outcome-and-quality",
-          "value": "The register and guidance review produced an approved, narrow navigation change; no register rules or policy meanings were changed.",
-          "evidence": "P-026 cross-reference in AGENTS.md and completed Principle Register Organization and Priority Review checkpoint."
+          "value": "The approved P-026 cross-reference was implemented without changing register rules or policy meanings. All 61 focused workflow/evaluation tests passed. Longer-term usability and rework are unobserved.",
+          "evidence": "AGENTS.md; completed review checkpoint; focused Jest suites; commit c010f12."
         },
         {
           "metricId": "devenv-process-overhead",

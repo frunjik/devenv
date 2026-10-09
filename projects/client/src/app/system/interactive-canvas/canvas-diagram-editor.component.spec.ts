@@ -29,6 +29,7 @@ class MockCanvas implements ICanvas {
     boxes: number[][] = [];
     borders: number[] = [];
     paths: number[][][] = [];
+    lineWidths: number[] = [];
     operations: string[] = [];
     captured: number[] = [];
     element: HTMLCanvasElement | undefined;
@@ -44,7 +45,7 @@ class MockCanvas implements ICanvas {
         beginPath: () => { this.paths.push([]); },
         moveTo: (x: number, y: number) => { this.paths.at(-1)?.push([x, y]); },
         lineTo: (x: number, y: number) => { this.paths.at(-1)?.push([x, y]); },
-        stroke: () => { this.operations.push('line'); },
+        stroke: () => { this.operations.push('line'); this.lineWidths.push(this.context.lineWidth); },
         textAlign: 'center' as const,
         textBaseline: 'middle' as const,
         font: '',
@@ -91,6 +92,179 @@ describe('CanvasDiagramEditor', () => {
 
     afterEach(() => {
         TestBed.resetTestingModule();
+    });
+
+    it('uses the enabled label input as a preserved custom draft for adding parts', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.canvas-controls input');
+        const add: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Add part"]');
+        expect(input.disabled).toBe(false);
+        expect(input.value).toBe('Part 1');
+        input.value = 'DevEnv client';
+        input.dispatchEvent(new Event('input'));
+        add.click();
+        add.click();
+        fixture.detectChanges();
+        expect(fixture.componentInstance.parts.map(part => part.label)).toEqual(['DevEnv client', 'DevEnv client']);
+        expect(input.value).toBe('DevEnv client');
+    });
+
+    it('switches the single input between preserved draft, part and canvas-selected connection labels', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.canvas-controls input');
+        const add: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Add part"]');
+        const click = (x: number, y: number) => {
+            canvas.dispatchEvent(pointer('pointerdown', x + 101, y + 51, 1));
+            canvas.dispatchEvent(pointer('pointerup', x + 101, y + 51, 1));
+            fixture.detectChanges();
+        };
+        editor.addPart();
+        editor.addPart();
+        input.value = 'Next component';
+        input.dispatchEvent(new Event('input'));
+        click(29, 29);
+        expect(input.getAttribute('aria-label')).toBe('Part label');
+        expect(add.disabled).toBe(true);
+        input.value = 'Client';
+        input.dispatchEvent(new Event('input'));
+        editor.startConnection();
+        fixture.detectChanges();
+        expect(input.disabled).toBe(true);
+        editor.editLabel('Blocked');
+        expect(editor.parts[0].label).toBe('Client');
+        editor.addPart();
+        expect(editor.parts).toHaveLength(2);
+        click(59, 59);
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointermove', 460, 86, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 86, 1));
+        click(276, 64);
+        expect(editor.selectedConnection).toBe(editor.connections[0]);
+        expect(editor.selectedPart).toBeUndefined();
+        expect(input.getAttribute('aria-label')).toBe('Connection label');
+        expect(input.value).toBe('');
+        expect(input.disabled).toBe(false);
+        input.value = 'uses';
+        input.dispatchEvent(new Event('input'));
+        expect(editor.connections[0].label).toBe('uses');
+        surface.paint();
+        expect(surface.lineWidths.at(-1)).toBe(3);
+        expect(surface.borders.slice(-2)).toEqual([1, 1]);
+        expect(fixture.nativeElement.querySelectorAll('input')).toHaveLength(1);
+        const connect: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Connect selected part"]');
+        expect(connect.disabled).toBe(true);
+        editor.addPart();
+        expect(editor.parts).toHaveLength(2);
+        click(10, 10);
+        expect(input.getAttribute('aria-label')).toBe('Label for next part');
+        expect(input.value).toBe('Next component');
+        expect(add.disabled).toBe(false);
+        add.click();
+        expect(editor.parts[2].label).toBe('Next component');
+        click(276, 64);
+        editor.removeConnection(editor.connections[0]);
+        fixture.detectChanges();
+        expect(editor.selectedConnection).toBeUndefined();
+        expect(input.value).toBe('Next component');
+        click(29, 29);
+        editor.startConnection();
+        fixture.detectChanges();
+        expect(input.disabled).toBe(true);
+        editor.cancelConnection();
+        fixture.detectChanges();
+        expect(input.disabled).toBe(false);
+    });
+
+    it('hit-tests the drawn segment within exactly six logical pixels, prioritizes parts, and never drags a selected line', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.addPart();
+        editor.addPart();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        const click = (x: number, y: number) => {
+            canvas.dispatchEvent(pointer('pointerdown', x + 101, y + 51, 1));
+            canvas.dispatchEvent(pointer('pointerup', x + 101, y + 51, 1));
+        };
+        click(29, 29);
+        editor.startConnection();
+        click(59, 59);
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointermove', 460, 86, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 86, 1));
+        click(276, 70);
+        expect(editor.selectedConnection).toBe(editor.connections[0]);
+        canvas.dispatchEvent(pointer('pointermove', 500, 160, 1));
+        expect(editor.parts[1].position).toEqual({ x: 348, y: 24 });
+        click(276, 70.01);
+        expect(editor.selectedConnection).toBeUndefined();
+        click(276, 58);
+        expect(editor.selectedConnection).toBe(editor.connections[0]);
+        click(114, 64);
+        expect(editor.selectedPart).toBe(editor.parts[0]);
+        expect(editor.selectedConnection).toBeUndefined();
+        click(600, 64);
+        expect(editor.selectedConnection).toBeUndefined();
+        click(-20, 64);
+        expect(editor.selectedConnection).toBeUndefined();
+    });
+
+    it('preserves empty custom drafts and labels through selection and removal', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        editor.editLabel('');
+        editor.addPart();
+        expect(editor.parts[0].label).toBe('');
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        canvas.dispatchEvent(pointer('pointerup', 130, 80, 1));
+        editor.editLabel('Temporary');
+        editor.removeSelectedPart();
+        expect(editor.labelValue).toBe('');
+        editor.addPart();
+        expect(editor.parts[0].label).toBe('');
+    });
+
+    it('selects the newest overlapping line and follows changed diagonal geometry', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.addPart();
+        editor.addPart();
+        editor.addPart();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        const click = (x: number, y: number) => {
+            canvas.dispatchEvent(pointer('pointerdown', x + 101, y + 51, 1));
+            canvas.dispatchEvent(pointer('pointerup', x + 101, y + 51, 1));
+        };
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointermove', 460, 86, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 86, 1));
+        click(29, 29);
+        editor.startConnection();
+        click(359, 35);
+        canvas.dispatchEvent(pointer('pointerdown', 184, 134, 1));
+        canvas.dispatchEvent(pointer('pointermove', 460, 86, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 86, 1));
+        click(29, 29);
+        editor.startConnection();
+        click(359, 35);
+        click(276, 64);
+        expect(editor.selectedConnection).toBe(editor.connections[1]);
+        editor.removeConnection(editor.connections[0]);
+        expect(editor.selectedConnection).toBe(editor.connections[0]);
+        canvas.dispatchEvent(pointer('pointerdown', 460, 86, 1));
+        canvas.dispatchEvent(pointer('pointermove', 460, 286, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 286, 1));
+        click(276, 164);
+        expect(editor.selectedConnection).toBe(editor.connections[0]);
+        click(276, 64);
+        expect(editor.selectedConnection).toBeUndefined();
     });
 
     it('connects two selected endpoints without starting a destination drag', () => {
@@ -169,9 +343,7 @@ describe('CanvasDiagramEditor', () => {
         select(160, 110);
         const firstId = editor.connections[0].id;
         fixture.detectChanges();
-        const label: HTMLInputElement = fixture.nativeElement.querySelector('[aria-label="Connection label"]');
-        label.value = 'uses';
-        label.dispatchEvent(new Event('input'));
+        editor.renameConnection(editor.connections[0], 'uses');
         expect(editor.connections[0].label).toBe('uses');
         editor.renamePart('Client sketch');
         expect(editor.connections).toHaveLength(1);
@@ -244,6 +416,10 @@ describe('CanvasDiagramEditor', () => {
         canvas.dispatchEvent(pointer('pointermove', 436, 86, 1));
         surface.paint();
         expect(surface.paths.at(-1)).toEqual([[204, 64], [324, 64]]);
+        canvas.dispatchEvent(pointer('pointermove', 136, 86, 1));
+        canvas.dispatchEvent(pointer('pointerup', 136, 86, 1));
+        canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
+        expect(editor.selectedConnection).toBeUndefined();
     });
 
     it('supplies centered clock content and invalidates it once per second', () => {
@@ -316,8 +492,8 @@ describe('CanvasDiagramEditor', () => {
         fixture.componentInstance.addPart();
         fixture.detectChanges();
         const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
-        const input: HTMLInputElement = fixture.nativeElement.querySelector('input[aria-label="Part label"]');
-        expect(input.disabled).toBe(true);
+        const input: HTMLInputElement = fixture.nativeElement.querySelector('.canvas-controls input');
+        expect(input.disabled).toBe(false);
         canvas.dispatchEvent(pointer('pointerdown', 135, 85, 1));
         fixture.detectChanges();
         expect(input.disabled).toBe(false);
@@ -336,7 +512,7 @@ describe('CanvasDiagramEditor', () => {
         expect(fixture.componentInstance.parts[0].position).toEqual({ x: 44, y: 54 });
         canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
         fixture.detectChanges();
-        expect(input.disabled).toBe(true);
+        expect(input.disabled).toBe(false);
     });
 
     it.each(['pointercancel', 'lostpointercapture'])('stops a drag on %s and ignores unsupported starts', end => {
@@ -395,6 +571,7 @@ describe('CanvasDiagramEditor', () => {
         expect(editor.selectedPart).toBe(first);
         canvas.dispatchEvent(pointer('pointerup', 160, 110, 1));
         editor.renamePart('Same label');
+        canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
         editor.addPart();
         expect(editor.parts[1].id).toBeGreaterThan(second.id);
         expect(editor.parts[1].label).toBe('Part 3');
@@ -446,6 +623,10 @@ function currentTime(): string {
 
 function pointer(type: string, clientX: number, clientY: number, pointerId: number): MouseEvent {
     const event = new MouseEvent(type, { clientX, clientY, button: 0 });
-    Object.defineProperty(event, 'pointerId', { value: pointerId });
+    Object.defineProperties(event, {
+        pointerId: { value: pointerId },
+        clientX: { value: clientX },
+        clientY: { value: clientY },
+    });
     return event;
 }

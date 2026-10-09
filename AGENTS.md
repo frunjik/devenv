@@ -81,7 +81,9 @@ Use the loop below as the execution checklist; consult the register for meaning,
 
 ### Checklist trial
 
-For the next three completed coding slices, add one brief observation to the existing workflow checkpoint: any missed applicable check, correction/rework, and observed checklist friction. Record zero only when checked; otherwise say unknown. At the third completion, review those observations with the user before expanding or automating the process. This is a lightweight trial, not proof of improved reliability; no new tracking file or automated enforcement is required.
+**Completed (user decision, 2026-10-09):** The multiple-parts, connections, and shared-label-input canvas slices completed the trial. Keep the focused work loop without new rules or automated enforcement. No omitted practice was identified in the recorded reviews; tests caught a production cleanup mistake, and browser visibility/UI-update timing caused friction. These are limited self-review observations, not proof of reliable compliance. Evidence is saved in the [canvas workflow checkpoints](knowledge/workflows/interactive-canvas-workflow.md); no further three-slice reporting cycle is active.
+
+**Trial protocol (historical):** For three completed coding slices, add one brief observation to the existing workflow checkpoint: any missed applicable check, correction/rework, and observed checklist friction. Record zero only when checked; otherwise say unknown. At the third completion, review those observations with the user before expanding or automating the process. This is a lightweight trial, not proof of improved reliability; no new tracking file or automated enforcement is required.
 
 ### Detailed reminders
 

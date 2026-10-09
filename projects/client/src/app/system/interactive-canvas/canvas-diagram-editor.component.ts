@@ -37,19 +37,59 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private readonly scheduler = inject(SCHEDULER);
     private readonly surface = inject(CANVAS);
     parts: SketchPart[] = [];
-    selectedPart: SketchPart | undefined;
+    private selectedItem: SketchPart | SketchConnection | undefined;
     connections: SketchConnection[] = [];
     connectionSource: SketchPart | undefined;
     connectionMessage = '';
     private nextConnectionId = 1;
     private nextPartId = 1;
+    private draftLabel = 'Part 1';
+    private customDraft = false;
     private drag: CanvasDrag | undefined;
 
+    get selectedPart(): SketchPart | undefined {
+        return this.selectedItem && 'position' in this.selectedItem ? this.selectedItem : undefined;
+    }
+
+    get selectedConnection(): SketchConnection | undefined {
+        return this.selectedItem && 'first' in this.selectedItem ? this.selectedItem : undefined;
+    }
+
     addPart(): void {
+        if (this.selectedItem || this.connectionSource) {
+            this.connectionMessage = 'Click empty space before adding a part.';
+            return;
+        }
         const id = this.nextPartId++;
         const offset = 24 + ((id - 1) % 4) * 24;
-        this.parts.push({ id, label: `Part ${id}`, position: { x: offset, y: offset } });
+        this.parts.push({ id, label: this.draftLabel, position: { x: offset, y: offset } });
+        if (!this.customDraft) {
+            this.draftLabel = `Part ${this.nextPartId}`;
+        }
         this.surface.requestDraw();
+    }
+
+    get labelValue(): string {
+        return this.selectedItem ? this.selectedItem.label : this.draftLabel;
+    }
+
+    get labelPurpose(): string {
+        return this.selectedPart ? 'Part label'
+            : this.selectedConnection ? 'Connection label' : 'Label for next part';
+    }
+
+    editLabel(label: string): void {
+        if (this.connectionSource) {
+            this.connectionMessage = 'Finish or cancel the connection before editing a label.';
+            return;
+        }
+        if (this.selectedItem) {
+            this.selectedItem.label = label;
+            this.surface.requestDraw();
+        } else {
+            this.draftLabel = label;
+            this.customDraft = true;
+        }
     }
 
     movePointer(event: PointerEvent): void {
@@ -93,7 +133,15 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             this.surface.requestDraw();
             return;
         }
-        this.selectedPart = part;
+        this.selectedItem = part ?? [...this.connections].reverse().find(connection => {
+            const { first, second } = this.connectionLine(connection);
+            const dx = second.x - first.x;
+            const dy = second.y - first.y;
+            const lengthSquared = dx * dx + dy * dy;
+            const projection = lengthSquared === 0 ? 0 : Math.max(0, Math.min(1,
+                ((point.x - first.x) * dx + (point.y - first.y) * dy) / lengthSquared));
+            return Math.hypot(point.x - first.x - projection * dx, point.y - first.y - projection * dy) <= 6;
+        });
         if (part) {
             this.surface.capturePointer(event.pointerId);
             this.drag = {
@@ -133,6 +181,9 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     removeConnection(connection: SketchConnection): void {
         this.connections = this.connections.filter(candidate => candidate !== connection);
+        if (this.selectedItem === connection) {
+            this.selectedItem = undefined;
+        }
         this.surface.requestDraw();
     }
 
@@ -150,7 +201,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
                 connection.first !== removed && connection.second !== removed);
             this.cancelConnection();
             this.parts = this.parts.filter(part => part !== this.selectedPart);
-            this.selectedPart = undefined;
+            this.selectedItem = undefined;
             this.drag = undefined;
             this.surface.requestDraw();
         }
@@ -164,6 +215,18 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     ngOnDestroy(): void {
         this.stopRefresh?.();
         this.surface.destroy();
+    }
+
+    private connectionLine(connection: SketchConnection) {
+        const first = { x: connection.first.position.x + 90, y: connection.first.position.y + 40 };
+        const second = { x: connection.second.position.x + 90, y: connection.second.position.y + 40 };
+        const dx = second.x - first.x;
+        const dy = second.y - first.y;
+        const scale = dx === 0 && dy === 0 ? 0 : Math.min(0.5, 90 / Math.abs(dx), 40 / Math.abs(dy));
+        return {
+            first: { x: first.x + dx * scale, y: first.y + dy * scale },
+            second: { x: second.x - dx * scale, y: second.y - dy * scale },
+        };
     }
 
     private readonly render: Parameters<ICanvas['initialize']>[1] = (context, width, height) => {
@@ -180,15 +243,11 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             height / 2,
         );
         for (const connection of this.connections) {
-            const first = { x: connection.first.position.x + 90, y: connection.first.position.y + 40 };
-            const second = { x: connection.second.position.x + 90, y: connection.second.position.y + 40 };
-            const dx = second.x - first.x;
-            const dy = second.y - first.y;
-            const scale = dx === 0 && dy === 0 ? 0 : Math.min(90 / Math.abs(dx), 40 / Math.abs(dy));
-            context.lineWidth = 1;
+            const { first, second } = this.connectionLine(connection);
+            context.lineWidth = connection === this.selectedConnection ? 3 : 1;
             context.beginPath();
-            context.moveTo(first.x + dx * scale, first.y + dy * scale);
-            context.lineTo(second.x - dx * scale, second.y - dy * scale);
+            context.moveTo(first.x, first.y);
+            context.lineTo(second.x, second.y);
             context.stroke();
             context.font = '14px sans-serif';
             context.fillText(connection.label, (first.x + second.x) / 2, (first.y + second.y) / 2 - 10);

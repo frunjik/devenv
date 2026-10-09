@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-shared-label-input",
+      "title": "Reuse one input for canvas labels",
+      "beneficiary": "DevEnv developer creating and editing canvas sketches",
+      "intendedOutcome": "Use one clearly contextual input for new-part drafts and selected part or connection labels.",
+      "successCondition": "One input preserves draft labels, edits only the selected item, disables during connection creation, and pairs with Add part disabled during selection. Canvas line selection has 6 CSS pixel tolerance with part precedence and visible emphasis; removal clears selection safely.",
+      "baseline": "Part label control disables without selection; new parts have automatic labels; each connection has an independent label input and cannot be selected on canvas.",
+      "startedAt": "2026-10-09T23:28:50+02:00",
+      "completedAt": "2026-10-09T23:35:29+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved draft/edit modes, enable/disable rules, canvas line selection, single selected-item representation and evaluation.", "evidence": "interactive-canvas-workflow.md shared label experiment and user decisions." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "6 minutes 39 seconds wall-clock to final visible acceptance, including design decisions and continuation gates; active effort unknown.", "evidence": "Request and visible acceptance timestamps in interactive-canvas-workflow.md." },
+        { "metricId": "outcome-and-quality", "value": "20 editor tests pass at 100% all-four coverage; client build passes. Visible desktop verifies one contextual input, custom drafts, part and line edits, Add disabling and restored draft; repeated UI-updated check verifies Connect/Cancel input disabling. Visible 320px check confirms stable canvas origin, fitting input, no horizontal overflow and matching backing. Exact tests verify 6px tolerance, overlap priority, moving/degenerate geometry and removal. No changed-file test-source diagnostics; unrelated errors remain. Trial completed with user decision to retain checklist without new enforcement; follow-up usability unknown.", "evidence": "interactive-canvas-workflow.md shared label acceptance/checklist-trial review; focused Jest, build, diagnostics and visible checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-diagram-connections",
       "title": "Connect canvas sketch parts",
       "beneficiary": "DevEnv developer sketching relationships between parts",

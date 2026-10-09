@@ -191,7 +191,8 @@
         "interactive-canvas-one-editable-part",
         "canvas-editor-surface-separation",
         "canvas-diagram-multiple-parts",
-        "canvas-diagram-connections"
+        "canvas-diagram-connections",
+        "canvas-shared-label-input"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

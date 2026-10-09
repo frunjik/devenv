@@ -10,6 +10,7 @@ import { formatElapsedDuration } from './evaluation-duration';
 const evaluationIdsByWorkflowName: Readonly<Record<string, string>> = {
     'Minimal Typed Diagram Editor': 'diagram-selection-and-movement',
     'TODO View (DevEnv system layer)': 'workflow-todo-value-metrics-view',
+    'Principle Register Organization and Priority Review': 'principle-register-organization-review',
 };
 
 @Component({

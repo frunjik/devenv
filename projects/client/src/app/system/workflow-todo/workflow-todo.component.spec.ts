@@ -331,4 +331,61 @@ describe('WorkflowTodoComponent', () => {
         expect(fixture.nativeElement.textContent).not.toContain('No workflows registered');
         expect(fixture.nativeElement.textContent).not.toContain('Loading workflows');
     });
+
+    it('shows the completed principle register review duration in its workflow row', () => {
+        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [
+            {
+                name: 'Principle Register Organization and Priority Review',
+                primaryWorkPurpose: 'Meta work',
+                status: 'Completed',
+                resumeLabel: 'Approved cross-reference update and verification',
+                resumePath: './principle-register-review.md#checkpoint',
+                relatedConcern: 'Not assigned',
+            },
+            {
+                name: 'DevEnv Value Evaluation',
+                primaryWorkPurpose: 'Meta work',
+                status: 'Active',
+                resumeLabel: 'Measurement-feasibility pilot',
+                resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
+                relatedConcern: 'Not assigned',
+            },
+        ] } });
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: JSON.stringify({
+                schemaVersion: 1,
+                metrics: [{
+                    id: 'delivery-flow-and-effort',
+                    name: 'Delivery flow and effort',
+                    definition: 'Record elapsed delivery time.',
+                    interpretation: 'Elapsed time is not active effort.',
+                }],
+                evaluations: [{
+                    id: 'principle-register-organization-review',
+                    title: 'Review principle register organization and precedence',
+                    beneficiary: 'DevEnv contributors',
+                    intendedOutcome: 'Review principle register organization.',
+                    successCondition: 'Record a supported conclusion.',
+                    baseline: 'No priority ranking.',
+                    startedAt: '2026-10-09T17:04:18+02:00',
+                    completedAt: '2026-10-09T17:13:14+02:00',
+                    measures: [{
+                        metricId: 'delivery-flow-and-effort',
+                        value: 'About 8m 56s wall-clock.',
+                        evidence: 'Recorded timestamps.',
+                    }],
+                }],
+            }) });
+        fixture.detectChanges();
+
+        const row = Array.from(
+            fixture.nativeElement.querySelectorAll(
+                '.workflow-table tbody tr:not(.workflow-group-heading)',
+            ) as NodeListOf<HTMLTableRowElement>,
+        ).find(item => item.querySelector('th')?.textContent?.trim()
+            === 'Principle Register Organization and Priority Review');
+
+        expect(row?.textContent)
+            .toContain('Review principle register organization and precedence (8m 56s)');
+    });
 });

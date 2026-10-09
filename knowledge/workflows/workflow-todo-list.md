@@ -14,6 +14,7 @@ Repository-wide navigation for resumable work. This list does not replace System
 | Glossary Refinement (KnowledgeArea, MetaLayer, SubjectDomain) | Meta work | Completed | [Implementation and review checkpoint](./glossary-refinement.md#checkpoint) | SC-027; SC-049 for the subsequent export example |
 | Full Glossary Export | Product work | Completed | [Implementation and verification checkpoint](./full-glossary-export-workflow.md#checkpoint) | Not assigned |
 | TODO View (DevEnv system layer) | Meta work | Completed | [Implementation and review checkpoint](./todo-view-workflow.md#checkpoint) | Not assigned |
+| Show active workflow on TODO view | Meta work | Completed | [Implementation and verification checkpoint](./active-workflow-view-workflow.md#checkpoint) | Not assigned |
 | UI Design Review Fixes | Product work | Completed | [Implementation and verification checkpoint](./ui-design-review-workflow.md#checkpoint) | Not assigned |
 | Term Editing (DevEnv glossary UI) | Product work | Pending | [Starting checkpoint](./term-editing-workflow.md#checkpoint) | Not assigned |
 | DevEnv Export (sibling or hosting system) | Product work | Paused | [Full-coverage checkpoint and remaining verification](./devenv-export-workflow.md#checkpoint) | Not assigned |

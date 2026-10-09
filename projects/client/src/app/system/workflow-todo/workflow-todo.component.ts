@@ -16,6 +16,7 @@ import { formatElapsedDuration } from './evaluation-duration';
 })
 export class WorkflowTodoComponent implements OnInit, OnDestroy {
     workflows: WorkflowTodoList['workflows'] = [];
+    activeWorkflow: WorkflowTodoList['activeWorkflow'] = null;
     get endUserWorkflows(): WorkflowTodoList['workflows'] {
         return this.workflows.filter(workflow => workflow.primaryWorkPurpose === 'Product work');
     }
@@ -68,6 +69,7 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
         this.subscriptions.add(this.backend.getWorkflowTodo().subscribe({
             next: list => {
                 this.workflows = list.workflows;
+                this.activeWorkflow = list.activeWorkflow;
                 this.loading = false;
                 if (list.workflows.some(workflow =>
                     workflow.resumePath.startsWith('./devenv-value-evaluation-workflow.md#'))) {

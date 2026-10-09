@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
+import type { WorkflowTodoList } from '@shared';
 import { WorkflowTodoComponent } from './workflow-todo.component';
 
 describe('WorkflowTodoComponent', () => {
@@ -14,6 +15,12 @@ describe('WorkflowTodoComponent', () => {
         { name: 'DevEnv Export', primaryWorkPurpose: 'Product work', status: 'Pending', resumeLabel: 'Starting checkpoint',
             resumePath: './devenv-export-workflow.md#checkpoint', relatedConcern: 'Not assigned', evaluationIds: [] },
     ];
+    const workflowResponse = (list: WorkflowTodoList['workflows']) => ({
+        data: {
+            activeWorkflow: list.find(workflow => workflow.status === 'Active')?.name ?? null,
+            workflows: list,
+        },
+    });
 
     beforeEach(async () => {
         (window as Window & { host?: string }).host = 'http://localhost:3000/';
@@ -27,11 +34,34 @@ describe('WorkflowTodoComponent', () => {
     });
     afterEach(() => http.verify());
 
+    it('shows the selected active workflow and an explicit empty state', () => {
+        expect(fixture.nativeElement.querySelector('.active-workflow')).toBeNull();
+        http.expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { activeWorkflow: 'Glossary Refinement', workflows } });
+        fixture.detectChanges();
+
+        const activeWorkflow = fixture.nativeElement.querySelector('.active-workflow') as HTMLElement;
+        expect(activeWorkflow.textContent).toContain('Glossary Refinement');
+
+        fixture.destroy();
+        fixture = TestBed.createComponent(WorkflowTodoComponent);
+        fixture.detectChanges();
+        http.expectOne('http://localhost:3000/workflow-todo')
+            .flush({ data: { activeWorkflow: null, workflows: workflows.map(workflow => ({
+                ...workflow,
+                status: 'Paused',
+            })) } });
+        fixture.detectChanges();
+
+        const noActiveWorkflow = fixture.nativeElement.querySelector('.active-workflow') as HTMLElement;
+        expect(noActiveWorkflow.textContent).toContain('No active workflow');
+    });
+
     it('shows loading, then all JSON fields and the active workflow', () => {
         expect(fixture.nativeElement.textContent).toContain('Loading workflows');
         expect(fixture.componentInstance.metricSummary).toEqual([]);
         expect(fixture.componentInstance.completedEvaluationSummary(['diagram-selection-and-movement'])).toBe('—');
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
         fixture.detectChanges();
         const text = fixture.nativeElement.textContent;
         for (const workflow of workflows) {
@@ -64,7 +94,7 @@ describe('WorkflowTodoComponent', () => {
     });
 
     it('renders product and meta workflows in one table with one shared column definition', () => {
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
         fixture.detectChanges();
 
         const workflowTables = Array.from(
@@ -107,7 +137,7 @@ describe('WorkflowTodoComponent', () => {
             relatedConcern: 'Not assigned',
         };
         http.expectOne('http://localhost:3000/workflow-todo')
-            .flush({ data: { workflows: [...workflows, reviewWorkflow, evaluationWorkflow] } });
+            .flush(workflowResponse([...workflows, reviewWorkflow, evaluationWorkflow]));
         fixture.detectChanges();
         http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
             .flush({ data: JSON.stringify({
@@ -204,7 +234,7 @@ describe('WorkflowTodoComponent', () => {
             relatedConcern: 'Not assigned',
         };
         http.expectOne('http://localhost:3000/workflow-todo')
-            .flush({ data: { workflows: [...workflows, metricWorkflow, diagramWorkflow, todoViewWorkflow] } });
+            .flush(workflowResponse([...workflows, metricWorkflow, diagramWorkflow, todoViewWorkflow]));
         fixture.detectChanges();
         const loadingMetrics = fixture.nativeElement.querySelector(
             '[aria-label="DevEnv value evaluation metrics"]',
@@ -341,7 +371,7 @@ describe('WorkflowTodoComponent', () => {
             relatedConcern: 'Not assigned',
         };
         http.expectOne('http://localhost:3000/workflow-todo')
-            .flush({ data: { workflows: [metricWorkflow] } });
+            .flush(workflowResponse([metricWorkflow]));
         http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
             .flush({}, { status: 500, statusText: 'Server Error' });
         fixture.detectChanges();
@@ -355,11 +385,11 @@ describe('WorkflowTodoComponent', () => {
     });
 
     it('reports workflow references to evaluations that are not in the evaluation dataset', () => {
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [{
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse([{
             ...workflows[0],
             resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
             evaluationIds: ['missing-evaluation'],
-        }] } });
+        }]));
         http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
             .flush({ data: JSON.stringify({
                 schemaVersion: 1,
@@ -409,7 +439,7 @@ describe('WorkflowTodoComponent', () => {
             relatedConcern: 'Not assigned',
         };
         http.expectOne('http://localhost:3000/workflow-todo')
-            .flush({ data: { workflows: [metricWorkflow] } });
+            .flush(workflowResponse([metricWorkflow]));
         http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
             .flush({ data: contents });
         fixture.detectChanges();
@@ -424,7 +454,7 @@ describe('WorkflowTodoComponent', () => {
     });
 
     it('provides a visible, accessible cue for horizontally scrolling the workflow table', () => {
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows } });
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse(workflows));
         fixture.detectChanges();
         const tableScroll = fixture.nativeElement.querySelector('.table-scroll') as HTMLElement;
         const hint = fixture.nativeElement.querySelector('#workflow-table-scroll-hint') as HTMLElement;
@@ -435,14 +465,13 @@ describe('WorkflowTodoComponent', () => {
 
     it('shows an empty message only after a successful empty response', () => {
         expect(fixture.nativeElement.textContent).not.toContain('No workflows registered');
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [] } });
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse([]));
         fixture.detectChanges();
         expect(fixture.nativeElement.textContent).toContain('No workflows registered');
     });
 
     it('cancels outstanding evaluation data requests on destruction', () => {
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: {
-            workflows: [{
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse([{
                 name: 'DevEnv Value Evaluation',
                 evaluationIds: [],
                 primaryWorkPurpose: 'Meta work',
@@ -450,8 +479,7 @@ describe('WorkflowTodoComponent', () => {
                 resumeLabel: 'Checkpoint',
                 resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
                 relatedConcern: 'Not assigned',
-            }],
-        } });
+            }]));
         fixture.detectChanges();
         const request = http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json');
         fixture.destroy();
@@ -464,10 +492,11 @@ describe('WorkflowTodoComponent', () => {
         expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('500');
         expect(fixture.nativeElement.textContent).not.toContain('No workflows registered');
         expect(fixture.nativeElement.textContent).not.toContain('Loading workflows');
+        expect(fixture.nativeElement.querySelector('.active-workflow')).toBeNull();
     });
 
     it('shows the completed principle register review duration in its workflow row', () => {
-        http.expectOne('http://localhost:3000/workflow-todo').flush({ data: { workflows: [
+        http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse([
             {
                 name: 'Principle Register Organization and Priority Review',
                 evaluationIds: ['principle-register-organization-review'],
@@ -486,7 +515,7 @@ describe('WorkflowTodoComponent', () => {
                 resumePath: './devenv-value-evaluation-workflow.md#checkpoint',
                 relatedConcern: 'Not assigned',
             },
-        ] } });
+        ]));
         http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
             .flush({ data: JSON.stringify({
                 schemaVersion: 1,

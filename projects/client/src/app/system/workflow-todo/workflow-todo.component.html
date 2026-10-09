@@ -1,6 +1,15 @@
 <section class="workflow-todo">
     <h1>Workflow TODO List</h1>
     <p>Read-only workflows from the repository Markdown list. Viewing does not select or switch a workflow.</p>
+    <section
+        *ngIf="!loading && !errorMessage"
+        class="active-workflow"
+        aria-labelledby="active-workflow-heading"
+    >
+        <h2 id="active-workflow-heading">Active workflow</h2>
+        <p *ngIf="activeWorkflow; else noActiveWorkflow">{{ activeWorkflow }}</p>
+        <ng-template #noActiveWorkflow><p>No active workflow.</p></ng-template>
+    </section>
     <p *ngIf="loading" role="status">Loading workflows...</p>
     <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
     <p *ngIf="!loading && !errorMessage && !workflows.length">No workflows registered.</p>

@@ -328,6 +328,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "active-workflow-on-todo-view",
+      "title": "Show active workflow on TODO view",
+      "beneficiary": "DevEnv contributors reviewing the repository workflow register",
+      "intendedOutcome": "Make the currently selected active workflow immediately visible on the Workflow TODO page.",
+      "successCondition": "The page visibly identifies the active workflow from the authoritative workflow-list selection and clearly shows when no workflow is active, without changing workflow selection or status.",
+      "baseline": "The Workflow TODO page renders the workflow table and highlights an Active row, but does not render the authoritative top-level activeWorkflow field. The field is currently null; the shared validator already checks that any non-null selection matches exactly one Active workflow.",
+      "startedAt": "2026-10-09T20:45:31+02:00",
+      "completedAt": "2026-10-09T20:58:21+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "The contributor beneficiary, requested visibility outcome, authoritative source, and no-active-state behavior were recorded before the first implementation test.",
+          "evidence": "User request, existing WorkflowTodoList.activeWorkflow contract and validator, and this WorkEvaluation record."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "13 minutes 50 seconds wall-clock from the task request through final verification, including pauses; active effort is unknown.",
+          "evidence": "Recorded start at 2026-10-09T20:45:31+02:00 and completion at 2026-10-09T20:58:21+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "The Workflow TODO page shows the selected active workflow in a dedicated callout and an explicit no-active state after a successful load; the callout is hidden during loading and load errors. All 14 focused component tests pass; the changed production component has 100% statement, branch, function, and line coverage; shared and client builds pass; browser checks displayed the active workflow name and no-active state. Follow-up usability and rework are unknown.",
+          "evidence": "WorkflowTodoComponent Jest suite and focused coverage; shared/client Angular builds; browser checks on /workflow-todo. The component suite tests selected, no-active, loading, and error states."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

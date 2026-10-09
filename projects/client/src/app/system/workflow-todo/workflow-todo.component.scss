@@ -7,6 +7,9 @@
 }
 h1, h2 { color: var(--text-heading); }
 p, td, pre { color: var(--text-secondary); }
+.active-workflow { margin: 1rem 0; padding: 1rem; border-left: 3px solid var(--border-accent); }
+.active-workflow h2 { margin: 0; font-size: 1.1rem; }
+.active-workflow p { margin-bottom: 0; }
 .table-scroll { overflow-x: auto; }
 .table-scroll:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
 table { width: 100%; border-collapse: collapse; text-align: left; }

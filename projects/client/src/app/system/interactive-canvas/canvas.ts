@@ -5,7 +5,8 @@ export interface ICanvas {
         element: HTMLCanvasElement,
         render: (
             context: Pick<CanvasRenderingContext2D,
-                'fillText' | 'strokeRect' | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'>,
+                'fillText' | 'strokeRect' | 'beginPath' | 'moveTo' | 'lineTo' | 'stroke'
+                | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'>,
             width: number,
             height: number,
         ) => void,

@@ -31,6 +31,7 @@ class MockBrowser implements IBrowser {
         setTransform: (...values: unknown[]) => { this.transforms.push(values); },
         fillText: () => {},
         strokeRect: () => {},
+        beginPath: () => {}, moveTo: () => {}, lineTo: () => {}, stroke: () => {},
         textAlign: 'center',
         textBaseline: 'middle',
         font: '',
@@ -119,6 +120,7 @@ describe('InteractiveCanvas surface', () => {
         surface.destroy();
         browser.context = {
             clearRect: () => {}, setTransform: () => {}, fillText: () => {}, strokeRect: () => {},
+            beginPath: () => {}, moveTo: () => {}, lineTo: () => {}, stroke: () => {},
             textAlign: 'center', textBaseline: 'middle', font: '', lineWidth: 1,
         };
         surface.initialize(element, () => {});

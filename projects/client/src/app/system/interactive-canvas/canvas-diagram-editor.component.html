@@ -2,6 +2,10 @@
     <h1>Canvas Diagram Editor</h1>
     <div class="canvas-controls">
         <button type="button" aria-label="Add part" (click)="addPart()">Add part</button>
+        <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
+            (click)="startConnection()">Connect</button>
+        <button type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
+            (click)="cancelConnection()">Cancel</button>
         <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
             (click)="removeSelectedPart()">Remove selected</button>
         <label class="form-field">Part label
@@ -9,6 +13,7 @@
                 [disabled]="!selectedPart" [value]="selectedPart?.label || ''" (input)="renamePart(label.value)">
         </label>
     </div>
+    <p class="connection-status" role="status">{{ connectionMessage }}</p>
     <canvas
         #canvas
         width="640"
@@ -21,4 +26,17 @@
         aria-label="Sketch workspace and current time rendered on an HTML canvas">
         Sketch workspace. Use Add part, select a box to edit its label or remove it, and drag it to move it. Current time is also shown.
     </canvas>
+    <section class="connection-list" aria-label="Connections">
+        @for (connection of connections; track connection.id) {
+            <div class="connection-row">
+                <span>{{ connection.first.label }} - {{ connection.second.label }}</span>
+                <label class="form-field">Connection label
+                    <input #connectionLabel class="form-control" aria-label="Connection label"
+                        [value]="connection.label" (input)="renameConnection(connection, connectionLabel.value)">
+                </label>
+                <button type="button" aria-label="Remove connection"
+                    (click)="removeConnection(connection)">Remove connection</button>
+            </div>
+        }
+    </section>
 </main>

@@ -5,7 +5,9 @@ export interface IBrowser {
     requestAnimationFrame(callback: () => void): number;
     cancelAnimationFrame(id: number): void;
     getContext(canvas: HTMLCanvasElement): Pick<CanvasRenderingContext2D,
-        'clearRect' | 'setTransform' | 'fillText' | 'strokeRect' | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'> | null;
+        'clearRect' | 'setTransform' | 'fillText' | 'strokeRect'
+        | 'beginPath' | 'moveTo' | 'lineTo' | 'stroke'
+        | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'> | null;
     displayedWidth(canvas: HTMLCanvasElement): number;
     displayedHeight(canvas: HTMLCanvasElement): number;
     devicePixelRatio(): number;

@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-diagram-connections",
+      "title": "Connect canvas sketch parts",
+      "beneficiary": "DevEnv developer sketching relationships between parts",
+      "intendedOutcome": "Create, label, and remove undirected connections that follow their parts.",
+      "successCondition": "Select source, press Connect, click a distinct destination; show invalid self/duplicate messages and allow cancellation. Lines follow endpoints behind boxes; HTML controls edit labels and remove connections; removing parts removes incident connections.",
+      "baseline": "Multiple independently editable parts exist but no relationship representation or controls.",
+      "startedAt": "2026-10-09T23:15:24+02:00",
+      "completedAt": "2026-10-09T23:23:44+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved undirected meaning, two-click creation, distinct-pair rules, local SketchConnection, controls and evaluation.", "evidence": "interactive-canvas-workflow.md slice 4 checkpoint and user decisions." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "8 minutes 20 seconds wall-clock including design decisions, continuation gates and browser visibility waits; active effort unknown.", "evidence": "Request and final visible acceptance timestamps in interactive-canvas-workflow.md." },
+        { "metricId": "outcome-and-quality", "value": "26 tests pass with 100% all-four coverage for changed production modules; client build passes. Visible desktop verifies connection creation, line ink, labels, endpoint movement, explicit self/duplicate messages, cancellation and incident cleanup. Visible 320px/380px checks verify matching backing, horizontal fit and controls reachable above toolbar at page bottom; clock continues and real connection removal works. Test-source check has unrelated errors but no canvas diagnostics. Trial slice 2 records test-caught production cleanup correction, test expectation corrections and browser friction. Follow-up usability unknown.", "evidence": "interactive-canvas-workflow.md slice 4 acceptance and checklist trial; Jest, client build, type diagnostics and browser measurements." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-diagram-multiple-parts",
       "title": "Arrange and remove multiple canvas sketch parts",
       "beneficiary": "DevEnv developer sketching several system parts",

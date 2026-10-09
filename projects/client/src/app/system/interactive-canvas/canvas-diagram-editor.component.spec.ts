@@ -28,6 +28,8 @@ class MockCanvas implements ICanvas {
     draws: [string, number, number][] = [];
     boxes: number[][] = [];
     borders: number[] = [];
+    paths: number[][][] = [];
+    operations: string[] = [];
     captured: number[] = [];
     element: HTMLCanvasElement | undefined;
     private render: Parameters<ICanvas['initialize']>[1] | undefined;
@@ -35,9 +37,14 @@ class MockCanvas implements ICanvas {
     private readonly context = {
         fillText: (text: string, x: number, y: number) => { this.draws.push([text, x, y]); },
         strokeRect: (x: number, y: number, width: number, height: number) => {
+            this.operations.push('box');
             this.boxes.push([x, y, width, height]);
             this.borders.push(this.context.lineWidth);
         },
+        beginPath: () => { this.paths.push([]); },
+        moveTo: (x: number, y: number) => { this.paths.at(-1)?.push([x, y]); },
+        lineTo: (x: number, y: number) => { this.paths.at(-1)?.push([x, y]); },
+        stroke: () => { this.operations.push('line'); },
         textAlign: 'center' as const,
         textBaseline: 'middle' as const,
         font: '',
@@ -84,6 +91,159 @@ describe('CanvasDiagramEditor', () => {
 
     afterEach(() => {
         TestBed.resetTestingModule();
+    });
+
+    it('connects two selected endpoints without starting a destination drag', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.addPart();
+        editor.addPart();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        canvas.dispatchEvent(pointer('pointerup', 130, 80, 1));
+        fixture.detectChanges();
+        const connect: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Connect selected part"]');
+        connect.click();
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        expect(editor.connections).toHaveLength(1);
+        expect(editor.connections[0].first).toBe(editor.parts[0]);
+        expect(editor.connections[0].second).toBe(editor.parts[1]);
+        canvas.dispatchEvent(pointer('pointermove', 200, 150, 1));
+        expect(editor.parts[1].position).toEqual({ x: 48, y: 48 });
+    });
+
+    it('reports invalid endpoints and duplicate undirected pairs, retains empty-click mode, and cancels explicitly', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        editor.startConnection();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('Select a part');
+        editor.addPart();
+        editor.addPart();
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        canvas.dispatchEvent(pointer('pointerup', 130, 80, 1));
+        editor.startConnection();
+        canvas.dispatchEvent(pointer('pointerdown', 102, 52, 1));
+        expect(editor.connectionSource).toBe(editor.parts[0]);
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('different part');
+        expect(editor.connections).toHaveLength(0);
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointerup', 160, 110, 1));
+        editor.startConnection();
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('already connected');
+        expect(editor.connections).toHaveLength(1);
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('different part');
+        const cancel: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Cancel connection"]');
+        cancel.click();
+        expect(editor.connectionSource).toBeUndefined();
+        editor.startConnection();
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        fixture.detectChanges();
+        expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain('already connected');
+    });
+
+    it('edits labels and removes connections through HTML controls, and removes incident connections with a part', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.addPart();
+        editor.addPart();
+        editor.addPart();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        const select = (x: number, y: number) => {
+            canvas.dispatchEvent(pointer('pointerdown', x, y, 1));
+            canvas.dispatchEvent(pointer('pointerup', x, y, 1));
+        };
+        select(130, 80);
+        editor.startConnection();
+        select(160, 110);
+        const firstId = editor.connections[0].id;
+        fixture.detectChanges();
+        const label: HTMLInputElement = fixture.nativeElement.querySelector('[aria-label="Connection label"]');
+        label.value = 'uses';
+        label.dispatchEvent(new Event('input'));
+        expect(editor.connections[0].label).toBe('uses');
+        editor.renamePart('Client sketch');
+        expect(editor.connections).toHaveLength(1);
+        const remove: HTMLButtonElement = fixture.nativeElement.querySelector('[aria-label="Remove connection"]');
+        remove.click();
+        expect(editor.connections).toHaveLength(0);
+        select(130, 80);
+        editor.startConnection();
+        select(160, 110);
+        expect(editor.connections[0].id).toBeGreaterThan(firstId);
+        select(130, 80);
+        editor.startConnection();
+        select(185, 135);
+        editor.removeConnection(editor.connections[1]);
+        expect(editor.connections).toHaveLength(1);
+        select(130, 80);
+        editor.startConnection();
+        select(185, 135);
+        select(160, 110);
+        editor.startConnection();
+        select(185, 135);
+        select(130, 80);
+        editor.startConnection();
+        editor.removeSelectedPart();
+        expect(editor.connectionSource).toBeUndefined();
+        expect(editor.connections).toHaveLength(1);
+        expect(editor.connections[0].first).toBe(editor.parts[0]);
+        expect(editor.connections[0].second).toBe(editor.parts[1]);
+    });
+
+    it('draws labelled connections before boxes and follows moved endpoint positions', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.addPart();
+        editor.addPart();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        canvas.dispatchEvent(pointer('pointerup', 130, 80, 1));
+        editor.startConnection();
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        editor.renameConnection(editor.connections[0], 'uses');
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointermove', 460, 110, 1));
+        canvas.dispatchEvent(pointer('pointerup', 460, 110, 1));
+        surface.paint();
+        expect(surface.operations.slice(-3)).toEqual(['line', 'box', 'box']);
+        expect(surface.paths.at(-1)).toEqual([[204, 64 + 90 * 24 / 324], [348, 88 - 90 * 24 / 324]]);
+        expect(surface.draws).toContainEqual(['uses', 276, 66]);
+    });
+
+    it('renders aligned and coincident endpoint positions without non-finite coordinates', () => {
+        const fixture = TestBed.createComponent(CanvasDiagramEditor);
+        fixture.detectChanges();
+        const editor = fixture.componentInstance;
+        editor.addPart();
+        editor.addPart();
+        const canvas: HTMLCanvasElement = fixture.nativeElement.querySelector('canvas');
+        canvas.dispatchEvent(pointer('pointerdown', 130, 80, 1));
+        canvas.dispatchEvent(pointer('pointerup', 130, 80, 1));
+        editor.startConnection();
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointerdown', 160, 110, 1));
+        canvas.dispatchEvent(pointer('pointermove', 136, 310, 1));
+        surface.paint();
+        expect(surface.paths.at(-1)).toEqual([[114, 104], [114, 248]]);
+        canvas.dispatchEvent(pointer('pointermove', 136, 86, 1));
+        surface.paint();
+        expect(surface.paths.at(-1)).toEqual([[114, 64], [114, 64]]);
+        canvas.dispatchEvent(pointer('pointermove', 436, 86, 1));
+        surface.paint();
+        expect(surface.paths.at(-1)).toEqual([[204, 64], [324, 64]]);
     });
 
     it('supplies centered clock content and invalidates it once per second', () => {

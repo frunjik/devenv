@@ -16,6 +16,13 @@ interface CanvasDrag {
     offset: { x: number; y: number };
 }
 
+interface SketchConnection {
+    readonly id: number;
+    first: SketchPart;
+    second: SketchPart;
+    label: string;
+}
+
 @Component({
     selector: 'app-canvas-diagram-editor',
     standalone: true,
@@ -31,6 +38,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private readonly surface = inject(CANVAS);
     parts: SketchPart[] = [];
     selectedPart: SketchPart | undefined;
+    connections: SketchConnection[] = [];
+    connectionSource: SketchPart | undefined;
+    connectionMessage = '';
+    private nextConnectionId = 1;
     private nextPartId = 1;
     private drag: CanvasDrag | undefined;
 
@@ -58,6 +69,30 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         const part = [...this.parts].reverse().find(candidate =>
             point.x >= candidate.position.x && point.x <= candidate.position.x + 180
             && point.y >= candidate.position.y && point.y <= candidate.position.y + 80);
+        if (this.connectionSource) {
+            if (!part) {
+                return;
+            }
+            if (part === this.connectionSource) {
+                this.connectionMessage = 'Choose a different part.';
+                return;
+            }
+            if (this.connections.some(connection =>
+                (connection.first === this.connectionSource && connection.second === part)
+                || (connection.second === this.connectionSource && connection.first === part))) {
+                this.connectionMessage = 'These parts are already connected.';
+                return;
+            }
+            this.connections.push({
+                id: this.nextConnectionId++,
+                first: this.connectionSource,
+                second: part,
+                label: '',
+            });
+            this.cancelConnection();
+            this.surface.requestDraw();
+            return;
+        }
         this.selectedPart = part;
         if (part) {
             this.surface.capturePointer(event.pointerId);
@@ -76,6 +111,31 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         }
     }
 
+    startConnection(): void {
+        if (!this.selectedPart) {
+            this.connectionMessage = 'Select a part before connecting.';
+            return;
+        }
+        this.drag = undefined;
+        this.connectionSource = this.selectedPart;
+        this.connectionMessage = 'Click a different part to connect, or Cancel.';
+    }
+
+    cancelConnection(): void {
+        this.connectionSource = undefined;
+        this.connectionMessage = '';
+    }
+
+    renameConnection(connection: SketchConnection, label: string): void {
+        connection.label = label;
+        this.surface.requestDraw();
+    }
+
+    removeConnection(connection: SketchConnection): void {
+        this.connections = this.connections.filter(candidate => candidate !== connection);
+        this.surface.requestDraw();
+    }
+
     renamePart(label: string): void {
         if (this.selectedPart) {
             this.selectedPart.label = label;
@@ -85,6 +145,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     removeSelectedPart(): void {
         if (this.selectedPart) {
+            const removed = this.selectedPart;
+            this.connections = this.connections.filter(connection =>
+                connection.first !== removed && connection.second !== removed);
+            this.cancelConnection();
             this.parts = this.parts.filter(part => part !== this.selectedPart);
             this.selectedPart = undefined;
             this.drag = undefined;
@@ -115,6 +179,20 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             width / 2,
             height / 2,
         );
+        for (const connection of this.connections) {
+            const first = { x: connection.first.position.x + 90, y: connection.first.position.y + 40 };
+            const second = { x: connection.second.position.x + 90, y: connection.second.position.y + 40 };
+            const dx = second.x - first.x;
+            const dy = second.y - first.y;
+            const scale = dx === 0 && dy === 0 ? 0 : Math.min(90 / Math.abs(dx), 40 / Math.abs(dy));
+            context.lineWidth = 1;
+            context.beginPath();
+            context.moveTo(first.x + dx * scale, first.y + dy * scale);
+            context.lineTo(second.x - dx * scale, second.y - dy * scale);
+            context.stroke();
+            context.font = '14px sans-serif';
+            context.fillText(connection.label, (first.x + second.x) / 2, (first.y + second.y) / 2 - 10);
+        }
         for (const part of this.parts) {
             const { x, y } = part.position;
             context.lineWidth = part === this.selectedPart ? 3 : 1;

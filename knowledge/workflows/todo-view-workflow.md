@@ -17,6 +17,15 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Expanded evaluation hierarchy
+
+- User refinement: expanded context and timing reuse the header grid. Left fields align with Title; right fields start at Status and span the remaining width. Evidence aligns with Title; narrow layout still stacks without overflow.
+- User follow-up: Measures and evidence is a nested native disclosure, collapsed by default. Existing measures table remains inside; scope outer summary grid/indicator to direct children so nested summaries retain their native marker. Observed nested-disclosure Red before implementation; no domain/Type changes.
+- Nested disclosure verified: seven tests, 100% all-four component coverage, test-source type-check, client build and diagnostics pass. Browser Enter expands/collapses evidence independently; parent remains open and nested summary retains list-item display. No remaining cleanup; changes uncommitted.
+- User requested larger labels with explanatory values beneath in expanded evaluations. Screenshot shows dense inline label/value paragraphs and long lines. Use semantic definition lists, larger context labels, bounded text measure and responsive two-column grouping. Timestamps are a quieter separated group; measures/evidence has a clear heading. Preserve compact summary rows, palette, all data and disclosure behavior.
+- Initial labelled-field test failed before implementation, but its empty metric/measure lists were invalid under the dataset validator, so this was not a sound behavior-specific Red. Corrected the boundary fixture to include a valid metric and corresponding measure before final verification. Reuse WorkEvaluation fields unchanged; no new Type, domain meaning or explanatory claims added.
+- Verified seven tests with 100% all-four component coverage, test-source type-check, client build and diagnostics. Running-page checks confirm 18px labels above values, two context columns at 1280px and one at 320px, 305px document width at 320px and keyboard expansion. No further Type cleanup or refactoring; changes uncommitted.
+
 ### Table-like evaluation rows
 
 - User chose table-like native expandable rows rather than a semantic table rewrite: shared Title/Status/Duration header, no card outlines, tighter spacing and horizontal separators. Keep native disclosure semantics and evidence. Hide the desktop column header when fields stack on narrow screens.

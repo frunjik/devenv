@@ -40,30 +40,57 @@
                     <ng-template #unfinishedDuration>—</ng-template>
                 </span>
             </summary>
-            <p><strong>Beneficiary:</strong> {{ evaluation.beneficiary }}</p>
-            <p><strong>Intended outcome:</strong> {{ evaluation.intendedOutcome }}</p>
-            <p><strong>Success condition:</strong> {{ evaluation.successCondition }}</p>
-            <p><strong>Baseline:</strong> {{ evaluation.baseline }}</p>
-            <p><strong>Started:</strong> {{ evaluation.startedAt ?? 'Unknown' }}</p>
-            <p><strong>Completed:</strong> {{ evaluation.completedAt ?? 'Unknown' }}</p>
-            <div class="table-scroll">
-                <table>
-                    <caption>Measures for {{ evaluation.title }}</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col">Metric ID</th>
-                            <th scope="col">Observed value</th>
-                            <th scope="col">Evidence</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let measure of evaluation.measures">
-                            <th scope="row">{{ measure.metricId }}</th>
-                            <td>{{ measure.value ?? 'Unknown' }}</td>
-                            <td>{{ measure.evidence ?? 'Unknown' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="evaluation-detail">
+                <dl class="evaluation-context">
+                    <div>
+                        <dt>Beneficiary</dt>
+                        <dd>{{ evaluation.beneficiary }}</dd>
+                    </div>
+                    <div>
+                        <dt>Intended outcome</dt>
+                        <dd>{{ evaluation.intendedOutcome }}</dd>
+                    </div>
+                    <div>
+                        <dt>Success condition</dt>
+                        <dd>{{ evaluation.successCondition }}</dd>
+                    </div>
+                    <div>
+                        <dt>Baseline</dt>
+                        <dd>{{ evaluation.baseline }}</dd>
+                    </div>
+                </dl>
+                <dl class="evaluation-timing">
+                    <div>
+                        <dt>Started</dt>
+                        <dd>{{ evaluation.startedAt ?? 'Unknown' }}</dd>
+                    </div>
+                    <div>
+                        <dt>Completed</dt>
+                        <dd>{{ evaluation.completedAt ?? 'Unknown' }}</dd>
+                    </div>
+                </dl>
+                <details class="evaluation-evidence">
+                    <summary><h3>Measures and evidence</h3></summary>
+                    <div class="table-scroll">
+                        <table>
+                            <caption>Measures for {{ evaluation.title }}</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Metric ID</th>
+                                    <th scope="col">Observed value</th>
+                                    <th scope="col">Evidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let measure of evaluation.measures">
+                                    <th scope="row">{{ measure.metricId }}</th>
+                                    <td>{{ measure.value ?? 'Unknown' }}</td>
+                                    <td>{{ measure.evidence ?? 'Unknown' }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
             </div>
         </details>
     </ng-container>

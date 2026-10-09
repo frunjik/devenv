@@ -68,6 +68,37 @@ describe('WorkflowEvaluationsComponent', () => {
         ]);
     });
 
+    it('pairs expanded field labels with their explanatory values', () => {
+        http.expectOne('http://localhost:3000/files?path=knowledge\\workflows\\devenv-value-evaluation.json')
+            .flush({ data: JSON.stringify({
+                schemaVersion: 1, metrics: [{
+                    id: 'delivery-flow-and-effort', name: 'Delivery flow and effort',
+                    definition: 'Record elapsed time and active effort separately.',
+                    interpretation: 'Do not infer effort from tool runtime.',
+                }], evaluations: [{
+                    id: 'diagram-movement', title: 'Diagram movement',
+                    beneficiary: 'Diagram editor user', intendedOutcome: 'Move diagram items.',
+                    successCondition: 'Dragged position is saved.', baseline: 'Movement did not exist.',
+                    startedAt: null, completedAt: null,
+                    measures: [{ metricId: 'delivery-flow-and-effort', value: null, evidence: null }],
+                }],
+            }) });
+        fixture.detectChanges();
+        const host: HTMLElement = fixture.nativeElement;
+        const fields = Array.from(host.querySelectorAll('.evaluation-context > div, .evaluation-timing > div'));
+        expect(fields.map(field => [
+            field.querySelector('dt')?.textContent?.trim(), field.querySelector('dd')?.textContent?.trim(),
+        ])).toEqual([
+            ['Beneficiary', 'Diagram editor user'], ['Intended outcome', 'Move diagram items.'],
+            ['Success condition', 'Dragged position is saved.'], ['Baseline', 'Movement did not exist.'],
+            ['Started', 'Unknown'], ['Completed', 'Unknown'],
+        ]);
+        expect(host.querySelector('.evaluation-evidence h3')?.textContent).toBe('Measures and evidence');
+        const evidence = host.querySelector('details.evaluation-evidence') as HTMLDetailsElement;
+        expect(evidence.open).toBe(false);
+        expect(evidence.querySelector('summary h3')?.textContent).toBe('Measures and evidence');
+    });
+
     it('shows elapsed duration for completed evaluations only', () => {
         const evaluation = (
             id: string,

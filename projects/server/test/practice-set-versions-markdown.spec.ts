@@ -30,6 +30,29 @@ const registryExample = {
             deactivationEvidence: null,
         },
     ],
+    customizations: [
+        {
+            kind: 'agent',
+            path: '.github/agents/example.agent.md',
+            version: 1,
+            summary: 'Introduced the example role.',
+            sourceCommit: 'c'.repeat(40),
+        },
+        {
+            kind: 'agent',
+            path: '.github/agents/example.agent.md',
+            version: 2,
+            summary: 'Added one review checkpoint.',
+            sourceCommit: 'd'.repeat(40),
+        },
+        {
+            kind: 'skill',
+            path: '.agents/skills/example/SKILL.md',
+            version: 1,
+            summary: 'Introduced the example procedure.',
+            sourceCommit: 'e'.repeat(40),
+        },
+    ],
 };
 
 describe('practice set version Markdown', () => {
@@ -47,6 +70,12 @@ describe('practice set version Markdown', () => {
         expect(markdown).toContain('## Version 2');
         expect(markdown).toContain('**Used for:** 4 days (2026-01-05T00:00:00Z to 2026-01-09T00:00:00Z)');
         expect(markdown).toContain('**Activation evidence:** Started');
+        expect(markdown).toContain('## Agent and skill versions');
+        expect(markdown).toContain('### `.github/agents/example.agent.md`');
+        expect(markdown).toContain('**Current version:** 2');
+        expect(markdown).toContain('- **v1:** Introduced the example role');
+        expect(markdown).toContain('- **v2:** Added one review checkpoint');
+        expect(markdown).toContain('### `.agents/skills/example/SKILL.md`');
     });
 
     it('does not claim an in-use duration when dates or activation are unknown', () => {
@@ -175,6 +204,71 @@ describe('practice set version Markdown', () => {
             }],
         }, 'deactivationEvidence must be non-empty text'],
         [{ ...registryExample, unexpected: true }, 'expected fields'],
+        [{
+            ...registryExample,
+            customizations: [registryExample.customizations[0], registryExample.customizations[0]],
+        }, 'customization versions must be sequential and unique'],
+        [{
+            ...registryExample,
+            customizations: [registryExample.customizations[0], {
+                ...registryExample.customizations[1],
+                version: 3,
+            }],
+        }, 'customization versions must be sequential and unique'],
+        [{
+            ...registryExample,
+            customizations: [{
+                ...registryExample.customizations[0],
+                kind: 'skill',
+            }],
+        }, 'customization path does not match kind'],
+        [{
+            ...registryExample,
+            customizations: [{
+                ...registryExample.customizations[0],
+                path: '.github/agents/example.agent.md',
+                version: 1,
+            }, {
+                ...registryExample.customizations[0],
+                path: '.github/agents/example.agent.md',
+                version: 1,
+            }],
+        }, 'customization versions must be sequential and unique'],
+        [{
+            ...registryExample,
+            customizations: [{
+                ...registryExample.customizations[0],
+                sourceCommit: 'invalid',
+            }],
+        }, 'customization sourceCommit must be a full Git commit hash'],
+        [{
+            ...registryExample,
+            customizations: [{
+                ...registryExample.customizations[0],
+                summary: ' ',
+            }],
+        }, 'customization summary must be non-empty text'],
+        [{
+            ...registryExample,
+            customizations: [{
+                ...registryExample.customizations[0],
+                kind: 'other',
+            }],
+        }, 'customization kind must be agent or skill'],
+        [{
+            ...registryExample,
+            customizations: [],
+        }, 'expected a non-empty customizations array'],
+        [{
+            ...registryExample,
+            customizations: [{
+                kind: 'agent',
+                path: '.github/agents/example.agent.md',
+                version: 0,
+                summary: 'Bad version.',
+                sourceCommit: 'f'.repeat(40),
+            }],
+        }, 'customization versions must be positive safe integers'],
     ])('rejects invalid registry data: %s', (invalid: object, message: string) => {
         expect(() => renderMarkdown(invalid)).toThrow(message);
     });

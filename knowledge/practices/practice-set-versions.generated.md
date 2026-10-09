@@ -5,7 +5,7 @@ Regenerate with `npm run generate:practice-set-versions:markdown` using [the reg
 
 **Scope:** Repository\-controlled development rules and practices only\. Instructions supplied by the user, organization, platform, or runtime are outside this registry unless explicitly included\.
 
-**Versioning policy:** Use sequential positive integers\. Commit practice\-set changes first, then add one version entry in a follow\-up commit pinned to that prior practice\-change commit; never store a commit's own hash\. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates\.
+**Versioning policy:** Use sequential positive integers\. For each agent or skill, record its tracked revisions by kind and repository path, pinning each revision to the commit containing its content\. Version 1 establishes the initial tracked baseline, not necessarily the artifact's historical introduction\. Commit practice\-set changes first, then add one set\-level version entry in a follow\-up commit pinned to that prior practice\-change commit; never store a commit's own hash\. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates\.
 
 **Latest recorded version:** **2**
 **Active version:** **Not verified**
@@ -32,3 +32,47 @@ Activation dates are recorded only when verified; Git commit dates do not establ
 **Used for:** Unknown (activation dates not fully recorded)
 **Activation evidence:** Not recorded
 **Deactivation evidence:** Not recorded
+
+## Agent and skill versions
+
+### `.github/agents/demolition-worker.agent.md`
+
+**Kind:** agent
+**Current version:** 1
+- **v1:** Tracked baseline of the agent that checks references before removing explicitly selected targets\. (source commit: `6df4051e0a7886dfd16c7d16fd7d74be8ad6066e`)
+
+### `.github/agents/diligent-coder.agent.md`
+
+**Kind:** agent
+**Current version:** 1
+- **v1:** Tracked baseline of the coding agent coordinating scoped implementation, TDD, Type Detector reviews, and verification\. (source commit: `47fced67cde5b94c813559090dedb4d76c793938`)
+
+### `.agents/skills/domain-type-design/SKILL.md`
+
+**Kind:** skill
+**Current version:** 1
+- **v1:** Tracked baseline of the goal\-oriented domain type design workflow\. (source commit: `d7df187a133f9d174d08ed61e64d790a88abe5b9`)
+
+### `.agents/skills/tdd/SKILL.md`
+
+**Kind:** skill
+**Current version:** 1
+- **v1:** Tracked baseline of the Red\-Green\-Refactor workflow for production behavior changes\. (source commit: `47fced67cde5b94c813559090dedb4d76c793938`)
+
+### `.agents/skills/type-detector/SKILL.md`
+
+**Kind:** skill
+**Current version:** 1
+- **v1:** Tracked baseline of the evidence\-first review for Types, invariants, and refinements\. (source commit: `47fced67cde5b94c813559090dedb4d76c793938`)
+
+### `.agents/skills/typed-json-markdown/SKILL.md`
+
+**Kind:** skill
+**Current version:** 1
+- **v1:** Tracked baseline of the workflow for authoritative Typed JSON and generated Markdown views\. (source commit: `d7df187a133f9d174d08ed61e64d790a88abe5b9`)
+
+### `.agents/skills/ui-design-review/SKILL.md`
+
+**Kind:** skill
+**Current version:** 1
+- **v1:** Tracked baseline of the review\-only workflow for running user interfaces\. (source commit: `d7df187a133f9d174d08ed61e64d790a88abe5b9`)

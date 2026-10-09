@@ -24,9 +24,45 @@ function requireTimestamp(value, field) {
     }
 }
 
+function validateCustomizations(customizations) {
+    if (!Array.isArray(customizations) || customizations.length === 0) {
+        throw new Error('Invalid practice-set registry: expected a non-empty customizations array');
+    }
+
+    const latestByPath = new Map();
+    for (const customization of customizations) {
+        requireShape(customization, ['kind', 'path', 'version', 'summary', 'sourceCommit']);
+        if (customization.kind !== 'agent' && customization.kind !== 'skill') {
+            throw new Error('Invalid practice-set registry: customization kind must be agent or skill');
+        }
+        requireText(customization.path, 'customization path');
+        const expectedPath = customization.kind === 'agent'
+            ? /^\.github\/agents\/[^/]+\.agent\.md$/
+            : /^\.agents\/skills\/[^/]+\/SKILL\.md$/;
+        if (!expectedPath.test(customization.path)) {
+            throw new Error('Invalid practice-set registry: customization path does not match kind');
+        }
+        if (!Number.isSafeInteger(customization.version) || customization.version < 1) {
+            throw new Error('Invalid practice-set registry: customization versions must be positive safe integers');
+        }
+        requireText(customization.summary, 'customization summary');
+        if (typeof customization.sourceCommit !== 'string' || !/^[a-f0-9]{40}$/.test(customization.sourceCommit)) {
+            throw new Error('Invalid practice-set registry: customization sourceCommit must be a full Git commit hash');
+        }
+
+        const previousVersion = latestByPath.get(customization.path);
+        const expectedVersion = previousVersion ? previousVersion + 1 : 1;
+        if (customization.version !== expectedVersion) {
+            throw new Error('Invalid practice-set registry: customization versions must be sequential and unique');
+        }
+        latestByPath.set(customization.path, customization.version);
+    }
+}
+
 function validate(registry) {
     requireShape(registry, [
         'title', 'scope', 'versioningPolicy', 'latestVersion', 'activeVersion', 'asOf', 'versions',
+        'customizations',
     ]);
     requireText(registry.title, 'title');
     requireText(registry.scope, 'scope');
@@ -35,6 +71,7 @@ function validate(registry) {
     if (!Array.isArray(registry.versions) || registry.versions.length === 0) {
         throw new Error('Invalid practice-set registry: expected a non-empty versions array');
     }
+    validateCustomizations(registry.customizations);
 
     const versions = new Set();
     let highestVersion = 0;
@@ -145,6 +182,28 @@ function renderMarkdown(registry) {
             `**Activation evidence:** ${entry.activationEvidence ? escapeText(entry.activationEvidence) : 'Not recorded'}`,
             `**Deactivation evidence:** ${entry.deactivationEvidence ? escapeText(entry.deactivationEvidence) : 'Not recorded'}`,
         );
+    }
+    lines.push('', '## Agent and skill versions');
+    const customizationsByPath = new Map();
+    for (const customization of registry.customizations) {
+        if (!customizationsByPath.has(customization.path)) {
+            customizationsByPath.set(customization.path, []);
+        }
+        customizationsByPath.get(customization.path).push(customization);
+    }
+    for (const [path, versions] of customizationsByPath) {
+        lines.push(
+            '',
+            `### \`${path}\``,
+            '',
+            `**Kind:** ${versions[0].kind}`,
+            `**Current version:** ${versions[versions.length - 1].version}`,
+        );
+        for (const version of versions) {
+            lines.push(
+                `- **v${version.version}:** ${escapeText(version.summary)} (source commit: \`${version.sourceCommit}\`)`,
+            );
+        }
     }
     return `${lines.join('\n')}\n`;
 }

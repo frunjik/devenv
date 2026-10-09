@@ -100,6 +100,20 @@
     ]
   },
   {
+    "term": "Practice Customization Version",
+    "definitions": [
+      "A numbered designation for a tracked revision of one repository-controlled agent or skill, identified by its kind and path and pinned to the commit containing that content."
+    ],
+    "examples": [
+      "Practice Customization Version (Diligent Coder v1) identifies the agent content at commit 47fced67cde5b94c813559090dedb4d76c793938; it does not establish when the agent entered use.",
+      "Practice Set Version (DevEnv v2) identifies a combined repository-practice snapshot and is not the same as Diligent Coder v1."
+    ],
+    "domains": [
+      "DevEnv",
+      "Meta"
+    ]
+  },
+  {
     "term": "System",
     "definitions": [
       "A bounded set of interacting parts considered as a whole, defined by its purpose and observable behavior."

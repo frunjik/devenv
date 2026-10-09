@@ -1,7 +1,7 @@
 {
   "title": "Repository Practice Set History",
   "scope": "Repository-controlled development rules and practices only. Instructions supplied by the user, organization, platform, or runtime are outside this registry unless explicitly included.",
-  "versioningPolicy": "Use sequential positive integers. Commit practice-set changes first, then add one version entry in a follow-up commit pinned to that prior practice-change commit; never store a commit's own hash. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates.",
+  "versioningPolicy": "Use sequential positive integers. For each agent or skill, record its tracked revisions by kind and repository path, pinning each revision to the commit containing its content. Version 1 establishes the initial tracked baseline, not necessarily the artifact's historical introduction. Commit practice-set changes first, then add one set-level version entry in a follow-up commit pinned to that prior practice-change commit; never store a commit's own hash. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates.",
   "latestVersion": 2,
   "activeVersion": null,
   "asOf": null,
@@ -23,6 +23,57 @@
       "deactivatedAt": null,
       "activationEvidence": null,
       "deactivationEvidence": null
+    }
+  ],
+  "customizations": [
+    {
+      "kind": "agent",
+      "path": ".github/agents/demolition-worker.agent.md",
+      "version": 1,
+      "summary": "Tracked baseline of the agent that checks references before removing explicitly selected targets.",
+      "sourceCommit": "6df4051e0a7886dfd16c7d16fd7d74be8ad6066e"
+    },
+    {
+      "kind": "agent",
+      "path": ".github/agents/diligent-coder.agent.md",
+      "version": 1,
+      "summary": "Tracked baseline of the coding agent coordinating scoped implementation, TDD, Type Detector reviews, and verification.",
+      "sourceCommit": "47fced67cde5b94c813559090dedb4d76c793938"
+    },
+    {
+      "kind": "skill",
+      "path": ".agents/skills/domain-type-design/SKILL.md",
+      "version": 1,
+      "summary": "Tracked baseline of the goal-oriented domain type design workflow.",
+      "sourceCommit": "d7df187a133f9d174d08ed61e64d790a88abe5b9"
+    },
+    {
+      "kind": "skill",
+      "path": ".agents/skills/tdd/SKILL.md",
+      "version": 1,
+      "summary": "Tracked baseline of the Red-Green-Refactor workflow for production behavior changes.",
+      "sourceCommit": "47fced67cde5b94c813559090dedb4d76c793938"
+    },
+    {
+      "kind": "skill",
+      "path": ".agents/skills/type-detector/SKILL.md",
+      "version": 1,
+      "summary": "Tracked baseline of the evidence-first review for Types, invariants, and refinements.",
+      "sourceCommit": "47fced67cde5b94c813559090dedb4d76c793938"
+    },
+    {
+      "kind": "skill",
+      "path": ".agents/skills/typed-json-markdown/SKILL.md",
+      "version": 1,
+      "summary": "Tracked baseline of the workflow for authoritative Typed JSON and generated Markdown views.",
+      "sourceCommit": "d7df187a133f9d174d08ed61e64d790a88abe5b9"
+    },
+    {
+      "kind": "skill",
+      "path": ".agents/skills/ui-design-review/SKILL.md",
+      "version": 1,
+      "summary": "Tracked baseline of the review-only workflow for running user interfaces.",
+      "sourceCommit": "d7df187a133f9d174d08ed61e64d790a88abe5b9"
     }
   ]
 }

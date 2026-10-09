@@ -26,7 +26,7 @@ Browser verification: the existing client server still served old routes, so the
 - Keep the Workflow TODO List Markdown authoritative; derive JSON rather than maintaining a duplicate list.
 - The UI consumes that JSON. Do not display the unrelated commit-process KnowledgeStatements example as workflows.
 - Approved shared Type name: `WorkflowTodoList`, containing `workflows`.
-- Each workflow has `name`, `primaryWorkPurpose`, `status`, `resumeLabel`, `resumePath`, and `relatedConcern`. The view displays all fields. Status remains descriptive text, not a newly agreed lifecycle Type.
+- Each workflow has `name`, `primaryWorkPurpose`, `status`, `resumeLabel`, `resumePath`, and `relatedConcern`. The view displays the name, purpose, status, and related concern; resume references remain in the source/API but are not shown in the view. Status remains descriptive text, not a newly agreed lifecycle Type.
 - Concrete example: `TODO View (DevEnv system layer)`, `Pending`, `Starting checkpoint`, `./todo-view-workflow.md#checkpoint`, `Not assigned`.
 - The user approved a separate `Workflow TODO` toolbar link and a read-only table/document view, retaining the existing `TODO.md` link.
 - Resume buttons load the complete workflow Markdown document and display the checkpoint reference. They do not jump to a heading, edit, or switch workflows.
@@ -66,6 +66,8 @@ Runtime follow-up: `tsx watch` could not resolve the handler's runtime `@shared`
 
 **Architecture follow-up:** The server currently imports the shared validator directly from the shared source file. This is a compatibility workaround, not the desired package boundary. Improve server runtime module resolution so it can consume the supported `@shared` package entry point consistently in development and production, then remove the direct source-file import. Keep this separate from the JSON-authority migration.
 
-**Next:** Review the final diff, approve a commit subject, and commit only after that approval.
+**Follow-up:** The user requested removing `Resume reference` from the workflow view. The UI table now contains workflow, purpose, status, and related concern only; document-opening UI and its loading state were removed. Resume paths remain in the authoritative JSON and API for checkpoint navigation data, but are not presented by this view.
+
+**Next:** User review of the reduced workflow view.
 
 No global list authority remains in Markdown or API parsing. `WorkflowTodoList` is the already-approved shared Type name. `WorkflowWorkPurpose` has two constrained values; the record shapes remain inline rather than adding a separate row Type.

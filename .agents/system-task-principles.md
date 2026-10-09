@@ -229,6 +229,14 @@ These principles are active from their recorded date and apply to future work in
 - **Default format:** List every workflow name and status compactly, grouped by status where practical; include counts. Summarize the metric sample size, recorded-versus-unknown coverage, and material limitations without repeating every evaluation field. Expand to per-evaluation detail when requested or needed to explain a decision.
 - **Interpretation:** Connect an evaluation to a workflow only when the source explicitly supports that link. Keep workflow lifecycle status separate from measured outcomes: completion, activity, tests, or coverage alone do not prove value. Preserve unknowns as unknown and identify the source.
 
+### P-024 — Treat View Changes as Presentation-Only by Default
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction: "in general when i say change view i mean the presentation only not the underlying type"
+- **Applies to:** Requests to change a view or how information is presented.
+- **Rule:** Interpret a view change as presentation-only by default. Do not change underlying domain/shared/API Types or authoritative data unless the user separately requests that change.
+- **Practice:** For example, removing the resume-reference column from the Workflow TODO view does not remove `resumeLabel` or `resumePath` from the `WorkflowTodoList` API Type or authoritative JSON.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

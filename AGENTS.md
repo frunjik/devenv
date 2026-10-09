@@ -45,6 +45,7 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 
 - Prefer short, cohesive functions; split at meaningful functional boundaries rather than arbitrary line counts. Extract responsibilities that make sense on their own, avoid trivial forwarding helpers, and preserve behavior during refactoring. See P-018.
 - Inspect nearby components before editing. Angular components use external `.html` templates via `templateUrl` and external `.scss` styles via `styleUrl`, not inline `template` or `styles` in TypeScript. Existing inline templates/styles are not evidence of the preferred convention; migrate them only within agreed scope.
+- Treat requests to change a view as presentation-only by default: preserve underlying domain/shared/API Types and source data unless the user separately asks to change them. See P-024.
 - Reuse the shared palette variables in `projects/client/src/styles.scss` for matching visual roles instead of duplicating their color literals. Keep feature layouts and intentional color variants local.
 - Use the opt-in `.accent-card` class for matching dark card surfaces with an accent border; keep padding, corner radius, and layout in the component stylesheet.
 - Material meta toolbars opt into `.meta-toolbar` for their shared background and text colors through Material theme variables; keep layout, sizing, and responsive rules in the component stylesheet.

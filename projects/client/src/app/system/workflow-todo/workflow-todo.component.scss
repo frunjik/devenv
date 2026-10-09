@@ -9,10 +9,6 @@ th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); }
 th { color: var(--text-heading); }
 .active { border-left: 3px solid var(--border-accent); }
 .status { white-space: nowrap; }
-.resume-button { min-height: 44px; border: 1px solid var(--border-accent); border-radius: .4rem; padding: .5rem .75rem; background: transparent; color: var(--text-heading); font: inherit; cursor: pointer; white-space: nowrap; }
-.resume-button:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
-pre { white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--border-default); border-radius: .4rem; padding: 1rem; }
-.reference { overflow-wrap: anywhere; }
 .evaluation { margin-top: 2rem; }
 .work-evaluation { margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-default); border-radius: .4rem; }
 .work-evaluation h3 { color: var(--text-heading); }

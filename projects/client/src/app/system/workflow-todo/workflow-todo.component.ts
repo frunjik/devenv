@@ -16,15 +16,10 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
     workflows: WorkflowTodoList['workflows'] = [];
     loading = true;
     errorMessage = '';
-    documentLoading = false;
-    documentError = '';
-    documentText = '';
-    documentReference = '';
     evaluationDataset: WorkEvaluationDataset | null = null;
     evaluationLoading = false;
     evaluationError = '';
     private readonly subscriptions = new Subscription();
-    private documentSubscription = new Subscription();
 
     constructor(private readonly backend: BackendService) {}
 
@@ -43,28 +38,6 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
                 this.loading = false;
             },
         }));
-    }
-
-    openDocument(resumePath: string): void {
-        this.documentSubscription.unsubscribe();
-        this.documentReference = resumePath;
-        this.documentText = '';
-        this.documentError = '';
-        this.documentLoading = true;
-        const reference = resumePath.split('#')[0];
-        const filename = reference.startsWith('../practices/')
-            ? `knowledge\\${reference.slice(3).replace(/\//g, '\\')}`
-            : `knowledge\\workflows\\${reference.slice(2)}`;
-        this.documentSubscription = this.backend.loadFile(filename).subscribe({
-            next: text => {
-                this.documentText = text;
-                this.documentLoading = false;
-            },
-            error: (error: Error) => {
-                this.documentError = error.message;
-                this.documentLoading = false;
-            },
-        });
     }
 
     private loadEvaluationDataset(): void {
@@ -91,6 +64,5 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscriptions.unsubscribe();
-        this.documentSubscription.unsubscribe();
     }
 }

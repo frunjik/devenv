@@ -8,44 +8,38 @@
         <a mat-button routerLink="/system-plan">System plan</a>
         <a mat-button routerLink="/workflow-todo">Workflow TODO</a>
         <a mat-button routerLink="/workflow-evaluations">Evaluations</a>
-        <a mat-button routerLink="/browse">Browse</a>
+        <a mat-button routerLink="/terms">Terms</a>
+        <a mat-button routerLink="/glossary">Glossary</a>
+        <a mat-button routerLink="/diagram">Diagram</a>
+        <a mat-button routerLink="/interactive-canvas">Canvas</a>
         <button
             type="button"
             mat-button
-            class="more-navigation-button"
-            aria-controls="secondary-navigation"
-            [attr.aria-expanded]="isSecondaryNavigationExpanded"
-            (click)="toggleSecondaryNavigation()"
+            class="tools-navigation-button"
+            [matMenuTriggerFor]="toolsMenu"
         >
-            More
+            Tools
         </button>
-        <div
-            id="secondary-navigation"
-            class="secondary-links"
-            [class.is-expanded]="isSecondaryNavigationExpanded"
-        >
-            <a mat-button routerLink="/tests">TEST</a>
-            <a mat-button routerLink="/terms">terms</a>
-            <a mat-button routerLink="/glossary">glossary</a>
-            <a mat-button routerLink="/diagram">Diagram</a>
-            <a mat-button routerLink="/interactive-canvas">Canvas</a>
-            <a mat-button routerLink="/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
-            <a mat-button routerLink="/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
-            <a mat-button routerLink="/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
-            <a mat-button routerLink="/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html'}">EDIT-MENU</a>
-            <a mat-button routerLink="/git/log">Git log</a>
-            <button type="button" mat-button class="clone-button" (click)="cloneRequested.emit()">
-                Clone DevEnv
-            </button>
-            <button
-                type="button"
-                mat-button
-                class="commit-button"
-                (click)="commitRequested.emit()"
-                [disabled]="isCommitting"
-            >
-                {{ isCommitting ? 'Committing…' : 'Commit changes' }}
-            </button>
-        </div>
     </nav>
+    <mat-menu #toolsMenu="matMenu" xPosition="before">
+        <a mat-menu-item routerLink="/browse">Browse</a>
+        <a mat-menu-item routerLink="/tests">Tests</a>
+        <a mat-menu-item routerLink="/browse" [queryParams]="{path: './projects/server/src/lib', file: ''}">Server</a>
+        <a mat-menu-item routerLink="/browse" [queryParams]="{path: './projects/client/src/app', file: ''}">Client</a>
+        <a mat-menu-item routerLink="/browse" [queryParams]="{path: '', file: 'TODO.md'}">TODO</a>
+        <a mat-menu-item routerLink="/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html'}">Edit menu</a>
+        <a mat-menu-item routerLink="/git/log">Git log</a>
+        <button type="button" mat-menu-item class="clone-button" (click)="cloneRequested.emit()">
+            Clone DevEnv
+        </button>
+        <button
+            type="button"
+            mat-menu-item
+            class="commit-button"
+            (click)="commitRequested.emit()"
+            [disabled]="isCommitting"
+        >
+            {{ isCommitting ? 'Committing…' : 'Commit changes' }}
+        </button>
+    </mat-menu>
 </mat-toolbar>

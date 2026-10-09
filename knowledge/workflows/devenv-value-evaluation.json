@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "toolbar-process-links-and-tools-menu",
+      "title": "Separate main process links from toolbar tools",
+      "beneficiary": "DevEnv contributors navigating main processes",
+      "intendedOutcome": "Keep main-process navigation visible while placing supporting tools in a final dropdown.",
+      "successCondition": "System plan, Workflow TODO, Evaluations, Terms, Glossary, Diagram and Canvas remain direct links. A final Tools dropdown contains Browse, Tests, Server, Client, TODO, Edit menu, Git log, Clone DevEnv and Commit changes. Existing routes, query parameters, actions and committing state remain intact; keyboard and narrow-screen navigation work without page overflow.",
+      "baseline": "All secondary links display inline on desktop; a narrow-screen More button expands them in place.",
+      "startedAt": "2026-10-10T01:27:24.110+02:00",
+      "completedAt": "2026-10-10T01:30:37.535+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved seven direct process links and a final Tools dropdown; tracking and metrics opted in.", "evidence": "todo-view-workflow.md process navigation checkpoint." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 13.425 seconds wall-clock from request to verification, including grouping approval and continuation gate. Active effort and waiting duration unknown.", "evidence": "Recorded request and verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Four navigation tests pass with 100% statement, branch, function and line component coverage. Test-source type-check, client build and diagnostics pass. Browser at 1280/768/320px confirms all nine dropdown items, Enter opening, initial Browse focus, ArrowDown focus on Tests, Escape closing and focus restoration to Tools, with no page overflow. Routes/query parameters and clone/commit events including disabled commit are verified in boundary tests. Subsequent user-requested styling refinement right-aligns Tools: browser measures zero gap to the navigation right edge at all three widths, dropdown fits the viewport, and a fresh client build and diagnostics pass. This follow-up is outside the original elapsed interval; its effort is unmeasured. User usefulness and follow-up defects unobserved.", "evidence": "todo-view-workflow.md process navigation checkpoint; focused Jest, TypeScript/build and browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "toolbar-status-order-and-workflow-alignment",
       "title": "Right-align active workflow and move TDD before Tests",
       "beneficiary": "DevEnv contributors scanning toolbar status",

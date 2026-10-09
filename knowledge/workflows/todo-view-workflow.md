@@ -17,6 +17,16 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Main process navigation and Tools dropdown
+
+- Same-task styling refinement: right-align Tools with an automatic inline-start margin, preserving final DOM order and Material dropdown behavior. Browser measures zero gap to navigation right edge at 1280/768/320px; dropdown remains within viewport and no document overflow. Fresh client build, diagnostics and diff check pass. Append follow-up quality evidence to the opted-in evaluation without altering original completion/elapsed timestamps; follow-up effort unmeasured.
+- Tracking in TODO View and WorkEvaluation explicitly approved. Keep System plan, Workflow TODO, Evaluations, Terms, Glossary, Diagram and Canvas visible. User approved Tools as the final dropdown label; all other existing toolbar routes/actions move into it.
+- Preserve routes, query parameters, clone/commit events and disabled committing state. Use Angular Material menu for focus, keyboard and overlay lifecycle rather than another custom boolean. No new domain Type warranted for a fixed presentation grouping.
+- Baseline recorded in toolbar-process-links-and-tools-menu before implementation. Next: failing grouping/menu tests, minimal implementation, coverage/build and desktop/narrow keyboard checks.
+- Red observed against old grouping and missing dropdown. Green: four focused navigation tests pass with 100% statement/branch/function/line component coverage; existing route parameters, clone/commit events and disabled state verified. Material menu replaces the custom expansion boolean. Paused at continuation gate; phase cleared. Next: formatting cleanup, client/test-source type checks, browser keyboard/responsive checks and completion metrics.
+- User approved continuation. Refactor tidied markup and removed obsolete expansion CSS; final four tests retain 100% all-four coverage, test-source type-check and client build pass. Browser at 1280/768/320px verifies all nine Tools items, Enter opening, initial/ArrowDown focus, Escape closing and trigger focus restoration with no page overflow. Original browser share expired; verification used a new running-page tab. Diagnostics/diff check pass.
+- WorkEvaluation completed at 01:30:37.535+02:00: 3m 13.425s wall-clock including approvals, not effort. Decision latency, active effort, waiting duration, overhead and user impact remain unknown. Phase cleared; no new domain Types or remaining refactoring justified. Changes uncommitted; next user review or requested commit.
+
 ### Toolbar global-grid alignment
 
 - User opted into a separate refinement WorkEvaluation linked to TODO View. Record toolbar-status-order-and-workflow-alignment retrospectively; preserve the completed toolbar-global-grid-alignment record. Known request/build timestamps give 1m 27.843s wall-clock, not effort. Decision latency, active effort and process overhead remain unknown.

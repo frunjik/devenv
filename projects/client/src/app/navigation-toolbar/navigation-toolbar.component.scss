@@ -53,12 +53,8 @@ nav {
     }
 }
 
-.more-navigation-button {
-    display: none;
-}
-
-.secondary-links {
-    display: contents;
+.tools-navigation-button {
+    margin-inline-start: auto;
 }
 
 @media (max-width: 42rem) {
@@ -83,21 +79,6 @@ nav {
         button {
             --mat-button-text-container-height: 44px;
             --mat-button-text-touch-target-display: block;
-        }
-    }
-
-    .more-navigation-button {
-        display: inline-flex;
-    }
-
-    .secondary-links {
-        display: none;
-
-        &.is-expanded {
-            display: flex;
-            flex: 1 0 100%;
-            flex-wrap: wrap;
-            min-width: 0;
         }
     }
 }

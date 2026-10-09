@@ -2,96 +2,87 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import type { ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { NavigationToolbarComponent } from './navigation-toolbar.component';
 
 describe('NavigationToolbarComponent', () => {
     let fixture: ComponentFixture<NavigationToolbarComponent>;
+    let overlay: HTMLElement;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [NavigationToolbarComponent],
-            providers: [provideRouter([])],
+            providers: [provideRouter([]), provideNoopAnimations()],
         });
         fixture = TestBed.createComponent(NavigationToolbarComponent);
         fixture.componentInstance.host = 'http://host/';
         fixture.detectChanges();
+        overlay = TestBed.inject(OverlayContainer).getContainerElement();
     });
 
-    it('shows the host and only host-level links', () => {
-        const text = fixture.nativeElement.textContent as string;
+    async function openTools(): Promise<void> {
+        fixture.nativeElement.querySelector('.tools-navigation-button').click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+    }
 
+    it('shows the host, seven process links and Tools as the final navigation item', () => {
         expect(fixture.nativeElement.querySelector('.meta-badge').textContent.trim()).toBe('DevEnv');
         expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
-        expect(text).not.toContain('Meta');
-        expect(text).toContain('glossary');
-        expect(fixture.nativeElement.querySelector('a[href="/workflow-todo"]').textContent.trim()).toBe('Workflow TODO');
-        expect(fixture.nativeElement.querySelector('a[href="/workflow-evaluations"]').textContent.trim())
-            .toBe('Evaluations');
-        expect(fixture.nativeElement.querySelector('a[href="/browse?path=&file=TODO.md"]')).not.toBeNull();
-        const systemPlanLink = fixture.nativeElement.querySelector('a[href="/system-plan"]') as HTMLAnchorElement;
-        expect(systemPlanLink).not.toBeNull();
-        expect(systemPlanLink.textContent?.trim()).toBe('System plan');
+        const nav = fixture.nativeElement.querySelector('nav') as HTMLElement;
+        expect(Array.from(nav.querySelectorAll('a')).map(link => [link.textContent?.trim(), link.getAttribute('href')]))
+            .toEqual([
+                ['System plan', '/system-plan'],
+                ['Workflow TODO', '/workflow-todo'],
+                ['Evaluations', '/workflow-evaluations'],
+                ['Terms', '/terms'],
+                ['Glossary', '/glossary'],
+                ['Diagram', '/diagram'],
+                ['Canvas', '/interactive-canvas'],
+            ]);
+        expect(nav.lastElementChild?.textContent?.trim()).toBe('Tools');
+        expect(overlay.querySelector('[role="menu"]')).toBeNull();
     });
 
-    it('links to the diagram page from the secondary navigation', () => {
-        const link = fixture.nativeElement.querySelector('#secondary-navigation a[href="/diagram"]') as HTMLAnchorElement;
-
-        expect(link).not.toBeNull();
-        expect(link.textContent?.trim()).toBe('Diagram');
+    it('opens a dropdown with every supporting route and preserved query parameters', async () => {
+        await openTools();
+        expect(overlay.querySelector('[role="menu"]')).not.toBeNull();
+        expect(Array.from(overlay.querySelectorAll('a')).map(link => link.getAttribute('href'))).toEqual([
+            '/browse',
+            '/tests',
+            '/browse?path=.%2Fprojects%2Fserver%2Fsrc%2Flib&file=',
+            '/browse?path=.%2Fprojects%2Fclient%2Fsrc%2Fapp&file=',
+            '/browse?path=&file=TODO.md',
+            '/browse?path=%2Fprojects%2Fclient%2Fsrc%2Fapp&file=%2Fprojects%2Fclient%2Fsrc%2Fapp%2Fnavigation-toolbar%2Fnavigation-toolbar.component.html',
+            '/git/log',
+        ]);
     });
 
-    it('links to the canvas from the secondary navigation', () => {
-        const link = fixture.nativeElement.querySelector(
-            '#secondary-navigation a[href="/interactive-canvas"]',
-        ) as HTMLAnchorElement;
-
-        expect(link).not.toBeNull();
-        expect(link.textContent?.trim()).toBe('Canvas');
-    });
-
-    it('expands and collapses secondary navigation on demand', () => {
-        const button = fixture.nativeElement.querySelector('.more-navigation-button') as HTMLButtonElement;
-        const secondaryNavigation = fixture.nativeElement.querySelector('#secondary-navigation') as HTMLElement;
-
-        expect(button.getAttribute('aria-expanded')).toBe('false');
-        expect(secondaryNavigation.classList.contains('is-expanded')).toBe(false);
-
-        button.click();
-        fixture.detectChanges();
-
-        expect(button.getAttribute('aria-expanded')).toBe('true');
-        expect(secondaryNavigation.classList.contains('is-expanded')).toBe(true);
-
-        button.click();
-        fixture.detectChanges();
-
-        expect(button.getAttribute('aria-expanded')).toBe('false');
-        expect(secondaryNavigation.classList.contains('is-expanded')).toBe(false);
-    });
-
-    it('requests a DevEnv clone from the host application', () => {
+    it('requests a DevEnv clone from the dropdown', async () => {
         let requested = 0;
         fixture.componentInstance.cloneRequested.subscribe(() => requested++);
-        const button = fixture.nativeElement.querySelector('.clone-button') as HTMLButtonElement;
-
-        button.click();
-
+        await openTools();
+        (overlay.querySelector('.clone-button') as HTMLButtonElement).click();
         expect(requested).toBe(1);
     });
 
-    it('requests a commit and reflects the committing state', () => {
+    it('requests a commit and reflects the committing state in the dropdown', async () => {
         let requested = 0;
         fixture.componentInstance.commitRequested.subscribe(() => requested++);
-        const button = fixture.nativeElement.querySelector('.commit-button') as HTMLButtonElement;
-
+        await openTools();
+        const button = overlay.querySelector('.commit-button') as HTMLButtonElement;
+        expect(button.disabled).toBe(false);
         button.click();
         expect(requested).toBe(1);
-        expect(button.disabled).toBe(false);
-
         fixture.componentInstance.isCommitting = true;
         fixture.detectChanges();
-
-        expect(button.disabled).toBe(true);
-        expect(button.textContent).toContain('Committing');
+        await fixture.whenStable();
+        await openTools();
+        const disabledButton = overlay.querySelector('.commit-button') as HTMLButtonElement;
+        expect(disabledButton.disabled).toBe(true);
+        expect(disabledButton.textContent).toContain('Committing');
+        disabledButton.click();
+        expect(requested).toBe(1);
     });
 });

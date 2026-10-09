@@ -2,7 +2,7 @@
   "title": "Repository Practice Set History",
   "scope": "Repository-controlled development rules and practices only. Instructions supplied by the user, organization, platform, or runtime are outside this registry unless explicitly included.",
   "versioningPolicy": "Use sequential positive integers. For each agent or skill, record its tracked revisions by kind and repository path, pinning each revision to the commit containing its content. Version 1 establishes the initial tracked baseline, not necessarily the artifact's historical introduction. Commit practice-set changes first, then add one set-level version entry in a follow-up commit pinned to that prior practice-change commit; never store a commit's own hash. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates.",
-  "latestVersion": 3,
+  "latestVersion": 4,
   "activeVersion": null,
   "asOf": null,
   "versions": [
@@ -28,6 +28,15 @@
       "version": 3,
       "summary": "Mock-first dependency checks precede test writing; the focused work loop separately verifies practice compliance, requires explicit conflict handling rather than silent scope exemptions, and trials checklist reliability across three coding slices.",
       "sourceCommit": "a2b4ded9a2d8d753e7dffe1e8712e2263b80013c",
+      "activatedAt": null,
+      "deactivatedAt": null,
+      "activationEvidence": null,
+      "deactivationEvidence": null
+    },
+    {
+      "version": 4,
+      "summary": "Concise checkpoint-driven agent entry point links to exactly preserved detailed practices; separately prompts for tracking and metrics, and highlights stable-summary commit subjects without changing policy. Fresh-chat consistency trial remains unverified.",
+      "sourceCommit": "1565e27e87d17ed793b842a37abd6c20e76682a5",
       "activatedAt": null,
       "deactivatedAt": null,
       "activationEvidence": null,

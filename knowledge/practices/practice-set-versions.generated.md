@@ -7,7 +7,7 @@ Regenerate with `npm run generate:practice-set-versions:markdown` using [the reg
 
 **Versioning policy:** Use sequential positive integers\. For each agent or skill, record its tracked revisions by kind and repository path, pinning each revision to the commit containing its content\. Version 1 establishes the initial tracked baseline, not necessarily the artifact's historical introduction\. Commit practice\-set changes first, then add one set\-level version entry in a follow\-up commit pinned to that prior practice\-change commit; never store a commit's own hash\. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates\.
 
-**Latest recorded version:** **3**
+**Latest recorded version:** **4**
 **Active version:** **Not verified**
 **Duration calculation as of:** Not recorded
 
@@ -37,6 +37,16 @@ Activation dates are recorded only when verified; Git commit dates do not establ
 
 **Changes:** Mock\-first dependency checks precede test writing; the focused work loop separately verifies practice compliance, requires explicit conflict handling rather than silent scope exemptions, and trials checklist reliability across three coding slices\.
 **Source commit:** `a2b4ded9a2d8d753e7dffe1e8712e2263b80013c`
+**Activated:** Unknown
+**Deactivated:** Unknown / not recorded
+**Used for:** Unknown (activation dates not fully recorded)
+**Activation evidence:** Not recorded
+**Deactivation evidence:** Not recorded
+
+## Version 4
+
+**Changes:** Concise checkpoint\-driven agent entry point links to exactly preserved detailed practices; separately prompts for tracking and metrics, and highlights stable\-summary commit subjects without changing policy\. Fresh\-chat consistency trial remains unverified\.
+**Source commit:** `1565e27e87d17ed793b842a37abd6c20e76682a5`
 **Activated:** Unknown
 **Deactivated:** Unknown / not recorded
 **Used for:** Unknown (activation dates not fully recorded)

@@ -1,6 +1,6 @@
 # Principle Register Organization and Priority Review
 
-**Status:** In progress: concise guidance trial prepared; practice version pending.
+**Status:** In progress: guidance committed; practice version prepared; consistency trial pending.
 **Source:** User request, 2026-10-08.
 **Scope:** [System task principles](../../.agents/system-task-principles.md) and their summary in [AGENTS.md](../../AGENTS.md).
 
@@ -36,6 +36,7 @@ Assess whether the accumulated P-NNN rules are easy to find, apply, and resolve 
 
 ### Concise guidance trial (2026-10-10)
 
+- Guidance committed as 1565e27e87d17ed793b842a37abd6c20e76682a5 after explicit request and subject approval. Practice version 4 now prepared against that actual commit; activation timestamps remain unknown. Version JSON/generated view and this checkpoint require a separate requested commit. Next: verify version rendering and then observe the fresh-chat trial.
 - User approved trying a trimmed entry point without changing obligations and updating the practice version. Tracking opted in to this existing workflow; WorkEvaluation skipped by explicit choice because this is guidance-only and improved consistency is unmeasured.
 - Evidence: recent new global-grid work omitted the separate metrics decision, and stable UI summaries omitted the informational suggested commit subject. These are observed execution omissions, not proof of instruction-loading or settings failure.
 - Preserve all prior AGENTS.md content in root agent-practices.md so its relative links remain valid. New AGENTS.md promotes start/implement/verify/pause/report/commit checkpoints and links to the detailed practices and additive principle register. No principle removed, weakened or renumbered; no model, editor setting or automated enforcement changed.

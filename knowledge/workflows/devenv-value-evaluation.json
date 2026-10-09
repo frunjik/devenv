@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-surface-separation",
+      "title": "Separate canvas surface from diagram editing",
+      "beneficiary": "DevEnv developer maintaining the canvas editor",
+      "intendedOutcome": "Separate sketch editing from reusable canvas mechanics through ICanvas and a plain MockCanvas.",
+      "successCondition": "CanvasDiagramEditor retains the existing route, clock, create/select/drag/rename behavior; InteractiveCanvas implements ICanvas and owns DPR sizing, logical pointer conversion, capture, frame coalescing, and cleanup through IBrowser. Editor tests inject MockCanvas without browser patching.",
+      "baseline": "InteractiveCanvasComponent owns both editor state and browser/canvas lifecycle; its tests combine editor and surface concerns.",
+      "startedAt": "2026-10-09T22:46:39+02:00",
+      "completedAt": "2026-10-09T22:52:09+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved CanvasDiagramEditor, ICanvas, InteractiveCanvas, and MockCanvas separation within the existing workflow and all five metrics; preserve behavior and route.", "evidence": "User naming discussion and interactive-canvas-workflow.md refactoring checkpoint." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 30 seconds wall-clock including continuation gates and browser visibility waits; active effort unknown.", "evidence": "Recorded pre-Red start and final visible narrow acceptance timestamps in interactive-canvas-workflow.md." },
+        { "metricId": "outcome-and-quality", "value": "Twenty-six editor/surface/browser/route tests pass; all four changed production modules have 100% statement, branch, function and line coverage. Client build passes. Visible desktop regression verifies real surface injection, create/select/outside-canvas drag/rename/deselect, stable layout, matching backing size and clock updates; visible 380px check verifies resized backing, sketch ink and no overflow/toolbar overlap. No changed-file test-source diagnostics; unrelated existing errors remain. At 22:55, user-identified scheduler omission corrected: editor now reuses SCHEDULER, with eight editor tests at full coverage and another passing client build; no fresh live-browser check for that correction. Follow-up outcome unknown.", "evidence": "interactive-canvas-workflow.md editor/surface separation completion and scheduler correction; focused Jest coverage, client build and visible browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "interactive-canvas-one-editable-part",
       "title": "Create and edit one canvas sketch part",
       "beneficiary": "DevEnv developer exploring a free-form canvas editor",

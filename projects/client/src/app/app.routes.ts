@@ -9,12 +9,12 @@ import { SystemPlanComponent } from './system-plan/system-plan.component';
 import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.component';
 import { WorkflowEvaluationsComponent } from './system/workflow-todo/workflow-evaluations.component';
 import { DiagramPageComponent } from './system/diagram/diagram-page.component';
-import { InteractiveCanvasComponent } from './system/interactive-canvas/interactive-canvas.component';
+import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
 
 export const routes: Routes = [
     {
         path: 'interactive-canvas',
-        component: InteractiveCanvasComponent
+        component: CanvasDiagramEditor
     },
     {
         path: 'diagram',

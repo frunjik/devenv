@@ -188,7 +188,8 @@
         "interactive-canvas-frame-scheduling",
         "interactive-canvas-pointer-coordinates",
         "interactive-canvas-viewport-stretch",
-        "interactive-canvas-one-editable-part"
+        "interactive-canvas-one-editable-part",
+        "canvas-editor-surface-separation"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Active",

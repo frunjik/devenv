@@ -5,12 +5,12 @@ import { routes } from './app.routes';
 import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.component';
 import { WorkflowEvaluationsComponent } from './system/workflow-todo/workflow-evaluations.component';
 import { DiagramPageComponent } from './system/diagram/diagram-page.component';
-import { InteractiveCanvasComponent } from './system/interactive-canvas/interactive-canvas.component';
+import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
 
 describe('routes', () => {
     it('exposes the isolated Interactive Canvas prototype', () => {
         expect(routes.find(route => route.path === 'interactive-canvas')?.component)
-            .toBe(InteractiveCanvasComponent);
+            .toBe(CanvasDiagramEditor);
     });
 
     it('exposes the diagram page at its own route', () => {

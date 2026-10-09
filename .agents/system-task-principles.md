@@ -210,7 +210,7 @@ These principles are active from their recorded date and apply to future work in
 - **Recorded:** 2026-10-09
 - **Source:** User instruction: "when you stop doing things (either when done, or pausing or asking commit) show me if we are stable or not (meaning 100 and running code)"
 - **Applies to:** Responses that end a coding task, pause work, or request commit-message approval.
-- **Rule:** State explicitly whether the current work is stable. Ground the report in relevant test results, 100% statements/branches/functions/lines coverage for in-scope production code, and a passing type-check/build. Distinguish successful build/test execution from running the application in its actual UI/runtime; say when that has not been verified. If a criterion is unmet or pending, report the work as not yet fully stable and name the gap.
+- **Rule:** At each applicable stopping point, include a clearly labeled `Status:` line with either `Stable` or `Not stable`. Ground it in relevant test results, 100% statements/branches/functions/lines coverage for in-scope production code, and a passing type-check/build. Distinguish successful build/test execution from running the application in its actual UI/runtime; say when that has not been verified. If a criterion is unmet or pending, report `Not stable` and name the gap.
 
 ## Applying the Register
 

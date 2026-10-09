@@ -1,238 +1,166 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
-import { createServer } from 'node:http';
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { firstValueFrom } from 'rxjs';
-import type { Server } from 'node:http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { firstValueFrom, type Observable } from 'rxjs';
 import type { NewProblemTicket } from '@shared';
-
 import { BackendService } from './backend.service';
 import { LoggerService } from './logger.service';
-import { createApp, startServer } from '../../../server/src/public-api';
 
 describe('BackendService', () => {
     let service: BackendService;
-    let root: string;
-    let server: Server;
-    let apiHost: string;
+    let http: HttpTestingController;
+    const apiHost = 'http://localhost:3000/';
     const browserWindow = window as Window & { host?: string };
-
-    beforeAll(async () => {
-        root = await mkdtemp(join(tmpdir(), 'devenv-client-api-'));
-        await writeFile(join(root, 'sample.txt'), 'initial');
-        server = await startServer(root, 0);
-        const address = server.address();
-        if (!address || typeof address === 'string') {
-            throw new Error('Test server did not bind to a TCP port');
-        }
-        apiHost = `http://127.0.0.1:${address.port}/`;
-    });
+    const logError = jest.fn<LoggerService['error']>();
 
     beforeEach(() => {
+        logError.mockReset();
         TestBed.configureTestingModule({
             providers: [
                 provideHttpClient(),
-                {
-                    provide: LoggerService,
-                    useValue: { error: (_message: string, _error: Error) => undefined },
-                },
+                provideHttpClientTesting(),
+                { provide: LoggerService, useValue: { error: logError } },
             ],
         });
         service = TestBed.inject(BackendService);
+        http = TestBed.inject(HttpTestingController);
         browserWindow.host = apiHost;
     });
 
-    afterAll(async () => {
-        await new Promise<void>((resolve, reject) => {
-            server.close((error) => error ? reject(error) : resolve());
-        });
-        await rm(root, { recursive: true, force: true });
-    });
-
-    it('should be created', () => {
-        expect(service).toBeTruthy();
+    afterEach(() => {
+        http.verify();
+        delete browserWindow.host;
     });
 
     it('uses the default host when no runtime host is configured', () => {
         delete browserWindow.host;
-        expect(service.host).toBe('http://localhost:3000/');
-    });
-
-    it('uses the configured runtime host', () => {
         expect(service.host).toBe(apiHost);
     });
 
-    it('loads the server version from the public API', async () => {
-        await expect(service.getServerVersion().toPromise()).resolves.toMatch(/^\d+\.\d+\.\d+/);
+    it('uses the configured runtime host for API requests', async () => {
+        browserWindow.host = 'http://configured-host/';
+        const result = firstValueFrom(service.getServerVersion());
+        http.expectOne('http://configured-host/version').flush({ data: '1.2.3' });
+        await expect(result).resolves.toBe('1.2.3');
     });
 
-    it('loads recent commit entries from the git log API', async () => {
-        const entries = await service.getGitLog().toPromise();
-
-        expect(entries).toEqual(expect.any(Array));
-        expect(entries?.every(entry =>
-            typeof entry.hash === 'string'
-            && typeof entry.author === 'string'
-            && typeof entry.date === 'string'
-            && typeof entry.subject === 'string',
-        )).toBe(true);
+    it.each<[string, () => Observable<unknown>, unknown]>([
+        ['version', () => service.getServerVersion(), '1.2.3'],
+        ['git/log', () => service.getGitLog(), [{ hash: 'abc', author: 'Ada', date: '2026-10-09', subject: 'Update' }]],
+        ['current', () => service.getCurrentEntry(), '// latest entry'],
+        ['current', () => service.getCurrentEntry(), null],
+        ['rgr-phase', () => service.getRgrPhase(), 'refactor'],
+        ['rgr-phase', () => service.getRgrPhase(), null],
+        ['tests/cache/status', () => service.getTestRunCacheStatus(), {
+            available: true, status: 'passed', startedAt: null, finishedAt: null, exitCode: 0,
+        }],
+        ['tests/last', () => service.getLastTestRun(), {
+            startedAt: '2026-10-04T12:00:00.000Z', finishedAt: '2026-10-04T12:01:00.000Z',
+            exitCode: 1, stdout: 'Failed assertion details', stderr: 'Coverage threshold not met', error: null,
+        }],
+        ['files?path=sample.txt', () => service.loadFile('sample.txt'), 'initial'],
+        ['folders?path=.', () => service.loadFolder('.'), [{ filename: 'sample.txt', isFolder: false }]],
+    ])('loads the response data from %s', async (resource, load, data) => {
+        const result = firstValueFrom(load());
+        const request = http.expectOne(apiHost + resource);
+        expect(request.request.method).toBe('GET');
+        request.flush({ data });
+        await expect(result).resolves.toEqual(data);
     });
 
-    it('loads the latest nonempty current entry from the API', async () => {
-        await writeFile(join(root, '.current'), 'Current\n// previous entry\n// latest entry\n');
-
-        await expect(service.getCurrentEntry().toPromise()).resolves.toBe('// latest entry');
-    });
-
-    it('returns null from the API when the current entry file is missing', async () => {
-        await rm(join(root, '.current'), { force: true });
-
-        await expect(service.getCurrentEntry().toPromise()).resolves.toBeNull();
-    });
-
-    it('loads the recorded Red-Green-Refactor phase from the API', async () => {
-        await writeFile(join(root, '.rgr-phase'), 'refactor\n');
-
-        await expect(service.getRgrPhase().toPromise()).resolves.toBe('refactor');
-    });
-
-    it('returns null from the API when the phase file is missing', async () => {
-        await rm(join(root, '.rgr-phase'), { force: true });
-
-        await expect(service.getRgrPhase().toPromise()).resolves.toBeNull();
-    });
-
-    it('loads the cached test result status through the public API', async () => {
-        const status = (await service.getTestRunCacheStatus().toPromise())!;
-
-        expect(status).toMatchObject({
-            available: expect.any(Boolean),
-            status: expect.stringMatching(/^(empty|passed|failed|error)$/),
+    it.each<[string, string, () => Observable<unknown>, string]>([
+        ['loadFile', 'files?path=missing.txt', () => service.loadFile('missing.txt'), 'loadFile("missing.txt")'],
+        ['saveFile', 'files?path=missing/file.txt', () => service.saveFile('missing/file.txt', 'updated'), 'saveFile("missing/file.txt")'],
+        ['loadFolder', 'folders?path=missing', () => service.loadFolder('missing'), 'loadFolder("missing")'],
+    ])('logs and preserves %s failures', async (_operation, resource, invoke, context) => {
+        const result = firstValueFrom(invoke());
+        const assertion = expect(result).rejects.toBeInstanceOf(HttpErrorResponse);
+        http.expectOne(apiHost + resource).flush({ error: { message: 'Unavailable' } }, {
+            status: 500, statusText: 'Internal Server Error',
         });
-        expect(status.startedAt === null || typeof status.startedAt === 'string').toBe(true);
-        expect(status.finishedAt === null || typeof status.finishedAt === 'string').toBe(true);
-        expect(status.exitCode === null || typeof status.exitCode === 'number').toBe(true);
+        await assertion;
+        expect(logError).toHaveBeenCalledWith(`ERROR BackendService.${context}`, expect.any(HttpErrorResponse));
     });
 
-    it('loads the complete cached test result through the public API', async () => {
-        const cacheDirectory = join(root, 'last-test-run-client-api');
-        await mkdir(cacheDirectory);
-        const cachedRun = {
-            startedAt: '2026-10-04T12:00:00.000Z',
-            finishedAt: '2026-10-04T12:01:00.000Z',
-            exitCode: 1,
-            stdout: 'Failed assertion details',
-            stderr: 'Coverage threshold not met',
-            error: null,
-        };
-        await writeFile(join(cacheDirectory, 'last-test-run.json'), JSON.stringify(cachedRun));
-        const cachedResultServer = createServer(createApp(root, { testRunCacheDirectory: cacheDirectory }));
-        await new Promise<void>(resolve => cachedResultServer.listen(0, resolve));
-        const address = cachedResultServer.address();
-        if (!address || typeof address === 'string') {
-            throw new Error('Test server did not bind to a TCP port');
-        }
-        browserWindow.host = `http://127.0.0.1:${address.port}/`;
-
-        try {
-            await expect(service.getLastTestRun().toPromise()).resolves.toEqual(cachedRun);
-        } finally {
-            await new Promise<void>((resolve, reject) => {
-                cachedResultServer.close(error => error ? reject(error) : resolve());
-            });
-            browserWindow.host = apiHost;
-            await rm(cacheDirectory, { recursive: true, force: true });
-        }
-    });
-
-    it('loads file contents from the API', async () => {
-        await expect(service.loadFile('sample.txt').toPromise()).resolves.toBe('initial');
-    });
-
-    it('preserves file loading errors', async () => {
-        await expect(firstValueFrom(service.loadFile('missing.txt')))
-            .rejects.toBeInstanceOf(HttpErrorResponse);
-    });
-
-    it('saves file contents through the API', async () => {
-        await expect(service.saveFile('sample.txt', 'updated').toPromise()).resolves.toBe('OK');
-    });
-
-    it('preserves file saving errors', async () => {
-        await expect(firstValueFrom(service.saveFile('missing/file.txt', 'updated')))
-            .rejects.toBeInstanceOf(HttpErrorResponse);
-    });
-
-    it('loads folder entries from the API', async () => {
-        const entries = await service.loadFolder('.').toPromise();
-        expect(entries).toEqual(expect.arrayContaining([
-            { filename: 'sample.txt', isFolder: false },
-        ]));
-    });
-
-    it('preserves folder loading errors', async () => {
-        await expect(firstValueFrom(service.loadFolder('missing')))
-            .rejects.toBeInstanceOf(HttpErrorResponse);
+    it('sends file contents and unwraps the save response', async () => {
+        const result = firstValueFrom(service.saveFile('sample.txt', 'updated'));
+        const request = http.expectOne(apiHost + 'files?path=sample.txt');
+        expect(request.request.method).toBe('POST');
+        expect(request.request.body).toEqual({ data: 'updated' });
+        request.flush({ data: 'OK' });
+        await expect(result).resolves.toBe('OK');
     });
 
     describe('tickets', () => {
         const newTicket: NewProblemTicket = {
-            title: 'Pick list is wrong',
-            report: 'Pickers get the wrong aisle.',
+            title: 'Pick list is wrong', report: 'Pickers get the wrong aisle.',
             problem: { condition: 'Wrong aisle', affected: 'Pickers', impact: 'Delays' },
             scope: { level: 'workflow', label: 'Picking' },
             context: { people: [], places: [], things: [] },
-            reportedBy: 'Ada',
-            reportedAt: '2026-10-06T10:00:00.000Z',
+            reportedBy: 'Ada', reportedAt: '2026-10-06T10:00:00.000Z',
         };
 
-        it('creates, lists, changes, and reads the history of a ticket through the API', async () => {
-            const created = await firstValueFrom(service.createTicket(newTicket, 'real'));
-            const listed = await firstValueFrom(service.listTickets());
-            const changed = await firstValueFrom(
-                service.changeTicket(created.id, { kind: 'assign', assigneeId: 'user-2' }, created.version));
-            const history = await firstValueFrom(service.getTicketHistory(created.id));
-
-            expect(created).toMatchObject({ status: { state: 'open' }, version: 1, dataKind: 'real' });
-            expect(listed.map(ticket => ticket.id)).toContain(created.id);
-            expect(changed.ticket).toMatchObject({ version: 2, status: { state: 'assigned', assigneeId: 'user-2' } });
-            expect(history).toEqual([changed.event]);
+        it.each(['real', 'sample'] as const)('creates a %s ticket with the correct request', async dataKind => {
+            const result = firstValueFrom(dataKind === 'sample'
+                ? service.createTicket(newTicket) : service.createTicket(newTicket, dataKind));
+            const request = http.expectOne(apiHost + 'tickets');
+            expect(request.request.method).toBe('POST');
+            expect(request.request.body).toEqual({ ticket: newTicket, dataKind });
+            const stored = { ...newTicket, id: 'T-1', version: 1, dataKind, status: { state: 'open' } };
+            request.flush({ data: stored });
+            await expect(result).resolves.toEqual(stored);
         });
 
-        it('edits a ticket and lists the edit in its history', async () => {
-            const created = await firstValueFrom(service.createTicket(newTicket));
-            const { title: _title, ...rest } = newTicket;
-
-            const edited = await firstValueFrom(service.editTicket(
-                created.id,
-                { title: 'Better title', report: rest.report, problem: rest.problem, scope: rest.scope },
-                created.version,
-            ));
-            const history = await firstValueFrom(service.getTicketHistory(created.id));
-
-            expect(edited.ticket).toMatchObject({ title: 'Better title', version: 2 });
-            expect(history).toEqual([edited.event]);
-            expect(history[0].kind).toBe('edit');
-        });
-        it('defaults new tickets to sample data', async () => {
-            const created = await firstValueFrom(service.createTicket(newTicket));
-
-            expect(created.dataKind).toBe('sample');
+        it('lists stored tickets', async () => {
+            const result = firstValueFrom(service.listTickets());
+            const request = http.expectOne(apiHost + 'tickets');
+            expect(request.request.method).toBe('GET');
+            request.flush({ data: [newTicket] });
+            await expect(result).resolves.toEqual([newTicket]);
         });
 
-        it('preserves stale-version conflicts with the current ticket', async () => {
-            const created = await firstValueFrom(service.createTicket(newTicket));
-            await firstValueFrom(service.changeTicket(created.id, { kind: 'assign', assigneeId: 'u' }, 1));
+        it('sends versioned commands using an encoded ticket ID', async () => {
+            const command = { kind: 'assign', assigneeId: 'user-2' } as const;
+            const result = firstValueFrom(service.changeTicket('T/1', command, 1));
+            const request = http.expectOne(apiHost + 'tickets/T%2F1/changes');
+            expect(request.request.method).toBe('POST');
+            expect(request.request.body).toEqual({ command, expectedVersion: 1 });
+            const changed = { ticket: { ...newTicket, version: 2 }, event: { kind: 'assign' } };
+            request.flush({ data: changed });
+            await expect(result).resolves.toEqual(changed);
+        });
 
-            const error = await firstValueFrom(service.changeTicket(created.id, { kind: 'resolve' }, 1))
-                .catch(e => e as HttpErrorResponse);
+        it('sends versioned edits using an encoded ticket ID', async () => {
+            const content = {
+                title: 'Better title', report: newTicket.report, problem: newTicket.problem, scope: newTicket.scope,
+            };
+            const result = firstValueFrom(service.editTicket('T/1', content, 1));
+            const request = http.expectOne(apiHost + 'tickets/T%2F1/edits');
+            expect(request.request.method).toBe('POST');
+            expect(request.request.body).toEqual({ content, expectedVersion: 1 });
+            const edited = { ticket: { ...newTicket, ...content, version: 2 }, event: { kind: 'edit' } };
+            request.flush({ data: edited });
+            await expect(result).resolves.toEqual(edited);
+        });
 
-            expect(error).toBeInstanceOf(HttpErrorResponse);
-            expect((error as HttpErrorResponse).status).toBe(409);
-            expect((error as HttpErrorResponse).error.error.current.version).toBe(2);
+        it('loads history using an encoded ticket ID', async () => {
+            const result = firstValueFrom(service.getTicketHistory('T/1'));
+            const request = http.expectOne(apiHost + 'tickets/T%2F1/history');
+            expect(request.request.method).toBe('GET');
+            request.flush({ data: [{ kind: 'edit' }] });
+            await expect(result).resolves.toEqual([{ kind: 'edit' }]);
+        });
+
+        it('preserves stale-version conflicts and the current ticket', async () => {
+            const result = firstValueFrom(service.changeTicket('T-1', { kind: 'resolve' }, 1));
+            const assertion = expect(result).rejects.toMatchObject({
+                status: 409, error: { error: { current: { version: 2 } } },
+            });
+            http.expectOne(apiHost + 'tickets/T-1/changes').flush({
+                error: { current: { version: 2 } },
+            }, { status: 409, statusText: 'Conflict' });
+            await assertion;
         });
     });
 });

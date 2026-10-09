@@ -45,10 +45,12 @@ describe('DevEnvCloneDialogComponent', () => {
         expect(http.match('http://localhost:3000/devenv/clone')).toHaveLength(0);
     });
 
-    it('requests the clone and reports a successful replacement', () => {
+    it('requests one clone, prevents closing while pending, and reports a successful replacement', () => {
         fixture.componentInstance.destination = ' C:\\exports\\devenv ';
         fixture.componentInstance.replaceExisting = true;
         fixture.componentInstance.submit();
+        fixture.componentInstance.submit();
+        fixture.componentInstance.close();
 
         const request = http.expectOne('http://localhost:3000/devenv/clone');
         expect(request.request.method).toBe('POST');
@@ -113,20 +115,6 @@ describe('DevEnvCloneDialogComponent', () => {
         http.expectOne('http://localhost:3000/devenv/clone').flush({
             data: { destination: 'C:\\exports\\devenv', replacedExisting: false },
         });
-        expect(close).toHaveBeenCalledTimes(1);
-    });
-
-    it('prevents duplicate submission and closing while the export is pending', () => {
-        fixture.componentInstance.destination = 'C:\\exports\\devenv';
-        fixture.componentInstance.replaceExisting = true;
-        fixture.componentInstance.submit();
-        fixture.componentInstance.submit();
-        fixture.componentInstance.close();
-
-        const request = http.expectOne('http://localhost:3000/devenv/clone');
-        expect(close).not.toHaveBeenCalled();
-        expect(fixture.componentInstance.exporting).toBe(true);
-        request.flush({ data: { destination: 'C:\\exports\\devenv', replacedExisting: false } });
         expect(close).toHaveBeenCalledTimes(1);
     });
 

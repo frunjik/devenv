@@ -61,6 +61,23 @@ Explore making DevEnv available alongside another system or as its hosting envir
 - **Resume next:** Coverage restoration is complete. Remaining export work is the separate safety and UI review above, not further coverage changes.
 - These coverage results do not complete the export trial's separate safety and running-UI review above.
 
+### Test duplication review (2026-10-09)
+
+- Removed repeated package-exclusion assertions already protected by the focused exclusion cases. Consolidated the three source-overlap cases into a parameterized test, preserving equal, descendant, and ancestor destinations with no copying allowed.
+- Merged duplicate-submission and pending-close checks into the existing successful replacement test with two additional calls, retaining the single-request and no-close assertions.
+- Removed two API cases rejected by Express's strict JSON parser before reaching the clone handler. Missing-body and permissively parsed scalar-body tests still exercise the handler's input guards.
+- Repeated test titles in other suites cover distinct services or assignment/edit workflows, not interchangeable behavior; those tests remain. This was a targeted review, not proof that every suite is duplication-free.
+- Final combined coverage passes unchanged at 100% on all four metrics: client 38 suites / 361 tests, server 23 suites / 263 tests. Both test TypeScript checks pass. No production code, coverage scope, or thresholds changed; the successful combined result is cached.
+
+### Client HTTP boundary migration (2026-10-09)
+
+- Investigated the router Promise-like deprecation: Angular's Zone.js replaces the global Promise constructor, while native async Express handlers return native promises. The router's constructor check warns in Angular-hosted Express tests; the Node clone API suite does not reproduce it.
+- With user approval, migrated the backend service, file browser, and file editor client suites to `HttpTestingController`. These tests no longer start Express, create temporary files, or mock internal backend methods. Existing server suites retain API integration coverage.
+- Client assertions now verify HTTP methods, request bodies, response unwrapping, encoded ticket IDs, logged/preserved errors, navigation, editor shortcuts, and user feedback. The unrelated-shortcut test no longer depends on a file written by a preceding test.
+- Full combined coverage passes at 100% statements, branches, functions, and lines: client 38 suites / 363 tests, server 23 suites / 263 tests. Client test type-check and diff formatting pass; the successful combined result is cached.
+- All 37 tests in the three migrated suites also pass with `--silent=false`, with zero router Promise-like deprecation warnings. No client spec imports the server public API or Node filesystem/HTTP modules.
+- No production code, Promise implementation, warning suppression, coverage scope, or thresholds changed. No new domain Type was needed. Changes remain uncommitted, alongside the preceding test-duplication cleanup.
+
 ### Clone dialog feedback follow-up (2026-10-07)
 
 - Added an indeterminate Material progress bar while the export request is pending; the API does not report a measurable completion percentage.

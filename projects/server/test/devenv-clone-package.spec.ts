@@ -45,17 +45,11 @@ describe('DevEnv clone package', () => {
         expect(fileSystem.rename).toHaveBeenCalledWith(stage, destination);
         const filter = fileSystem.cp.mock.calls[0][2].filter;
         expect(filter(join(root, 'projects/client/src/app.ts'), '')).toBe(true);
-        expect(filter(join(root, 'projects/client/node_modules'), '')).toBe(false);
-        expect(filter(join(root, 'projects/client/.env.local'), '')).toBe(false);
     });
 
-    it('rejects destinations that overlap the source tree', async () => {
+    it.each([root, join(root, 'clone'), dirname(root)])('rejects source-overlapping destination %s', async destination => {
         await expect(cloneDevEnv(root, {
-            destination: join(root, 'clone'),
-            replaceExisting: true,
-        }, fileSystem)).rejects.toThrow('must be outside the DevEnv source folder');
-        await expect(cloneDevEnv(root, {
-            destination: dirname(root),
+            destination,
             replaceExisting: true,
         }, fileSystem)).rejects.toThrow('must be outside the DevEnv source folder');
         expect(fileSystem.cp).not.toHaveBeenCalled();
@@ -158,11 +152,6 @@ describe('DevEnv clone package', () => {
         await expect(cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem))
             .rejects.toThrow('must be outside');
         expect(fileSystem.mkdtemp).not.toHaveBeenCalled();
-    });
-
-    it('rejects the source itself as a destination', async () => {
-        await expect(cloneDevEnv(root, { destination: root, replaceExisting: true }, fileSystem))
-            .rejects.toThrow('must be outside');
     });
 
     it('cleans staging when installing a new destination fails', async () => {

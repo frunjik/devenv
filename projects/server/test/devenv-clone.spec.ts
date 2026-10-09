@@ -43,7 +43,7 @@ describe('DevEnv clone API', () => {
     });
 
     it.each([
-        null, 'invalid', {}, { destination: 1 }, { destination: '  ' },
+        {}, { destination: 1 }, { destination: '  ' },
         { destination: 'C:\\exports\\devenv' },
         { destination: 'C:\\exports\\devenv', replaceExisting: 'yes' },
     ])('rejects malformed request %p without cloning', async body => {

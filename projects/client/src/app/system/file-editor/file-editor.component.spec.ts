@@ -1,14 +1,8 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import type { Server } from 'node:http';
 import type { editor, IKeyboardEvent } from 'monaco-editor';
-import { firstValueFrom, of } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { startServer } from '../../../../../server/src/public-api';
-import { BackendService } from '../../backend.service';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { FileEditorComponent } from './file-editor.component';
 import { provideHttpClient } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
@@ -40,30 +34,18 @@ function createEditorStub() {
 describe('FileEditorComponent', () => {
     let component: FileEditorComponent;
     let fixture: ComponentFixture<FileEditorComponent>;
-    let root: string;
-    let server: Server;
-    let apiHost: string;
+    let http: HttpTestingController;
     let snackbarOpen: jest.MockedFunction<MatSnackBar['open']>;
     const browserWindow = window as Window & { host?: string };
 
-    beforeAll(async () => {
-        root = await mkdtemp(join(tmpdir(), 'devenv-file-editor-test-'));
-        await writeFile(join(root, 'sample.txt'), 'initial');
-        server = await startServer(root, 0);
-        const address = server.address();
-        if (!address || typeof address === 'string') {
-            throw new Error('Test server did not bind to a TCP port');
-        }
-        apiHost = `http://127.0.0.1:${address.port}/`;
-    });
-
     beforeEach(async () => {
-        browserWindow.host = apiHost;
+        browserWindow.host = 'http://localhost:3000/';
         snackbarOpen = jest.fn() as jest.MockedFunction<MatSnackBar['open']>;
         await TestBed.configureTestingModule({
             imports: [FileEditorComponent],
             providers: [
                 provideHttpClient(),
+                provideHttpClientTesting(),
                 importProvidersFrom(MonacoEditorModule.forRoot())
             ]
         })
@@ -74,14 +56,12 @@ describe('FileEditorComponent', () => {
 
         fixture = TestBed.createComponent(FileEditorComponent);
         component = fixture.componentInstance;
+        http = TestBed.inject(HttpTestingController);
         fixture.detectChanges();
     });
 
-    afterAll(async () => {
-        await new Promise<void>((resolve, reject) => {
-            server.close((error) => error ? reject(error) : resolve());
-        });
-        await rm(root, { recursive: true, force: true });
+    afterEach(() => {
+        http.verify();
         delete browserWindow.host;
     });
 
@@ -104,6 +84,7 @@ describe('FileEditorComponent', () => {
         component.filename = 'sample.txt';
         fixture.detectChanges();
         fixture.nativeElement.querySelectorAll('button')[0].click();
+        http.expectOne('http://localhost:3000/files?path=sample.txt').flush({ data: 'initial' });
         await fixture.whenStable();
 
         expect(component.fileContent).toBe('initial');
@@ -113,6 +94,8 @@ describe('FileEditorComponent', () => {
         component.filename = 'missing.txt';
 
         component.loadFile();
+        http.expectOne('http://localhost:3000/files?path=missing.txt')
+            .flush({}, { status: 404, statusText: 'Not Found' });
         await fixture.whenStable();
 
         expect(snackbarOpen).toHaveBeenCalledWith('Unable to load file.', 'Dismiss', {
@@ -124,11 +107,13 @@ describe('FileEditorComponent', () => {
     it('shows a success snackbar when the save button succeeds', () => {
         component.filename = 'sample.txt';
         component.fileContent = 'saved from editor';
-        const saveFile = jest.spyOn(TestBed.inject(BackendService), 'saveFile').mockReturnValue(of('OK'));
         fixture.detectChanges();
         fixture.nativeElement.querySelectorAll('button')[1].click();
 
-        expect(saveFile).toHaveBeenCalledWith('sample.txt', 'saved from editor');
+        const request = http.expectOne('http://localhost:3000/files?path=sample.txt');
+        expect(request.request.method).toBe('POST');
+        expect(request.request.body).toEqual({ data: 'saved from editor' });
+        request.flush({ data: 'OK' });
         expect(snackbarOpen).toHaveBeenCalledWith('File saved.', 'Dismiss', {
             duration: 5000,
             panelClass: 'save-snackbar-success',
@@ -136,9 +121,9 @@ describe('FileEditorComponent', () => {
     });
 
     it('shows a failure snackbar when saving fails', () => {
-        jest.spyOn(TestBed.inject(BackendService), 'saveFile').mockReturnValue(of(''));
-
+        component.filename = 'sample.txt';
         component.saveFile();
+        http.expectOne('http://localhost:3000/files?path=sample.txt').flush({ data: '' });
 
         expect(snackbarOpen).toHaveBeenCalledWith('Unable to save file.', 'Dismiss', {
             duration: 5000,
@@ -151,6 +136,8 @@ describe('FileEditorComponent', () => {
         component.fileContent = 'unsaved';
 
         component.saveFile();
+        http.expectOne('http://localhost:3000/files?path=missing/file.txt')
+            .flush({}, { status: 500, statusText: 'Save failed' });
         await fixture.whenStable();
 
         expect(snackbarOpen).toHaveBeenCalledWith('Unable to save file.', 'Dismiss', {
@@ -169,11 +156,13 @@ describe('FileEditorComponent', () => {
             cancelable: true,
         });
         fixture.nativeElement.querySelector('input').dispatchEvent(event);
+        const request = http.expectOne('http://localhost:3000/files?path=sample.txt');
+        expect(request.request.method).toBe('POST');
+        expect(request.request.body).toEqual({ data: 'saved with control shortcut' });
+        request.flush({ data: 'OK' });
         await fixture.whenStable();
 
         expect(event.defaultPrevented).toBe(true);
-        await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
-            .resolves.toBe('saved with control shortcut');
     });
 
     it('saves when Cmd+S is pressed in the filename input', async () => {
@@ -186,11 +175,13 @@ describe('FileEditorComponent', () => {
             cancelable: true,
         });
         fixture.nativeElement.querySelector('input').dispatchEvent(event);
+        const request = http.expectOne('http://localhost:3000/files?path=sample.txt');
+        expect(request.request.method).toBe('POST');
+        expect(request.request.body).toEqual({ data: 'saved with command shortcut' });
+        request.flush({ data: 'OK' });
         await fixture.whenStable();
 
         expect(event.defaultPrevented).toBe(true);
-        await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
-            .resolves.toBe('saved with command shortcut');
     });
 
     it('does not save for a different keyboard shortcut', async () => {
@@ -205,8 +196,7 @@ describe('FileEditorComponent', () => {
         await fixture.whenStable();
 
         expect(event.defaultPrevented).toBe(false);
-        await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
-            .resolves.toBe('saved with command shortcut');
+        http.expectNone('http://localhost:3000/files?path=sample.txt');
     });
 
     it('saves when Ctrl+S is pressed in the initialized editor', async () => {
@@ -220,11 +210,13 @@ describe('FileEditorComponent', () => {
             cancelable: true,
         });
         editorStub.emitKeyDown(event);
+        const request = http.expectOne('http://localhost:3000/files?path=sample.txt');
+        expect(request.request.method).toBe('POST');
+        expect(request.request.body).toEqual({ data: 'saved from editor shortcut' });
+        request.flush({ data: 'OK' });
         await fixture.whenStable();
 
         expect(event.defaultPrevented).toBe(true);
-        await expect(firstValueFrom(TestBed.inject(BackendService).loadFile('sample.txt')))
-            .resolves.toBe('saved from editor shortcut');
     });
 
     it('disposes the editor key handler when destroyed', () => {

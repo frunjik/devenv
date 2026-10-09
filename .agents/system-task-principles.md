@@ -237,6 +237,14 @@ These principles are active from their recorded date and apply to future work in
 - **Rule:** Interpret a view change as presentation-only by default. Do not change underlying domain/shared/API Types or authoritative data unless the user separately requests that change.
 - **Practice:** For example, removing the resume-reference column from the Workflow TODO view does not remove `resumeLabel` or `resumePath` from the `WorkflowTodoList` API Type or authoritative JSON.
 
+### P-025 — Use Concise Transformed Test Data
+
+- **Recorded:** 2026-10-09
+- **Source:** User instruction
+- **Applies to:** Sample data and fixtures in tests.
+- **Rule:** Do not use live application or domain records directly as test samples. Create a concise, clearly named transformation of representative data that preserves only the distinctions and constraints required by the test. Omit unrelated fields and details so readers can quickly understand what the example proves.
+- **Practice:** Prefer synthetic, readable values and state when a fixture is illustrative. For example, practice-set history tests use a short generic two-version fixture with synthetic commits and dates rather than copying the live DevEnv registry. Preserve relevant invariants; simplification must not make the example invalid or success-shaped.
+
 ## Applying the Register
 
 Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.

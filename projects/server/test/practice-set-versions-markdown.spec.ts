@@ -2,172 +2,193 @@ import { describe, expect, it } from '@jest/globals';
 
 const { renderMarkdown, writeMarkdown } = require('../../../scripts/practice-set-versions-markdown.cjs');
 
-const registry = {
-    title: 'Repository Practice Set History',
-    scope: 'Repository-controlled development rules and practices only.',
-    versioningPolicy: 'Commit practice-set changes first, then add each version in a follow-up commit pinned to the prior practice-change commit.',
+// Concise transformed example; values are synthetic and preserve only tested distinctions.
+const registryExample = {
+    title: 'Practice History',
+    scope: 'Project practices only.',
+    versioningPolicy: 'Commit changes, then record the commit.',
     latestVersion: 2,
     activeVersion: 2,
-    asOf: '2026-10-09T00:00:00Z',
+    asOf: '2026-01-09T00:00:00Z',
     versions: [
         {
             version: 1,
-            summary: 'TDD and Type Detector were separate agents.',
-            sourceCommit: 'bcea50e90ead2f3a02a83dc4be48fe8ea2601ed4',
-            activatedAt: null,
-            deactivatedAt: null,
-            activationEvidence: null,
-            deactivationEvidence: null,
+            summary: 'Testing and modeling used separate helpers.',
+            sourceCommit: 'a'.repeat(40),
+            activatedAt: '2026-01-01T00:00:00Z',
+            deactivatedAt: '2026-01-04T00:00:00Z',
+            activationEvidence: 'Started',
+            deactivationEvidence: 'Replaced',
         },
         {
             version: 2,
-            summary: 'Diligent Coder coordinates TDD and Type Detector skills.',
-            sourceCommit: '47fced67cde5b94c813559090dedb4d76c793938',
-            activatedAt: '2026-10-01T00:00:00Z',
+            summary: 'One coordinator uses testing and modeling skills.',
+            sourceCommit: 'b'.repeat(40),
+            activatedAt: '2026-01-05T00:00:00Z',
             deactivatedAt: null,
-            activationEvidence: 'Activation confirmed for the test registry',
+            activationEvidence: 'Started',
             deactivationEvidence: null,
         },
     ],
 };
 
 describe('practice set version Markdown', () => {
-    it('renders the version history and labels unverified activation as unknown', () => {
-        const markdown = renderMarkdown(registry);
+    it('renders a concise illustrative history and computes the active duration', () => {
+        const markdown = renderMarkdown(registryExample);
 
-        expect(markdown).toContain('# Repository Practice Set History');
-        expect(markdown).toContain('**Versioning policy:** Commit practice\\-set changes first');
+        expect(markdown).toContain('# Practice History');
+        expect(markdown).toContain('**Versioning policy:** Commit changes, then record the commit\\.');
         expect(markdown).toContain('npm run generate:practice-set-versions:markdown');
         expect(markdown).toContain('../../scripts/practice-set-versions-markdown.cjs');
         expect(markdown).toContain('**Latest recorded version:** **2**');
         expect(markdown).toContain('**Active version:** **2**');
         expect(markdown).toContain('## Version 1');
-        expect(markdown).toContain('**Activated:** Unknown');
+        expect(markdown).toContain('**Deactivated:** 2026-01-04T00:00:00Z');
         expect(markdown).toContain('## Version 2');
-        expect(markdown).toContain('**Used for:** 8 days (2026-10-01T00:00:00Z to 2026-10-09T00:00:00Z)');
-        expect(markdown).toContain('**Activation evidence:** Activation confirmed for the test registry');
+        expect(markdown).toContain('**Used for:** 4 days (2026-01-05T00:00:00Z to 2026-01-09T00:00:00Z)');
+        expect(markdown).toContain('**Activation evidence:** Started');
     });
 
     it('does not claim an in-use duration when dates or activation are unknown', () => {
         const markdown = renderMarkdown({
-            ...registry,
+            ...registryExample,
             activeVersion: null,
             asOf: null,
-            versions: registry.versions.map((version: object) => ({
+            versions: registryExample.versions.map((version: object) => ({
                 ...version,
                 activatedAt: null,
+                deactivatedAt: null,
                 activationEvidence: null,
+                deactivationEvidence: null,
             })),
         });
 
         expect(markdown).toContain('**Active version:** **Not verified**');
         expect(markdown).toContain('**Used for:** Unknown (activation dates not fully recorded)');
-        expect(markdown).not.toContain('Used for: 8 days');
+        expect(markdown.match(/\*\*Used for:\*\* Unknown \(activation dates not fully recorded\)/g)).toHaveLength(2);
     });
 
     it('writes the derived view through the supplied filesystem boundary', () => {
-        const files = new Map([['registry.json', JSON.stringify(registry)]]);
+        const files = new Map([['input.json', JSON.stringify(registryExample)]]);
         const io = {
             readFileSync: (path: string) => files.get(path),
             writeFileSync: (path: string, content: string) => files.set(path, content),
         };
 
-        writeMarkdown('registry.json', 'history.md', io);
+        writeMarkdown('input.json', 'history.md', io);
 
-        expect(files.get('history.md')).toContain('# Repository Practice Set History');
+        expect(files.get('history.md')).toContain('# Practice History');
     });
 
     it.each([
-        [{ ...registry, latestVersion: 3 }, 'latestVersion must match the highest recorded version'],
-        [{ ...registry, activeVersion: 3 }, 'activeVersion must reference a recorded version'],
-        [{ ...registry, asOf: '2026-02-30T00:00:00Z' }, 'asOf must be a valid timestamp or null'],
-        [{ ...registry, title: '' }, 'title must be non-empty text'],
-        [{ ...registry, scope: 3 }, 'scope must be non-empty text'],
-        [{ ...registry, versioningPolicy: '' }, 'versioningPolicy must be non-empty text'],
-        [{ ...registry, versions: [] }, 'expected a non-empty versions array'],
-        [{ ...registry, versions: [...registry.versions, registry.versions[1]] }, 'version numbers must be unique'],
-        [{ ...registry, versions: [{ ...registry.versions[0], version: 0 }] }, 'version numbers must be unique'],
+        [{ ...registryExample, latestVersion: 3 }, 'latestVersion must match the highest recorded version'],
+        [{ ...registryExample, activeVersion: 3 }, 'activeVersion must reference a recorded version'],
+        [{ ...registryExample, asOf: '2026-02-30T00:00:00Z' }, 'asOf must be a valid timestamp or null'],
+        [{ ...registryExample, title: '' }, 'title must be non-empty text'],
+        [{ ...registryExample, scope: 3 }, 'scope must be non-empty text'],
+        [{ ...registryExample, versioningPolicy: '' }, 'versioningPolicy must be non-empty text'],
+        [{ ...registryExample, versions: [] }, 'expected a non-empty versions array'],
         [{
-            ...registry,
-            versions: [{ ...registry.versions[0], sourceCommit: 'invalid' }],
+            ...registryExample,
+            versions: [...registryExample.versions, registryExample.versions[1]],
+        }, 'version numbers must be unique'],
+        [{
+            ...registryExample,
+            versions: [{ ...registryExample.versions[0], version: 0 }],
+        }, 'version numbers must be unique'],
+        [{
+            ...registryExample,
+            versions: [{ ...registryExample.versions[0], sourceCommit: 'invalid' }],
         }, 'sourceCommit must be a full Git commit hash'],
         [{
-            ...registry,
+            ...registryExample,
             versions: [{
-                ...registry.versions[1],
-                activatedAt: '2026-10-10T00:00:00Z',
-                deactivatedAt: '2026-10-09T00:00:00Z',
+                ...registryExample.versions[1],
+                activatedAt: '2026-01-06T00:00:00Z',
+                deactivatedAt: '2026-01-05T00:00:00Z',
             }],
         }, 'deactivatedAt must be on or after activatedAt'],
         [{
-            ...registry,
+            ...registryExample,
             versions: [{
-                ...registry.versions[0],
-                deactivatedAt: '2026-10-09T00:00:00Z',
+                ...registryExample.versions[0],
+                activatedAt: null,
+                activationEvidence: null,
+                deactivatedAt: '2026-01-04T00:00:00Z',
             }],
         }, 'deactivatedAt must be on or after activatedAt'],
         [{
-            ...registry,
+            ...registryExample,
             activeVersion: 1,
         }, 'activeVersion requires an open, dated activation and asOf'],
         [{
-            ...registry,
+            ...registryExample,
             asOf: null,
         }, 'activeVersion requires an open, dated activation and asOf'],
         [{
-            ...registry,
-            asOf: '2026-09-30T00:00:00Z',
+            ...registryExample,
+            asOf: '2026-01-04T00:00:00Z',
         }, 'asOf must be on or after activeVersion activation'],
         [{
-            ...registry,
+            ...registryExample,
             versions: [{
-                ...registry.versions[1],
+                ...registryExample.versions[1],
                 activationEvidence: null,
             }],
         }, 'activatedAt requires activationEvidence'],
         [{
-            ...registry,
+            ...registryExample,
+            latestVersion: 1,
+            activeVersion: null,
             versions: [{
-                ...registry.versions[0],
+                ...registryExample.versions[0],
+                activatedAt: null,
+                deactivatedAt: null,
                 activationEvidence: 'Evidence without an activation',
+                deactivationEvidence: null,
             }],
         }, 'activationEvidence requires activatedAt'],
         [{
-            ...registry,
+            ...registryExample,
             versions: [{
-                ...registry.versions[1],
-                deactivatedAt: '2026-10-09T00:00:00Z',
+                ...registryExample.versions[1],
+                deactivatedAt: '2026-01-09T00:00:00Z',
                 deactivationEvidence: null,
             }],
         }, 'deactivatedAt requires deactivationEvidence'],
         [{
-            ...registry,
+            ...registryExample,
+            latestVersion: 1,
+            activeVersion: null,
             versions: [{
-                ...registry.versions[0],
+                ...registryExample.versions[0],
+                deactivatedAt: null,
                 deactivationEvidence: 'Evidence without a deactivation',
             }],
         }, 'deactivationEvidence requires deactivatedAt'],
         [{
-            ...registry,
+            ...registryExample,
             versions: [{
-                ...registry.versions[1],
-                deactivatedAt: '2026-10-09T00:00:00Z',
+                ...registryExample.versions[1],
+                deactivatedAt: '2026-01-09T00:00:00Z',
                 deactivationEvidence: ' ',
             }],
         }, 'deactivationEvidence must be non-empty text'],
-        [{ ...registry, unexpected: true }, 'expected fields'],
+        [{ ...registryExample, unexpected: true }, 'expected fields'],
     ])('rejects invalid registry data: %s', (invalid: object, message: string) => {
         expect(() => renderMarkdown(invalid)).toThrow(message);
     });
 
     it('reports unknown duration when a version has no verified end or as-of timestamp', () => {
         const markdown = renderMarkdown({
-            ...registry,
+            ...registryExample,
             activeVersion: null,
-            versions: registry.versions.map((version: object) => ({
+            versions: registryExample.versions.map((version: object) => ({
                 ...version,
-                activatedAt: '2026-10-01T00:00:00Z',
-                activationEvidence: 'Activation confirmed for the test registry',
+                activatedAt: '2026-01-05T00:00:00Z',
+                deactivatedAt: null,
+                activationEvidence: 'Started',
+                deactivationEvidence: null,
             })),
         });
 
@@ -176,28 +197,26 @@ describe('practice set version Markdown', () => {
 
     it('reports duration and evidence for a completed version period', () => {
         const markdown = renderMarkdown({
-            ...registry,
-            versions: registry.versions.map((version: { version: number }) => version.version === 1 ? {
+            ...registryExample,
+            versions: registryExample.versions.map((version: { version: number }) => version.version === 1 ? {
                 ...version,
-                activatedAt: '2026-09-01T00:00:00Z',
-                activationEvidence: 'Version one activated in the client',
-                deactivatedAt: '2026-10-01T00:00:00Z',
-                deactivationEvidence: 'Version two replaced it',
+                activationEvidence: 'Started',
+                deactivationEvidence: 'Replaced',
             } : version),
         });
 
-        expect(markdown).toContain('**Used for:** 30 days (2026-09-01T00:00:00Z to 2026-10-01T00:00:00Z)');
-        expect(markdown).toContain('**Deactivation evidence:** Version two replaced it');
+        expect(markdown).toContain('**Used for:** 3 days (2026-01-01T00:00:00Z to 2026-01-04T00:00:00Z)');
+        expect(markdown).toContain('**Deactivation evidence:** Replaced');
     });
 
     it('propagates read and write errors', () => {
-        expect(() => writeMarkdown('registry.json', 'history.md', {
+        expect(() => writeMarkdown('input.json', 'history.md', {
             readFileSync: () => '{',
             writeFileSync: () => undefined,
         })).toThrow(SyntaxError);
 
-        expect(() => writeMarkdown('registry.json', 'history.md', {
-            readFileSync: () => JSON.stringify(registry),
+        expect(() => writeMarkdown('input.json', 'history.md', {
+            readFileSync: () => JSON.stringify(registryExample),
             writeFileSync: () => {
                 throw new Error('write failed');
             },

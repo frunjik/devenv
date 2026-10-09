@@ -31,6 +31,13 @@ describe('NavigationToolbarComponent', () => {
         expect(systemPlanLink.textContent?.trim()).toBe('System plan');
     });
 
+    it('links to the diagram page from the secondary navigation', () => {
+        const link = fixture.nativeElement.querySelector('#secondary-navigation a[href="/diagram"]') as HTMLAnchorElement;
+
+        expect(link).not.toBeNull();
+        expect(link.textContent?.trim()).toBe('Diagram');
+    });
+
     it('expands and collapses secondary navigation on demand', () => {
         const button = fixture.nativeElement.querySelector('.more-navigation-button') as HTMLButtonElement;
         const secondaryNavigation = fixture.nativeElement.querySelector('#secondary-navigation') as HTMLElement;

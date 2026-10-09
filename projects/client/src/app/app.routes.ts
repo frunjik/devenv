@@ -7,8 +7,13 @@ import { GlossaryComponent } from './system/glossary/glossary.component';
 import { ProblemInquiryPageComponent } from './problem-inquiry/problem-inquiry-page.component';
 import { SystemPlanComponent } from './system-plan/system-plan.component';
 import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.component';
+import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 
 export const routes: Routes = [
+    {
+        path: 'diagram',
+        component: DiagramPageComponent
+    },
     {
         path: 'workflow-todo',
         component: WorkflowTodoComponent

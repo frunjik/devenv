@@ -8,7 +8,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 ## Checkpoint
 
-**Status:** Pending implementation. The plan is saved in the repository; implementation has not started.
+**Status:** Implementation started. An empty `/diagram` page (route, page component, and secondary "Diagram" toolbar link) exists with tests. The document contract, operations, canvas, file workflow, and departure guard are not started.
 
 **Authority:** This document is the maintained plan. The session-local plan points here rather than maintaining a separate copy.
 
@@ -16,7 +16,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 **Open questions:** None blocking the agreed minimal scope. Future ports, viewport state, and diagram-library selection remain outside this plan.
 
-**Next step:** On an explicit request to start implementation, read this checkpoint and current project guidance, then begin the document-contract todo with a failing test.
+**Next step:** Begin the document-contract todo (shared Types and validation) with a failing test.
 
 ## Confirmed decisions
 

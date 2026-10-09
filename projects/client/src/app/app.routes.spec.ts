@@ -3,8 +3,13 @@ import { ProblemInquiryPageComponent } from './problem-inquiry/problem-inquiry-p
 import { SystemPlanComponent } from './system-plan/system-plan.component';
 import { routes } from './app.routes';
 import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.component';
+import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 
 describe('routes', () => {
+    it('exposes the diagram page at its own route', () => {
+        expect(routes.find(route => route.path === 'diagram')?.component).toBe(DiagramPageComponent);
+    });
+
     it('exposes the workflow TODO view', () => {
         expect(routes.find(route => route.path === 'workflow-todo')?.component).toBe(WorkflowTodoComponent);
     });

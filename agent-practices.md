@@ -54,7 +54,7 @@ Use `npm run test:all` when changes affect both client and server. The maintaine
 - Reuse the shared palette variables in `projects/client/src/styles.scss` for matching visual roles instead of duplicating their color literals. Keep feature layouts and intentional color variants local.
 - Use the opt-in `.accent-card` class for matching dark card surfaces with an accent border; keep padding, corner radius, and layout in the component stylesheet.
 - Material meta toolbars opt into `.meta-toolbar` for their shared background and text colors through Material theme variables; keep layout, sizing, and responsive rules in the component stylesheet.
-- Light Problem Ticket cards define dark body and heading text locally rather than inheriting the global dark theme's light text. Ticket-list controls have a minimum 44px width and height; preserve wrapping and narrow-screen fit when adding controls.
+- Preserve feature-specific appearance and control-size requirements documented in [README.md](./README.md); example features do not define the general meta practices.
 - Native text controls can opt into the global `.form-field` label/control layout and `.form-control` appearance. Keep feature spacing local; do not apply these classes indiscriminately to Material controls, radios, or specialized editor controls.
 - Prefer shared API contracts in `projects/shared` and import them from `@shared`.
 - `@shared` should contain only code valid in both the browser client and Node server, including its transitive dependencies. Keep runtime-specific integrations in their respective projects. The unused Angular scaffold exports and runtime peers have been removed; Angular CLI/ng-packagr remains build tooling only. See P-019.

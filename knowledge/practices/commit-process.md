@@ -6,7 +6,7 @@
 
 ## Meaning and Context
 
-This example describes how a user and assistant prepare and authorize a Git commit. It belongs to development/meta practices, not SubjectDomain (WMS) behavior or application ticket lifecycle.
+This example describes how a user and assistant prepare and authorize a Git commit. It belongs to development/meta practices, not SubjectDomain (WMS) behavior.
 
 The recipient must distinguish readiness, permission to initiate, approval of a particular message, successful execution, and user acceptance of the delivered behavior. These are not interchangeable.
 

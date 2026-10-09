@@ -1,6 +1,6 @@
 # System Task Principles
 
-**Purpose:** Durable, additive principles for designing and implementing the system that guides problem tickets and challenges through inquiry to an insight or concrete result.
+**Purpose:** Durable, additive principles for designing, implementing, and evaluating DevEnv and its domain-modeling and development/meta practices. Application examples illustrate these practices; they do not define the meta concept.
 
 These principles are active from their recorded date and apply to future work in this system. Add later rules as new entries; do not silently replace existing ones. If principles conflict, identify the conflict and ask for a decision before choosing which to follow.
 
@@ -40,7 +40,7 @@ These principles are active from their recorded date and apply to future work in
 - **Recorded:** 2026-10-05
 - **Source:** User instruction
 - **Applies to:** Production modules changed by a coding task.
-- **Rule:** Achieve 100% statement, branch, function, and line coverage for those modules. Include another module when it is also changed as part of the task; merely relying on an unchanged module does not expand the coverage scope. Derive tests, wherever possible, from known Problem Domain tickets, tasks, and scenarios. Exercise behavior through public interfaces; do not test private implementation details.
+- **Rule:** Achieve 100% statement, branch, function, and line coverage for those modules. Include another module when it is also changed as part of the task; merely relying on an unchanged module does not expand the coverage scope. Derive tests, wherever possible, from known domain requirements, tasks, and scenarios. Exercise behavior through public interfaces; do not test private implementation details.
 - **Test boundaries:** Do not use spies or mock internal collaborators. Simple mocks are permitted only at external/system boundaries. Prefer realistic domain examples and observable outcomes.
 - **Production-change restriction:** Do not change production code merely to make tests easier or coverage rise. If code cannot be covered, first demonstrate that it is unreachable and cannot be tested through the public interface; only then may production code be changed to improve or remove the unreachable behavior.
 - **Verification:** Run coverage for all four metrics on every production module changed in the task. If 100% cannot be reached, explain the uncovered code and blocker; do not claim the rule is satisfied.
@@ -310,6 +310,6 @@ These principles are active from their recorded date and apply to future work in
 
 ## Applying the Register
 
-Keep the inquiry traceable from ticket and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.
+Keep work traceable from its question or requirement and evidence through findings, decisions, and outcomes. Principles guide how work is performed; they do not by themselves establish domain facts or authorize unreviewed production changes.
 
 Stylistic and naming choices the user makes within these principles (for example a commit-message length, a word for `XX`/`NN` per P-011, or a candidate Term per P-012) are current preferences, not permanent commitments. Treat them as part of an ongoing experiment: it is fine, and expected, for the user to revisit any of them later without needing special justification, and a past choice does not bind a future one.

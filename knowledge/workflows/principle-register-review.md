@@ -34,6 +34,13 @@ Assess whether the accumulated P-NNN rules are easy to find, apply, and resolve 
 
 ## Checkpoint
 
+### Separating example features from general meta guidance (2026-10-10)
+
+- User scoped removal to general meta/practice docs, preserving feature documentation and history. Tracking opted in here; WorkEvaluation explicitly skipped for documentation-only work.
+- Generalized the principle-register purpose, test-scenario wording and traceability statement; removed the ticket-framing illustration from the reusable Type Detector skill and the application-lifecycle contrast from the commit example. No domain Terms or new Types adopted.
+- Moved the existing light-card/control-size rule to README's feature documentation, linked from detailed practices; its obligations remain unchanged. Existing concern-register paths, feature navigation documentation, architecture descriptions and historical classifications/decisions remain intact rather than breaking links or rewriting history. Generic inquiry concepts remain valid and are not references to the example application.
+- This revises the detailed guidance preserved at practice version 4; its historical preservation claim still describes that commit, not the current cleanup. A subsequent practice version must follow the existing committed-source policy. Next: verify reference scope and diff, then user review. No code or runtime behavior changes.
+
 ### Concise guidance trial (2026-10-10)
 
 - Guidance committed as 1565e27e87d17ed793b842a37abd6c20e76682a5 after explicit request and subject approval. Practice version 4 now prepared against that actual commit; activation timestamps remain unknown. Version JSON/generated view and this checkpoint require a separate requested commit. Next: verify version rendering and then observe the fresh-chat trial.

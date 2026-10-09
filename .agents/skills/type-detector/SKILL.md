@@ -35,7 +35,6 @@ For knowledge-transfer modeling, follow [Example-Led Knowledge Modeling](../../.
 
 - In the [clone handler](../../../projects/server/src/lib/handlers/devenv-clone.ts), the destination string has absolute-path, existing-parent, overlap, and destination-kind constraints. This is evidence of a constrained concept, but filesystem facts can change after validation; a Type must not imply permanent safety.
 - The same handler's `DevEnvCloneFileSystem` is an existing consumer-derived role interface. Its staging and restoration obligations require behavioral review beyond its method signatures.
-- In [ticket framing](../../../projects/client/src/app/problem-inquiry/ticket-framing/ticket-framing.component.ts), estimate interpretation distinguishes absent, valid, and invalid input. Review those alternatives without duplicating the existing `TicketEstimate`.
 - In the [clone dialog](../../../projects/client/src/app/devenv-clone-dialog/devenv-clone-dialog.component.ts), `exporting`, `errorMessage`, and guards describe an implicit lifecycle. A state union remains a candidate until a concrete correctness or maintenance benefit justifies it.
 
 These examples illustrate detection; they are not agreed new Types or names.

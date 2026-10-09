@@ -5,6 +5,8 @@ import {
     editDiagramElementLabel,
     editDiagramNoteText,
     connectDiagramElements,
+    editDiagramConnectionLabel,
+    deleteDiagramElement,
     moveDiagramElement,
 } from './diagram-operations';
 
@@ -251,5 +253,76 @@ describe('Connecting diagram elements', () => {
         expect(() => connectDiagramElements(connected, 'c2', 'r', 'e', 'again')).toThrow('Invalid Diagram');
         expect(() => connectDiagramElements(connected, 'c3', 'e', 'r', 'reverse')).toThrow('Invalid Diagram');
         expect(JSON.stringify(connected)).toBe(before);
+    });
+});
+
+describe('Editing diagram connection labels', () => {
+    const document: DiagramDocument = {
+        schemaVersion: 1,
+        title: 'DevEnv overview',
+        elements: [
+            { id: 'r', kind: 'rectangle', label: 'Problem', position: { x: 10, y: 20 } },
+            { id: 'e', kind: 'ellipse', label: 'Inquiry', position: { x: 80, y: 30 } },
+            { id: 'n', kind: 'note', label: 'Reminder', text: 'Explore', position: { x: 40, y: 80 } },
+        ],
+        connections: [
+            { id: 'c', sourceElementId: 'r', targetElementId: 'e', label: 'relates to' },
+            { id: 'other', sourceElementId: 'e', targetElementId: 'n', label: 'explores' },
+        ],
+    };
+
+    it('edits the selected connection label without mutating the original', () => {
+        const before = JSON.stringify(document);
+
+        const result = editDiagramConnectionLabel(document, 'c', 'leads to');
+
+        expect(result.connections).toEqual([
+            { ...document.connections[0], label: 'leads to' },
+            document.connections[1],
+        ]);
+        expect(result.elements).toEqual(document.elements);
+        expect(JSON.stringify(document)).toBe(before);
+    });
+
+    it('rejects a missing connection ID without changing the document', () => {
+        const before = JSON.stringify(document);
+
+        expect(() => editDiagramConnectionLabel(document, 'missing', 'leads to')).toThrow('Invalid Diagram');
+        expect(JSON.stringify(document)).toBe(before);
+    });
+});
+
+describe('Deleting diagram elements', () => {
+    const document: DiagramDocument = {
+        schemaVersion: 1,
+        title: 'DevEnv overview',
+        elements: [
+            { id: 'r', kind: 'rectangle', label: 'Problem', position: { x: 10, y: 20 } },
+            { id: 'e', kind: 'ellipse', label: 'Inquiry', position: { x: 80, y: 30 } },
+            { id: 'n', kind: 'note', label: 'Reminder', text: 'Explore', position: { x: 40, y: 80 } },
+        ],
+        connections: [
+            { id: 'c1', sourceElementId: 'r', targetElementId: 'e', label: 'relates to' },
+            { id: 'c2', sourceElementId: 'r', targetElementId: 'n', label: 'explores' },
+            { id: 'c3', sourceElementId: 'e', targetElementId: 'n', label: 'continues' },
+        ],
+    };
+
+    it('deletes the selected element and its attached connections without mutating the original', () => {
+        const before = JSON.stringify(document);
+
+        const result = deleteDiagramElement(document, 'r');
+
+        expect(result.elements).toEqual(document.elements.slice(1));
+        expect(result.connections).toEqual([document.connections[2]]);
+        expect(result.title).toBe(document.title);
+        expect(JSON.stringify(document)).toBe(before);
+    });
+
+    it('rejects a missing element ID without changing the document', () => {
+        const before = JSON.stringify(document);
+
+        expect(() => deleteDiagramElement(document, 'missing')).toThrow('Invalid Diagram');
+        expect(JSON.stringify(document)).toBe(before);
     });
 });

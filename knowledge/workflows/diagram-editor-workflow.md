@@ -8,7 +8,7 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 ## Checkpoint
 
-**Status:** Document contract and pure create/move/edit/connect operation slices implemented. The empty `/diagram` page and navigation exist. Remaining operations, canvas interactions, file workflow, and departure guard are not started.
+**Status:** Paused. Document contract and pure create/move/edit/connect/delete operation slices implemented, including connection-label editing. The empty `/diagram` page and navigation exist. Clear, canvas interactions, file workflow, and departure guard are not started.
 
 **Authority:** This document is the maintained plan. The session-local plan points here rather than maintaining a separate copy.
 
@@ -16,7 +16,11 @@ Use Angular HTML elements for items, an SVG layer for connections, and the alrea
 
 **Open questions:** None blocking the agreed minimal scope. Future ports, viewport state, and diagram-library selection remain outside this plan.
 
-**Next step:** Continue document operations with a failing connection-label edit test. After connection editing, implement delete and clear operations before wiring canvas interactions. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+**Next step:** Implement and test a pure clear operation that empties elements and connections while preserving document metadata. Then continue to canvas interactions. Keep selection's inline `{ kind: 'none' }` unchanged per the user's decision; selection and interaction are not yet production Types.
+
+**Stable checkpoint (2026-10-09):** Implemented and tested `editDiagramConnectionLabel` and `deleteDiagramElement`; deletion cascades attached connections and preserves unrelated ones. Revisited `requireDiagramElementIndex` per user suggestion and refactored it to `requireDiagramElement`, returning the matched element; move, label edit, Note-text edit, and delete now use that result directly. This is clearer for callers that need the selected record, and existing behavior remains covered. Shared and client builds pass. Operation plus document-contract suites pass (133 tests), with 100% statements, branches, functions, and lines for `diagram-operations.ts` and `diagram.types.ts`. No new domain Type; selection and interaction remain planned but not adopted as production Types. Next operation is clear. Changes are uncommitted.
+
+**Connection-label checkpoint (2026-10-09):** Added pure `editDiagramConnectionLabel(document, connectionId, label)`. It immutably edits only the identified connection, rejects a missing ID explicitly, and validates the resulting document. Red was confirmed before implementation; after Green, the duplication review found no meaningful shared lookup boundary to extract. Tests verify unchanged sibling connections and source data. The operation and document contract suites pass (131 tests), with 100% statements, branches, functions, and lines for both `diagram-operations.ts` and `diagram.types.ts`. Shared and client builds pass. No new domain Type or external side effect.
 
 **Connection checkpoint (2026-10-09):** Added pure `connectDiagramElements(document, connectionId, sourceElementId, targetElementId, label)`. It appends an undirected selectable connection and delegates ID, endpoint, self-connection, duplicate-pair, and document validation to the shared validator. Tests verify reverse-order duplicate refusal and source preservation. No new Type or external side effect.
 

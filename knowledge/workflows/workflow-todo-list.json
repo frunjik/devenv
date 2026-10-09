@@ -45,7 +45,8 @@
       "evaluationIds": [
         "workflow-todo-value-metrics-view",
         "workflow-todo-compact-navigation",
-        "workflow-todo-summed-elapsed"
+        "workflow-todo-summed-elapsed",
+        "workflow-todo-group-totals"
       ],
       "primaryWorkPurpose": "Meta work",
       "status": "Completed",

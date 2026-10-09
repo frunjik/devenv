@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
-import type { WorkflowTodoList } from '@shared';
+import type { WorkflowTodoList, WorkEvaluation } from '@shared';
 import { WorkflowTodoComponent } from './workflow-todo.component';
 
 describe('WorkflowTodoComponent', () => {
@@ -33,6 +33,51 @@ describe('WorkflowTodoComponent', () => {
         fixture.detectChanges();
     });
     afterEach(() => http.verify());
+
+    describe('group and grand elapsed totals', () => {
+        beforeEach(() => {
+            http.expectOne('http://localhost:3000/workflow-todo').flush(workflowResponse([
+                { ...workflows[0], evaluationIds: ['shared', 'meta'] },
+                { ...workflows[1], evaluationIds: ['shared', 'product', 'unfinished'] },
+                { ...workflows[1], name: 'Second product workflow', evaluationIds: ['shared', 'product'] },
+            ]));
+            const evaluation = (id: string, minutes: number | null): WorkEvaluation => ({
+                id, title: id, beneficiary: 'Test contributors', intendedOutcome: 'Test totals',
+                successCondition: 'Correct totals', baseline: 'No total',
+                startedAt: '2026-10-10T00:00:00Z',
+                completedAt: minutes === null ? null : `2026-10-10T00:0${minutes}:00Z`, measures: [],
+            });
+            fixture.componentInstance.evaluationDataset = {
+                schemaVersion: 1, metrics: [],
+                evaluations: [evaluation('shared', 1), evaluation('meta', 2),
+                    evaluation('product', 3), evaluation('unfinished', null), evaluation('unassociated', 9)],
+            };
+            fixture.detectChanges();
+        });
+
+        it('shows unique completed evaluation subtotals at each group end', () => {
+            const host: HTMLElement = fixture.nativeElement;
+            const bodies = host.querySelectorAll('.workflow-table tbody');
+            expect(bodies[0].lastElementChild!.textContent).toContain('Product work subtotal');
+            expect(bodies[0].lastElementChild!.textContent).toContain('Summed elapsed: 4m 0s');
+            expect(bodies[1].lastElementChild!.textContent).toContain('Meta work subtotal');
+            expect(bodies[1].lastElementChild!.textContent).toContain('Summed elapsed: 3m 0s');
+        });
+
+        it('shows the unique associated grand total in the footer, not the sum of group totals', () => {
+            const host: HTMLElement = fixture.nativeElement;
+            expect(host.querySelector('.workflow-table tfoot')!.textContent).toContain('Grand total');
+            expect(host.querySelector('.workflow-table tfoot')!.textContent).toContain('Summed elapsed: 6m 0s');
+            expect(host.textContent).toContain('Each evaluation is counted once');
+        });
+
+        it('keeps missing durations explicit in group totals', () => {
+            fixture.componentInstance.evaluationDataset!.evaluations[0].startedAt = null;
+            fixture.detectChanges();
+            const host: HTMLElement = fixture.nativeElement;
+            expect(host.querySelector('.workflow-table tfoot')!.textContent).toContain('5m 0s; 1 unknown');
+        });
+    });
 
     it('shows the selected active workflow and an explicit empty state', () => {
         expect(fixture.nativeElement.querySelector('.active-workflow')).toBeNull();

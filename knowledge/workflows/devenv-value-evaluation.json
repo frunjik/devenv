@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "workflow-todo-group-totals",
+      "title": "Show product/meta evaluated subtotals and grand total",
+      "beneficiary": "DevEnv contributors reviewing evaluated work",
+      "intendedOutcome": "Compare summed evaluated elapsed time by work purpose and overall in the view.",
+      "successCondition": "Product and Meta groups end with subtotal rows; table bottom shows grand total. Each counts unique associated completed evaluations, preserving unknown/unavailable distinctions and explaining cross-group overlap.",
+      "baseline": "Only per-workflow summed elapsed is shown.",
+      "startedAt": "2026-10-10T00:18:27+02:00",
+      "completedAt": "2026-10-10T00:20:35+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved view-only subtotal/footer totals and unique-evaluation semantics.", "evidence": "todo-view-workflow.md group totals slice." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 8 seconds wall-clock including approvals; active effort unknown.", "evidence": "Recorded start/completion timestamps; todo-view-workflow.md group totals slice." },
+        { "metricId": "outcome-and-quality", "value": "34 TODO/duration tests pass with 100% all-four component coverage; full test-source type-check and client build pass. Public-view tests verify duplicate/cross-group deduplication, unfinished/unassociated exclusion and missing durations. Desktop displays both subtotal rows and grand-total footer; 320px table scrolls without document overflow. Follow-up usefulness unknown.", "evidence": "todo-view-workflow.md group totals acceptance and focused test/build/browser checks." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "workflow-todo-summed-elapsed",
       "title": "Show summed evaluated elapsed time per workflow",
       "beneficiary": "DevEnv contributors reviewing evaluated work",

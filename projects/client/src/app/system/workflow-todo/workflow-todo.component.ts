@@ -102,6 +102,10 @@ export class WorkflowTodoComponent implements OnInit, OnDestroy {
             evaluationIds.includes(evaluation.id)));
     }
 
+    summedWorkflowElapsed(workflows: WorkflowTodoList['workflows']): string {
+        return this.summedEvaluationElapsed(workflows.flatMap(workflow => workflow.evaluationIds));
+    }
+
     ngOnInit(): void {
         this.subscriptions.add(this.backend.getWorkflowTodo().subscribe({
             next: list => {

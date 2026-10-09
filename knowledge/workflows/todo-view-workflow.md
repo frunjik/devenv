@@ -17,6 +17,15 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Product/meta subtotals and grand total
+
+- Approved view-only group subtotal rows and grand total at table bottom. Count unique associated evaluations within each group and overall; shared cross-group evaluations can make subtotals exceed grand total. Keep summed-elapsed/not-effort and missing-duration semantics.
+- Workflow and evaluation opted in before Red. Reuse summedEvaluationElapsed (already filters unique dataset records) and existing HTTP mocks; no new Type, boundary or storage. Next: public-view exact totals/deduplication Red, implementation, coverage/types/build/browser.
+- Completion: three public-view tests failed before subtotal/footer implementation, then 34 TODO/duration tests pass. Component retains 100% all-four coverage; full test-source type-check, client build, diagnostics and diff formatting pass. Workflow Markdown generated twice identically.
+- Type review: reuse WorkflowTodoList workflows/evaluationIds and unique validated dataset records; summedWorkflowElapsed gathers associations and delegates existing sum. Concrete shared test evaluation contributes once per group and once overall, contrasting repeated workflow associations; no new Type needed, no optional cleanup pending. Unknown/incomplete/unassociated semantics verified without test external I/O.
+- Visible desktop: Product 3h 52m 4s, Meta 1h 43m 27s, Grand 5h 35m 31s, footer at table bottom. At 320px, table671px scrolls within271px region; document305 <= viewport320. Restored desktop. Totals will evolve with recorded completions.
+- Global workflow remains active canvas exploration; this presentation slice complete/uncommitted, phase idle. Evaluation tracks acceptance not demonstrated usefulness; latency/active effort/overhead unknown. Suggested subject: Add product and meta elapsed subtotals and grand total.
+
 ### Summed evaluated elapsed time slice
 
 - User approved per-workflow total beside completed count, labelled Summed elapsed (not effort). Sum completed evaluation durations only; missing timestamps remain explicit, never zero. Overlap/waiting caveat remains visible. Record workflow and evaluation before Red.

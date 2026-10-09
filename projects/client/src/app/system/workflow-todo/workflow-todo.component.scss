@@ -1,18 +1,24 @@
 h1, h2 { color: var(--text-heading); }
 p, td, pre { color: var(--text-secondary); }
-.active-workflow { margin: 1rem 0; padding: 1rem; border-left: 3px solid var(--border-accent); }
+.active-workflow {
+    margin: var(--layout-space-section) 0;
+    padding: var(--layout-space-small) 0;
+    border-top: 1px solid var(--border-accent);
+    border-bottom: 1px solid var(--border-default);
+}
 .active-workflow h2 { margin: 0; font-size: 1.1rem; }
 .active-workflow p { margin-bottom: 0; }
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow-x: auto; container-type: inline-size; }
 .table-scroll:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
-table.workflow-table { table-layout: fixed; }
-.workflow-table .workflow-name-column { width: 35%; }
-.workflow-table .workflow-status-column { width: 15%; }
-.workflow-table .workflow-concern-column { width: 20%; }
-.workflow-table .workflow-evaluation-column { width: 30%; }
-caption { text-align: left; padding: .75rem 0; color: var(--text-secondary); }
-th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertical-align: top; overflow-wrap: anywhere; }
+table.workflow-table { table-layout: fixed; --workflow-table-width: 100cqw; }
+.workflow-table .workflow-name-column { width: calc((var(--workflow-table-width) + var(--layout-gutter)) / 3); }
+.workflow-table .workflow-status-column,
+.workflow-table .workflow-concern-column { width: calc((var(--workflow-table-width) + var(--layout-gutter)) / 6); }
+.workflow-table .workflow-evaluation-column { width: calc((var(--workflow-table-width) - 2 * var(--layout-gutter)) / 3); }
+caption { text-align: left; padding: var(--layout-space-section) 0 var(--layout-space-small); color: var(--text-secondary); }
+th, td { padding: .75rem var(--layout-gutter) .75rem 0; border-bottom: 1px solid var(--border-default); vertical-align: top; overflow-wrap: anywhere; }
+.workflow-table tr > :last-child { padding-right: 0; }
 .evaluation-history summary { min-height: 44px; cursor: pointer; }
 .evaluation-history li { margin-bottom: .5rem; }
 .evaluation-history ul { padding-left: 1.25rem; }
@@ -20,20 +26,25 @@ th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertic
     display: grid;
     grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr));
     gap: var(--layout-gutter);
-    margin: 1rem 0 0;
+    margin: var(--layout-space-section) 0 0;
 }
 .totals-summary .workflow-total {
     grid-column: span 4;
     min-width: 0;
     box-sizing: border-box;
+    position: relative;
 }
-.totals-summary .workflow-total + .workflow-total {
+.totals-summary .workflow-total + .workflow-total::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--layout-gutter) / -2);
     border-left: 1px solid var(--border-default);
-    padding-left: 1rem;
 }
 .totals-summary dt { color: var(--text-heading); font-weight: 600; }
 .totals-summary dd { margin: .25rem 0 0; color: var(--text-secondary); overflow-wrap: anywhere; }
-.totals-summary .workflow-total + .grand-total { border-color: var(--border-accent); }
+.totals-summary .workflow-total + .grand-total::before { border-color: var(--border-accent); }
 .totals-note {
     margin-top: .75rem;
     font-size: .75rem;
@@ -62,10 +73,18 @@ th, td { padding: .75rem; border-bottom: 1px solid var(--border-default); vertic
 .checkpoint { margin-top: 1.5rem; }
 .checkpoint pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 th { color: var(--text-heading); }
-.active { border-left: 3px solid var(--border-accent); }
+.active > th { position: relative; }
+.active > th::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: var(--layout-gutter);
+    bottom: 0;
+    border-bottom: 3px solid var(--border-accent);
+}
 .status { white-space: nowrap; }
 .workflow-group-heading th {
-    padding-top: 1.5rem;
+    padding-top: var(--layout-space-section);
     color: var(--text-heading);
     font-size: 1.1rem;
 }
@@ -77,16 +96,16 @@ th { color: var(--text-heading); }
 
 @media (max-width: 42rem) {
     .totals-summary .workflow-total { grid-column: 1; }
-    .totals-summary .workflow-total + .workflow-total {
+    .totals-summary .workflow-total + .workflow-total::before {
+        left: 0;
+        right: 0;
+        top: calc(var(--layout-gutter) / -2);
+        bottom: auto;
         border-left: 0;
         border-top: 1px solid var(--border-default);
-        padding-left: 0;
-        padding-top: 1rem;
     }
-    .totals-summary .workflow-total + .grand-total { border-color: var(--border-accent); }
-}
-
-@media (max-width: 42rem) {
+    .totals-summary .workflow-total + .grand-total::before { border-color: var(--border-accent); }
     .table-scroll table { min-width: 42rem; }
+    table.workflow-table { --workflow-table-width: max(100cqw, 42rem); }
     .scroll-hint { display: block; }
 }

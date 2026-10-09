@@ -17,6 +17,12 @@ Create a view of the repository's [Workflow TODO List](./workflow-todo-list.md) 
 
 ## Checkpoint
 
+### Workflow TODO grid alignment
+
+- User requested better use of global grid guides in Workflow TODO. Semantic table columns now span 4/2/2/4 guides, with shared gutters reserved on each non-final cell. Subtotal text aligns to columns 1/5/9; separators sit in gutters instead of indenting labels. Active-workflow heading shares the page edge, and active-row accent sits below the name without shifting content. Section spacing reuses the shared token.
+- Browser exposed native table mixed percentage/length column sizing resolving to equal widths. Use inline-size container-relative lengths for the table, preserving its 42rem narrow-screen minimum and contained horizontal scrolling.
+- Style-only change; no domain, Type, API or interaction changes. All 23 component tests pass; final client build, diagnostics and diff formatting pass. Measured table starts match global guides within .03px at 1280px and exactly at 768px; totals align to those guides. At 320px totals stack, table scrolls locally and document width is 305px. Changes uncommitted.
+
 ### Editorial layout pilot
 
 - User approved a first slice covering Workflow TODO, Workflow evaluations and inner navigation only. Other routed pages and outer meta toolbars remain unchanged; active workflow selection stays canvas.

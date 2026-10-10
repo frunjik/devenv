@@ -12,6 +12,21 @@
     --border-accent: #596b5d;
     --text-heading: #dce6dd;
     --text-secondary: #b1bdb3;
+    --surface-page: #171d19;
+    --text-body: #c3cec5;
+    --action-primary: #4f7059;
+    --text-on-action: #edf4ee;
+    --state-focus: #b2cfb7;
+    --state-selected: var(--state-focus);
+    --state-success: #a3b9a7;
+    --state-warning: #efd69a;
+    --state-error: #c8a09a;
+    --type-page-size: clamp(1.4rem, 1.2rem + .6vw, 1.8rem);
+    --type-section-size: 1.2rem;
+    --type-body-size: 1rem;
+    --type-label-size: .9rem;
+    --type-caption-size: .8rem;
+    --type-line-height: 1.5;
 }
 
 .layout-page {
@@ -40,8 +55,8 @@ body {
     font-size: 15px;
     font-weight: 400;
     letter-spacing: 0.01em;
-    background: #171d19;
-    color: #c3cec5;
+    background: var(--surface-page);
+    color: var(--text-body);
 }
 
 button,
@@ -91,7 +106,7 @@ a {
     font: inherit;
 
     &::placeholder { color: #9ba99e; }
-    &:focus-visible { outline: 2px solid #b2cfb7; outline-offset: 2px; }
+    &:focus-visible { outline: 2px solid var(--state-focus); outline-offset: 2px; }
     &:disabled { opacity: .6; }
 }
 
@@ -118,8 +133,8 @@ nav button[mat-button] {
 
 .mat-mdc-raised-button.mat-primary,
 .mat-mdc-unelevated-button.mat-primary {
-    --mdc-filled-button-container-color: #4f7059;
-    --mdc-filled-button-label-text-color: #edf4ee;
+    --mdc-filled-button-container-color: var(--action-primary);
+    --mdc-filled-button-label-text-color: var(--text-on-action);
 }
 
 .mat-mdc-progress-bar {
@@ -129,14 +144,14 @@ nav button[mat-button] {
 
 .mat-mdc-snack-bar-container.commit-snackbar-success,
 .mat-mdc-snack-bar-container.save-snackbar-success {
-    --mat-snack-bar-container-color: #a3b9a7;
+    --mat-snack-bar-container-color: var(--state-success);
     --mat-snack-bar-supporting-text-color: #24372a;
     --mat-snack-bar-button-color: #24372a;
 }
 
 .mat-mdc-snack-bar-container.commit-snackbar-error,
 .mat-mdc-snack-bar-container.save-snackbar-error {
-    --mat-snack-bar-container-color: #c8a09a;
+    --mat-snack-bar-container-color: var(--state-error);
     --mat-snack-bar-supporting-text-color: #462b27;
     --mat-snack-bar-button-color: #462b27;
 }

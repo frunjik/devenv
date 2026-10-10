@@ -86,6 +86,12 @@ and disappear when empty; newly added boxes have no boundary membership. Larger 
 Expand the technical notes for responsibilities and deployment caveats. This does not change
 the shared undirected document contract or the existing `/diagram` editor.
 
+The **Tools → Visual foundations** preview at `/visual-foundations` compares trial typography,
+semantic color roles, control states and an illustrative diagram using the current font and
+palette. It reads the global CSS tokens rather than maintaining a separate palette. Selection
+and input samples stay local to the page; nothing is saved. Trial typography, warning and
+selection treatments are not applied to existing screens or adopted as repository conventions.
+
 The meta toolbar's **Clone DevEnv** action opens a folder-export dialog (under **More** on mobile).
 Enter an absolute folder path on the API server's machine; its parent must already exist.
 The dialog requires acknowledgement that existing destination contents will be replaced.

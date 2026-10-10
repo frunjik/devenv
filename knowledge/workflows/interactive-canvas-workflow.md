@@ -39,6 +39,15 @@
 - Preserve DevEnv's global grid, dark palette, accessible interaction and existing behavior. This reference does not adopt a new design system, change repository guidance or authorize implementation.
 - Next: inspect user-provided screenshots/exported frames or an accessible preview before making file-specific recommendations. Verify the applicable license before reusing assets; no Figma assets have been copied into the repository.
 
+### Visual-foundations preview trial (2026-10-10)
+
+- User agreed to continue with a small visual-foundations preview inspired by the supplied typography/color screenshot, not adoption of the external design system or wholesale restyling.
+- Baseline: DevEnv had layout/palette tokens but no comparison page. Added `/visual-foundations`, reachable from the meta toolbar's Tools menu, with typography, color roles, local selection/input examples, labelled feedback samples and an illustrative SVG diagram.
+- Global CSS remains the token authority. Existing page/body, primary-action, focus and feedback colors were extracted into tokens without changing their values. Trial typography and warning/selection treatments are confined to the preview; the canvas renderer and architecture source are unchanged. Current font remains Tahoma with Geneva/sans-serif fallbacks.
+- TDD: missing route and Tools link checks failed before wiring. Green: 53 preview/navigation/routes/app-shell tests pass with 100% all-four coverage of the preview component; client production build passes. Tests use only fixture-local DOM and no application-data writes or external services.
+- Browser checks at 1440, 734 and 375 px widths verify the shared 12-column/single-column grid, no page horizontal overflow, contained mobile diagram scrolling, 44 px control heights, selection toggle and 2 px keyboard focus outline. Sample secondary/feedback text contrast exceeds 4.5:1; primary action text measures 4.95:1. This is targeted checking, not a complete accessibility audit.
+- Next: user comparison of hierarchy and state readability before applying any trial styles elsewhere. Comprehension improvement, user preference and active effort remain unknown; no design convention or ruleset change is adopted.
+
 ### Undo/redo follow-up
 
 - Requested on 2026-10-10: add an undo/redo system to the canvas editor (slice 8). Recorded for future implementation; no behavior change in this note.

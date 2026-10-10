@@ -51,6 +51,7 @@ describe('NavigationToolbarComponent', () => {
         expect(Array.from(overlay.querySelectorAll('a')).map(link => link.getAttribute('href'))).toEqual([
             '/browse',
             '/tests',
+            '/visual-foundations',
             '/browse?path=.%2Fprojects%2Fserver%2Fsrc%2Flib&file=',
             '/browse?path=.%2Fprojects%2Fclient%2Fsrc%2Fapp&file=',
             '/browse?path=&file=TODO.md',

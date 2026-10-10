@@ -6,8 +6,13 @@ import { WorkflowTodoComponent } from './system/workflow-todo/workflow-todo.comp
 import { WorkflowEvaluationsComponent } from './system/workflow-todo/workflow-evaluations.component';
 import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
+import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
 
 describe('routes', () => {
+    it('exposes an isolated visual foundations preview', () => {
+        expect(routes.find(route => route.path === 'visual-foundations')?.component).toBe(VisualFoundationsComponent);
+    });
+
     it('exposes the isolated Interactive Canvas prototype', () => {
         expect(routes.find(route => route.path === 'interactive-canvas')?.component)
             .toBe(CanvasDiagramEditor);

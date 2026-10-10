@@ -1,0 +1,84 @@
+<main class="layout-page foundations-page">
+    <header>
+        <p class="eyebrow">DevEnv / visual foundations</p>
+        <h1>Clarity before decoration</h1>
+        <p>Preview only: compare a small hierarchy using our current font, dark palette and shared layout.
+            Existing screens are not restyled. Typography, selection and warning treatments are candidates, not adopted conventions.</p>
+    </header>
+    <div class="foundations-grid">
+        <section class="foundation-card accent-card" aria-labelledby="typography-heading">
+            <h2 id="typography-heading">Typography</h2>
+            <p class="supporting">Tahoma, Geneva, sans-serif. Resize the page to compare desktop and mobile.</p>
+            <dl class="type-samples">
+                <div><dt>Page heading</dt><dd class="type-page">Understand DevEnv</dd></div>
+                <div><dt>Section heading</dt><dd class="type-section">From intent to evidence</dd></div>
+                <div><dt>Body</dt><dd class="type-body">Make intended outcomes explicit and connect them to work.</dd></div>
+                <div><dt>Control label</dt><dd class="type-label">Label for next part</dd></div>
+                <div><dt>Caption</dt><dd class="type-caption">Angular / TypeScript</dd></div>
+            </dl>
+        </section>
+        <section class="foundation-card accent-card" aria-labelledby="color-heading">
+            <h2 id="color-heading">Color roles</h2>
+            <p class="supporting">Swatches read the global CSS tokens. Meaning is also expressed through text and shape.</p>
+            <ul class="color-samples">
+                @for (color of colors; track color.token) {
+                    <li class="color-sample">
+                        <span class="swatch" [style.background]="'var(' + color.token + ')'" aria-hidden="true"></span>
+                        <span>{{ color.role }}<code>{{ color.token }}</code></span>
+                    </li>
+                }
+            </ul>
+        </section>
+        <section class="foundation-card accent-card" aria-labelledby="controls-heading">
+            <h2 id="controls-heading">Controls and states</h2>
+            <p class="supporting">Tab through the enabled controls to inspect focus. Targets remain at least 44 px high.</p>
+            <div class="sample-controls">
+                <button type="button" class="primary-action" [attr.aria-pressed]="selected"
+                    (click)="selected = !selected">{{ selected ? 'Clear selection' : 'Select example' }}</button>
+                <button type="button" disabled>Unavailable example</button>
+            </div>
+            <label class="form-field" for="foundation-label">Part label
+                <input class="form-control" id="foundation-label" value="DevEnv client">
+            </label>
+            <div class="selection-example" [class.selected]="selected">
+                <strong>DevEnv client</strong>
+                <p role="status">{{ selected ? 'Selected - outlined state' : 'Not selected - choose the example above' }}</p>
+            </div>
+            <ul class="feedback-samples">
+                <li class="success">Success: example change verified</li>
+                <li class="warning">Warning: replacing a sketch needs confirmation</li>
+                <li class="error">Error: example data could not be loaded</li>
+            </ul>
+            <p class="type-caption">These are labelled state samples, not actual application results. Nothing is saved.</p>
+        </section>
+        <section class="foundation-card accent-card" aria-labelledby="diagram-heading">
+            <h2 id="diagram-heading">Diagram hierarchy</h2>
+            <p class="supporting">Compare boundary, part, technology and relationship labels without changing the canvas renderer.</p>
+            <div class="diagram-viewport" tabindex="0" role="region" aria-label="Scrollable diagram example">
+            <svg class="diagram-sample" viewBox="0 0 600 250" role="img"
+                aria-label="Client requests data from API over HTTP / JSON. Client is in the Browser boundary; API is in the Development host boundary.">
+                <defs>
+                    <marker id="foundation-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                        markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" />
+                    </marker>
+                </defs>
+                <rect class="boundary" x="12" y="12" width="216" height="224" rx="8" />
+                <rect class="boundary" x="372" y="12" width="216" height="224" rx="8" />
+                <text class="boundary-label" x="120" y="45">Browser</text>
+                <text class="boundary-label" x="480" y="45">Development host</text>
+                <rect class="part" x="36" y="100" width="168" height="84" rx="6" />
+                <rect class="part" x="396" y="100" width="168" height="84" rx="6" />
+                <text class="part-label" x="120" y="133">DevEnv client</text>
+                <text class="technology-label" x="120" y="158">Angular / TypeScript</text>
+                <text class="part-label" x="480" y="133">DevEnv API</text>
+                <text class="technology-label" x="480" y="158">Node.js / Express</text>
+                <path class="relationship" d="M 204 142 L 396 142" marker-end="url(#foundation-arrow)" />
+                <text class="relationship-label" x="300" y="106">Requests data</text>
+                <text class="technology-label" x="300" y="129">HTTP / JSON</text>
+            </svg>
+            </div>
+            <p class="type-caption">Illustrative only. This preview does not claim a verified deployment or change architecture data.</p>
+        </section>
+    </div>
+</main>

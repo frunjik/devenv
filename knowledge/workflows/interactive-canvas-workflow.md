@@ -20,6 +20,13 @@
 
 **Next:** Slice 5: architectural meaning. Current parts and undirected connections are free-form sketches, not validated architectural facts. Agree any meaning/refinement before implementation; keep `/diagram` unchanged.
 
+### Undo/redo follow-up
+
+- Requested on 2026-10-10: add an undo/redo system to the canvas editor (slice 8). Recorded for future implementation; no behavior change in this note.
+- Cover part creation, movement, renaming and deletion; connection creation, renaming and deletion (including multi-delete); and overview replacement.
+- Verify that undo restores affected parts and connections together, redo reapplies the change, and a new edit after undo clears the redo history. Treat one drag as one undoable action.
+- Before implementation, agree history limits, keyboard shortcuts, and whether selection changes belong in history.
+
 ### Focused editor test refactor
 
 - User approved refactoring the whole tagged editor suite into focused describe groups with shared setup/actions, retaining visible assertions and all behavioral checks. Track in this workflow; test-only work, no production behavior change or new WorkEvaluation.

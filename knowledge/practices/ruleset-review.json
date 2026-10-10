@@ -1,6 +1,6 @@
 {
   "title": "Ruleset reduction decision ledger",
-  "status": "Repository cutover committed as 22cce35, scoped grid note committed as 3aeb73c; version 5 registration prepared against the latest committed snapshot; fresh-chat loading unverified; historical decisions retained",
+  "status": "Repository cutover committed as 22cce35, scoped grid note committed as 3aeb73c; version 5 registration committed as dd090b9; reduced guidance observed loading in a later session (fresh-chat status unconfirmed); representative trials and preservation audit pending; historical decisions retained",
   "scope": "Repository-controlled practices, processes, agents and skills only. Ranked non-Won't decisions form the selected replacement installed after explicit cutover approval. Platform/runtime constraints cannot be removed by this review; profile/plugin changes require separate approval.",
   "budget": { "maximumNonEmptyAlwaysOnLines": 60, "includesMandatoryReferences": true },
   "categoryMeanings": {

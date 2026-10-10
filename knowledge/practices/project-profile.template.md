@@ -16,13 +16,14 @@ Replace each placeholder or remove sections that do not apply.
 
 Not completion gates; briefly justify meaningful deviations.
 
-- **Language style:** _type and naming conventions._
 - **UI layout:** _layout system and where it is defined._
 - **Tests:** _test-framework conventions for created or modified test files, for example required imports._
 
 ## WorkTask registry
 
-Remove this section if WorkTask measurement is not used.
+Remove this section if tracking is not used. Tracking requires a registry; add an
+evaluation ledger only if measurement is also used. Choices and on-request toggles
+follow the generic core's tracking and measurement guidance.
 
 - WorkTask registry: _path to the WorkPlan/WorkTask source._
 - Evaluation ledger: _path to the evaluation ledger._

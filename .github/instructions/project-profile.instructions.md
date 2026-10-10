@@ -14,9 +14,6 @@ Project-specific rules for the generic [Agent Essentials](../../AGENTS.md) and [
 
 Not completion gates; briefly justify meaningful deviations.
 
-- **TypeScript style:**
-  - Use `interface` for grouped records.
-  - Use `type` for values, choices and named union alternatives.
 - **UI layout:** lay out new client views with the global grid in `projects/client/src/styles.scss`:
   - Use `.layout-page` for page padding.
   - Use `--layout-columns`, `--layout-gutter` and `--layout-space-*` for columns, gutters and spacing instead of local offsets.

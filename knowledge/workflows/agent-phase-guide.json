@@ -62,10 +62,10 @@
     ]
   },
   "workIntent": {
-    "status": "WorkTask measurement is selected (from intents 5 and 6); broader continuity remains an intent to explore",
+    "status": "Tracking and measurement are separate optional practices with retained choices and conversational toggles; broader continuity remains an intent to explore",
     "purpose": "Resume work, retain decisions and open questions, see progress and assess outcomes without burdensome upkeep.",
     "sourceSections": [
-      "WorkTask measurement"
+      "WorkTask tracking and measurement"
     ],
     "phases": {
       "Understand": "Recover the current work context and tracking choices; identify intended benefit, success conditions and available baseline.",
@@ -83,8 +83,8 @@
     "boundaries": [
       "Unknown measurements remain unknown; elapsed time is not active effort and passing tests are not proof of user benefit.",
       "Preserve intent and access to evidence, not the current workflow/TODO/evaluation names, schemas, UI or historical records as a new implementation.",
-      "Names, storage, identity and measurement mechanisms beyond the WorkTask measurement decision remain open for exploration.",
-      "No mandatory tracking prompts, time gates, reporting format or automated collection are introduced beyond the WorkTask measurement decision."
+      "Use the configured registry and ledger without introducing new stored formats or runtime switching controls.",
+      "Ask once about tracking for a new implementation task, then separately about measurement if tracked and undecided. Retain explicit choices; do not add time gates, mandatory reporting formats or automated collection."
     ]
   },
   "practices": {

@@ -29,7 +29,8 @@ describe('shared agent guide generation', () => {
         ]) {
             expect(entry).toContain(safeguard);
         }
-        expect(entry.indexOf('## Repository safeguards')).toBeLessThan(entry.indexOf('## Intents to explore'));
+        expect(entry).not.toContain('## Intents to explore');
+        expect(entry).not.toContain('Trial changes in isolation before broad adoption');
     });
     it('links the project profile for project-specific rules instead of embedding them', () => {
         const entry = generateAgentGuidePreview(sources).files[0].content;

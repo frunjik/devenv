@@ -332,7 +332,24 @@
 <details>
 <summary>Examples</summary>
 
-- Trial changes in isolation before broad adoption remains an exploration intent, not a mandatory preview for every change\.
+- A proposed practice is recorded for discussion without authorizing the agent to apply it\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## WorkTask Tracking
+
+### Definitions
+
+- An optional practice that records task progress, decisions, blockers and next steps in a configured registry\. Ask once for a new implementation task without a retained choice; tracking can be changed on request independently of measurement\.
+
+<details>
+<summary>Examples</summary>
+
+- A tracked but unmeasured task has a maintained registry entry without a linked measurement evaluation; turning tracking off stops further tracking and measurement without deleting history\.
 
 </details>
 
@@ -344,12 +361,12 @@
 
 ### Definitions
 
-- A conditional tracking practice used when the project profile names a WorkTask registry and evaluation ledger: record whether a task is Measured or NotMeasured, ask while Undecided at activation, and retain evidence for measured work\.
+- An optional assessment practice for tracked work with a configured evaluation ledger: record whether a task is Measured or NotMeasured, ask separately while Undecided at activation, and retain baseline, outcome evidence and observed metrics\. Measurement requires tracking and can be changed on request\.
 
 <details>
 <summary>Examples</summary>
 
-- A measured task links evaluation IDs containing baseline and completion evidence; unknown effort and benefit stay unknown\.
+- Turning measurement off leaves task tracking on and preserves earlier evidence; enabling measurement while tracking is off requires agreement to enable tracking first\.
 
 </details>
 

@@ -29,16 +29,21 @@ At each Agent phase, announce the phase and its current goal. During Make, when 
 
 ## Work continuity and measurement intent
 
-WorkTask measurement is selected (from intents 5 and 6); broader continuity remains an intent to explore
+Tracking and measurement are separate optional practices with retained choices and conversational toggles; broader continuity remains an intent to explore
 
 Resume work, retain decisions and open questions, see progress and assess outcomes without burdensome upkeep.
 
-## WorkTask measurement
+## WorkTask tracking and measurement
 
-Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep). Applies when the project profile names a WorkTask registry and an evaluation ledger.
+Tracking and measurement are separate optional practices. Tracking records work, status, decisions, blockers and next steps; measurement records baseline, outcome evidence and observed metrics. Tracking requires a project-profile registry; measurement also requires an evaluation ledger.
 
+- When a new implementation task starts without a retained tracking choice, ask once whether to track it. Do not prompt for explanations, quick lookups, documentation-only changes or an already-running task. Honor explicit choices without asking again.
+- If tracking is enabled, create or reuse the task in the configured registry and keep its progress current. If tracking is disabled, do not create or maintain registry entries for that task.
 - Each WorkTask in the registry records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
 - `Measured` tasks link one or more evaluation IDs in the evaluation ledger; record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
+- Retain tracking and measurement choices across follow-ups. Accept requests such as "tracking on/off" and "measurement on/off" for the current task; these are conversational choices, not runtime-enforced or UI toggles.
+- Measurement requires tracking. If measurement is requested while tracking is off, ask whether to enable tracking first. Turning tracking off also stops measurement; turning measurement off leaves tracking on. Preserve existing records and evidence, and do not invent measurements for periods when measurement was off.
+- Record choices in the session context and, for tracked work, in the registry or linked evaluation using the existing format. Before enabling a practice without its required project-profile storage, resolve that configuration with the user; do not claim it is enabled.
 - Edit the registry and ledger sources and regenerate their views as the project profile describes.
 
 - **Understand:** Recover the current work context and tracking choices; identify intended benefit, success conditions and available baseline.
@@ -56,8 +61,8 @@ Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline
 
 - Unknown measurements remain unknown; elapsed time is not active effort and passing tests are not proof of user benefit.
 - Preserve intent and access to evidence, not the current workflow/TODO/evaluation names, schemas, UI or historical records as a new implementation.
-- Names, storage, identity and measurement mechanisms beyond the WorkTask measurement decision remain open for exploration.
-- No mandatory tracking prompts, time gates, reporting format or automated collection are introduced beyond the WorkTask measurement decision.
+- Use the configured registry and ledger without introducing new stored formats or runtime switching controls.
+- Ask once about tracking for a new implementation task, then separately about measurement if tracked and undecided. Retain explicit choices; do not add time gates, mandatory reporting formats or automated collection.
 
 ## Understand
 

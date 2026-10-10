@@ -55,7 +55,9 @@ supporting resources. DevEnv folder exports already include this directory throu
 the `.agents` package entry.
 
 The generic AgentPhaseGuide setup (`AGENTS.md`, the Agent Phase Guide and the six skills)
-contains no DevEnv-specific rules. DevEnv paths, commands and stack conventions live in the
+contains no DevEnv-specific rules. Its applicable defaults include TypeScript conventions:
+use `interface` for grouped records and `type` for values, choices and named union alternatives.
+DevEnv paths, commands and project-specific conventions live in the
 [project profile](./.github/instructions/project-profile.instructions.md), which VS Code loads
 for all files. Run `npm run export:agent-phase-guide -- <destination>` to copy the generic
 core into another folder, with [a profile template](./knowledge/practices/project-profile.template.md)
@@ -66,6 +68,23 @@ Edit definitions and examples only in the main source; the export selects and re
 them without maintaining a second glossary. Unrelated domain entries are excluded.
 The export refuses to run while any exported source has uncommitted changes, and the
 destination must be outside this repository.
+
+**Optional tracking and measurement:** Tracking records task progress, decisions,
+blockers and next steps in a project-profile registry. Measurement separately records
+baseline, outcome evidence and observed metrics in a configured evaluation ledger.
+For each new implementation task without a retained choice, the agent asks once
+whether to track it, then separately whether to measure it if tracking is enabled.
+Explanations, quick lookups, documentation-only changes and ongoing tasks do not
+trigger a fresh tracking prompt.
+
+Choices carry through follow-ups. Requests such as "tracking on/off" and
+"measurement on/off" change the current task's conversational choices, not UI or
+runtime-enforced switches. Measurement requires tracking: enabling measurement
+while tracking is off requires agreement to enable tracking first; disabling tracking
+also stops measurement, while disabling measurement leaves tracking on. Existing
+records and evidence are preserved; measurements for disabled periods are not invented.
+Importing projects can omit tracking configuration; missing storage must be resolved
+before either practice can be enabled. DevEnv keeps its existing registry and ledger.
 
 To reuse selected skills in another project, copy their complete folders into that
 project's `.agents/skills` directory. For personal use across projects, copy them into

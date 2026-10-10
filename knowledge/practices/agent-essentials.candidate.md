@@ -45,6 +45,9 @@ Briefly justify meaningful deviations from these applicable defaults.
   - Report only meaningful findings.
   - Discuss consequential names, and keep unapproved names provisional.
 - **Data format:** prefer typed JSON with explicit interfaces, with Markdown generated from it. Narrative and native customization Markdown are exceptions.
+- **TypeScript style:**
+  - Use `interface` for grouped records.
+  - Use `type` for values, choices and named union alternatives.
 - **Code style:**
   - Follow nearby conventions, and don't automatically rewrite correct code.
   - When you use a non-obvious construct or deviate from the usual approach, add a short comment explaining why.
@@ -60,24 +63,21 @@ Retained repository safeguards for the isolated trial, separate from the four se
 - Commit only on explicit request and within authorized scope. Obtain approval of the exact short contribution-specific subject before committing; verify the resulting commit and worktree. No Copilot co-author trailer. Commit approval does not authorize push, merge, branch deletion or history rewriting.
 - UI design review remains opt-in: use only on explicit request or agreement. Historical/customization archives are not active guidance.
 
-## WorkTask measurement
+## WorkTask tracking and measurement
 
-Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep). Applies when the project profile names a WorkTask registry and an evaluation ledger.
+Tracking and measurement are separate optional practices. Tracking records work, status, decisions, blockers and next steps; measurement records baseline, outcome evidence and observed metrics. Tracking requires a project-profile registry; measurement also requires an evaluation ledger.
 
+- When a new implementation task starts without a retained tracking choice, ask once whether to track it. Do not prompt for explanations, quick lookups, documentation-only changes or an already-running task. Honor explicit choices without asking again.
+- If tracking is enabled, create or reuse the task in the configured registry and keep its progress current. If tracking is disabled, do not create or maintain registry entries for that task.
 - Each WorkTask in the registry records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
 - `Measured` tasks link one or more evaluation IDs in the evaluation ledger; record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
+- Retain tracking and measurement choices across follow-ups. Accept requests such as "tracking on/off" and "measurement on/off" for the current task; these are conversational choices, not runtime-enforced or UI toggles.
+- Measurement requires tracking. If measurement is requested while tracking is off, ask whether to enable tracking first. Turning tracking off also stops measurement; turning measurement off leaves tracking on. Preserve existing records and evidence, and do not invent measurements for periods when measurement was off.
+- Record choices in the session context and, for tracked work, in the registry or linked evaluation using the existing format. Before enabling a practice without its required project-profile storage, resolve that configuration with the user; do not claim it is enabled.
 - Edit the registry and ledger sources and regenerate their views as the project profile describes.
-
-## Intents to explore
-
-The following is a proposed practice, not an active rule. Before activating it, ask the user to define its intended behavior and scope; keep it inactive until the user approves activation. Names and mechanisms remain open.
-
-### 7. Trial changes in isolation before broad adoption
-
-Explore small, reversible trials with explicit success conditions and evaluation before wider adoption. Determine when isolation is worthwhile and how to measure benefit and overhead; do not require a separate preview or trial for every change.
 
 ## Basis and limits
 
-Selection: the user's first four priorities from the retrospective ranking; priorities 5-6 are now active as WorkTask measurement; priority 7 remains an intent for further exploration only. Evidence: [canvas repair and three-slice work-loop trial](../workflows/interactive-canvas-workflow.md), plus scheduler-boundary, client-coverage, evaluation-association, metrics-repair and visual-preview results recorded in the [evaluation ledger](../workflows/devenv-value-evaluation.json).
+Selection: the user's first four priorities from the retrospective ranking; priorities 5-6 are now active as WorkTask measurement; the priority 7 isolation-trial proposal was removed at the user's request. Evidence: [canvas repair and three-slice work-loop trial](../workflows/interactive-canvas-workflow.md), plus scheduler-boundary, client-coverage, evaluation-association, metrics-repair and visual-preview results recorded in the [evaluation ledger](../workflows/devenv-value-evaluation.json).
 
 The detailed testing procedure is pinned to v4. These practices seed the new candidate; the remaining rules and the proposed AgentPhaseGuide still require review and trials. No effectiveness improvement is claimed for this candidate yet.

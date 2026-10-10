@@ -3,12 +3,19 @@ import { createAgentGuidePreview } from './agent-guide-preview';
 import { agentPhaseSkills } from '../../../../../../knowledge/workflows/agent-phase-guide.types';
 
 describe('agent guide preview', () => {
-    it('includes the selected WorkTask measurement rule and remaining continuity intent', () => {
+    it('includes separate tracking and measurement opt-ins and conversational toggles', () => {
         const preview = createAgentGuidePreview();
         const agent = preview.files.find(file => file.path.endsWith('.agent.md'))!;
         expect(agent.content).toContain('## Work continuity and measurement intent');
         expect(agent.content).toContain('Resume work');
-        expect(agent.content).toContain('## WorkTask measurement');
+        expect(agent.content).toContain('## WorkTask tracking and measurement');
+        expect(agent.content).toContain('ask once whether to track it');
+        expect(agent.content).toContain('Do not prompt for explanations, quick lookups, documentation-only changes or an already-running task');
+        expect(agent.content).toContain('tracking on/off');
+        expect(agent.content).toContain('measurement on/off');
+        expect(agent.content).toContain('Turning tracking off also stops measurement');
+        expect(agent.content).toContain('turning measurement off leaves tracking on');
+        expect(agent.content).toContain('not runtime-enforced or UI toggles');
         expect(agent.content).toContain('ask the user whether to measure it');
         expect(agent.content).not.toContain('5. Trace work to its evaluations');
         expect(agent.content).toContain('announce the phase and its current goal');
@@ -39,13 +46,13 @@ describe('agent guide preview', () => {
         expect(preview.files[6].content).toContain('## Refactor');
     });
 
-    it('keeps exploration intents distinct and resolves all generated local Markdown links', () => {
+    it('excludes the removed isolation-trial intent and resolves all generated local Markdown links', () => {
         const { files } = createAgentGuidePreview();
         // The project profile is supplied by each importing project, so it is the only link target outside the generated set.
         const projectProfile = '.github/instructions/project-profile.instructions.md';
         expect(files[0].content).toContain(`](${projectProfile})`);
-        expect(files[0].content).toContain('Intents to explore');
-        expect(files[0].content).toContain('not an active rule');
+        expect(files[0].content).not.toContain('Intents to explore');
+        expect(files[0].content).not.toContain('Trial changes in isolation before broad adoption');
         for (const file of files) {
             for (const match of file.content.matchAll(/\]\(([^)]+)\)/g)) {
                 const target = match[1].split('#')[0];

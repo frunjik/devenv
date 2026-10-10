@@ -101,7 +101,7 @@ describe('AgentPhaseGuide export', () => {
             'AgentPhaseGuide', 'Agent Essentials', 'Agent Phase', 'Understand', 'Explore', 'Make', 'Evaluate',
             'Skill', 'Coordinator', 'Handoff', 'Project Profile', 'TDD', 'Red', 'Green', 'Refactor',
             'Boundary Mock', 'Success Condition', 'Applicable Default', 'Safeguard', 'Exploration Intent',
-            'WorkTask Measurement', 'Export Manifest',
+            'WorkTask Tracking', 'WorkTask Measurement', 'Export Manifest',
         ]);
         for (const entry of entries) {
             expect(entry.definitions.length).toBeGreaterThan(0);

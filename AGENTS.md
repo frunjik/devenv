@@ -63,6 +63,10 @@ Applicable defaults, not completion gates; briefly justify meaningful deviations
   - Use `interface` for grouped records.
   - Use `type` for values, choices and named union alternatives.
   - Follow nearby UI conventions, and don't automatically rewrite correct code.
+- **UI layout:** lay out new client views with the global grid in `projects/client/src/styles.scss`:
+  - Use `.layout-page` for page padding.
+  - Use `--layout-columns`, `--layout-gutter` and `--layout-space-*` for columns, gutters and spacing instead of local offsets.
+  - Keep the single-column layout on narrow screens.
 - **Jest:** import used Jest helpers from `@jest/globals` on the first line.
 
 Repository quick reference (informational):

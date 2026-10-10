@@ -12,17 +12,17 @@ Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning with
 
 ### WorkTopic: Ctrl+wheel and Ctrl+drag interaction
 
-Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Reset zoom to 100% on confirmed picture loading; preserve the view during editing and cancelled replacement. Pan reset on confirmed load remains to be decided.
+Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.
 
 #### WorkTask: Implement and verify viewport zoom and pan
 
-**Status:** Pending
+**Status:** Completed
 
 **Measurement:** Measured
 
 **Evaluations:** `canvas-ctrl-wheel-plan`
 
-Pending implementation approval. First characterize sizing, scroll and pointer behavior using existing ICanvas/IBrowser contracts and injected fakes. Observe Red for Ctrl+wheel, free Ctrl+background-drag and inverse coordinate mapping. Extract viewport transform calculations/lifecycle at a cohesive boundary, keeping component under 400 lines. Maintain zoom plus screen-space translation independent of logical diagram geometry; compose rendering with device pixel ratio and invert the complete transform for selection, dragging and connection creation. Normalize wheel delta modes, clamp zoom 25%-400%, preserve pointer anchor through translation, prevent browser zoom only for Ctrl+wheel within the workspace using a non-passive listener, and preserve ordinary wheel scrolling. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond existing scrollbar limits and preserves selection; capture the pointer and clean up on release, cancellation and destruction. Normal part dragging and empty-click deselection remain unchanged. Keep background panning separate from connection destination picking. Reset zoom only on confirmed picture load; resolve whether that also resets pan before implementation. Test combined zoom/pan, selection, dragging, connection endpoints, cancellation, resize, listener teardown and high-DPI behavior. Require 100% changed-module coverage, targeted tests, type-check/build and real Ctrl+wheel/Ctrl+drag validation at desktop/narrow viewports. No code changes yet. Next step: resolve pan reset and obtain implementation approval.
+Completed pointer-anchored Ctrl+wheel zoom (25%-400%) and free Ctrl+background-drag panning using CanvasViewport. Combined transform composes with device pixel ratio and is inverted for model-coordinate interactions. Ordinary scrolling, model geometry, part dragging and connection destination picking preserved; navigation is opt-in for editor, not preview. Confirmed loading resets zoom/pan; cancelled replacement preserves both. Red observed for missing wheel handling. Targeted coverage reaches 100% in every changed executable module; all 936 client tests pass with 100% reported full-client coverage, type-check/build and diagnostics pass. Actual desktop wheel/pan/transformed-hit checks and narrow zoom/normal-wheel/cancel/reset checks passed. Component remains 386 lines. Tracking and measurement retained. Next step: user review and optional implementation commit approval.
 
 ## WorkPlan: Repository test coverage
 

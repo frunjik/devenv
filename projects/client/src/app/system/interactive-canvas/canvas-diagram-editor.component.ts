@@ -154,6 +154,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             parts: group.elements.map(id => this.parts[document.elements.findIndex(element => element.id === id)]),
         })) : [];
         this.technicalNotes = technical?.notes ?? '';
+        this.surface.resetView();
         this.drag = undefined;
         this.cancelConnection();
         this.loadedPicture = kind;
@@ -229,6 +230,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     movePointer(event: PointerEvent): void {
+        if (this.surface.movePan(event)) return;
         const point = this.surface.point(event);
         this.pointerMoved.emit(point);
         if (this.drag && this.drag.pointerId === event.pointerId) {
@@ -273,6 +275,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             return;
         }
         const item = part ?? findConnectionAt(this.connections, point);
+        if (!item && event.ctrlKey) {
+            this.surface.beginPan(event);
+            return;
+        }
         const wasSelected = item !== undefined && this.selection.has(item);
         if (!item) {
             this.selection.clear();
@@ -293,6 +299,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     endDrag(event: PointerEvent): void {
+        this.surface.endPan(event);
         if (this.drag?.pointerId === event.pointerId) {
             // Defer deselection until release so dragging never unchecks the part.
             if (event.type === 'pointerup' && this.drag.deselectOnClick && !this.drag.moved) {
@@ -357,7 +364,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-        this.surface.initialize(this.canvas.nativeElement, this.render);
+        this.surface.initialize(this.canvas.nativeElement, this.render, true);
         this.stopRefresh = this.scheduler.every(1000, () => this.surface.requestDraw());
     }
 

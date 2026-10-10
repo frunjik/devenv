@@ -112,6 +112,94 @@ describe('InteractiveCanvas surface', () => {
         surface.destroy();
     });
 
+    it('zooms around the pointer on Ctrl+wheel without changing logical rendering dimensions', () => {
+        const { browser, surface, element } = setup();
+        const sizes: number[][] = [];
+        surface.initialize(element, (_context, width, height) => { sizes.push([width, height]); }, true);
+        const event = new WheelEvent('wheel', {
+            ctrlKey: true, deltaY: -100, clientX: 261, clientY: 141, cancelable: true,
+        });
+        element.dispatchEvent(event);
+        expect(event.defaultPrevented).toBe(true);
+        browser.paint();
+        const zoom = Math.exp(.2);
+        const transform = browser.transforms.at(-1)!;
+        [2 * zoom, 0, 0, 2 * zoom, 320 * (1 - zoom), 180 * (1 - zoom)]
+            .forEach((value, index) => expect(transform[index]).toBeCloseTo(value, 10));
+        expect(surface.point({ clientX: 261, clientY: 141 })).toEqual({ x: 160, y: 90 });
+        expect(sizes).toEqual([[320, 180]]);
+        surface.destroy();
+    });
+
+    it('leaves ordinary scrolling and preview Ctrl-wheel untouched and removes its listener on destruction', () => {
+        const { browser, surface, element } = setup();
+        surface.initialize(element, () => {});
+        const previewWheel = new WheelEvent('wheel', { ctrlKey: true, deltaY: -100, cancelable: true });
+        element.dispatchEvent(previewWheel);
+        expect(previewWheel.defaultPrevented).toBe(false);
+        surface.destroy();
+        surface.initialize(element, () => {}, true);
+        const ordinaryWheel = new WheelEvent('wheel', { deltaY: 100, cancelable: true });
+        element.dispatchEvent(ordinaryWheel);
+        expect(ordinaryWheel.defaultPrevented).toBe(false);
+        surface.destroy();
+        const removedWheel = new WheelEvent('wheel', { ctrlKey: true, deltaY: -100, cancelable: true });
+        element.dispatchEvent(removedWheel);
+        expect(removedWheel.defaultPrevented).toBe(false);
+        expect(browser.frames.size).toBe(0);
+    });
+
+    it.each([[1, -1, 16], [2, -1, 180], [0, -16, 16]])(
+        'normalizes wheel mode %s with delta %s', (deltaMode, deltaY, pixels) => {
+            const { browser, surface, element } = setup();
+            surface.initialize(element, () => {}, true);
+            element.dispatchEvent(new WheelEvent('wheel', { ctrlKey: true, deltaMode, deltaY, clientX: 101, clientY: 51 }));
+            browser.paint();
+            expect(browser.transforms.at(-1)?.[0]).toBeCloseTo(2 * Math.exp(pixels * .002), 10);
+            surface.destroy();
+        },
+    );
+
+    it('clamps zoom to 25%-400% and keeps anchors stable at limits', () => {
+        const { browser, surface, element } = setup();
+        surface.initialize(element, () => {}, true);
+        for (const [deltaY, zoom] of [[-100000, 4], [100000, .25], [100000, .25]]) {
+            element.dispatchEvent(new WheelEvent('wheel', { ctrlKey: true, deltaY, clientX: 261, clientY: 141 }));
+            browser.paint();
+            expect(browser.transforms.at(-1)?.[0]).toBe(2 * zoom);
+            expect(surface.point({ clientX: 261, clientY: 141 })).toEqual({ x: 160, y: 90 });
+        }
+        surface.destroy();
+    });
+
+    it('pans freely, inverts the combined transform and preserves it across high-DPI resize', () => {
+        const { browser, surface, element } = setup();
+        surface.initialize(element, () => {}, true);
+        element.dispatchEvent(new WheelEvent('wheel', { ctrlKey: true, deltaY: -100000, clientX: 101, clientY: 51 }));
+        const pointer = (pointerId: number, clientX: number, clientY: number) =>
+            ({ pointerId, clientX, clientY } as PointerEvent);
+        expect(surface.movePan(pointer(1, 10, 10))).toBe(false);
+        surface.beginPan(pointer(7, 100, 100));
+        expect(browser.captured).toEqual([7]);
+        expect(surface.movePan(pointer(8, 1000, 2000))).toBe(false);
+        surface.endPan(pointer(8, 0, 0));
+        expect(surface.movePan(pointer(7, 1100, -900))).toBe(true);
+        expect(surface.point({ clientX: 1261, clientY: -589 })).toEqual({ x: 40, y: 90 });
+        browser.pixelRatio = 3;
+        browser.width = 640;
+        browser.resize();
+        browser.paint();
+        expect(browser.transforms.at(-1)).toEqual([12, 0, 0, 12, 3000, -3000]);
+        expect(browser.cleared.at(-1)).toEqual([0, 0, 640, 180]);
+        surface.endPan(pointer(7, 0, 0));
+        expect(surface.movePan(pointer(7, 2000, 2000))).toBe(false);
+        surface.resetView();
+        browser.paint();
+        expect(browser.transforms.at(-1)).toEqual([3, 0, 0, 3, 0, 0]);
+        expect(surface.point({ clientX: 261, clientY: 141 })).toEqual({ x: 160, y: 90 });
+        surface.destroy();
+    });
+
     it('reports invalid lifecycle use and an unavailable context while allowing safe cleanup', () => {
         const { browser, surface, element } = setup();
         expect(() => surface.requestDraw()).toThrow('Canvas is not initialized.');

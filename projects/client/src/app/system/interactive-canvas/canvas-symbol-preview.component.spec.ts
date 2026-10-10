@@ -19,6 +19,10 @@ class PreviewSurface implements ICanvas {
     requestDraw(): void { this.render?.(this.drawing.context, this.width, this.height); }
     point(): { x: number; y: number } { return { x: 0, y: 0 }; }
     capturePointer(): void {}
+    resetView(): void {}
+    beginPan(): void {}
+    movePan(): boolean { return false; }
+    endPan(): void {}
     destroy(): void { this.destroyed = true; }
 }
 

@@ -6,6 +6,7 @@ import { CANVAS } from './canvas';
 import type { ICanvas } from './canvas';
 import { SCHEDULER } from '../../scheduler';
 import type { IScheduler } from '../../scheduler';
+import { CanvasViewport } from './canvas-viewport';
 
 class MockScheduler implements IScheduler {
     interval: number | undefined;
@@ -21,6 +22,11 @@ class MockScheduler implements IScheduler {
 }
 
 class MockCanvas implements ICanvas {
+    readonly viewport = new CanvasViewport();
+    resetView(): void { this.viewport.reset(); }
+    beginPan(event: PointerEvent): void { this.capturePointer(event.pointerId); this.viewport.beginPan(event); }
+    movePan(event: PointerEvent): boolean { return this.viewport.movePan(event); }
+    endPan(event: PointerEvent): void { this.viewport.endPan(event); }
     width = 320;
     height = 180;
     error = '';
@@ -74,7 +80,7 @@ class MockCanvas implements ICanvas {
         }
     }
     point(event: Pick<MouseEvent, 'clientX' | 'clientY'>) {
-        return { x: event.clientX - 101, y: event.clientY - 51 };
+        return this.viewport.point({ x: event.clientX - 101, y: event.clientY - 51 });
     }
     capturePointer(pointerId: number): void { this.captured.push(pointerId); }
     destroy(): void { this.destroyed = true; this.render = undefined; this.pending = false; }
@@ -164,6 +170,57 @@ describe('CanvasDiagramEditor', () => {
     }
 
     function loadOverview(): void { clickButton('Load DevEnv overview'); }
+
+    it('Ctrl-drags empty canvas without moving parts or clearing selection, and resets on confirmed load', () => {
+        createEditor();
+        loadOverview();
+        checkPartRow(0);
+        const original = editor.parts[0];
+        const canvas = host.querySelector('canvas')!;
+        const down = pointer('pointerdown', 1000, 600, 7);
+        Object.defineProperty(down, 'ctrlKey', { value: true });
+        canvas.dispatchEvent(down);
+        fixture.detectChanges();
+        dispatch('pointermove', 1999, 1549, 7);
+        dispatch('pointerup', 1999, 1549, 7);
+        expect(editor.checkedParts.has(original)).toBe(true);
+        expect(original.position).toEqual({ x: 40, y: 40 });
+        expect(surface.viewport.x).toBe(1100);
+        expect(surface.viewport.y).toBe(1000);
+        loadOverview();
+        clickButton('Cancel replacement');
+        expect(surface.viewport.x).toBe(1100);
+        loadOverview();
+        clickButton('Confirm replacement');
+        expect(surface.viewport.x).toBe(0);
+        expect(surface.viewport.y).toBe(0);
+        expect(surface.viewport.zoom).toBe(1);
+    });
+
+    it('drags and connects parts in logical coordinates after zoom and translation', () => {
+        createEditor();
+        addParts(2);
+        surface.viewport.wheel(new WheelEvent('wheel', { deltaY: -100000 }), { x: 0, y: 0 }, 180);
+        surface.viewport.beginPan({ pointerId: 1, clientX: 0, clientY: 0 } as PointerEvent);
+        surface.viewport.movePan({ pointerId: 1, clientX: 100, clientY: 50 } as PointerEvent);
+        surface.viewport.endPan({ pointerId: 1 } as PointerEvent);
+        drag(340, 290, 1540, 290);
+        expect(editor.parts[1].position).toEqual({ x: 348, y: 48 });
+        clickCanvas(10, 10);
+        clickCanvas(220, 170);
+        clickButton('Connect selected part');
+        clickCanvas(1540, 290);
+        expect(editor.connections).toHaveLength(1);
+        expect(editor.connections[0].first).toBe(editor.parts[0]);
+        expect(editor.connections[0].second).toBe(editor.parts[1]);
+        const oldZoom = surface.viewport.zoom;
+        loadOverview();
+        clickButton('Cancel replacement');
+        expect(surface.viewport.zoom).toBe(oldZoom);
+        loadOverview();
+        clickButton('Confirm replacement');
+        expect(surface.viewport.zoom).toBe(1);
+    });
 
     function replaceOverview(): void {
         loadOverview();

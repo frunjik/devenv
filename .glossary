@@ -1,5 +1,379 @@
 # Glossary
 
+## AgentPhaseGuide
+
+### Definitions
+
+- A coordinator setup that guides work through Understand, Explore, Make and Evaluate while retaining ownership of the agreed task\. Its instructions guide behavior; they do not enforce runtime switching\.
+
+<details>
+<summary>Examples</summary>
+
+- One coordinator loads phase\-appropriate skills and repeats the loop when evaluation reveals more work\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Agent Essentials
+
+### Definitions
+
+- The always\-on generic rules covering requested\-outcome verification, the phase loop, TDD, boundary mocks, coverage and repository safeguards\.
+
+<details>
+<summary>Examples</summary>
+
+- AGENTS\.md applies even when the coordinator agent is not selected\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Agent Phase
+
+### Definitions
+
+- A named responsibility in the work loop, not necessarily a separate agent or a mandatory formal handoff\.
+
+<details>
+<summary>Examples</summary>
+
+- Understand establishes intent; Explore investigates evidence; Make produces the change; Evaluate assesses the result\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Understand
+
+### Definitions
+
+- The Agent Phase that establishes intent, constraints and observable success conditions, recovering prior context when needed\.
+
+<details>
+<summary>Examples</summary>
+
+- Clarify whether a requested glossary split means a derived export or an independently maintained document\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Explore
+
+### Definitions
+
+- The Agent Phase that inspects evidence, existing code, tests and boundaries, compares options and resolves required approvals before choosing an approach\.
+
+<details>
+<summary>Examples</summary>
+
+- Find an existing glossary validator and renderer before introducing export logic\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Make
+
+### Definitions
+
+- The Agent Phase that produces the agreed change or artifact, including verification during execution\. Production behavior changes follow TDD within this phase\.
+
+<details>
+<summary>Examples</summary>
+
+- Write and observe a failing export test before implementing glossary selection\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Evaluate
+
+### Definitions
+
+- The Agent Phase that compares the result with success conditions, reviews practice compliance separately from test results, records available evidence and decides the next step\.
+
+<details>
+<summary>Examples</summary>
+
+- Check that the exported glossary explains the generic setup and excludes project\-specific entries; a passing test suite alone is not that assessment\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Skill
+
+### Definitions
+
+- An on\-demand set of instructions for a particular activity, loaded when applicable\. Loading a skill is different from delegating to another agent\.
+
+<details>
+<summary>Examples</summary>
+
+- The TDD skill guides production behavior changes inside Make; UI design review is loaded only with explicit agreement\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Coordinator
+
+### Definitions
+
+- The agent role that retains task ownership, scope, authorization, decisions and evidence while selecting applicable capabilities\.
+
+<details>
+<summary>Examples</summary>
+
+- Delegating independent research does not transfer responsibility for the requested outcome\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Handoff
+
+### Definitions
+
+- The transfer of relevant outcomes, evidence, constraints, approvals or next steps between phases or capabilities, without automatically transferring task ownership\.
+
+<details>
+<summary>Examples</summary>
+
+- Explore hands Make the chosen approach and required approvals; Make hands Evaluate the change and verification evidence\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Project Profile
+
+### Definitions
+
+- The project\-specific complement to the generic core, recording safeguards, conventions, paths and commands without embedding them in the portable setup\.
+
+<details>
+<summary>Examples</summary>
+
+- The profile supplies test\-framework conventions and, when used, the WorkTask registry and evaluation ledger locations\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## TDD
+
+### Definitions
+
+- Test\-driven development: observe a focused failing test before changing production behavior, implement enough to pass, then review behavior\-preserving improvements with tests green\.
+
+<details>
+<summary>Examples</summary>
+
+- Red, Green and Refactor take place inside Make; documentation\-only work does not claim TDD\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Red
+
+### Definitions
+
+- The TDD step that writes and runs the smallest focused test for one changed behavior and observes its failure before production changes\.
+
+<details>
+<summary>Examples</summary>
+
+- An export test fails because no glossary files are produced yet; a compilation failure can also establish Red\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Green
+
+### Definitions
+
+- The TDD step that implements only enough production behavior to satisfy the focused failing test and verifies that it passes\.
+
+<details>
+<summary>Examples</summary>
+
+- Select the approved glossary domain and render the two required export files\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Refactor
+
+### Definitions
+
+- The TDD step that reviews duplication and cohesion and improves clarity without changing behavior, while keeping tests green\.
+
+<details>
+<summary>Examples</summary>
+
+- Extract a real responsibility when useful; do not distort production code to raise coverage\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Boundary Mock
+
+### Definitions
+
+- A test substitute at an external or system boundary that preserves actual application and domain behavior while controlling boundary results and errors\.
+
+<details>
+<summary>Examples</summary>
+
+- Inject an in\-memory filesystem into an export test rather than writing real files or mocking internal selection logic\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Success Condition
+
+### Definitions
+
+- An observable condition that establishes whether the agreed requested outcome has been achieved\.
+
+<details>
+<summary>Examples</summary>
+
+- The export contains only AgentPhaseGuide glossary entries, and its Markdown is derived from the same selected JSON\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Applicable Default
+
+### Definitions
+
+- A practice followed when applicable, rather than a completion gate; meaningful deviations are briefly justified\.
+
+<details>
+<summary>Examples</summary>
+
+- Review meaningful complexity findings without automatically rewriting correct code\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Safeguard
+
+### Definitions
+
+- A constraint protecting scope, authorization, data, intended behavior or honest verification; it is not an ordinary capability toggle\.
+
+<details>
+<summary>Examples</summary>
+
+- Commit only on explicit request with an approved subject; preserve unrelated work\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Exploration Intent
+
+### Definitions
+
+- A proposed practice whose behavior and scope remain open; it is not active guidance until approved for activation\.
+
+<details>
+<summary>Examples</summary>
+
+- Trial changes in isolation before broad adoption remains an exploration intent, not a mandatory preview for every change\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## WorkTask Measurement
+
+### Definitions
+
+- A conditional tracking practice used when the project profile names a WorkTask registry and evaluation ledger: record whether a task is Measured or NotMeasured, ask while Undecided at activation, and retain evidence for measured work\.
+
+<details>
+<summary>Examples</summary>
+
+- A measured task links evaluation IDs containing baseline and completion evidence; unknown effort and benefit stay unknown\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
+## Export Manifest
+
+### Definitions
+
+- The record of exported file paths and the source commit that pins the generic setup's exported content\. It does not establish recipient installation or runtime enforcement\.
+
+<details>
+<summary>Examples</summary>
+
+- The export rejects uncommitted source changes so its manifest can identify committed content\.
+
+</details>
+
+### Domain usage
+
+- AgentPhaseGuide
+
 ## Runtime Environment
 
 ### Definitions

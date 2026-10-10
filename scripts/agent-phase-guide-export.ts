@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import type { TextFileSystem } from '../projects/shared/src/lib/text-file-system.types';
+import { glossaryEntriesToMarkdown, validateGlossaryEntries } from '../projects/shared/src/lib/glossary.types';
 
 export interface AgentPhaseGuideExportFileSystem extends TextFileSystem {
     mkdirSync(path: string, options: { recursive: true }): unknown;
@@ -45,13 +46,25 @@ export function exportAgentPhaseGuide(
         ...agentPhaseGuideCoreFiles.map(path => ({ from: path, to: path })),
         { from: projectProfileTemplatePath, to: projectProfilePath },
     ];
-    const uncommitted = copies.map(copy => copy.from).filter(path => source.uncommittedPaths.includes(path));
+    const uncommitted = [...copies.map(copy => copy.from), '.glossary.json']
+        .filter(path => source.uncommittedPaths.includes(path));
     if (uncommitted.length > 0) {
         throw new Error(`Uncommitted AgentPhaseGuide sources: ${uncommitted.join(', ')}. Commit them so the manifest pins the exported content.`);
     }
     // Read everything before writing so a missing source cannot leave a partial export behind.
     const contents = copies.map(copy => ({ ...copy, content: fileSystem.readFileSync(join(sourceRoot, copy.from), 'utf8') }));
-    for (const { to, content } of contents) {
+    const glossarySource: unknown = JSON.parse(fileSystem.readFileSync(join(sourceRoot, '.glossary.json'), 'utf8'));
+    const glossary = validateGlossaryEntries(glossarySource).filter(entry => entry.domains.includes('AgentPhaseGuide'));
+    if (glossary.length === 0) {
+        throw new Error('No AgentPhaseGuide glossary entries found in .glossary.json.');
+    }
+    // Derive both views from the main glossary instead of maintaining a second set of definitions.
+    const outputs = [
+        ...contents,
+        { to: '.glossary.json', content: `${JSON.stringify(glossary, null, 2)}\n` },
+        { to: '.glossary', content: glossaryEntriesToMarkdown(glossary) },
+    ];
+    for (const { to, content } of outputs) {
         const target = join(destination, to);
         fileSystem.mkdirSync(dirname(target), { recursive: true });
         fileSystem.writeFileSync(target, content, 'utf8');
@@ -59,7 +72,7 @@ export function exportAgentPhaseGuide(
     const manifest: AgentPhaseGuideExportManifest = {
         name: 'agent-phase-guide',
         commit: source.commit,
-        files: copies.map(copy => copy.to),
+        files: outputs.map(output => output.to),
     };
     fileSystem.writeFileSync(join(destination, manifestPath), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
     return manifest;

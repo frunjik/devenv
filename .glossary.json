@@ -1,5 +1,137 @@
 [
   {
+    "term": "AgentPhaseGuide",
+    "definitions": ["A coordinator setup that guides work through Understand, Explore, Make and Evaluate while retaining ownership of the agreed task. Its instructions guide behavior; they do not enforce runtime switching."],
+    "examples": ["One coordinator loads phase-appropriate skills and repeats the loop when evaluation reveals more work."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Agent Essentials",
+    "definitions": ["The always-on generic rules covering requested-outcome verification, the phase loop, TDD, boundary mocks, coverage and repository safeguards."],
+    "examples": ["AGENTS.md applies even when the coordinator agent is not selected."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Agent Phase",
+    "definitions": ["A named responsibility in the work loop, not necessarily a separate agent or a mandatory formal handoff."],
+    "examples": ["Understand establishes intent; Explore investigates evidence; Make produces the change; Evaluate assesses the result."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Understand",
+    "definitions": ["The Agent Phase that establishes intent, constraints and observable success conditions, recovering prior context when needed."],
+    "examples": ["Clarify whether a requested glossary split means a derived export or an independently maintained document."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Explore",
+    "definitions": ["The Agent Phase that inspects evidence, existing code, tests and boundaries, compares options and resolves required approvals before choosing an approach."],
+    "examples": ["Find an existing glossary validator and renderer before introducing export logic."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Make",
+    "definitions": ["The Agent Phase that produces the agreed change or artifact, including verification during execution. Production behavior changes follow TDD within this phase."],
+    "examples": ["Write and observe a failing export test before implementing glossary selection."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Evaluate",
+    "definitions": ["The Agent Phase that compares the result with success conditions, reviews practice compliance separately from test results, records available evidence and decides the next step."],
+    "examples": ["Check that the exported glossary explains the generic setup and excludes project-specific entries; a passing test suite alone is not that assessment."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Skill",
+    "definitions": ["An on-demand set of instructions for a particular activity, loaded when applicable. Loading a skill is different from delegating to another agent."],
+    "examples": ["The TDD skill guides production behavior changes inside Make; UI design review is loaded only with explicit agreement."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Coordinator",
+    "definitions": ["The agent role that retains task ownership, scope, authorization, decisions and evidence while selecting applicable capabilities."],
+    "examples": ["Delegating independent research does not transfer responsibility for the requested outcome."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Handoff",
+    "definitions": ["The transfer of relevant outcomes, evidence, constraints, approvals or next steps between phases or capabilities, without automatically transferring task ownership."],
+    "examples": ["Explore hands Make the chosen approach and required approvals; Make hands Evaluate the change and verification evidence."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Project Profile",
+    "definitions": ["The project-specific complement to the generic core, recording safeguards, conventions, paths and commands without embedding them in the portable setup."],
+    "examples": ["The profile supplies test-framework conventions and, when used, the WorkTask registry and evaluation ledger locations."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "TDD",
+    "definitions": ["Test-driven development: observe a focused failing test before changing production behavior, implement enough to pass, then review behavior-preserving improvements with tests green."],
+    "examples": ["Red, Green and Refactor take place inside Make; documentation-only work does not claim TDD."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Red",
+    "definitions": ["The TDD step that writes and runs the smallest focused test for one changed behavior and observes its failure before production changes."],
+    "examples": ["An export test fails because no glossary files are produced yet; a compilation failure can also establish Red."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Green",
+    "definitions": ["The TDD step that implements only enough production behavior to satisfy the focused failing test and verifies that it passes."],
+    "examples": ["Select the approved glossary domain and render the two required export files."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Refactor",
+    "definitions": ["The TDD step that reviews duplication and cohesion and improves clarity without changing behavior, while keeping tests green."],
+    "examples": ["Extract a real responsibility when useful; do not distort production code to raise coverage."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Boundary Mock",
+    "definitions": ["A test substitute at an external or system boundary that preserves actual application and domain behavior while controlling boundary results and errors."],
+    "examples": ["Inject an in-memory filesystem into an export test rather than writing real files or mocking internal selection logic."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Success Condition",
+    "definitions": ["An observable condition that establishes whether the agreed requested outcome has been achieved."],
+    "examples": ["The export contains only AgentPhaseGuide glossary entries, and its Markdown is derived from the same selected JSON."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Applicable Default",
+    "definitions": ["A practice followed when applicable, rather than a completion gate; meaningful deviations are briefly justified."],
+    "examples": ["Review meaningful complexity findings without automatically rewriting correct code."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Safeguard",
+    "definitions": ["A constraint protecting scope, authorization, data, intended behavior or honest verification; it is not an ordinary capability toggle."],
+    "examples": ["Commit only on explicit request with an approved subject; preserve unrelated work."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Exploration Intent",
+    "definitions": ["A proposed practice whose behavior and scope remain open; it is not active guidance until approved for activation."],
+    "examples": ["Trial changes in isolation before broad adoption remains an exploration intent, not a mandatory preview for every change."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "WorkTask Measurement",
+    "definitions": ["A conditional tracking practice used when the project profile names a WorkTask registry and evaluation ledger: record whether a task is Measured or NotMeasured, ask while Undecided at activation, and retain evidence for measured work."],
+    "examples": ["A measured task links evaluation IDs containing baseline and completion evidence; unknown effort and benefit stay unknown."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
+    "term": "Export Manifest",
+    "definitions": ["The record of exported file paths and the source commit that pins the generic setup's exported content. It does not establish recipient installation or runtime enforcement."],
+    "examples": ["The export rejects uncommitted source changes so its manifest can identify committed content."],
+    "domains": ["AgentPhaseGuide"]
+  },
+  {
     "term": "Runtime Environment",
     "definitions": [
       "The environment and APIs in which code executes, distinct from its client/server role and JavaScript execution context."

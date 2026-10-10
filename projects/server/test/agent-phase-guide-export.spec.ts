@@ -2,6 +2,7 @@ import { describe, expect, it, jest } from '@jest/globals';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { createMemoryTextFileSystem } from '../../shared/src/testing/memory-text-file-system';
+import { glossaryEntriesToMarkdown, validateGlossaryEntries } from '@shared';
 import {
     agentPhaseGuideCoreFiles,
     exportAgentPhaseGuide,
@@ -12,10 +13,25 @@ import {
 const commit = '0123456789abcdef0123456789abcdef01234567';
 const sourceRoot = resolve('source');
 const destination = resolve('guide-export');
+const guideEntry = {
+    term: 'AgentPhaseGuide',
+    definitions: ['Coordinates the four-phase work loop.'],
+    examples: ['Understand before Make.'],
+    domains: ['AgentPhaseGuide'],
+};
+const projectEntry = {
+    term: 'Project-specific API',
+    definitions: ['A project-specific concept excluded from the generic export.'],
+    examples: [],
+    domains: ['DevEnv'],
+};
 
 function sourceFiles(): Record<string, string> {
-    return Object.fromEntries([...agentPhaseGuideCoreFiles, projectProfileTemplatePath]
-        .map(path => [join(sourceRoot, path), `content of ${path}\n`]));
+    return {
+        ...Object.fromEntries([...agentPhaseGuideCoreFiles, projectProfileTemplatePath]
+            .map(path => [join(sourceRoot, path), `content of ${path}\n`])),
+        [join(sourceRoot, '.glossary.json')]: JSON.stringify([guideEntry, projectEntry]),
+    };
 }
 
 function exportFileSystem(files = sourceFiles()) {
@@ -36,10 +52,62 @@ describe('AgentPhaseGuide export', () => {
         expect(manifest).toEqual({
             name: 'agent-phase-guide',
             commit,
-            files: [...agentPhaseGuideCoreFiles, projectProfilePath],
+            files: [...agentPhaseGuideCoreFiles, projectProfilePath, '.glossary.json', '.glossary'],
         });
         expect(JSON.parse(fileSystem.files.get(join(destination, 'agent-phase-guide.manifest.json')) ?? '')).toEqual(manifest);
         expect(fileSystem.mkdirSync).toHaveBeenCalledWith(join(destination, '.agents', 'skills', 'tdd'), { recursive: true });
+    });
+
+    it('derives a domain-specific JSON glossary and Markdown from the main source', () => {
+        const fileSystem = exportFileSystem();
+
+        exportAgentPhaseGuide(sourceRoot, destination, { commit, uncommittedPaths: [] }, fileSystem);
+
+        const glossary = fileSystem.readFileSync(join(destination, '.glossary.json'), 'utf8');
+        expect(JSON.parse(glossary)).toEqual([guideEntry]);
+        expect(fileSystem.readFileSync(join(destination, '.glossary'), 'utf8'))
+            .toBe(glossaryEntriesToMarkdown([guideEntry]));
+        expect(glossary).not.toContain(projectEntry.term);
+    });
+
+    it.each([
+        ['malformed JSON', '{', 'JSON'],
+        ['invalid entries', '[{"term":"Incomplete"}]', 'Invalid Glossary'],
+        ['no matching concepts', JSON.stringify([projectEntry]), 'No AgentPhaseGuide glossary entries'],
+    ])('rejects %s before writing any export files', (_scenario, glossary, message) => {
+        const files = { ...sourceFiles(), [join(sourceRoot, '.glossary.json')]: glossary };
+        const fileSystem = exportFileSystem(files);
+
+        expect(() => exportAgentPhaseGuide(sourceRoot, destination, { commit, uncommittedPaths: [] }, fileSystem))
+            .toThrow(message);
+        expect([...fileSystem.files.entries()]).toEqual(Object.entries(files));
+        expect(fileSystem.mkdirSync).not.toHaveBeenCalled();
+    });
+
+    it('includes the glossary source in the commit-pinning check', () => {
+        const fileSystem = exportFileSystem();
+
+        expect(() => exportAgentPhaseGuide(sourceRoot, destination, {
+            commit, uncommittedPaths: ['.glossary.json'],
+        }, fileSystem)).toThrow('Uncommitted AgentPhaseGuide sources: .glossary.json');
+        expect(fileSystem.mkdirSync).not.toHaveBeenCalled();
+    });
+
+    // Source-consistency check: the real glossary must explain every approved concept in the portable domain.
+    it('records the approved concepts in the authoritative glossary with generic definitions and examples', () => {
+        const entries = validateGlossaryEntries(JSON.parse(readFileSync(resolve(__dirname, '../../../.glossary.json'), 'utf8')))
+            .filter(entry => entry.domains.includes('AgentPhaseGuide'));
+        expect(entries.map(entry => entry.term)).toEqual([
+            'AgentPhaseGuide', 'Agent Essentials', 'Agent Phase', 'Understand', 'Explore', 'Make', 'Evaluate',
+            'Skill', 'Coordinator', 'Handoff', 'Project Profile', 'TDD', 'Red', 'Green', 'Refactor',
+            'Boundary Mock', 'Success Condition', 'Applicable Default', 'Safeguard', 'Exploration Intent',
+            'WorkTask Measurement', 'Export Manifest',
+        ]);
+        for (const entry of entries) {
+            expect(entry.definitions.length).toBeGreaterThan(0);
+            expect(entry.examples.length).toBeGreaterThan(0);
+            expect(JSON.stringify(entry)).not.toMatch(/DevEnv|SystemConcern|@shared|@jest/);
+        }
     });
 
     it('rejects export when exported sources have uncommitted changes, without writing', () => {

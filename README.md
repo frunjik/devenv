@@ -60,6 +60,10 @@ contains no DevEnv-specific rules. DevEnv paths, commands and stack conventions 
 for all files. Run `npm run export:agent-phase-guide -- <destination>` to copy the generic
 core into another folder, with [a profile template](./knowledge/practices/project-profile.template.md)
 in place of the DevEnv profile and an `agent-phase-guide.manifest.json` pinned to `HEAD`.
+It also derives a focused `.glossary.json` and its Markdown `.glossary` from entries
+tagged with the `AgentPhaseGuide` domain in the [main glossary](./.glossary.json).
+Edit definitions and examples only in the main source; the export selects and renders
+them without maintaining a second glossary. Unrelated domain entries are excluded.
 The export refuses to run while any exported source has uncommitted changes, and the
 destination must be outside this repository.
 

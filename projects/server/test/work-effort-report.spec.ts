@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { createWorkEffortReport, workEffortReportSummaryToMarkdown, workEffortReportToMarkdown } from '../../../scripts/work-effort-report';
+import { createWorkEffortReport, workEffortReportSlicesToMarkdown, workEffortReportSummaryToMarkdown, workEffortReportToMarkdown } from '../../../scripts/work-effort-report';
 
 function evaluation(id: string, start: string | null, end: string | null) {
     return {
@@ -30,6 +30,35 @@ const classifications = [
 const gitLog = `${'a'.repeat(40)}\t2025-04-18T00:00:00Z\t2025-04-18T01:00:00Z\tInitial commit\n`;
 
 describe('work effort report', () => {
+    it('lists every slice once with aligned text and numbers, including unknown intervals', () => {
+        const report = createWorkEffortReport(ledger, classifications, '');
+        const table = workEffortReportSlicesToMarkdown(report).split('\n').filter(line => line.startsWith('|'));
+        expect(table).toHaveLength(ledger.evaluations.length + 2);
+        const columns = table.map(line => line.split('|').slice(1, -1));
+        const widths = columns[0].map(column => column.length - 2);
+        for (const row of columns) {
+            row.forEach((column, index) => {
+                expect(column).toBe(` ${index < 2 ? column.trim().padEnd(widths[index]) : column.trim().padStart(widths[index])} `);
+            });
+        }
+        const compact = table.join('\n').replace(/ {2,}/g, ' ');
+        expect(compact).toContain('| domain: domain | Problem/Domain | 0:20:00 | 20.00 |');
+        expect(compact).toContain('| mixed: mixed | Mixed | 0:05:00 | 5.00 |');
+        expect(compact).toContain('| unfinished: unfinished | Unclassified | unknown | unknown |');
+        expect(compact).toContain('| untimed: untimed | Unclassified | unknown | unknown |');
+        expect(report.observedTotalMs).toBe(40 * 60000);
+    });
+
+    it('preserves empty-ledger rejection and renders zero durations without inventing time', () => {
+        expect(() => createWorkEffortReport({ ...ledger, evaluations: [] }, [], ''))
+            .toThrow('Invalid WorkEvaluationDataset: expected at least one work evaluation');
+        const report = createWorkEffortReport({
+            ...ledger, evaluations: [{ ...evaluation('zero', timestamp(0), timestamp(0)), title: 'A | B\nnew' }],
+        }, [], '');
+        expect(workEffortReportSlicesToMarkdown(report).replace(/ {2,}/g, ' '))
+            .toContain('| zero: A \\| B new | Unclassified | 0:00:00 | 0.00 |');
+    });
+
     it.each(['2026-10-10T01:00:00Z', '9999-12-31T23:59:59Z'])('aligns summary columns with spaces for an interval ending %s', end => {
         const report = createWorkEffortReport({
             ...ledger, evaluations: [evaluation('domain', timestamp(0), end)],

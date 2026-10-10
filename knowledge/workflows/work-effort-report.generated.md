@@ -24,7 +24,7 @@ Durations use hours:minutes:seconds, rounded to the nearest second. The Problem 
 
 Evaluations reviewed: 48. Complete intervals: 40.
 Unfinished or untimed evaluations: 8.
-Reachable commits inventoried: 708; all commit durations and outcome classifications remain unknown.
+Reachable commits inventoried: 709; all commit durations and outcome classifications remain unknown.
 
 ## Evaluation evidence
 
@@ -87,6 +87,7 @@ Individual elapsed values below overlap and must not be summed.
 Author and commit dates are events, not work intervals. No time is inferred from commit gaps. Inspect referenced diffs before assigning older work to outcomes.
 | Commit | Author timestamp | Commit timestamp | Subject |
 |---|---|---|---|
+| 9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7 | 2026-10-10T17:30:18+02:00 | 2026-10-10T17:30:18+02:00 | Print aligned effort report summary in terminal |
 | 9348daca5d494678a6ec1ff71f97f2ffdf813968 | 2026-10-10T17:26:13+02:00 | 2026-10-10T17:26:13+02:00 | Show category durations and totals in effort report |
 | fa30dafb52261868e89a87198fdd0a6f6c189d24 | 2026-10-10T17:14:25+02:00 | 2026-10-10T17:14:25+02:00 | Add glossary shortcut to AgentPhaseGuide guidance |
 | 1dadc44a81d1d49cfbe47c8c250e180633bee199 | 2026-10-10T17:10:18+02:00 | 2026-10-10T17:10:18+02:00 | Remove development remnants from portable AgentPhaseGuide |
@@ -798,7 +799,7 @@ Author and commit dates are events, not work intervals. No time is inferred from
 
 ## Scope, sources and limitations
 
-Git inventory pinned to 9348daca5d494678a6ec1ff71f97f2ffdf813968. Snapshot generated at 2026-10-10T15:29:51.778Z.
+Git inventory pinned to 9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7. Snapshot generated at 2026-10-10T15:35:34.049Z.
 Classification source: [reviewed outcome classifications](./work-effort-classifications.json).
 Exact source hashes, original workflow/WorkPlan records, and extracted checkpoint evidence are retained in [the JSON snapshot](./work-effort-report.json).
 - Scope is all reachable HEAD history and current repository records, not deleted branches, inaccessible chats or all work ever done.

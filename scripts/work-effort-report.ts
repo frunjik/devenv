@@ -102,6 +102,28 @@ function duration(ms: number): string {
     return `${Math.floor(seconds / 3600)}:${String(Math.floor(seconds / 60) % 60).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
+function alignedTable(headers: string[], rows: string[][], numericColumns: number[]): string {
+    const widths = headers.map((header, index) => Math.max(header.length, ...rows.map(row => row[index].length)));
+    const separators = widths.map((width, index) => numericColumns.includes(index) ? `${'-'.repeat(width - 1)}:` : '-'.repeat(width));
+    return [headers, separators, ...rows].map(row =>
+        `| ${row.map((value, index) => numericColumns.includes(index) ? value.padStart(widths[index]) : value.padEnd(widths[index])).join(' | ')} |`).join('\n');
+}
+
+export function workEffortReportSlicesToMarkdown(report: WorkEffortReport): string {
+    const rows = report.rows.map(row => [
+        `${cell(row.id)}: ${cell(row.title)}`, row.category,
+        row.elapsedMs === null ? 'unknown' : duration(row.elapsedMs),
+        row.elapsedMs === null ? 'unknown' : (row.elapsedMs / 60000).toFixed(2),
+    ]);
+    return [
+        '## Recorded slices', '',
+        `Recorded evaluations: ${report.rows.length}. This lists available evaluation records, not every historical change in the repository.`,
+        'Durations are elapsed delivery windows, not active effort. Individual elapsed values overlap and must not be summed.',
+        'Untimed or unfinished slices remain unknown. Use the overlap-safe category summary for totals.', '',
+        alignedTable(['Slice (evaluation ID: title)', 'Category', 'Duration (h:mm:ss)', 'Minutes'], rows, [2, 3]),
+    ].join('\n');
+}
+
 export function workEffortReportSummaryToMarkdown(report: WorkEffortReport): string {
     const summaryRows: [string, number][] = [
         ...Object.entries(report.observedWindowsMs),
@@ -113,10 +135,6 @@ export function workEffortReportSummaryToMarkdown(report: WorkEffortReport): str
         category, duration(ms), (ms / 60000).toFixed(2),
         report.observedTotalMs === 0 ? 'unknown' : `${(100 * ms / report.observedTotalMs).toFixed(2)}%`,
     ]);
-    const widths = headers.map((header, index) => Math.max(header.length, ...rows.map(row => row[index].length)));
-    const separators = widths.map((width, index) => index === 0 ? '-'.repeat(width) : `${'-'.repeat(width - 1)}:`);
-    const table = [headers, separators, ...rows].map(row =>
-        `| ${row.map((value, index) => index === 0 ? value.padEnd(widths[index]) : value.padStart(widths[index])).join(' | ')} |`);
     return [
         'Human active effort: **unknown**. Waiting time: **unknown**. Agent/tool execution time: **unknown**.',
         'The table below describes the union of recorded evaluation delivery windows, not hours worked or the entire repository history.',
@@ -124,7 +142,7 @@ export function workEffortReportSummaryToMarkdown(report: WorkEffortReport): str
         'Mixed means inseparable outcomes; Unclassified means insufficient classification evidence. Gaps and incomplete intervals are excluded, not treated as zero effort.',
         'Percentages use only the recorded window union as denominator; they are not proportions of all work.', '',
         'Durations use hours:minutes:seconds, rounded to the nearest second. The Problem + Meta subtotal excludes Mixed, Unclassified and Cross-category overlap; the total includes all five categories. Subtotal and total rows summarize the categories and must not be added to them.', '',
-        ...table,
+        alignedTable(headers, rows, [1, 2, 3]),
     ].join('\n');
 }
 

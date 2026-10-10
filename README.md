@@ -37,6 +37,13 @@ workflow/WorkPlan sources, tracked workflow timing statements and all reachable 
 commit events. The snapshot records source hashes and the Git inventory commit.
 The command also prints the same duration summary and totals in the terminal,
 with space-padded columns, left-aligned labels and right-aligned numeric values.
+Run `npm run generate:work-effort:slices` to refresh the same evidence files and
+print only the aligned per-slice table instead of the category summary.
+It lists every recorded evaluation as a slice, with its ID/title, category,
+elapsed duration and minutes. Untimed or unfinished slices show `unknown`.
+Individual slice windows overlap and must not be summed; use the category summary
+for overlap-safe totals. This inventory does not cover historical work without
+evaluation records.
 Commit gaps are not durations; older commit outcomes remain unclassified until supported
 by additional evidence. Changing classifications requires reviewing intended outcomes,
 not inferring them from paths or existing Product/Meta labels.

@@ -2,8 +2,13 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
-import { createWorkEffortReport, workEffortReportSummaryToMarkdown, workEffortReportToMarkdown } from './work-effort-report';
+import { createWorkEffortReport, workEffortReportSlicesToMarkdown, workEffortReportSummaryToMarkdown, workEffortReportToMarkdown } from './work-effort-report';
 
+const args = process.argv.slice(2);
+if (args.length > 1 || (args.length === 1 && args[0] !== '--slices')) {
+    throw new Error('Usage: generate-work-effort-report.ts [--slices]');
+}
+const showSlices = args[0] === '--slices';
 const root = process.cwd();
 const sourcePaths = [
     'knowledge/workflows/devenv-value-evaluation.json',
@@ -70,4 +75,4 @@ const evidenceMarkdown = [
 writeFileSync(resolve(root, 'knowledge/workflows/work-effort-report.json'), `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
 writeFileSync(resolve(root, 'knowledge/workflows/work-effort-report.generated.md'), `${workEffortReportToMarkdown(report)}\n${evidenceMarkdown}\n`, 'utf8');
 console.log(`Generated report: ${report.rows.length} evaluations, ${report.commits.length} commits, ${workflowTimingEvidence.length} workflow documents.`);
-console.log(`\n${workEffortReportSummaryToMarkdown(report)}`);
+console.log(`\n${showSlices ? workEffortReportSlicesToMarkdown(report) : workEffortReportSummaryToMarkdown(report)}`);

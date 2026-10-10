@@ -1935,6 +1935,13 @@
   ],
   "commits": [
     {
+      "sha": "9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7",
+      "authoredAt": "2026-10-10T17:30:18+02:00",
+      "committedAt": "2026-10-10T17:30:18+02:00",
+      "subject": "Print aligned effort report summary in terminal",
+      "category": "Unclassified"
+    },
+    {
       "sha": "9348daca5d494678a6ec1ff71f97f2ffdf813968",
       "authoredAt": "2026-10-10T17:26:13+02:00",
       "committedAt": "2026-10-10T17:26:13+02:00",
@@ -6891,8 +6898,8 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T15:29:51.778Z",
-  "sourceCommit": "9348daca5d494678a6ec1ff71f97f2ffdf813968",
+  "generatedAt": "2026-10-10T15:35:34.049Z",
+  "sourceCommit": "9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",

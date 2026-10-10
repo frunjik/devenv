@@ -9,7 +9,17 @@ describe('work effort report generator entry', () => {
         jest.restoreAllMocks();
     });
 
-    it('reads source evidence and writes a traceable JSON snapshot and its Markdown view through boundaries', () => {
+    it.each([['--invalid'], ['--slices', '--slices']])('rejects unsupported arguments %j before reading sources', (...args) => {
+        jest.replaceProperty(process, 'argv', ['node', 'generate-work-effort-report.ts', ...args]);
+        jest.doMock('node:fs', () => ({
+            readFileSync: () => { throw new Error('Unexpected source read'); },
+        }));
+        expect(() => jest.isolateModules(() => { require('../../../scripts/generate-work-effort-report'); }))
+            .toThrow('Usage: generate-work-effort-report.ts [--slices]');
+    });
+
+    it.each(['summary', 'slices'])('generates the evidence files and prints only the %s view', view => {
+        jest.replaceProperty(process, 'argv', ['node', 'generate-work-effort-report.ts', ...(view === 'slices' ? ['--slices'] : [])]);
         const ledger = {
             schemaVersion: 1,
             metrics: [{ id: 'effort', name: 'Effort', definition: 'Effort', interpretation: 'Unknown stays unknown' }],
@@ -64,18 +74,30 @@ describe('work effort report generator entry', () => {
         expect(markdown).toContain('Elapsed time unknown.');
         const terminal = output.join('\n');
         expect(terminal.split('\n').filter(line => line.startsWith('|')))
-            .toEqual(markdown.split('\n').filter(line => line.startsWith('|')).slice(0, 9));
+            .toHaveLength(view === 'summary' ? 9 : 5);
         expect(terminal).toContain('Generated report: 3 evaluations, 0 commits, 1 workflow documents.');
-        expect(terminal).toContain('Human active effort: **unknown**');
-        for (const row of [
-            '| Problem/Domain | 1:00:00 | 60.00 | 66.67% |',
-            '| Meta/DevEnv | 0:30:00 | 30.00 | 33.33% |',
-            '| Problem + Meta subtotal | 1:30:00 | 90.00 | 100.00% |',
-            '| Total observed union | 1:30:00 | 90.00 | 100.00% |',
-        ]) {
-            expect(terminal.replace(/ {2,}/g, ' ')).toContain(row);
-            expect(markdown.replace(/ {2,}/g, ' ')).toContain(row);
-        }
         expect(terminal).not.toContain('## Git evidence inventory');
+        if (view === 'summary') {
+            expect(terminal.split('\n').filter(line => line.startsWith('|')))
+                .toEqual(markdown.split('\n').filter(line => line.startsWith('|')).slice(0, 9));
+            expect(terminal).toContain('Human active effort: **unknown**');
+            for (const row of [
+                '| Problem/Domain | 1:00:00 | 60.00 | 66.67% |',
+                '| Meta/DevEnv | 0:30:00 | 30.00 | 33.33% |',
+                '| Problem + Meta subtotal | 1:30:00 | 90.00 | 100.00% |',
+                '| Total observed union | 1:30:00 | 90.00 | 100.00% |',
+            ]) {
+                expect(terminal.replace(/ {2,}/g, ' ')).toContain(row);
+                expect(markdown.replace(/ {2,}/g, ' ')).toContain(row);
+            }
+            expect(terminal).not.toContain('## Recorded slices');
+        } else {
+            expect(terminal).not.toContain('Window category');
+            const compact = terminal.replace(/ {2,}/g, ' ');
+            expect(compact).toContain('| unknown: Unknown work | Unclassified | unknown | unknown |');
+            expect(compact).toContain('| problem: Problem work | Problem/Domain | 1:00:00 | 60.00 |');
+            expect(compact).toContain('| meta: Meta work | Meta/DevEnv | 0:30:00 | 30.00 |');
+            expect(terminal).toContain('Individual elapsed values overlap and must not be summed.');
+        }
     });
 });

@@ -1,0 +1,46 @@
+<section class="work-plans layout-page">
+    <h1>WorkPlans</h1>
+    <p>Read-only view of the authoritative WorkPlan registry. Edit <code>knowledge/workflows/work-plans.json</code> to change it.</p>
+    <p *ngIf="loading" role="status">Loading WorkPlans...</p>
+    <p *ngIf="errorMessage" role="alert">Could not load WorkPlans: {{ errorMessage }}</p>
+    <ng-container *ngIf="registry as data">
+        <p *ngIf="!data.workPlans.length">No WorkPlans recorded.</p>
+        <section *ngFor="let plan of data.workPlans" class="work-plan">
+            <h2>{{ plan.title }}</h2>
+            <p>{{ plan.description }}</p>
+            <details *ngFor="let topic of plan.topics" class="work-topic">
+                <summary>
+                    <h3>{{ topic.title }}</h3>
+                    <span class="work-topic-count">{{ topic.tasks.length }} {{ topic.tasks.length === 1 ? 'task' : 'tasks' }}</span>
+                </summary>
+                <p class="work-topic-description">{{ topic.description }}</p>
+                <article *ngFor="let task of topic.tasks" class="work-task">
+                    <header>
+                        <div class="work-task-summary">
+                            <h4>{{ task.title }}</h4>
+                            <p class="work-task-description">{{ task.description }}</p>
+                        </div>
+                        <dl>
+                            <div>
+                                <dt>Status</dt>
+                                <dd class="work-task-status">{{ task.status }}</dd>
+                            </div>
+                            <div>
+                                <dt>Measurement</dt>
+                                <dd class="work-task-measurement">{{ task.measurement }}</dd>
+                            </div>
+                        </dl>
+                    </header>
+                    <dl *ngIf="task.evaluationIds.length" class="work-task-evaluations">
+                        <div>
+                            <dt>Evaluations</dt>
+                            <dd>
+                                <a *ngFor="let evaluationId of task.evaluationIds" routerLink="/workflow-evaluations">{{ evaluationId }}</a>
+                            </dd>
+                        </div>
+                    </dl>
+                </article>
+            </details>
+        </section>
+    </ng-container>
+</section>

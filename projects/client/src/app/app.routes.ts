@@ -12,6 +12,7 @@ import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
 import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
 import { AgentGuideComponent } from './system/agent-guide/agent-guide.component';
+import { WorkPlansComponent } from './system/work-plans/work-plans.component';
 
 export const routes: Routes = [
     {
@@ -29,6 +30,10 @@ export const routes: Routes = [
     {
         path: 'diagram',
         component: DiagramPageComponent
+    },
+    {
+        path: 'work-plans',
+        component: WorkPlansComponent
     },
     {
         path: 'workflow-todo',

@@ -1,0 +1,56 @@
+h1, h2, h3, h4, dt { color: var(--text-heading); }
+p, dd { color: var(--text-secondary); overflow-wrap: anywhere; }
+.work-plan { margin-top: var(--layout-space-section); }
+.work-plan > p, .work-topic-description, .work-task-description { max-width: 65ch; line-height: 1.6; }
+.work-topic { border-bottom: 1px solid var(--border-default); }
+.work-topic > summary, .work-task > header, .work-task-evaluations {
+    display: grid;
+    grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr));
+    column-gap: var(--layout-gutter);
+}
+.work-topic > summary {
+    position: relative;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--layout-space-small) 0;
+    cursor: pointer;
+}
+.work-topic > summary::marker { content: ''; }
+.work-topic > summary::-webkit-details-marker { display: none; }
+.work-topic > summary::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    margin-top: -.3rem;
+    border-left: .4rem solid var(--text-secondary);
+    border-top: .3rem solid transparent;
+    border-bottom: .3rem solid transparent;
+}
+.work-topic[open] > summary::before { transform: rotate(90deg); }
+.work-topic > summary:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 3px; }
+.work-topic > summary h3 { grid-column: 1 / 9; margin: 0; padding-left: 1.75rem; font-size: 1.125rem; }
+.work-topic-count { grid-column: 9 / -1; color: var(--text-secondary); font-size: .875rem; }
+.work-topic-description, .work-task { margin-left: 1.75rem; }
+.work-task {
+    padding: var(--layout-space-section) 0;
+    border-top: 1px solid var(--border-default);
+}
+.work-task > header { row-gap: var(--layout-space-small); }
+.work-task-summary { grid-column: 1 / 9; }
+.work-task h4 { margin: 0 0 var(--layout-space-small); font-size: 1rem; }
+.work-task-description { margin: 0; }
+.work-task dl { margin: 0; }
+.work-task > header > dl { grid-column: 9 / -1; display: grid; row-gap: var(--layout-space-small); align-content: start; }
+.work-task-evaluations { margin-top: var(--layout-space-small); }
+.work-task-evaluations > div { grid-column: 9 / -1; }
+.work-task dt { font-size: .875rem; font-weight: 600; }
+.work-task dd { margin: 0; font-size: .875rem; }
+.work-task-evaluations a { margin-right: var(--layout-space-small); }
+
+@media (max-width: 42rem) {
+    .work-topic > summary h3, .work-topic-count, .work-task-summary,
+    .work-task > header > dl, .work-task-evaluations > div { grid-column: 1; }
+    .work-topic-count { padding-left: 1.75rem; }
+    .work-topic-description, .work-task { margin-left: 0; }
+}

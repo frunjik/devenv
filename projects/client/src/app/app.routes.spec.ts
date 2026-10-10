@@ -7,6 +7,7 @@ import { WorkflowEvaluationsComponent } from './system/workflow-todo/workflow-ev
 import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
 import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
+import { WorkPlansComponent } from './system/work-plans/work-plans.component';
 
 describe('routes', () => {
     it('exposes the read-only agent guide preview', () => {
@@ -25,6 +26,9 @@ describe('routes', () => {
         expect(routes.find(route => route.path === 'diagram')?.component).toBe(DiagramPageComponent);
     });
 
+    it('exposes the read-only WorkPlans view', () => {
+        expect(routes.find(route => route.path === 'work-plans')?.component).toBe(WorkPlansComponent);
+    });
     it('exposes the workflow TODO view', () => {
         expect(routes.find(route => route.path === 'workflow-todo')?.component).toBe(WorkflowTodoComponent);
     });

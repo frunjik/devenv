@@ -27,15 +27,14 @@ describe('NavigationToolbarComponent', () => {
         await fixture.whenStable();
     }
 
-    it('shows the host, eight navigation links and Tools as the final navigation item', () => {
+    it('shows the host, seven navigation links and Tools as the final navigation item', () => {
         expect(fixture.nativeElement.querySelector('.meta-badge').textContent.trim()).toBe('DevEnv');
         expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
         const nav = fixture.nativeElement.querySelector('nav') as HTMLElement;
         expect(Array.from(nav.querySelectorAll('a')).map(link => [link.textContent?.trim(), link.getAttribute('href')]))
             .toEqual([
                 ['System plan', '/system-plan'],
-                ['Workflow TODO', '/workflow-todo'],
-                ['Evaluations', '/workflow-evaluations'],
+                ['WorkPlans', '/work-plans'],
                 ['Terms', '/terms'],
                 ['Glossary', '/glossary'],
                 ['Diagram', '/diagram'],

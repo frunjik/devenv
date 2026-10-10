@@ -14,6 +14,26 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Anchor left picture actions above canvas
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-bottom-picture-actions`
+
+Completed bottom alignment of stacked Technical picture and Load overview buttons. Verified toolbar-bottom alignment at 320, 360, 768 and 1280px; desktop picture and right actions share the bottom, mobile flow remains unchanged, no overflow. Client build passes without warnings; diagnostics clear. Tracking and measurement retained. Next step: user review and optional commit approval.
+
+#### WorkTask: Condense connection selection rows
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-condensed-list`
+
+Completed compact connection text and 28px minimum rows, preserving wrapping, checkbox selection and 12rem scrolling cap. Runtime checks at 320, 360, 768 and 1280px show smaller rows without horizontal overflow; last checkbox scrolls into view and enables removal. Client build passes without warnings; diagnostics clear. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: Anchor right-side actions above canvas
 
 **Status:** Completed

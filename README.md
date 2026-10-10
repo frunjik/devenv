@@ -47,7 +47,8 @@ pictures continue to load as rectangles; edits remain in-memory sketches.
 Controls align to the global grid: name and type come before Add.
 Above the mobile breakpoint, name and type share the left half side by side,
 matching Load overview's width, with Add beneath them.
-Technical picture is stacked above Load overview on the left.
+Technical picture is stacked above Load overview on the left, with both
+buttons anchored to the bottom of the toolbar above the canvas.
 Above the mobile breakpoint, the Connections panel starts at the same height
 as Label and Type on the right. Its list fills the right half (six global grid
 columns), with removal and connection actions below. On mobile the list spans
@@ -55,7 +56,8 @@ both control columns.
 The right-side actions anchor to the bottom of the toolbar above the canvas,
 while the Connections list stays aligned with the top of the left fields.
 Connections are an always-visible checkbox list above Remove selected, with
-a scrollbar when the list exceeds its 12rem maximum height. Connect and Cancel
+a scrollbar when the list exceeds its 12rem maximum height. Connection rows
+use compact text and a 28px minimum height, expanding when labels wrap. Connect and Cancel
 sit below toward the same right edge, followed by picture loading. Narrow screens use two
 control columns without splitting the canvas. Wide buttons (Add, Remove selected
 and picture loading) fill their assigned grid space. Small toolbar buttons

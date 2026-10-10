@@ -10,6 +10,20 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-bottom-picture-actions",
+          "title": "Anchor left picture actions above canvas",
+          "description": "Completed bottom alignment of stacked Technical picture and Load overview buttons. Verified toolbar-bottom alignment at 320, 360, 768 and 1280px; desktop picture and right actions share the bottom, mobile flow remains unchanged, no overflow. Client build passes without warnings; diagnostics clear. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-bottom-picture-actions"]
+        }, {
+          "id": "canvas-editor-condensed-list",
+          "title": "Condense connection selection rows",
+          "description": "Completed compact connection text and 28px minimum rows, preserving wrapping, checkbox selection and 12rem scrolling cap. Runtime checks at 320, 360, 768 and 1280px show smaller rows without horizontal overflow; last checkbox scrolls into view and enables removal. Client build passes without warnings; diagnostics clear. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-condensed-list"]
+        }, {
           "id": "canvas-editor-bottom-actions",
           "title": "Anchor right-side actions above canvas",
           "description": "Completed bottom-anchored right-side removal and connection buttons with top-aligned list. Verified empty/populated lists at 320, 360, 768 and 1280px; desktop buttons align with toolbar bottom, mobile panel flow preserved, no overflow. Client build passes. Tracking and measurement retained. Next step: user review and optional commit approval.",

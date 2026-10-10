@@ -7,11 +7,1011 @@
     "Problem/Domain": 11108000,
     "Meta/DevEnv": 9227071,
     "Mixed": 330000,
-    "Unclassified": 242633,
+    "Unclassified": 3823045,
     "Cross-category overlap": 894000
   },
-  "observedTotalMs": 21801704,
+  "observedTotalMs": 25382116,
   "rows": [
+    {
+      "id": "canvas-ctrl-wheel-plan",
+      "title": "Canvas Ctrl+wheel zoom and Ctrl+drag pan",
+      "beneficiary": "User navigating larger canvas diagrams",
+      "intendedOutcome": "Pointer-anchored canvas-only Ctrl+wheel zoom from 25% to 400%, with free Ctrl+drag background panning.",
+      "successCondition": "Ctrl+wheel zooms only the diagram and keeps the logical point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas translates the view freely beyond diagram edges without moving model elements or clearing selection. Normal wheel scrolling, normal part dragging and empty-click deselection remain unchanged. Editing/hit-testing work with the combined transform, confirmed picture loads reset zoom to 100% and pan to zero, and cancelled replacement preserves the view.",
+      "baseline": "Before implementation, InteractiveCanvas derives logical drawing size from displayed size/device pixel ratio, and pointer coordinates are CSS canvas coordinates. Workspace uses overflow scrolling and picture-specific minimum canvas sizes. No zoom state exists. Plan committed as 82a65b7 before implementation.",
+      "startedAt": "2026-10-10T19:41:19.430+02:00",
+      "completedAt": "2026-10-10T19:45:40.2258484+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "User approved pointer anchoring, 25%-400%, unchanged normal scrolling, free Ctrl+background-drag with selection preserved, and reset of both zoom/pan on confirmed loading.",
+          "evidence": "Planning request, follow-up correction, implementation authorization and clarification answers."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "4 minutes 20.796 seconds elapsed from implementation authorization, including commit approval and reset clarification. Human active effort and waiting unknown.",
+          "evidence": "Authorization and local completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "CanvasViewport separates zoom/pan from model coordinates. InteractiveCanvas clears in device-pixel-ratio coordinates, draws with combined zoom/translation, inverse-maps input and uses an editor-opt-in non-passive wheel listener cleaned up at destruction. Wheel pixel/line/page modes normalized and zoom clamped to 25%-400%. Ctrl+background pan captures pointer, uses screen deltas, preserves checks and leaves geometry untouched; release/cancel ends pan. Connection mode retains destination picking. Confirmed loading resets view; cancellation preserves it. Red observed for missing wheel handler; Green verified with floating-point tolerance for anchor transform. Existing injected browser/canvas fakes reused, no internal interception or test application network/filesystem I/O. Targeted 154 tests cover 100% statements/branches/functions/lines in changed executable modules; final full-client run passes 61 suites/936 tests at 100% reported coverage, client build and final test TypeScript check pass. Component remains 386 lines. Visible browser opened because prior shared tab was hidden; real desktop Ctrl+wheel gives scale 1.22140276, Ctrl+drag translates 50x40 pixels and transformed part hit/selection preservation pass. At 360px real wheel zoom, normal-wheel unchanged zoom, browser visual scale 1, cancelled replacement preservation and confirmed [1,0,0] reset pass. Actual high-DPI behavior covered with injected adapter tests. Existing stored formats and preview behavior unchanged. Next step: user review and optional implementation commit approval. User benefit and follow-up defects unknown.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-viewport.ts; interactive-canvas.ts; canvas.ts; canvas-diagram-editor.component.ts; related specs; README.md; session test/coverage/type/build/browser evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 260795
+    },
+    {
+      "id": "canvas-editor-functional-boundaries",
+      "title": "Extract cohesive editor boundaries",
+      "beneficiary": "Developer maintaining the canvas editor",
+      "intendedOutcome": "Separate coherent responsibilities without changing editor behavior.",
+      "successCondition": "Extract geometry/hit-testing functions, drawing functions and ordered selection class; keep Angular bindings, pointer lifecycle and loading in the component; preserve public behavior with full changed-module coverage.",
+      "baseline": "Canvas editor component has 552 lines combining geometry, drawing, selection, editing and pointer/loading lifecycle. User approved sketch-geometry, sketch-renderer and SketchSelection boundaries. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:31:26.609+02:00",
+      "completedAt": "2026-10-10T19:33:56.7256002+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Three approved responsibility boundaries, behavior-preserving refactor.",
+          "evidence": "Request and scope/naming approval."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": "Approval response timestamp not captured."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "2 minutes 30.117 seconds elapsed including scope approval. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Component reduced from 552 to 379 lines. Shared sketch.types defines domain records without runtime behavior. sketch-geometry owns bounds, edge endpoints and hit tests; sketch-renderer owns sketch drawing with cohesive part/boundary/connection/text functions; SketchSelection owns ordered selection and derived views. Component retains bindings, lifecycle and orchestration. Public APIs, picture formats, geometry and render order preserved. Green baseline observed; all 136 existing editor tests remain unchanged and pass after extraction with 100% statements/branches/functions/lines for component and all three extracted executable modules. Client production build, Jest TypeScript check, diagnostics and diff check pass. Existing injected canvas/scheduler boundary fakes reused; no internal mocks or new test application file/network I/O. This is a behavior-preserving refactor, not a new Red/Green claim. Browser pointer click timed out because shared tab is not visible; runtime DOM-event checks instead verify template loading, selected-item editing/fallback and technical replacement. No new visual/pointer verification claimed. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts; sketch-geometry.ts; sketch-renderer.ts; sketch-selection.ts; sketch.types.ts; README.md; current session baseline/test/coverage/type/build/runtime output."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 150116
+    },
+    {
+      "id": "canvas-editor-synchronized-selection",
+      "title": "Synchronize list and canvas selection",
+      "beneficiary": "User selecting and editing canvas items",
+      "intendedOutcome": "Checkbox selection and canvas selection represent the same items.",
+      "successCondition": "Bidirectional multi-selection toggles membership, last selected item is active, deselecting active falls back to the last remaining item, empty canvas clears all, and dragging keeps a selected part selected.",
+      "baseline": "Canvas holds one active item independently of checked part/connection sets. User approved unified multi-selection, last-selected editing with fallback, clearing on empty clicks and dragging without deselecting. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:26:29.268+02:00",
+      "completedAt": "2026-10-10T19:30:16.0200293+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Unified canvas/list multi-selection with active editor fallback and drag preservation.",
+          "evidence": "Request and three clarification answers."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": "Clarification response timestamps not captured."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "3 minutes 46.752 seconds elapsed including clarification. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "One authoritative insertion-ordered selectedItems set; checkedParts/checkedConnections are read-only derived views and active editor item is its last entry. Canvas/list selection and all selected-item outlines use the same state. Stationary clicks deselect on pointer release; movement preserves membership, cancellation preserves checks. Removal snapshots selection to avoid mutation/fallback issues and cleans incident links/boundaries. Confirmed replacement clears selection; cancellation preserves it. Destination picking retains existing connection-mode behavior. Red observed with unchecked row after canvas selection; Green followed by updating stale independent-selection tests and explicit drag, line toggle, highlighting and removal fallback regressions. 136 editor tests pass with 100% statements/branches/functions/lines for changed module; client build and Jest TypeScript no-emit check pass, diagnostics clear. Reused injected canvas/scheduler fakes without internal interception or test application file/network I/O. Live desktop checks verify canvas-to-row synchronization, checkbox label editing, part/connection fallback, click toggling, dragging and empty clear; 360px mobile list editing/clear and no horizontal overflow verified. Human benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts; canvas-diagram-editor.component.spec.ts; README.md; current session test/coverage/type/build/runtime evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 226752
+    },
+    {
+      "id": "canvas-default-workflow-template",
+      "title": "Load an editable default workflow template",
+      "beneficiary": "User sketching the CompassDevEnv workflow",
+      "intendedOutcome": "Load the supplied main workflow diagram as a reusable editable template.",
+      "successCondition": "Add a template button, keep the initial canvas empty, reproduce the main symbols and links without the bottom legend/note, add Tech process shape, use existing straight links, and preserve replacement confirmation and editing.",
+      "baseline": "Editor supports five architecture symbol renderers but lacks Tech process and the reference workflow template. User chose a loading button rather than automatic loading, main diagram only, and approved Tech process with straight connections. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:18:42.948+02:00",
+      "completedAt": "2026-10-10T19:23:59.4479475+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Button-loaded editable main reference diagram, excluding legend/note, with Tech process and straight connections.",
+          "evidence": "Request image and three clarification answers."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": "Clarification response timestamps not captured."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "5 minutes 16.500 seconds elapsed including clarification. Human active effort and waiting unknown.",
+          "evidence": "Request and final validation clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Authoritative JSON stores 25 symbols (four actors, system software, six Tech processes, ten artifacts, two products and two business roles) and 28 straight undirected links. AI Workflow and Locus are unconnected as shown. Default template loader validates standard geometry plus complete supported shape map and returns fresh copies. Button uses existing picture replacement flow; loaded template remains fully editable, has all-item selection and a 2040x1080 scrolling workspace. Existing technical/overview dimensions preserved. Red observed with missing loader button, then focused Green; 164 focused tests pass with 100% statements/branches/functions/lines for all changed TypeScript modules. Final full client suite: 61 suites/923 tests pass, reported coverage 100% in all four metrics; client production build and Jest TypeScript check pass. Runtime verifies initial empty state, item counts, scrollbar dimensions/no document overflow at 320/360/768/1280px, cancellation preserving checks and confirmation resetting copies. Screenshot checked visible actors/software/process renderings. Existing injected canvas/scheduler and in-memory tests reused; no test application filesystem/network I/O. One live check timed out after hot reload reset the sketch; explicit reload and state waits passed. Existing no-rendered-area pointer console errors during viewport changes remain outside scope. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/default-template.json; default-template.ts; default-template.spec.ts; canvas-diagram-editor.component.ts; canvas-diagram-editor.component.html; canvas-symbols.ts; related specs; README.md; current session test/type/build/runtime evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 316499
+    },
+    {
+      "id": "repository-coverage-completion",
+      "title": "Complete reported repository coverage",
+      "beneficiary": "Developer maintaining repository tests",
+      "intendedOutcome": "Resolve gaps and failures reported by the full repository coverage command.",
+      "successCondition": "Existing full client/server coverage commands pass with all four reported metrics at 100%, without weakening assertions, excluding uncovered code or changing production behavior for coverage.",
+      "baseline": "Full run passes 869 client and 477 server tests. Client coverage: statements 98.53%, branches 97.21%, functions 99.66%, lines 98.47%; gaps in work-plan.types.ts, recording-canvas-context.ts and memory-text-file-system.ts. Server reported coverage is already 100% in all four metrics.",
+      "startedAt": "2026-10-10T19:13:52.903+02:00",
+      "completedAt": "2026-10-10T19:17:20.6773008+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "User chose full repository coverage and fixing reported gaps/failures.",
+          "evidence": "Request and scope clarification."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": "Clarification response timestamp not captured."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "3 minutes 27.774 seconds elapsed including scope clarification. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Moved 35 existing runtime-neutral WorkPlan validation/rendering tests to shared specs run by both Jest configurations; server exporter test retained with measured-task/known-ledger validation and in-memory filesystem. Added two tests covering helper branches. Full test:all:coverage passes 60 client suites/906 tests and 42 server suites/477 tests. Both configured coverage reports show 100% statements, branches, functions and lines. Both Jest TypeScript scopes pass no-emit checks; diagnostics clear and diff check passes. Existing production code and coverage inclusion/exclusion settings unchanged. Intermediate export fixture failed because ledger metrics cannot be empty; restored a valid measured-task ledger before final run. No production behavior changes or TDD Red/Green claim. Tests use existing in-memory boundaries and runner-generated reports only. These figures describe configured coverage scope, not files absent from those configurations. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/shared/src/lib/work-plan.types.spec.ts; projects/client/jest.config.cjs; projects/server/jest.config.cjs; projects/server/test/work-plans.spec.ts; projects/client/src/app/memory-text-file-system.spec.ts; projects/client/src/app/system/interactive-canvas/testing/recording-canvas-context.spec.ts; current session full coverage/type-check output."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 207774
+    },
+    {
+      "id": "canvas-editor-all-items",
+      "title": "List and select every canvas item",
+      "beneficiary": "User editing canvas parts and connections",
+      "intendedOutcome": "All canvas items are listed and can be checked for combined removal.",
+      "successCondition": "List every part and connection independently of canvas selection, allow multiple checked parts and links, remove incident links with deleted parts and preserve replacement/cancellation semantics and compact scrolling layout.",
+      "baseline": "List contains all connections but no parts. User clarified all parts and connections, then approved checkboxes for both and removal of multiple parts with incident links. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:09:27.403+02:00",
+      "completedAt": "2026-10-10T19:12:02.2242053+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "All parts and connections with independent checks and combined removal.",
+          "evidence": "Request and two clarification answers."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": "Clarification response timestamps not captured."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "2 minutes 34.821 seconds elapsed including clarification. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Parts precede connections, with type prefixes and total/checked counts. Existing deletion cleanup extracted for selected and checked parts; checked membership, incident links and technical boundaries cleaned. Red observed with zero part checkboxes. 129 editor tests pass, 100% statements/branches/functions/lines for changed TypeScript module, TypeScript no-emit check and client build pass without warnings. Existing injected canvas/scheduler fakes reused; no test application filesystem/network I/O. Live UI shows six parts plus six links at 320/360/768/1280px, 192px cap and no horizontal overflow. Checking two parts and one nonincident connection then removing leaves four parts and two links, zero checks. Initial runtime attempt encountered hot-reload empty state; reloaded overview and verified. Pointer no-rendered-area console errors observed during viewport resizing, also logged before this change; left outside scope. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts; canvas-diagram-editor.component.html; canvas-diagram-editor.component.spec.ts; README.md; current session test/coverage/build/type/runtime output."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 154821
+    },
+    {
+      "id": "canvas-editor-bottom-picture-actions",
+      "title": "Anchor left picture actions above canvas",
+      "beneficiary": "User editing canvas pictures",
+      "intendedOutcome": "Left picture-loading buttons sit at the toolbar bottom above the canvas.",
+      "successCondition": "Technical picture stays above Load overview; picture group bottom matches toolbar bottom, and desktop right action bottom, without mobile overflow.",
+      "baseline": "At 1280px with six compact connections, picture group bottom is 358.78125px while toolbar and right actions end at 390.59375px. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:07:32.459+02:00",
+      "completedAt": "2026-10-10T19:08:05.151+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Bottom-align the two left picture buttons above the canvas.",
+          "evidence": "Current request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "32.692 seconds elapsed through final build after runtime verification. Human active effort and waiting unknown.",
+          "evidence": "Request and build completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Picture controls use align-self:end. Live geometry at 320, 360, 768 and 1280px verifies picture bottom equals toolbar bottom within 1px; at desktop right actions share that bottom. Mobile sequential flow preserved with no horizontal overflow. Final client build passes without warnings and diagnostics clear. CSS-only change, no new TDD claim. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session geometry and build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 32692
+    },
+    {
+      "id": "canvas-editor-condensed-list",
+      "title": "Condense connection selection rows",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Display more connections in less vertical space.",
+      "successCondition": "Rows are visibly shorter than 44px while preserving readable wrapping, checkbox selection and the 12rem scroll cap on desktop and mobile.",
+      "baseline": "Six overview connections occupy 264px scroll height, with 44px rows and a 192px visible cap. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:05:51.009+02:00",
+      "completedAt": null,
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "More condensed connection list without changing actions or panel placement.",
+          "evidence": "Current request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": null,
+          "evidence": "Completion clock not recorded after final runtime assertion; human active effort and waiting unknown."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "28px minimum rows with .85rem text and 1.3 line height. At 1280px six rows occupy 168px rather than 264px; wrapped mobile rows are 35.34375px, occupying 212px with scrolling capped at 192px. Geometry checked at 320, 360, 768 and 1280px without horizontal overflow. Last checkbox scrolls into view and enables removal; initial immediate enabled-state check was stale, resolved by waiting for Angular-rendered enabled button. Deselection preserved. Final client build passes without style-budget warnings after merging identical field selectors; diagnostics clear. CSS-only presentation change, no TDD claim. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; session runtime geometry, interaction and client build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": null
+    },
+    {
+      "id": "canvas-editor-bottom-actions",
+      "title": "Anchor right-side actions above canvas",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Right-side buttons align to toolbar bottom above the canvas while the list stays at the top.",
+      "successCondition": "Above mobile, right-side panel stretches to toolbar bottom and final action row matches that bottom with empty and populated lists. Mobile flow and list top alignment preserved.",
+      "baseline": "Uncommitted half-width Connections panel has content-height rows and may leave action buttons above the toolbar bottom. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:03:55.369+02:00",
+      "completedAt": "2026-10-10T19:04:41.6365260+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Bottom-anchor right-side actions, top-align list.",
+          "evidence": "Current request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "46.268 seconds elapsed. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Connection panel stretches with one flexible list row and two content-sized action rows; picker aligns to row start. Runtime assertions with empty and populated lists at 320, 360, 768 and 1280px verify action bottom equals panel bottom; desktop also equals toolbar bottom and list top equals Label top within 1px. Mobile remains sequential with loading controls after connection panel. No overflow. Client production build passes without warnings. CSS-only follow-up, no action/canvas changes or new TDD claim. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser geometry and build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 46267
+    },
+    {
+      "id": "canvas-editor-half-list",
+      "title": "Expand connections list to half the page",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Connections list fills the right half, six global grid columns.",
+      "successCondition": "Above mobile, list fills six tracks and matches the left-half width, still top-aligned with Label/Type. Mobile and 12rem scrolling cap preserved.",
+      "baseline": "User corrected prior two-global-column interpretation to half-page width. Tracking and measurement retained. Follow-up start timestamp not recorded.",
+      "startedAt": null,
+      "completedAt": "2026-10-10T19:02:48.8921671+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Half-page width means six global grid columns above mobile.",
+          "evidence": "Current correction."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "List fills the right panel instead of two tracks. Runtime assertions at 768/1280px verify widths 362.640625/604.8125px equal six tracks plus gutters and matching left-half overview width within 1px; top matches Label. At 320/360px list spans both mobile columns, 281/321px. Height remains capped at 192px and no document overflow. Final client build passes without warnings. CSS-only correction; existing action behavior unchanged and no new TDD claim. Prior narrow-width evidence retained as historical, superseded by this correction. Human effort and user benefit unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser geometry and build output."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": null
+    },
+    {
+      "id": "canvas-editor-top-list",
+      "title": "Align narrow connections list with left fields",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Connections start level with Label/Type on the right and span two global grid columns.",
+      "successCondition": "Above mobile, list top matches left fields and width equals two global tracks plus gutter. Removal stays below. Mobile list spans both control columns; scrolling and canvas preserved.",
+      "baseline": "Uncommitted left-field/picture layout still puts connections in a separate lower row. User requested top alignment then clarified two global grid columns, not two entry columns. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:00:38.642+02:00",
+      "completedAt": "2026-10-10T19:01:56.9633463+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Top-aligned right list spanning two global columns; mobile preserved.",
+          "evidence": "Current two requests and clarification answer."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 18.321 seconds elapsed, including clarification. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Desktop toolbar now uses parallel left/right panels with CSS subgrid: left part controls first row and picture controls second row; right connection controls span both rows. List occupies the rightmost two global columns, top-aligned with left fields, removal and connection actions beneath. Mobile retains sequential two-column controls with full-width list. Runtime assertions at 768/1280px verify matching top coordinates and list widths 112.890625/188.8125px matching two tracks plus gutter within 1px. At 320/360px list spans both control columns, 281/321px with page scrollbar. All measured lists cap at 192px and retain scrollable content; no horizontal overflow. Final client build passes without warnings. CSS-only follow-up; no new TDD or unit test claim, action bindings and canvas unchanged. Narrow global-column choice causes more wrapping at tablet widths as expected; user benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser width/top/height assertions and client build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 78321
+    },
+    {
+      "id": "canvas-editor-picture-order",
+      "title": "Stack Technical picture above Load overview",
+      "beneficiary": "User loading canvas pictures",
+      "intendedOutcome": "Technical picture above Load overview in the same left-side grid space.",
+      "successCondition": "Technical picture precedes overview in DOM and visual order, directly above with matching left edge and width across mobile and desktop. Loading actions remain unchanged.",
+      "baseline": "Uncommitted left-field layout retains picture buttons side by side. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:58:59.842+02:00",
+      "completedAt": "2026-10-10T18:59:46.7370522+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Technical picture above Load overview on the left.",
+          "evidence": "Current request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "46.895 seconds elapsed. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Reordered picture buttons in template and assigned both to the same left-side grid columns. Runtime assertions at 320, 360, 768 and 1280px confirm Technical picture above overview, matching widths/left edges and no horizontal overflow. All 123 editor tests and client production build pass without warnings. No action bindings, TypeScript or canvas changes; presentation-only, no new TDD claim. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html and .scss; README.md; current session browser geometry, editor tests and production build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 46895
+    },
+    {
+      "id": "canvas-editor-left-fields",
+      "title": "Align label and type in the left half",
+      "beneficiary": "User creating canvas parts",
+      "intendedOutcome": "Label and Type share the left half aligned with Load overview, Add below.",
+      "successCondition": "Above mobile, combined Label/Type width and Add width match Load overview with shared left/right edges. Preserve side-by-side mobile fields, global grid and existing behavior.",
+      "baseline": "At 15d8ff8 Label spans four tracks, Type three and Add two, extending past the left half. User approved side-by-side fields within the left half and Add beneath. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:57:48.994+02:00",
+      "completedAt": "2026-10-10T18:58:32.3442110+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Combined fields align to Load overview width above mobile; Add below.",
+          "evidence": "Request and approved clarification."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "43.350 seconds elapsed. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Label/Type now each span three global tracks above mobile, together occupying the left six tracks; Add spans the same six below. Removed conflicting intermediate overrides. Runtime assertions at 768 and 1280px confirm Label left and Type/Add right edges match Load overview within 1px. At 320 and 360px fields remain side by side with Add below and no overflow. Final client build passes without warnings, SCSS diagnostics clear. CSS-only change; no TypeScript/action/canvas changes, no new TDD or unit test claims. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser edge measurements and client build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 43350
+    },
+    {
+      "id": "canvas-editor-connection-list",
+      "title": "Show a scrollable connection selection list",
+      "beneficiary": "User selecting connections to remove",
+      "intendedOutcome": "Always-visible multi-selection list above the removal action.",
+      "successCondition": "Checkbox connections stay visible, scroll vertically above a 12rem height limit, sit above Remove selected and preserve multiple selection/removal on mobile and desktop.",
+      "baseline": "At 1fd60a5 connections are a collapsed details picker beside removal. User approved always-visible checkboxes and existing 12rem cap. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:54:12.397+02:00",
+      "completedAt": "2026-10-10T18:56:24.9371376+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Always-visible checkbox list above removal with 12rem cap.",
+          "evidence": "Current request and approved clarification."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "2 minutes 12.540 seconds elapsed; human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Replaced details/summary with labeled always-visible checkbox group and kept existing selection bindings. List sits above removal, with shared right edge; full control width on mobile/intermediate and right half on desktop. Runtime assertions at 320, 360, 768 and 1280px confirm 192px maximum/client height, 264px content height and successful scrollTop=72, above-removal placement and no overflow. Checked last connection and removed it live, retaining five others. All 123 editor tests pass; test expectations now require no disclosure and accessible list labeling. Simplified redundant styles after initial budget warnings; final production client build passes without warning and relevant diagnostics clear. No TypeScript/action/canvas change; presentation-only, no new TDD claim. Existing boundary fakes retained, no test application-data writes/network. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html, .scss and .spec.ts; README.md; current session tests/build/diagnostics and live browser geometry/removal at http://localhost:4200/interactive-canvas."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 132540
+    },
+    {
+      "id": "canvas-editor-removal-alignment",
+      "title": "Right-align connection controls toward removal",
+      "beneficiary": "User selecting connections to remove",
+      "intendedOutcome": "Align the picker and connection actions toward Remove selected on the right.",
+      "successCondition": "Picker sits one grid gutter left of Remove selected, Cancel aligns with its right edge and Connect/Cancel remain on the following row without overflow.",
+      "baseline": "Uncommitted placement has picker spanning left-side grid tracks and Connect/Cancel starting at the left. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:51:52.446+02:00",
+      "completedAt": "2026-10-10T18:52:58.0310159+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Right-align picker and connection buttons toward removal.",
+          "evidence": "Current follow-up request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 5.585 seconds elapsed. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Picker now right-aligns in its cell, directly beside removal. Desktop Connect/Cancel use the rightmost six tracks, with Cancel beneath Remove selected; mobile content-sized buttons align to their cells' right edges. Runtime assertions at 320, 360, 768 and 1280px confirm picker/removal gutter separation and shared Cancel/removal right edge within 1px, actions on following row and no overflow. Simplified duplicate CSS selectors after initial style-budget warning; final client build passes without warning. CSS-only follow-up; prior 123 editor tests cover unchanged action bindings. No canvas change or new TDD claim. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session runtime geometry and production build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 65585
+    },
+    {
+      "id": "canvas-editor-removal-placement",
+      "title": "Place connections beside removal",
+      "beneficiary": "User selecting connections to remove",
+      "intendedOutcome": "Bring the Connections picker next to the unified Remove selected action.",
+      "successCondition": "Connections and Remove selected share a row on desktop and mobile; Connect/Cancel follow on the next row. Existing functionality, compact sizing and unsplit canvas remain unchanged.",
+      "baseline": "At 3f62970 Remove selected is in the part controls, separate from the Connections picker. User approved putting them beside each other and moving Connect/Cancel below. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:50:00.584+02:00",
+      "completedAt": "2026-10-10T18:51:30.6362343+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Connections beside Remove selected, Connect/Cancel below.",
+          "evidence": "Current request and approved clarification."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 30.052 seconds elapsed from request to final verification. Active human effort and waiting unknown.",
+          "evidence": "Request and local verification clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Connections picker and unified Remove selected share a row, followed by Connect and Cancel. Grid allocation is nine/three columns on desktop and equal halves on intermediate/mobile widths. DOM-order assertions updated for the agreed layout; all 123 editor tests pass. Runtime assertions at 320, 360, 768 and 1280px verify picker/removal share the same bottom edge, removal sits to its right, Connect/Cancel share the next row and no document overflow occurs. No production TypeScript or canvas changes. Initial build reported style budget exceeded by 36 bytes; replaced lengthy attribute selectors with a local layout class and final client build passes without that warning. Diagnostics clear. Presentation-only work, no new TDD claim. Existing action bindings and plain test boundary fakes retained; no test application-data writes/network. Tracking and measurement retained. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html, .scss and .spec.ts; README.md; current session tests, build, diagnostics and browser geometry at http://localhost:4200/interactive-canvas."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 90052
+    },
+    {
+      "id": "canvas-editor-actor-top-margin",
+      "title": "Add top clearance to Actor bounds",
+      "beneficiary": "User editing actor symbols",
+      "intendedOutcome": "Give the Actor selection box extra top clearance without moving the figure.",
+      "successCondition": "Add 10px above the existing drawing area, retain bottom clearance, and keep interaction and connection geometry consistent without changing other shapes.",
+      "baseline": "Uncommitted Actor bounds are 60x90 with bottom clearance only. Tracking and measurement retained for this follow-up.",
+      "startedAt": "2026-10-10T18:46:10.737+02:00",
+      "completedAt": "2026-10-10T18:47:25.8970593+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Add matching extra room above the Actor while keeping its drawing in place.",
+          "evidence": "Current request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 15.160 seconds elapsed from request to final verification. Active human effort and waiting unknown.",
+          "evidence": "Request and local verification clock."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Actor bounds now 60x100 with y shifted upward 10px; drawing stays at its original y and 80px rendering height. Shared bounds update hit area, selection outline, connection center/edges and picture boundaries consistently. Red observed before implementation. All 123 editor tests pass with 100% statement, branch, function and line coverage; TypeScript check, client production build and diagnostics pass. Live screenshot confirms top clearance and unchanged readable figure/label. Existing boundary fakes reused, no test application-data writes or network. No further refactor needed. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts and .spec.ts; README.md; current session test/build/coverage output and live canvas screenshot."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 75160
+    },
+    {
+      "id": "canvas-editor-actor-bounds",
+      "title": "Tighten Actor interaction bounds",
+      "beneficiary": "User editing actor symbols in canvas sketches",
+      "intendedOutcome": "Actor bounding box fits the narrow figure and label rather than a generic rectangle.",
+      "successCondition": "Actor selection outline and hit bounds fit the narrow figure and label at the existing drawing location; dragging, connection endpoints and loaded-picture boundaries consistently use that geometry. Rectangle and other symbol behavior preserved.",
+      "baseline": "At b3a2379 Actor is drawn in a centered 60x80 area but uses generic 180x80 selection/hit/connection geometry. Tracking and measurement retained from editor follow-ups.",
+      "startedAt": "2026-10-10T18:42:08.950+02:00",
+      "completedAt": "2026-10-10T18:45:34.7742104+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Tight Actor interaction bounds while preserving visual position and other symbols.",
+          "evidence": "Current request and inspected editor geometry."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "3 minutes 25.824 seconds elapsed from request to final verification. Active human effort and waiting remain unknown.",
+          "evidence": "Request 2026-10-10T18:42:08.950+02:00 and local clock 2026-10-10T18:45:34.7742104+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Actor interaction bounds reduced from 180x80 to 60x90 at the existing centered drawing position. The figure still renders at 60x80; 10px extra vertical room contains the label. Shared typed bounds drive selection, hit-testing, independent source/target connection edge clipping and loaded-picture boundary extents. Other shapes retain 180x80 behavior. Red observed for oversized outline, followed by Green; live screenshot revealed label touching the bottom border, so another failing assertion preceded label-safe bounds correction. Final 123 editor tests pass with 100% statement, branch, function and line coverage. TypeScript check, client production build and relevant diagnostics pass. Tests cover outside hit rejection, dragging, exact horizontal connection endpoints and conversion back to rectangle; existing technical/boundary/connection behavior preserved. Live creation, outside click, drag and rectangle-to-actor connection verified; final screenshot confirms narrow frame around figure and readable label with clearance. Plain Canvas/Scheduler boundary fakes reused, no test application-data writes/network. No unrelated refactor; shared geometry avoids inconsistent duplicated bounds. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts and .spec.ts; README.md; current session tests, coverage, type-check, build, diagnostics and live http://localhost:4200/interactive-canvas screenshots/interactions."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 205824
+    },
+    {
+      "id": "canvas-editor-button-growth",
+      "title": "Grow small toolbar buttons when space permits",
+      "beneficiary": "User editing canvas sketches",
+      "intendedOutcome": "Small buttons fill their allocated grid space on tablet and desktop while remaining compact on mobile.",
+      "successCondition": "Connect and Cancel fill their grid cells above 42rem and remain content-sized at or below 42rem; height, wide buttons, canvas and action behavior are preserved.",
+      "baseline": "Uncommitted small/wide variants have been verified; Connect and Cancel remain content-sized at all widths. User approved growth above the mobile breakpoint. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:37:50.858+02:00",
+      "completedAt": "2026-10-10T18:39:05.5972055+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Grow small grid buttons above mobile breakpoint only.",
+          "evidence": "Current request and clarification."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 14.739 seconds elapsed from request to final verification, including clarification. Active human effort and waiting remain unknown.",
+          "evidence": "Request 2026-10-10T18:37:50.858+02:00 and local verification clock 2026-10-10T18:39:05.5972055+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Small toolbar buttons now stretch only above 42rem; non-grid replacement buttons stay content-sized. Runtime width assertions caught and corrected CSS selector specificity before completion. Final assertions pass at 320, 360, 672, 673, 768 and 1280px: mobile Connect/Cancel remain 67.75/58.65625px wide, at 673px both fill 317.046875px cells, at 768px 362.640625px and at 1280px 188.8125px. All toolbar buttons remain 36px high, wide buttons still fill cells, and no document overflow occurs. Canvas CSS unchanged. Final client production build passes; relevant diagnostics clear before specificity correction and final build validates SCSS. CSS-only follow-up; no new TDD claim or unnecessary behavior test rerun. Prior 122 editor tests remain evidence for unchanged action behavior. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser geometry at http://localhost:4200/interactive-canvas and production build."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 74739
+    },
+    {
+      "id": "canvas-editor-button-variants",
+      "title": "Use small and grid-filling wide editor buttons",
+      "beneficiary": "User editing canvas sketches",
+      "intendedOutcome": "Distinguish compact content-sized controls from wide actions that fill their assigned grid cells.",
+      "successCondition": "Add, Remove selected and both picture-loading buttons fill their assigned grid space. Connect and Cancel remain content-sized. Both variants retain compact height, two-column mobile controls and existing behavior without overflow.",
+      "baseline": "At 88e5f39 all editor buttons are content-sized with 36px minimum height. User clarified separate variants and approved which toolbar actions should be wide. Replacement confirmation remains content-sized. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:35:42.010+02:00",
+      "completedAt": "2026-10-10T18:37:13.4590321+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Wide Add, Remove selected and picture loading; small Connect and Cancel; keep existing height and grid spans.",
+          "evidence": "Current request and two clarification answers."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 31.449 seconds elapsed from request to final verification, including clarification. Human active effort, waiting and agent execution remain unknown.",
+          "evidence": "Request 2026-10-10T18:35:42.010+02:00 and local clock 2026-10-10T18:37:13.4590321+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Explicit button-wide and button-small classes added locally without changing grid spans or action bindings. Wide Add, Remove selected and picture-loading buttons fill their allocated cells; small Connect and Cancel remain content-sized. Replacement confirmation controls retain small widths. Runtime assertions compare measured widths to grid track/gutter allocation at 1280, 768, 360 and 320px with less than 1px tolerance. At 360px wide buttons are 162px; at 320px, 142px. Connect remains 67.75px and Cancel 58.65625px. All toolbar buttons remain 36px high. No horizontal document overflow; mobile toolbar has two columns and canvas layout unchanged. Screenshot confirms variants. All 122 editor tests and client production build pass, relevant template/SCSS diagnostics clear. Presentation-only change; no production TypeScript change or new TDD claim. Existing plain boundary fakes retained. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html and .scss; README.md; current session browser width assertions/screenshot at http://localhost:4200/interactive-canvas, editor tests, production build and diagnostics."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 91449
+    },
+    {
+      "id": "canvas-editor-unified-removal",
+      "title": "Unify selected part and connection removal",
+      "beneficiary": "User editing canvas sketches",
+      "intendedOutcome": "One Remove selected button removes all selected parts and connections.",
+      "successCondition": "Exactly one Remove selected control replaces part removal and checked-connection deletion. It enables for any part, directly selected connection or checked connections, removes all selections including incident connections, clears removed selection state and preserves unrelated parts/connections.",
+      "baseline": "At e86b49d separate Remove selected and Delete selected controls act on part and checked connections respectively. User explicitly approved removing all selected items, including directly selected canvas connections. Existing Canvas/Scheduler fakes and removal helpers are available.",
+      "startedAt": "2026-10-10T18:32:28.949+02:00",
+      "completedAt": "2026-10-10T18:34:35.2934213+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "One Remove selected action for all selections, including canvas-selected and checked connections; approved by user.",
+          "evidence": "Current request and clarification."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "2 minutes 6.344 seconds elapsed from request to final verification. Human active effort, waiting and agent execution remain unknown.",
+          "evidence": "Request 2026-10-10T18:32:28.949+02:00 and local clock 2026-10-10T18:34:35.2934213+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "One Remove selected button replaces the separate part and checked-connection controls. Enables for selected part, selected canvas connection or checked connections; removes all of them using existing part/boundary/connection cleanup and clears checked and removed selection state. Connection picker uses the freed grid space, full width within mobile controls. Observed Red for missing unified action; 122 editor tests now pass with 100% statement, branch, function and line coverage of changed production module. One prior identity test was updated to deselect its part before removing checked connections, reflecting approved all-selection behavior without weakening identity assertions. Client TypeScript check, client production build and relevant diagnostics pass. Live overview removal of selected Goals & intended outcomes plus unrelated checked connection reduced six links to three, cleared checks and disabled removal; exactly one removal and zero delete controls observed. Direct unchecked canvas-selected connection removal separately reduced six links to five and cleared selection. No horizontal overflow at 360px. Existing boundary fakes reused; unit tests perform no application-data writes or network I/O. No additional abstraction or unrelated refactor needed. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts, .html, .scss and .spec.ts; README.md; current session tests, coverage, type-check, build, diagnostics and live http://localhost:4200/interactive-canvas verification."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 126344
+    },
+    {
+      "id": "canvas-editor-controls-compact",
+      "title": "Use two mobile control columns and compact editor buttons",
+      "beneficiary": "User creating and editing canvas sketches",
+      "intendedOutcome": "Reduce control space and use two columns on mobile without splitting the canvas.",
+      "successCondition": "Mobile controls use exactly two equal columns, preserve name/type-before-Add ordering, and remain readable without horizontal overflow. Editor buttons are smaller across viewports; canvas width and existing behavior remain unchanged.",
+      "baseline": "Follow-up to the uncommitted global-grid layout. At 1280px all toolbar buttons are 44px high, toolbar height is 208.375px and canvas width is 1228.8125px. At 360px controls use one column, toolbar height is 600.375px and canvas width is 321px. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:29:24.5043675+02:00",
+      "completedAt": "2026-10-10T18:31:12.9282631+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Two mobile control columns only, smaller editor buttons across all views, unchanged canvas and functionality.",
+          "evidence": "Current follow-up request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 48.424 seconds elapsed from recorded baseline to final verification. Human active effort, waiting and agent execution remain unknown.",
+          "evidence": "Local clocks 2026-10-10T18:29:24.5043675+02:00 and 2026-10-10T18:31:12.9282631+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Mobile toolbar explicitly overrides its own grid to two equal columns while retaining global gutters and the single-column page grid. All editor buttons, including replacement confirmation controls, use content-sized widths and 36px minimum height. Shortened visible Load DevEnv overview to Load overview while retaining its accessible name and action. Runtime checks caught an incorrectly nested button rule; corrected it and verified actual dimensions, not just a passing build. Final measured toolbar buttons are all 36px high at 1280, 768, 360 and 320px with no document overflow. At 360px equal tracks are 162px; at 320px, 142px. At 360px toolbar height fell from 600.375px to 288.375px (312px reduction); at 1280px, from 208.375px to 200.375px. No canvas CSS changed or column split introduced; the mobile canvas gains 15px usable width because vertical page overflow no longer requires a scrollbar. Buttons remain larger than 24px with existing spacing, but intentionally no longer use the previous 44px height. Screenshot at 320px confirms readable controls, wrapped connection summary and intact canvas. Live mobile creation, selection, connection-mode entry, Cancel and removal verified. All 120 editor tests and final client production build pass; relevant SCSS diagnostics clear. This follow-up is CSS/presentation-only and does not claim new TDD or coverage changes. Actual user benefit, active effort and follow-up defects remain unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss and .html; README.md; current session baseline/final browser geometry and screenshot at http://localhost:4200/interactive-canvas; editor tests, production build and diagnostics."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 108424
+    },
+    {
+      "id": "canvas-editor-controls-grid",
+      "title": "Arrange canvas editor controls on the global grid",
+      "beneficiary": "User creating and editing canvas sketches",
+      "intendedOutcome": "Make the editor controls follow a useful task sequence and align with the global grid.",
+      "successCondition": "Name and type precede Add in visual and DOM order; part editing, connections and picture loading are grouped logically. Controls use global grid columns, gutters and spacing, stack into one column on narrow screens, remain usable without document overflow and preserve existing actions.",
+      "baseline": "At e393f03, Shape and loading/actions wrap together in a flex group spanning five columns, while name is a later three-column field and connections span four columns. User screenshots show name after Add and unrelated controls mixed together. Tracking and measurement approved.",
+      "startedAt": "2026-10-10T18:25:28.0782608+02:00",
+      "completedAt": "2026-10-10T18:28:19.5524988+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Global-grid controls with name and type before Add and task-oriented grouping; preserve existing functionality.",
+          "evidence": "Current request and screenshots."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "2 minutes 51.474 seconds elapsed from recorded baseline to final verification. Human active effort, waiting and agent execution remain unknown.",
+          "evidence": "Local clocks 2026-10-10T18:25:28.0782608+02:00 and 2026-10-10T18:28:19.5524988+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Name and type precede Add in visual and DOM order. Parts, connections and picture loading have distinct accessible groups aligned to the global 12-column grid with CSS subgrid and global spacing tokens. Intermediate widths use six-column cells; the existing 42rem global breakpoint gives single-column controls. Runtime geometry at 1440, 1280, 768 and 360px confirms exact shared track alignment, 44px control targets and no document overflow. Screenshots confirm desktop and narrow ordering. Live creation of an artifact named Workflow, selection, connection-mode disabling of name/type, Cancel, removal and overview loading verified after awaiting rendered states. A DOM-order regression failed before template changes; one existing test assumed the connection section contained only the delete button and was updated to assert exactly one delete action while retaining its disabled-state requirement. All 120 editor tests pass with 100% statement, branch, function and line coverage of the unchanged editor logic; client TypeScript check, production client build and relevant diagnostics pass. No production TypeScript, stored schema or canvas behavior changed. Existing Canvas and Scheduler fakes reused; tests perform no application-data writes or network I/O. No further abstraction or unrelated refactor needed. Actual user benefit, active effort and follow-up defects remain unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html, .scss and .spec.ts; README.md; runtime http://localhost:4200/interactive-canvas; current session Red/Green, coverage, type-check, build, diagnostics, browser geometry and screenshot evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 171474
+    },
+    {
+      "id": "canvas-symbol-editor",
+      "title": "Use generic architecture symbols in the canvas editor",
+      "beneficiary": "User creating labeled architecture sketches",
+      "intendedOutcome": "Create and manipulate reusable architecture symbols through the existing canvas editor, with the user label in angle brackets.",
+      "successCondition": "Artifact, system software, business role, product and actor can be added, selected, relabeled, dragged, connected and deleted. Box symbols retain their fixed type heading and show the editable name inside angle brackets. Rectangle default and existing pictures remain unchanged; checks and live interactions verify the result.",
+      "baseline": "Reusable renderers and isolated preview are committed at b16e41b. Editor currently supports generic 180x80 unlabeled-kind rectangle parts and one shared name input. Tracking and measurement approved for this integration; no saved schema changes needed because this editor uses in-memory SketchPart data.",
+      "startedAt": "2026-10-10T18:17:12.268+02:00",
+      "completedAt": "2026-10-10T18:22:13.5632083+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Generic editor shapes with editable names inside angle brackets; actor label below figure. Tracking and measurement approved.",
+          "evidence": "Current conversation."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "5 minutes 1.295 seconds elapsed from recorded start to final verification. Human active effort, waiting and agent execution remain unknown.",
+          "evidence": "Recorded start 2026-10-10T18:17:12.268+02:00 and local verification clock 2026-10-10T18:22:13.5632083+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Shape picker adds artifact, system software, business role, product and actor, retaining rectangle default and legacy picture fallback. Existing label input edits only the name; box symbols retain their heading and angle brackets. All five types are tested through controls for creation, selection, relabeling, dragging, connection and deletion. Selected shape conversion and invalid/blocked changes are covered. Live rendering revealed a squat actor at editor height; observed a failing proportion regression test and corrected height scaling with a centered narrow figure, keeping existing hit and connection bounds. 143 focused tests pass with 100% statement, branch, function and line coverage for both changed production modules. Client test TypeScript check, shared build, client production build and editor diagnostics pass. Live client verification created and moved all five types, relabeled an artifact, connected artifact to actor, edited the connection label and removed the actor with its connection. Screenshot confirms readable bracketed labels and recognizable actor. At 360px, controls wrap with no document overflow or alerts; existing fixed-coordinate sketch contents can lie outside the narrow canvas, unchanged behavior. No saved schema changes; edits remain in memory. Tests reuse plain Canvas boundary fakes without real application-data writes or network I/O. No new abstraction or unrelated refactor needed. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts, .html, .scss and .spec.ts; canvas-symbols.ts and .spec.ts; canvas-symbol-preview.component.spec.ts; README.md; running http://localhost:4200/interactive-canvas; current session test, coverage, type-check, build, diagnostics and browser results."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 301295
+    },
+    {
+      "id": "canvas-symbol-preview",
+      "title": "Render architecture symbols with a sample canvas preview",
+      "beneficiary": "User exploring reusable architecture sketch symbols",
+      "intendedOutcome": "Render artifact, system software, business role, product and actor shapes as reusable canvas vectors with an isolated preview.",
+      "successCondition": "Five recognizable symbol types match the supplied reference conventions: green/orange outlines, diagonal hatching, corner icons and readable labels; reusable functions and a responsive preview with connections work at narrow and wide widths, preserve the existing editor and pass targeted coverage and type/build checks.",
+      "baseline": "User approved reusable rendering functions plus a sample preview, tracking and measurement. Existing ICanvas/IBrowser render basic boxes, labels and connections; no hatch fills or architecture symbol palette exists. Reference is a supplied sketch, not a requirement for pixel-identical handwriting. No editor controls or stored schema changes are in scope.",
+      "startedAt": "2026-10-10T18:05:51.890+02:00",
+      "completedAt": "2026-10-10T18:15:25.1343250+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Reusable renderers plus isolated preview approved; tracking and measurement enabled.",
+          "evidence": "Current conversation and supplied sketch."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "9 minutes 33.244 seconds elapsed from the initial request to final verification, including scope/tracking decisions and checks. Human active effort, waiting and agent execution remain unknown.",
+          "evidence": "Request timestamp 2026-10-10T18:05:51.890+02:00 and local verification clock 2026-10-10T18:15:25.1343250+02:00."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Reusable artifact, system software, business role, product, actor and connection rendering functions implemented with clipped hatch fills and canvas state restoration. Isolated read-only preview uses existing InteractiveCanvas lifecycle and typed browser boundary; no stored schema or editor controls changed. Green/orange outlines, corner symbols and readable labels visually verified in the running client; screenshots at narrow and wide widths confirm single-column and multi-column layouts. At 360px viewport, canvas is 321x900 logical pixels; at 1280px, 1214x900, with no horizontal document overflow or alerts. Pixel readback confirms green and orange content. Red observed for missing renderers and preview route before implementation. 156 focused tests pass; every changed production module has 100% statement, branch, function and line coverage. Client test TypeScript check, shared build and production client build pass. Test boundary uses an in-memory recording Canvas context, no real test application-data writes or network I/O. Invalid geometry, drawing errors, lifecycle cleanup and existing editor behavior covered. This is a deterministic vector interpretation, not pixel-identical handwriting. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-symbols.ts; canvas-symbol-preview.component.ts; their specs; browser.spec.ts; interactive-canvas.spec.ts; canvas-diagram-editor.component.spec.ts; app.routes.spec.ts; browser preview at http://localhost:4200/canvas-symbol-preview; current session test, coverage, type-check and build output."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 573244
+    },
     {
       "id": "self-cloning-agent-guide-package",
       "title": "Package the exported Guide so it can clone itself",
@@ -1934,6 +2934,139 @@
     }
   ],
   "commits": [
+    {
+      "sha": "3772101be454d9ca4a20f95f529590ac78f75c6e",
+      "authoredAt": "2026-10-10T19:48:56+02:00",
+      "committedAt": "2026-10-10T19:48:56+02:00",
+      "subject": "Add canvas Ctrl-wheel zoom and free panning",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "82a65b74792061fde9f8a90c9bd802eb6b1ab49b",
+      "authoredAt": "2026-10-10T19:41:29+02:00",
+      "committedAt": "2026-10-10T19:41:29+02:00",
+      "subject": "Plan canvas zoom and free background panning",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "342841083e706acb24cf12635057a6c290cd9894",
+      "authoredAt": "2026-10-10T19:36:42+02:00",
+      "committedAt": "2026-10-10T19:36:42+02:00",
+      "subject": "Add 400-line production extraction rule",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "69858536fea3fd678d61d56b6f6b1a3f13ffb25d",
+      "authoredAt": "2026-10-10T19:34:39+02:00",
+      "committedAt": "2026-10-10T19:34:39+02:00",
+      "subject": "Extract canvas editor functional boundaries",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "f0482ec587b803a1a2ec6c08d15f41e891cc0caa",
+      "authoredAt": "2026-10-10T19:31:09+02:00",
+      "committedAt": "2026-10-10T19:31:09+02:00",
+      "subject": "Synchronize canvas and checkbox selection",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "b708a49a813dfe67a521d376bd4f385993deea98",
+      "authoredAt": "2026-10-10T19:25:22+02:00",
+      "committedAt": "2026-10-10T19:25:22+02:00",
+      "subject": "Add editable default workflow template",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "06f9744a6c10307481fdb2b438519af70a8fe58c",
+      "authoredAt": "2026-10-10T19:18:16+02:00",
+      "committedAt": "2026-10-10T19:18:16+02:00",
+      "subject": "Complete shared contract and test helper coverage",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "3e193865128132f69eea7cb133d2ade3c921ef89",
+      "authoredAt": "2026-10-10T19:13:46+02:00",
+      "committedAt": "2026-10-10T19:13:46+02:00",
+      "subject": "List all canvas items with batch removal",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "67ecd41b5112e838e444db54be6b37204d2d06ca",
+      "authoredAt": "2026-10-10T19:09:08+02:00",
+      "committedAt": "2026-10-10T19:09:08+02:00",
+      "subject": "Condense connection list and bottom-align picture buttons",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "3dc88f23425dce4e153dfce342ad789659f1cc43",
+      "authoredAt": "2026-10-10T19:05:40+02:00",
+      "committedAt": "2026-10-10T19:05:40+02:00",
+      "subject": "Align canvas toolbar into left and right panels",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "15d8ff8546457a46cc548d2711dfebafc82d9cf3",
+      "authoredAt": "2026-10-10T18:57:12+02:00",
+      "committedAt": "2026-10-10T18:57:12+02:00",
+      "subject": "Show scrollable connection list above removal",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "1fd60a5d56fcc16be9ce59d0b6583cb6aa9ca9ea",
+      "authoredAt": "2026-10-10T18:53:44+02:00",
+      "committedAt": "2026-10-10T18:53:44+02:00",
+      "subject": "Align connection controls beside removal",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "3f62970ff97a1243678de99d5eaebec965dff45a",
+      "authoredAt": "2026-10-10T18:49:54+02:00",
+      "committedAt": "2026-10-10T18:49:54+02:00",
+      "subject": "Tighten Actor bounds with top and bottom clearance",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "b3a2379cf586548eae8d52f4584c561f7c4e09e4",
+      "authoredAt": "2026-10-10T18:41:53+02:00",
+      "committedAt": "2026-10-10T18:41:53+02:00",
+      "subject": "Add responsive small and wide canvas buttons",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "88e5f39946fd0a97dfa882e0d8649163ca96fe52",
+      "authoredAt": "2026-10-10T18:35:19+02:00",
+      "committedAt": "2026-10-10T18:35:19+02:00",
+      "subject": "Unify selected part and connection removal",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "e86b49d563c248e34499e18e5c0a8b0cf3133d67",
+      "authoredAt": "2026-10-10T18:32:02+02:00",
+      "committedAt": "2026-10-10T18:32:02+02:00",
+      "subject": "Arrange canvas controls on grid with compact buttons",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "e393f034f66d1aa65ec6f19b6c6cf7bfc523d8dd",
+      "authoredAt": "2026-10-10T18:23:33+02:00",
+      "committedAt": "2026-10-10T18:23:33+02:00",
+      "subject": "Add editable architecture symbols to canvas editor",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "b16e41b6cef4f0744a57870e9e0a3d0aa5aa4f74",
+      "authoredAt": "2026-10-10T18:16:40+02:00",
+      "committedAt": "2026-10-10T18:16:40+02:00",
+      "subject": "Add reusable canvas symbol renderers and preview",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "4b6d39feef1da3feff28aadd28999122f86fa5bf",
+      "authoredAt": "2026-10-10T17:48:39+02:00",
+      "committedAt": "2026-10-10T17:48:39+02:00",
+      "subject": "Remove Untimed column from slice report",
+      "category": "Unclassified"
+    },
     {
       "sha": "af11c04dcffbd2afe0f01172419f795159900f5a",
       "authoredAt": "2026-10-10T17:45:25+02:00",
@@ -6919,12 +8052,12 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T15:48:06.759Z",
-  "sourceCommit": "af11c04dcffbd2afe0f01172419f795159900f5a",
+  "generatedAt": "2026-10-10T17:51:31.142Z",
+  "sourceCommit": "3772101be454d9ca4a20f95f529590ac78f75c6e",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",
-      "sha256": "68e5a10b608859122d80a392d4f84a75e76571f00c6d8ecb2b8502645e4981a7"
+      "sha256": "45a6eddee8103b351cae801daa0eb1427208c09e23dd72c7afda8f5a954b36ed"
     },
     {
       "path": "knowledge/workflows/work-effort-classifications.json",
@@ -6936,7 +8069,7 @@
     },
     {
       "path": "knowledge/workflows/work-plans.json",
-      "sha256": "46e148824fba43360e9f92d65f54f35bc916e9866e38f8872ec0a9f24178b30e"
+      "sha256": "97f98b0b7a6d833d225a788c1757cd941b1cae752c2b2be6d335d17d46540df0"
     }
   ],
   "workflowRegistrySnapshot": {
@@ -7228,6 +8361,244 @@
   "workPlanRegistrySnapshot": {
     "schemaVersion": 2,
     "workPlans": [
+      {
+        "id": "canvas-viewport-zoom",
+        "title": "Canvas viewport zoom and pan",
+        "description": "Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning without changing diagram coordinates or normal scrolling.",
+        "topics": [
+          {
+            "id": "canvas-ctrl-wheel",
+            "title": "Ctrl+wheel and Ctrl+drag interaction",
+            "description": "Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.",
+            "tasks": [
+              {
+                "id": "canvas-ctrl-wheel-implementation",
+                "title": "Implement and verify viewport zoom and pan",
+                "description": "Completed pointer-anchored Ctrl+wheel zoom (25%-400%) and free Ctrl+background-drag panning using CanvasViewport. Combined transform composes with device pixel ratio and is inverted for model-coordinate interactions. Ordinary scrolling, model geometry, part dragging and connection destination picking preserved; navigation is opt-in for editor, not preview. Confirmed loading resets zoom/pan; cancelled replacement preserves both. Red observed for missing wheel handling. Targeted coverage reaches 100% in every changed executable module; all 936 client tests pass with 100% reported full-client coverage, type-check/build and diagnostics pass. Actual desktop wheel/pan/transformed-hit checks and narrow zoom/normal-wheel/cancel/reset checks passed. Component remains 386 lines. Tracking and measurement retained. Next step: user review and optional implementation commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-ctrl-wheel-plan"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "repository-test-coverage",
+        "title": "Repository test coverage",
+        "description": "Close gaps reported by the configured full client and server coverage runs without changing production behavior.",
+        "topics": [
+          {
+            "id": "repository-coverage-gaps",
+            "title": "Shared contracts and test helpers",
+            "description": "Reuse shared domain tests in both runtime environments and exercise omitted test-helper cases.",
+            "tasks": [
+              {
+                "id": "repository-coverage-completion",
+                "title": "Complete reported repository coverage",
+                "description": "Completed full-suite coverage repair: moved existing pure WorkPlan tests into shared specs discovered by both runners, retained server export integration, and added browser memory-filesystem default-seed and canvas text-width cases. Both configured coverage reports reach 100% statements, branches, functions and lines; 906 client and 477 server tests pass. Both Jest TypeScript scopes pass no-emit checks. Production behavior and coverage inclusion/exclusion rules unchanged. Tracking and measurement retained from this session. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "repository-coverage-completion"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "canvas-symbol-rendering",
+        "title": "Canvas symbol rendering",
+        "description": "Reusable vector symbols and an isolated preview inspired by the supplied architecture sketch.",
+        "topics": [
+          {
+            "id": "canvas-symbol-preview-topic",
+            "title": "Reusable symbol renderers",
+            "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
+            "tasks": [
+              {
+                "id": "canvas-editor-functional-boundaries",
+                "title": "Extract cohesive editor boundaries",
+                "description": "Completed approved geometry/hit-testing functions, sketch renderer and ordered SketchSelection class with shared typed records. Component retains Angular bindings, pointer lifecycle and picture-loading orchestration; reduced from 552 to 379 lines. Existing 136 editor tests pass unchanged with 100% coverage for component and all extracted executable modules. Client build, Jest TypeScript check and diagnostics pass. Live DOM-event checks in nonvisible shared browser tab verify template loading, selection fallback and technical replacement; visual pointer check unavailable because tab is not visible. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-functional-boundaries"
+                ]
+              },
+              {
+                "id": "canvas-editor-synchronized-selection",
+                "title": "Synchronize list and canvas selection",
+                "description": "Completed one ordered selection set for canvas and checkboxes. Clicks/checks toggle membership, last selected item drives editing, deselection falls back to the last remaining item, and empty canvas clears all outside connection mode. Dragging preserves membership and makes the dragged part active; all selected items are highlighted. Shared cleanup/replacement preserved. Red observed before production changes; 136 editor tests pass with 100% module coverage, test TypeScript check and client build pass. Live desktop synchronization, label editing, fallback, dragging and clearing verified; mobile list editing/clearing and no overflow verified. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-synchronized-selection"
+                ]
+              },
+              {
+                "id": "canvas-default-workflow-template",
+                "title": "Load an editable default workflow template",
+                "description": "Completed Default template button for the reference main diagram: 25 typed symbols and 28 editable straight connections, excluding bottom legend/note. Initial canvas remains empty. Added Tech process renderer and picker option. JSON is authoritative, geometry/shape validation reused at loading boundary, replacement confirmation and fresh copies preserved. All 923 client tests pass with 100% reported coverage; test TypeScript check and client build pass. Runtime verifies template items, cancellation/confirmation and 2040x1080 scrollable workspace at 320/360/768/1280px without document overflow. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-default-workflow-template"
+                ]
+              },
+              {
+                "id": "canvas-editor-all-items",
+                "title": "List and select every canvas item",
+                "description": "Completed combined list of all parts and connections, with independent checkboxes and total/selected counts. Remove selected deletes checked parts, incident links, checked connections and canvas selection through shared cleanup. Replacement clears checks; cancellation preserves them. Red observed before implementation. 129 tests, 100% editor-module coverage, TypeScript check and client build pass. Runtime validates all twelve overview items, scrolling/no overflow at 320/360/768/1280px and mixed removal. Existing no-rendered-area pointer console errors observed during viewport resizing, also present before this change; not changed in scope. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-all-items"
+                ]
+              },
+              {
+                "id": "canvas-editor-bottom-picture-actions",
+                "title": "Anchor left picture actions above canvas",
+                "description": "Completed bottom alignment of stacked Technical picture and Load overview buttons. Verified toolbar-bottom alignment at 320, 360, 768 and 1280px; desktop picture and right actions share the bottom, mobile flow remains unchanged, no overflow. Client build passes without warnings; diagnostics clear. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-bottom-picture-actions"
+                ]
+              },
+              {
+                "id": "canvas-editor-condensed-list",
+                "title": "Condense connection selection rows",
+                "description": "Completed compact connection text and 28px minimum rows, preserving wrapping, checkbox selection and 12rem scrolling cap. Runtime checks at 320, 360, 768 and 1280px show smaller rows without horizontal overflow; last checkbox scrolls into view and enables removal. Client build passes without warnings; diagnostics clear. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-condensed-list"
+                ]
+              },
+              {
+                "id": "canvas-editor-bottom-actions",
+                "title": "Anchor right-side actions above canvas",
+                "description": "Completed bottom-anchored right-side removal and connection buttons with top-aligned list. Verified empty/populated lists at 320, 360, 768 and 1280px; desktop buttons align with toolbar bottom, mobile panel flow preserved, no overflow. Client build passes. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-bottom-actions"
+                ]
+              },
+              {
+                "id": "canvas-editor-top-list",
+                "title": "Align half-width connections list with left fields",
+                "description": "Completed right-side Connections panel starting at Label/Type height above mobile. User corrected width to half the page: list spans six global columns, with removal and connection actions below; left fields/Add and stacked picture loading remain on the left. Mobile list spans both control columns. Verified exact width/top alignment at 768/1280px, mobile at 320/360px, 12rem cap, no overflow and client build. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-top-list",
+                  "canvas-editor-half-list"
+                ]
+              },
+              {
+                "id": "canvas-editor-left-fields",
+                "title": "Align label and type in the left half",
+                "description": "Completed side-by-side Label/Type within the left half above mobile, matching Load overview width, with Add beneath. Follow-up stacks Technical picture above Load overview in the same left-side grid space. Mobile two-column controls preserved. Runtime edge/stacking assertions pass at 320, 360, 768 and 1280px without overflow; 123 editor tests and client build pass. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-left-fields",
+                  "canvas-editor-picture-order"
+                ]
+              },
+              {
+                "id": "canvas-editor-connection-list",
+                "title": "Show a scrollable connection selection list",
+                "description": "Completed always-visible checkbox list above Remove selected, capped at 12rem with vertical scrolling. Multiple selection and removal preserved. Verified list dimensions and scrolling at 320, 360, 768 and 1280px, checked last-row removal, 123 editor tests, client build without style-budget warning and clear diagnostics. Tracking and measurement retained. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-connection-list"
+                ]
+              },
+              {
+                "id": "canvas-editor-removal-placement",
+                "title": "Place connections beside removal",
+                "description": "Completed Connections picker beside Remove selected and right-aligned toward that action, with Connect/Cancel beneath toward the same right edge. Verified actual row/edge alignment at 320, 360, 768 and 1280px without overflow; 123 editor tests passed before CSS-only follow-up and final client build passes without style-budget warning. Existing actions, responsive sizing and canvas preserved. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-removal-placement",
+                  "canvas-editor-removal-alignment"
+                ]
+              },
+              {
+                "id": "canvas-editor-actor-bounds",
+                "title": "Tighten Actor interaction bounds",
+                "description": "Completed tight Actor bounds, including follow-up top clearance: 60x100 interaction box with 10px extra room above and below the unchanged 60x80 drawing area. Shared geometry drives hit-testing, selection outlines, connections and picture boundaries; other shapes remain 180x80. Follow-up Red/Green verified 123 editor tests, 100% coverage, TypeScript check, client build and live screenshot with top/label clearance. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-actor-bounds",
+                  "canvas-editor-actor-top-margin"
+                ]
+              },
+              {
+                "id": "canvas-editor-button-variants",
+                "title": "Use small and grid-filling wide editor buttons",
+                "description": "Completed wide Add/Remove/picture actions and responsive small Connect/Cancel: fill grid cells above 42rem, content-sized on mobile. Replacement controls, 36px minimum height and canvas unchanged. Initial variants passed 122 editor tests. Follow-up runtime assertions pass at 320, 360, 672, 673, 768 and 1280px; client build passes and no overflow. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-button-variants",
+                  "canvas-editor-button-growth"
+                ]
+              },
+              {
+                "id": "canvas-editor-unified-removal",
+                "title": "Unify selected part and connection removal",
+                "description": "Completed one Remove selected action for the selected part, its incident connections, directly selected canvas connection and checked connections. Reuses existing cleanup and preserves unrelated items. Verified 122 editor tests, 100% changed-module coverage, TypeScript check, client build and live combined/direct connection removal with one button and no mobile overflow. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-unified-removal"
+                ]
+              },
+              {
+                "id": "canvas-editor-controls-grid",
+                "title": "Arrange canvas editor controls on the global grid",
+                "description": "Completed name/type-before-Add global-grid ordering and compact-controls follow-up. Mobile controls use two equal columns, scoped only to the toolbar; canvas layout and global page grid remain unchanged. Editor buttons are content-sized and 36px high across tested viewports. Verified 120 editor tests, client production build, live dimensions at desktop/tablet/360/320px, no document overflow and mobile creation/selection/connect/cancel/removal. At 360px toolbar height reduced from 600.375px to 288.375px. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-editor-controls-grid",
+                  "canvas-editor-controls-compact"
+                ]
+              },
+              {
+                "id": "canvas-symbol-editor",
+                "title": "Use generic architecture symbols in the canvas editor",
+                "description": "Completed artifact, system software, business role, product and actor choices in the canvas editor. Existing label input edits the name; box symbols keep their fixed heading and show the name inside angle brackets, while actor names appear below a centered figure. Rectangle default, loaded pictures, selection bounds, dragging, connections and deletion preserved. Verified 143 focused tests, 100% coverage of both changed production modules, TypeScript check, shared/client builds and live creation, movement, relabeling, connection and removal. Narrow controls have no document overflow. Baseline and completion evidence are in the linked evaluation. Next step: user review and optional commit approval.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-symbol-editor"
+                ]
+              },
+              {
+                "id": "canvas-symbol-preview",
+                "title": "Render architecture symbols with a sample canvas preview",
+                "description": "Completed reusable deterministic Canvas 2D renderers and the isolated /canvas-symbol-preview route. Verified all five symbol types, green/orange styling, clipped hatch fills, corner icons, labels, connections, narrow/wide layout, cleanup and visible errors. Existing editor and stored formats preserved. Tracking and measurement approved; baseline and completion evidence are in the linked evaluation. Next step: user review and optional commit approval; editable symbol integration and pixel-identical handwriting remain out of scope.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-symbol-preview"
+                ]
+              }
+            ]
+          }
+        ]
+      },
       {
         "id": "work-effort-reporting",
         "title": "Work effort reporting",
@@ -7815,14 +9186,14 @@
     },
     {
       "path": "knowledge/workflows/work-plans.md",
-      "sha256": "88438fe539b4284bbce1a17bc570ba2b1c72ef51e785c397b005bb1d7a9fb79c",
+      "sha256": "4575b48f15cb73af45a37bb38cdddcaf40dbfe23622760e3753bbd8173f3fd59",
       "statements": [
         {
-          "line": 15,
+          "line": 229,
           "text": "Build an evidence-backed comparison without equating elapsed sessions, commit gaps or agent execution time with human active effort."
         },
         {
-          "line": 25,
+          "line": 239,
           "text": "Agree the reporting period and classification criteria before implementation. Proposed categories: Problem/Domain for work delivering or investigating the supported problem/domain; Meta/DevEnv for tooling, agent rules, workflows, test infrastructure, measurement and environment upkeep. Classify by intended outcome, not merely file path, and retain mixed/unclassified work rather than forcing a binary allocation. Gather as much available evidence as possible from WorkPlans and linked evaluations, knowledge/workflows/devenv-value-evaluation.json, workflow checkpoints and reports, timestamped user/assistant turns, session metadata and tool-execution records where accessible, Git commits/diffs and explicit user time records. Link every classification and time interval to its source and distinguish direct observations, estimates and unknowns. Report human active effort separately from elapsed delivery windows, waiting and agent/tool execution; never infer active effort from commit gaps, message gaps or whole-session duration. Avoid double counting overlapping tasks/sessions and parallel tool or agent activity; document allocation assumptions and missing evidence. Produce a report with category totals and proportions only where supported by comparable evidence, per-task breakdown, evidence coverage, mixed/unclassified time, limitations and reproducible derivation. Use authoritative typed JSON with generated Markdown for structured report data; agree any UI separately. Initial evidence inventory on 2026-10-10: the evaluation ledger has 46 evaluations, 38 with both startedAt/completedAt and 34 with a non-null delivery-flow-and-effort value; values may describe wall-clock time with active effort unknown, so inspect each rather than summing them blindly. Recent commits c7fcf3a, 57ce107 and 74d351d cover AgentPhaseGuide rules/glossary/export; e748394, b074703, ad87c42, d07e878 and e5f827f cover test infrastructure and planning, providing classification leads and commit timestamps but not durations. Cloud and local session-store queries over the last seven days returned no rows in this session; treat history availability as unresolved, not proof that no work occurred. This conversation also provides timestamped evidence of generic-core refinement, tracking-rule decisions and an in-memory export dry run; preserve accessible turns/checkpoints when the task starts. Success: a source-traceable comparison that explicitly reports unknown active effort and demonstrates no overlap double counting; do not present unsupported totals as measured time."
         }
       ]

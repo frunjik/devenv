@@ -14,17 +14,17 @@ Durations use hours:minutes:seconds, rounded to the nearest second. The Problem 
 
 | Window category         | Duration (h:mm:ss) | Minutes | Share of observed union |
 | ----------------------- | -----------------: | ------: | ----------------------: |
-| Problem/Domain          |            3:05:08 |  185.13 |                  50.95% |
-| Meta/DevEnv             |            2:33:47 |  153.78 |                  42.32% |
-| Mixed                   |            0:05:30 |    5.50 |                   1.51% |
-| Unclassified            |            0:04:03 |    4.04 |                   1.11% |
-| Cross-category overlap  |            0:14:54 |   14.90 |                   4.10% |
-| Problem + Meta subtotal |            5:38:55 |  338.92 |                  93.27% |
-| Total observed union    |            6:03:22 |  363.36 |                 100.00% |
+| Problem/Domain          |            3:05:08 |  185.13 |                  43.76% |
+| Meta/DevEnv             |            2:33:47 |  153.78 |                  36.35% |
+| Mixed                   |            0:05:30 |    5.50 |                   1.30% |
+| Unclassified            |            1:03:43 |   63.72 |                  15.06% |
+| Cross-category overlap  |            0:14:54 |   14.90 |                   3.52% |
+| Problem + Meta subtotal |            5:38:55 |  338.92 |                  80.12% |
+| Total observed union    |            7:03:02 |  423.04 |                 100.00% |
 
-Evaluations reviewed: 48. Complete intervals: 40.
-Unfinished or untimed evaluations: 8.
-Reachable commits inventoried: 712; all commit durations and outcome classifications remain unknown.
+Evaluations reviewed: 73. Complete intervals: 63.
+Unfinished or untimed evaluations: 10.
+Reachable commits inventoried: 731; all commit durations and outcome classifications remain unknown.
 
 ## Evaluation evidence
 
@@ -33,6 +33,31 @@ Individual elapsed values below overlap and must not be summed.
 
 | Evaluation | Category | Elapsed minutes (not effort) | Classification rationale |
 |---|---|---:|---|
+| canvas-ctrl-wheel-plan: Canvas Ctrl+wheel zoom and Ctrl+drag pan | Unclassified | 4.35 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-functional-boundaries: Extract cohesive editor boundaries | Unclassified | 2.50 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-synchronized-selection: Synchronize list and canvas selection | Unclassified | 3.78 | No outcome classification supplied; no allocation inferred. |
+| canvas-default-workflow-template: Load an editable default workflow template | Unclassified | 5.27 | No outcome classification supplied; no allocation inferred. |
+| repository-coverage-completion: Complete reported repository coverage | Unclassified | 3.46 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-all-items: List and select every canvas item | Unclassified | 2.58 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-bottom-picture-actions: Anchor left picture actions above canvas | Unclassified | 0.54 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-condensed-list: Condense connection selection rows | Unclassified | unknown | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-bottom-actions: Anchor right-side actions above canvas | Unclassified | 0.77 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-half-list: Expand connections list to half the page | Unclassified | unknown | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-top-list: Align narrow connections list with left fields | Unclassified | 1.31 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-picture-order: Stack Technical picture above Load overview | Unclassified | 0.78 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-left-fields: Align label and type in the left half | Unclassified | 0.72 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-connection-list: Show a scrollable connection selection list | Unclassified | 2.21 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-removal-alignment: Right-align connection controls toward removal | Unclassified | 1.09 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-removal-placement: Place connections beside removal | Unclassified | 1.50 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-actor-top-margin: Add top clearance to Actor bounds | Unclassified | 1.25 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-actor-bounds: Tighten Actor interaction bounds | Unclassified | 3.43 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-button-growth: Grow small toolbar buttons when space permits | Unclassified | 1.25 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-button-variants: Use small and grid-filling wide editor buttons | Unclassified | 1.52 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-unified-removal: Unify selected part and connection removal | Unclassified | 2.11 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-controls-compact: Use two mobile control columns and compact editor buttons | Unclassified | 1.81 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-controls-grid: Arrange canvas editor controls on the global grid | Unclassified | 2.86 | No outcome classification supplied; no allocation inferred. |
+| canvas-symbol-editor: Use generic architecture symbols in the canvas editor | Unclassified | 5.02 | No outcome classification supplied; no allocation inferred. |
+| canvas-symbol-preview: Render architecture symbols with a sample canvas preview | Unclassified | 9.55 | No outcome classification supplied; no allocation inferred. |
 | self-cloning-agent-guide-package: Package the exported Guide so it can clone itself | Unclassified | 4.04 | No outcome classification supplied; no allocation inferred. |
 | report-domain-versus-meta-time: Create an evidence-backed Problem/Domain versus Meta/DevEnv time report | Meta/DevEnv | 5.95 | The report itself is development-process measurement work; its recorded window includes scope decisions and checks, not measured human effort. |
 | agent-guide-preview: Preview AgentPhaseGuide and generated Copilot files | Meta/DevEnv | 4.84 | Agent configuration preview and transfer tooling. |
@@ -87,6 +112,25 @@ Individual elapsed values below overlap and must not be summed.
 Author and commit dates are events, not work intervals. No time is inferred from commit gaps. Inspect referenced diffs before assigning older work to outcomes.
 | Commit | Author timestamp | Commit timestamp | Subject |
 |---|---|---|---|
+| 3772101be454d9ca4a20f95f529590ac78f75c6e | 2026-10-10T19:48:56+02:00 | 2026-10-10T19:48:56+02:00 | Add canvas Ctrl-wheel zoom and free panning |
+| 82a65b74792061fde9f8a90c9bd802eb6b1ab49b | 2026-10-10T19:41:29+02:00 | 2026-10-10T19:41:29+02:00 | Plan canvas zoom and free background panning |
+| 342841083e706acb24cf12635057a6c290cd9894 | 2026-10-10T19:36:42+02:00 | 2026-10-10T19:36:42+02:00 | Add 400-line production extraction rule |
+| 69858536fea3fd678d61d56b6f6b1a3f13ffb25d | 2026-10-10T19:34:39+02:00 | 2026-10-10T19:34:39+02:00 | Extract canvas editor functional boundaries |
+| f0482ec587b803a1a2ec6c08d15f41e891cc0caa | 2026-10-10T19:31:09+02:00 | 2026-10-10T19:31:09+02:00 | Synchronize canvas and checkbox selection |
+| b708a49a813dfe67a521d376bd4f385993deea98 | 2026-10-10T19:25:22+02:00 | 2026-10-10T19:25:22+02:00 | Add editable default workflow template |
+| 06f9744a6c10307481fdb2b438519af70a8fe58c | 2026-10-10T19:18:16+02:00 | 2026-10-10T19:18:16+02:00 | Complete shared contract and test helper coverage |
+| 3e193865128132f69eea7cb133d2ade3c921ef89 | 2026-10-10T19:13:46+02:00 | 2026-10-10T19:13:46+02:00 | List all canvas items with batch removal |
+| 67ecd41b5112e838e444db54be6b37204d2d06ca | 2026-10-10T19:09:08+02:00 | 2026-10-10T19:09:08+02:00 | Condense connection list and bottom-align picture buttons |
+| 3dc88f23425dce4e153dfce342ad789659f1cc43 | 2026-10-10T19:05:40+02:00 | 2026-10-10T19:05:40+02:00 | Align canvas toolbar into left and right panels |
+| 15d8ff8546457a46cc548d2711dfebafc82d9cf3 | 2026-10-10T18:57:12+02:00 | 2026-10-10T18:57:12+02:00 | Show scrollable connection list above removal |
+| 1fd60a5d56fcc16be9ce59d0b6583cb6aa9ca9ea | 2026-10-10T18:53:44+02:00 | 2026-10-10T18:53:44+02:00 | Align connection controls beside removal |
+| 3f62970ff97a1243678de99d5eaebec965dff45a | 2026-10-10T18:49:54+02:00 | 2026-10-10T18:49:54+02:00 | Tighten Actor bounds with top and bottom clearance |
+| b3a2379cf586548eae8d52f4584c561f7c4e09e4 | 2026-10-10T18:41:53+02:00 | 2026-10-10T18:41:53+02:00 | Add responsive small and wide canvas buttons |
+| 88e5f39946fd0a97dfa882e0d8649163ca96fe52 | 2026-10-10T18:35:19+02:00 | 2026-10-10T18:35:19+02:00 | Unify selected part and connection removal |
+| e86b49d563c248e34499e18e5c0a8b0cf3133d67 | 2026-10-10T18:32:02+02:00 | 2026-10-10T18:32:02+02:00 | Arrange canvas controls on grid with compact buttons |
+| e393f034f66d1aa65ec6f19b6c6cf7bfc523d8dd | 2026-10-10T18:23:33+02:00 | 2026-10-10T18:23:33+02:00 | Add editable architecture symbols to canvas editor |
+| b16e41b6cef4f0744a57870e9e0a3d0aa5aa4f74 | 2026-10-10T18:16:40+02:00 | 2026-10-10T18:16:40+02:00 | Add reusable canvas symbol renderers and preview |
+| 4b6d39feef1da3feff28aadd28999122f86fa5bf | 2026-10-10T17:48:39+02:00 | 2026-10-10T17:48:39+02:00 | Remove Untimed column from slice report |
 | af11c04dcffbd2afe0f01172419f795159900f5a | 2026-10-10T17:45:25+02:00 | 2026-10-10T17:45:25+02:00 | Limit slice descriptions to 64 characters |
 | 2d70183dea21a2d848af73661136a0b44e40b4cb | 2026-10-10T17:40:56+02:00 | 2026-10-10T17:40:56+02:00 | Group effort slices by category and topic with totals |
 | e343ecbcc0a3c97b6797ebc6242cfb43f222effa | 2026-10-10T17:36:08+02:00 | 2026-10-10T17:36:08+02:00 | Add separate effort summary and slice commands |
@@ -802,7 +846,7 @@ Author and commit dates are events, not work intervals. No time is inferred from
 
 ## Scope, sources and limitations
 
-Git inventory pinned to af11c04dcffbd2afe0f01172419f795159900f5a. Snapshot generated at 2026-10-10T15:48:06.759Z.
+Git inventory pinned to 3772101be454d9ca4a20f95f529590ac78f75c6e. Snapshot generated at 2026-10-10T17:51:31.142Z.
 Classification source: [reviewed outcome classifications](./work-effort-classifications.json).
 Exact source hashes, original workflow/WorkPlan records, and extracted checkpoint evidence are retained in [the JSON snapshot](./work-effort-report.json).
 - Scope is all reachable HEAD history and current repository records, not deleted branches, inaccessible chats or all work ever done.
@@ -962,8 +1006,8 @@ These are corroborating records, not additional durations.
 
 ### [knowledge/workflows/work-plans.md](../../knowledge/workflows/work-plans.md)
 
-- Line 15: Build an evidence-backed comparison without equating elapsed sessions, commit gaps or agent execution time with human active effort.
-- Line 25: Agree the reporting period and classification criteria before implementation. Proposed categories: Problem/Domain for work delivering or investigating the supported problem/domain; Meta/DevEnv for tooling, agent rules, workflows, test infrastructure, measurement and environment upkeep. Classify by intended outcome, not merely file path, and retain mixed/unclassified work rather than forcing a binary allocation. Gather as much available evidence as possible from WorkPlans and linked evaluations, knowledge/workflows/devenv-value-evaluation.json, workflow checkpoints and reports, timestamped user/assistant turns, session metadata and tool-execution records where accessible, Git commits/diffs and explicit user time records. Link every classification and time interval to its source and distinguish direct observations, estimates and unknowns. Report human active effort separately from elapsed delivery windows, waiting and agent/tool execution; never infer active effort from commit gaps, message gaps or whole-session duration. Avoid double counting overlapping tasks/sessions and parallel tool or agent activity; document allocation assumptions and missing evidence. Produce a report with category totals and proportions only where supported by comparable evidence, per-task breakdown, evidence coverage, mixed/unclassified time, limitations and reproducible derivation. Use authoritative typed JSON with generated Markdown for structured report data; agree any UI separately. Initial evidence inventory on 2026-10-10: the evaluation ledger has 46 evaluations, 38 with both startedAt/completedAt and 34 with a non-null delivery-flow-and-effort value; values may describe wall-clock time with active effort unknown, so inspect each rather than summing them blindly. Recent commits c7fcf3a, 57ce107 and 74d351d cover AgentPhaseGuide rules/glossary/export; e748394, b074703, ad87c42, d07e878 and e5f827f cover test infrastructure and planning, providing classification leads and commit timestamps but not durations. Cloud and local session-store queries over the last seven days returned no rows in this session; treat history availability as unresolved, not proof that no work occurred. This conversation also provides timestamped evidence of generic-core refinement, tracking-rule decisions and an in-memory export dry run; preserve accessible turns/checkpoints when the task starts. Success: a source-traceable comparison that explicitly reports unknown active effort and demonstrates no overlap double counting; do not present unsupported totals as measured time.
+- Line 229: Build an evidence-backed comparison without equating elapsed sessions, commit gaps or agent execution time with human active effort.
+- Line 239: Agree the reporting period and classification criteria before implementation. Proposed categories: Problem/Domain for work delivering or investigating the supported problem/domain; Meta/DevEnv for tooling, agent rules, workflows, test infrastructure, measurement and environment upkeep. Classify by intended outcome, not merely file path, and retain mixed/unclassified work rather than forcing a binary allocation. Gather as much available evidence as possible from WorkPlans and linked evaluations, knowledge/workflows/devenv-value-evaluation.json, workflow checkpoints and reports, timestamped user/assistant turns, session metadata and tool-execution records where accessible, Git commits/diffs and explicit user time records. Link every classification and time interval to its source and distinguish direct observations, estimates and unknowns. Report human active effort separately from elapsed delivery windows, waiting and agent/tool execution; never infer active effort from commit gaps, message gaps or whole-session duration. Avoid double counting overlapping tasks/sessions and parallel tool or agent activity; document allocation assumptions and missing evidence. Produce a report with category totals and proportions only where supported by comparable evidence, per-task breakdown, evidence coverage, mixed/unclassified time, limitations and reproducible derivation. Use authoritative typed JSON with generated Markdown for structured report data; agree any UI separately. Initial evidence inventory on 2026-10-10: the evaluation ledger has 46 evaluations, 38 with both startedAt/completedAt and 34 with a non-null delivery-flow-and-effort value; values may describe wall-clock time with active effort unknown, so inspect each rather than summing them blindly. Recent commits c7fcf3a, 57ce107 and 74d351d cover AgentPhaseGuide rules/glossary/export; e748394, b074703, ad87c42, d07e878 and e5f827f cover test infrastructure and planning, providing classification leads and commit timestamps but not durations. Cloud and local session-store queries over the last seven days returned no rows in this session; treat history availability as unresolved, not proof that no work occurred. This conversation also provides timestamped evidence of generic-core refinement, tracking-rule decisions and an in-memory export dry run; preserve accessible turns/checkpoints when the task starts. Success: a source-traceable comparison that explicitly reports unknown active effort and demonstrates no overlap double counting; do not present unsupported totals as measured time.
 
 ### [knowledge/workflows/workflow-evaluation-associations.md](../../knowledge/workflows/workflow-evaluation-associations.md)
 

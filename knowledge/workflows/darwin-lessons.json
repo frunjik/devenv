@@ -1,0 +1,19 @@
+[
+  {
+    "id": "evolve-ruleset-from-observed-metrics",
+    "recordedOn": "2026-10-10",
+    "context": "Experience applying the current agent ruleset exposed gaps between intended behavior and observed execution.",
+    "intent": "Provide a mechanism to develop a new agent ruleset, spawned from the current one, based on observed metrics.",
+    "evidence": [
+      "./interactive-canvas-workflow.md#metrics-tracking-repair",
+      "./devenv-value-evaluation.json"
+    ],
+    "recommendation": "Use Darwin to derive a candidate from a pinned current ruleset, connect proposed changes to observed metrics, trial it against a recorded baseline and retain version history. Activate changes only with user approval.",
+    "verification": "The user clarified this lesson on 2026-10-10. Existing evaluations record execution and tracking gaps; the ruleset-development mechanism has not yet been trialled and its benefits remain unverified.",
+    "openQuestions": [
+      "Which observed metrics should guide candidate changes?",
+      "Which trial cases and success conditions should assess the candidate?",
+      "Where should the spawned ruleset be developed and trialled?"
+    ]
+  }
+]

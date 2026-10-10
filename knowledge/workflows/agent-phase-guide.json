@@ -1,0 +1,51 @@
+{
+  "name": "Agent Phase Guide",
+  "status": "Proposal; not active configuration",
+  "recordedOn": "2026-10-10",
+  "purpose": "Coordinate Understand -> Explore -> Make -> Evaluate, then repeat as needed, selecting phase-appropriate skills or agents without transferring ownership of the task.",
+  "phases": {
+    "Understand": {
+      "purpose": "Clarify intent, constraints and success conditions.",
+      "capabilityOptions": ["Clarification skill"],
+      "handoff": ["Agreed outcome", "Constraints", "Success conditions"]
+    },
+    "Explore": {
+      "purpose": "Investigate evidence and options, then choose an approach.",
+      "capabilityOptions": ["Investigation skill", "Investigation agent when separate context helps"],
+      "handoff": ["Evidence", "Options", "Proposed approach", "Required approvals"]
+    },
+    "Make": {
+      "purpose": "Produce the change using selected procedures, including checks during execution.",
+      "capabilityOptions": ["TDD coding skill", "Implementation agent when separate execution helps"],
+      "handoff": ["Change", "Verification evidence", "Blockers and limitations"]
+    },
+    "Evaluate": {
+      "purpose": "Compare the result with success conditions, record observed metrics and decide the next step.",
+      "capabilityOptions": ["Assessment skill", "Review agent when independent review helps"],
+      "handoff": ["Outcome assessment", "Observed metrics and unknowns", "Next step"]
+    }
+  },
+  "coordinatorResponsibilities": [
+    "Retain the agreed goal, constraints, decisions and evidence across switches.",
+    "Select and load applicable capabilities before acting; references alone are insufficient.",
+    "Resolve overlapping triggers and conflicting requirements.",
+    "Expose enabled, disabled and unavailable capabilities.",
+    "Preserve scope, authorization and honest verification safeguards."
+  ],
+  "switchingPolicy": [
+    "Start with one coordinator and phase-specific skills; do not require four separate agents.",
+    "Use separate agents only where independent context, execution or review adds value.",
+    "Loading a skill and switching or delegating to an agent are different runtime operations.",
+    "Allow optional capabilities to be enabled or disabled; core safeguards are not ordinary toggles.",
+    "Reliable switches require runtime-supported configuration; prompt-only toggles are not technical enforcement.",
+    "TDD Red -> Green -> Refactor occurs inside Make; final Evaluate does not postpone those checks.",
+    "Scale the loop to the task rather than imposing four handoffs on every small request."
+  ],
+  "verification": "Design agreed for preservation, not implemented or trialled. Routing reliability, handoff losses, overhead and benefits remain unmeasured.",
+  "openQuestions": [
+    "Which runtime will host the coordinator and what switching controls does it support?",
+    "Which optional capabilities should be configurable?",
+    "What evidence will justify separate agents rather than skills?",
+    "Which routing and handoff trials will establish acceptable reliability and overhead?"
+  ]
+}

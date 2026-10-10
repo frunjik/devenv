@@ -1,0 +1,56 @@
+# Agent Essentials
+
+Generated from [agent-essentials.json](./agent-essentials.json). Edit JSON, not this view.
+
+Initial selection approved on 2026-10-10. Candidate only; not active repository guidance.
+
+## 1. Verify the requested outcome
+
+Before making changes, establish the requested outcome and observable success conditions. Clarify material ambiguity rather than guessing.
+
+Verify those conditions directly. Passing tests, coverage or builds are not substitutes for checking the actual requirement. Use runtime/UI checks when needed, including relevant viewport sizes and interactions.
+
+Report evidence, failures, unavailable checks and unknowns. Do not claim completion when the requested outcome remains unverified.
+
+## 2. Follow an explicit work loop and TDD
+
+1. **Understand:** establish intent, constraints and success conditions.
+2. **Explore:** inspect relevant code, tests and callers; identify external boundaries and reuse existing contracts and mocks before writing tests. Choose an approach and resolve required approvals.
+3. **Make:** for production behavior, follow the explicit [Red -> Green -> Refactor procedure and testing requirements](./agent-essentials-testing.candidate.md). Observe Red before production changes, implement only enough for Green, then refactor with tests green. Report the applicable phase. Do not claim TDD for documentation or design alone.
+4. **Evaluate:** compare the result with success conditions. Review practice compliance separately from test, coverage and build results. Record opted-in metrics and unknowns; decide the next step. Repeat as needed.
+
+Checks during Make are not deferred until Evaluate. Scale the loop to the task; separate agents and four formal handoffs are not required.
+
+## 3. Find and reuse boundary mocks before tests
+
+Before writing or changing tests, follow the [boundary dependency check](./agent-essentials-testing.candidate.md#before-writing-tests). Reuse existing contracts and plain mocks/fakes before introducing new ones.
+
+Follow the [public-behavior and mocking requirements](./agent-essentials-testing.candidate.md#public-behavior-and-mocking), including the permissions for boundary-adapter tests and the explanation required for necessary interception.
+
+## 4. Fully cover changed production modules
+
+Follow the [coverage requirements](./agent-essentials-testing.candidate.md#coverage): 100% statement, branch, function and line coverage for each changed production module, through public behavior.
+
+Do not expand coverage scope to unchanged dependencies or distort production code to raise coverage. Report uncovered code and blockers honestly. Full coverage does not replace requested-outcome verification.
+
+## Intents to explore
+
+The following preserve desired outcomes, not selected rules or the current implementation. Names, mechanisms and adoption remain open.
+
+### 5. Trace work to its evaluations
+
+Retain understandable links between work and its evaluations even when names change or one effort has several evaluations. Explore stable identity and history access without assuming the existing workflow/TODO/evaluation structure must transfer.
+
+### 6. Capture baseline and completion evidence with little upkeep
+
+Make observed changes, decisions and unknowns available across follow-ups. Explore a lightweight mechanism that reliably records opted-in evidence without repeated prompting or retrospective repair. Effort and user benefits must remain unknown when unmeasured.
+
+### 7. Trial changes in isolation before broad adoption
+
+Explore small, reversible trials with explicit success conditions and evaluation before wider adoption. Determine when isolation is worthwhile and how to measure benefit and overhead; do not require a separate preview or trial for every change.
+
+## Basis and limits
+
+Selection: the user's first four priorities from the retrospective ranking; priorities 5-7 are intents for further exploration only. Evidence: [canvas repair and three-slice work-loop trial](../workflows/interactive-canvas-workflow.md), plus scheduler-boundary, client-coverage, evaluation-association, metrics-repair and visual-preview results recorded in the [evaluation ledger](../workflows/devenv-value-evaluation.json).
+
+The detailed testing procedure is pinned to v4. These practices seed the new candidate; the remaining rules and the proposed AgentPhaseGuide still require review and trials. No effectiveness improvement is claimed for this candidate yet.

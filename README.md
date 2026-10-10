@@ -45,6 +45,8 @@ Controls align to the global grid: name and type come before Add and Remove,
 followed by connection actions and picture loading. Narrow screens use two
 control columns without splitting the canvas. Editor buttons use content-sized
 widths and a compact 36px minimum height.
+One **Remove selected** action removes the selected part, its incident
+connections, any connection selected on the canvas and all checked connections.
 
 ## Work time evidence
 

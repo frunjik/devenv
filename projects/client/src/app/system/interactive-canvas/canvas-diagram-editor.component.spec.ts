@@ -179,10 +179,10 @@ describe('CanvasDiagramEditor', () => {
         ]);
         const controls = groups[0].querySelectorAll('input, select, button');
         expect(Array.from(controls, control => control.getAttribute('aria-label'))).toEqual([
-            'Label for next part', 'Part shape', 'Add part', 'Remove selected part',
+            'Label for next part', 'Part shape', 'Add part', 'Remove selected',
         ]);
         expect(Array.from(groups[1].querySelectorAll('button'), control => control.getAttribute('aria-label'))).toEqual([
-            'Connect selected part', 'Cancel connection', 'Delete selected connections',
+            'Connect selected part', 'Cancel connection',
         ]);
         enterLabel('Workflow');
         chooseShape('artifact');
@@ -214,7 +214,7 @@ describe('CanvasDiagramEditor', () => {
         connect(260, 160, 60, 60);
         expect(editor.connections).toHaveLength(1);
         clickCanvas(260, 160);
-        clickButton('Remove selected part');
+        clickButton('Remove selected');
         expect(editor.parts).toHaveLength(1);
         expect(editor.connections).toHaveLength(0);
     });
@@ -356,7 +356,7 @@ describe('CanvasDiagramEditor', () => {
 
         it('removes an empty boundary when its last member is deleted', () => {
             clickCanvas(350, 90);
-            clickButton('Remove selected part');
+            clickButton('Remove selected');
             expect(editor.boundaries.map(boundary => boundary.label)).toEqual(['Development host']);
             expect(editor.connections.some(connection => connection.first.label === 'DevEnv client'
                 || connection.second.label === 'DevEnv client')).toBe(false);
@@ -543,11 +543,35 @@ describe('CanvasDiagramEditor', () => {
     describe('connection picker', () => {
         beforeEach(() => { createEditor(); loadOverview(); });
 
-        it('starts collapsed with six unchecked lines and one disabled delete button', () => {
+        it('removes a selected part and checked connections through one action', () => {
+            const removedPart = editor.parts[1];
+            const checked = editor.connections[2];
+            const retained = editor.connections.filter(connection =>
+                connection !== checked && connection.first !== removedPart && connection.second !== removedPart);
+            checkLine(2);
+            clickCanvas(359, 59);
+            clickButton('Remove selected');
+            expect(editor.parts).not.toContain(removedPart);
+            expect(editor.connections).toEqual(retained);
+            expect(editor.checkedConnections.size).toBe(0);
+            expect(button('Remove selected').disabled).toBe(true);
+        });
+
+        it('removes a directly selected connection even when it is unchecked', () => {
+            const retained = editor.connections.slice(2);
+            clickCanvas(289, 80);
+            checkLine(1);
+            clickButton('Remove selected');
+            expect(editor.connections).toEqual(retained);
+            expect(editor.selectedConnection).toBeUndefined();
+        });
+
+        it('starts collapsed with six unchecked lines and one disabled removal button', () => {
             expect(host.querySelector<HTMLDetailsElement>('.connection-picker')!.open).toBe(false);
             expect(host.querySelectorAll('.connection-picker input')).toHaveLength(6);
-            expect(host.querySelectorAll('.connection-controls [aria-label="Delete selected connections"]')).toHaveLength(1);
-            expect(button('Delete selected connections').disabled).toBe(true);
+            expect(host.querySelectorAll('[aria-label="Remove selected"]')).toHaveLength(1);
+            expect(host.querySelector('[aria-label="Delete selected connections"]')).toBeNull();
+            expect(button('Remove selected').disabled).toBe(true);
         });
 
         it('unchecks without deleting the connection', () => {
@@ -578,19 +602,19 @@ describe('CanvasDiagramEditor', () => {
             it('does not change label-edit selection and enables deletion', () => {
                 expect(editor.selectedConnection).toBe(editor.connections[0]);
                 expect(editor.labelPurpose).toBe('Connection label');
-                expect(button('Delete selected connections').disabled).toBe(false);
+                expect(button('Remove selected').disabled).toBe(false);
             });
 
             it('deletes only the checked lines and clears removed canvas selection', () => {
                 const retained = editor.connections.slice(2);
-                clickButton('Delete selected connections');
+                clickButton('Remove selected');
                 expect(editor.connections).toEqual(retained);
                 expect(editor.selectedConnection).toBeUndefined();
             });
 
             it('resets checkbox controls after deletion', () => {
-                clickButton('Delete selected connections');
-                expect(button('Delete selected connections').disabled).toBe(true);
+                clickButton('Remove selected');
+                expect(button('Remove selected').disabled).toBe(true);
                 expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(0);
             });
 
@@ -605,7 +629,7 @@ describe('CanvasDiagramEditor', () => {
                 replaceOverview();
                 expect(editor.checkedConnections.size).toBe(0);
                 expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(0);
-                expect(button('Delete selected connections').disabled).toBe(true);
+                expect(button('Remove selected').disabled).toBe(true);
             });
         });
     });
@@ -851,8 +875,9 @@ describe('CanvasDiagramEditor', () => {
 
         it('deletes through the HTML picker and never reuses the connection identity', () => {
             const firstId = editor.connections[0].id;
+            clickCanvas(600, 300);
             checkLine(0);
-            clickButton('Delete selected connections');
+            clickButton('Remove selected');
             expect(editor.connections).toHaveLength(0);
             connect(29, 29, 59, 59);
             expect(editor.connections[0].id).toBeGreaterThan(firstId);
@@ -974,24 +999,24 @@ describe('CanvasDiagramEditor', () => {
 
             it('enables removal and clears selection after removal', () => {
                 const first = editor.parts[0];
-                expect(button('Remove selected part').disabled).toBe(false);
-                clickButton('Remove selected part');
+                expect(button('Remove selected').disabled).toBe(false);
+                clickButton('Remove selected');
                 expect(editor.parts).toEqual([first]);
                 expect(editor.selectedPart).toBeUndefined();
-                expect(button('Remove selected part').disabled).toBe(true);
+                expect(button('Remove selected').disabled).toBe(true);
             });
 
             it('ends a removed part drag', () => {
                 const second = editor.parts[1];
                 dispatch('pointermove', 79, 79);
-                clickButton('Remove selected part');
+                clickButton('Remove selected');
                 dispatch('pointermove', 99, 99);
                 expect(second.position).toEqual({ x: 68, y: 68 });
             });
 
             it('can select the underlying part and never reuses a removed identity', () => {
                 const second = editor.parts[1];
-                clickButton('Remove selected part');
+                clickButton('Remove selected');
                 clickCanvas(59, 59);
                 expect(editor.selectedPart).toBe(editor.parts[0]);
                 editor.renamePart('Same label');
@@ -1017,7 +1042,7 @@ describe('CanvasDiagramEditor', () => {
         });
 
         it('starts with disabled removal and safely ignores removal without parts', () => {
-            expect(button('Remove selected part').disabled).toBe(true);
+            expect(button('Remove selected').disabled).toBe(true);
             editor.removeSelectedPart();
             expect(editor.parts).toHaveLength(0);
         });

@@ -10,6 +10,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-unified-removal",
+          "title": "Unify selected part and connection removal",
+          "description": "Completed one Remove selected action for the selected part, its incident connections, directly selected canvas connection and checked connections. Reuses existing cleanup and preserves unrelated items. Verified 122 editor tests, 100% changed-module coverage, TypeScript check, client build and live combined/direct connection removal with one button and no mobile overflow. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-unified-removal"]
+        }, {
           "id": "canvas-editor-controls-grid",
           "title": "Arrange canvas editor controls on the global grid",
           "description": "Completed name/type-before-Add global-grid ordering and compact-controls follow-up. Mobile controls use two equal columns, scoped only to the toolbar; canvas layout and global page grid remain unchanged. Editor buttons are content-sized and 36px high across tested viewports. Verified 120 editor tests, client production build, live dimensions at desktop/tablet/360/320px, no document overflow and mobile creation/selection/connect/cancel/removal. At 360px toolbar height reduced from 600.375px to 288.375px. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.",

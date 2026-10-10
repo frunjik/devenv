@@ -97,7 +97,12 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         }
     }
 
-    deleteCheckedConnections(): void {
+    removeSelected(): void {
+        const connection = this.selectedConnection;
+        this.removeSelectedPart();
+        if (connection) {
+            this.removeConnection(connection);
+        }
         for (const connection of this.checkedConnections) {
             this.removeConnection(connection);
         }

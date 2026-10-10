@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Unify selected part and connection removal
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-unified-removal`
+
+Completed one Remove selected action for the selected part, its incident connections, directly selected canvas connection and checked connections. Reuses existing cleanup and preserves unrelated items. Verified 122 editor tests, 100% changed-module coverage, TypeScript check, client build and live combined/direct connection removal with one button and no mobile overflow. Next step: user review and optional commit approval.
+
 #### WorkTask: Arrange canvas editor controls on the global grid
 
 **Status:** Completed

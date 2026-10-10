@@ -16,8 +16,9 @@
             </label>
             <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
                 (click)="addPart()">Add part</button>
-            <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
-                (click)="removeSelectedPart()">Remove selected</button>
+            <button type="button" aria-label="Remove selected"
+                [disabled]="!selectedPart && !selectedConnection && checkedConnections.size === 0"
+                (click)="removeSelected()">Remove selected</button>
         </div>
         <section class="connection-controls" aria-label="Connections">
             <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
@@ -38,8 +39,6 @@
                     }
                 </div>
             </details>
-            <button type="button" aria-label="Delete selected connections" [disabled]="checkedConnections.size === 0"
-                (click)="deleteCheckedConnections()">Delete selected</button>
         </section>
         <div class="picture-controls" role="group" aria-label="Load picture">
             <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load overview</button>

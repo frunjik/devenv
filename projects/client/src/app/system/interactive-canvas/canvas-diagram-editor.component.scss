@@ -71,14 +71,16 @@
     .part-controls button,
     .connection-controls button {
         grid-column: span 2;
+    }
 
+    .part-controls button {
         &:last-child {
             grid-column: span 3;
         }
     }
 
     .connection-picker {
-        grid-column: span 5;
+        grid-column: span 8;
     }
 
     .picture-controls button {
@@ -230,6 +232,10 @@ canvas {
         .connection-picker,
         .picture-controls button {
             grid-column: span 1;
+        }
+
+        .connection-picker {
+            grid-column: 1 / -1;
         }
     }
 }

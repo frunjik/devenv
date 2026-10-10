@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-unified-removal",
+      "title": "Unify selected part and connection removal",
+      "beneficiary": "User editing canvas sketches",
+      "intendedOutcome": "One Remove selected button removes all selected parts and connections.",
+      "successCondition": "Exactly one Remove selected control replaces part removal and checked-connection deletion. It enables for any part, directly selected connection or checked connections, removes all selections including incident connections, clears removed selection state and preserves unrelated parts/connections.",
+      "baseline": "At e86b49d separate Remove selected and Delete selected controls act on part and checked connections respectively. User explicitly approved removing all selected items, including directly selected canvas connections. Existing Canvas/Scheduler fakes and removal helpers are available.",
+      "startedAt": "2026-10-10T18:32:28.949+02:00",
+      "completedAt": "2026-10-10T18:34:35.2934213+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "One Remove selected action for all selections, including canvas-selected and checked connections; approved by user.", "evidence": "Current request and clarification." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 6.344 seconds elapsed from request to final verification. Human active effort, waiting and agent execution remain unknown.", "evidence": "Request 2026-10-10T18:32:28.949+02:00 and local clock 2026-10-10T18:34:35.2934213+02:00." },
+        { "metricId": "outcome-and-quality", "value": "One Remove selected button replaces the separate part and checked-connection controls. Enables for selected part, selected canvas connection or checked connections; removes all of them using existing part/boundary/connection cleanup and clears checked and removed selection state. Connection picker uses the freed grid space, full width within mobile controls. Observed Red for missing unified action; 122 editor tests now pass with 100% statement, branch, function and line coverage of changed production module. One prior identity test was updated to deselect its part before removing checked connections, reflecting approved all-selection behavior without weakening identity assertions. Client TypeScript check, client production build and relevant diagnostics pass. Live overview removal of selected Goals & intended outcomes plus unrelated checked connection reduced six links to three, cleared checks and disabled removal; exactly one removal and zero delete controls observed. Direct unchecked canvas-selected connection removal separately reduced six links to five and cleared selection. No horizontal overflow at 360px. Existing boundary fakes reused; unit tests perform no application-data writes or network I/O. No additional abstraction or unrelated refactor needed. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts, .html, .scss and .spec.ts; README.md; current session tests, coverage, type-check, build, diagnostics and live http://localhost:4200/interactive-canvas verification." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-controls-compact",
       "title": "Use two mobile control columns and compact editor buttons",
       "beneficiary": "User creating and editing canvas sketches",

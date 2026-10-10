@@ -22,6 +22,7 @@ export function recordingCanvasContext() {
         lineTo: (x, y) => record('lineTo', [x, y]),
         stroke: () => record('stroke'),
         clip: () => record('clip'),
+        setLineDash: segments => record('setLineDash', [...segments]),
         save: () => {
             stack.push({ strokeStyle: context.strokeStyle, fillStyle: context.fillStyle, font: context.font, lineWidth: context.lineWidth, textAlign: context.textAlign, textBaseline: context.textBaseline });
             record('save');

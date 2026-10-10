@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-remove-clock",
+      "title": "Remove the canvas editor clock",
+      "beneficiary": "User editing canvas diagrams",
+      "intendedOutcome": "Display diagrams without the current-time clock.",
+      "successCondition": "No clock is drawn in any editor picture mode, no periodic clock refresh is scheduled, and accessible canvas text no longer mentions a clock. Diagram rendering and interactions remain intact.",
+      "baseline": "Renderer draws centered current time unless technical picture is loaded; editor schedules refresh every 1000 milliseconds. Clock text appears in the canvas label and fallback description.",
+      "startedAt": "2026-10-10T19:57:24.484+02:00",
+      "completedAt": "2026-10-10T19:58:46.8992053+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Direct request to remove clock from canvas editor, including its now-unnecessary refresh and accessibility text.", "evidence": "User request and implementation scope announcement." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 22.415 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.", "evidence": "Request and local verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Removed clock rendering and scheduler injection/start/cleanup; removed unused renderer dimensions and clock-specific accessibility text. Existing injected canvas/scheduler fakes reused; Red observed for drawn time and 1000ms scheduling before production changes. All 146 editor tests pass with 100% statements, branches, functions and lines for both changed executable modules. Client production build, Jest TypeScript check, diagnostics and diff check pass. Browser verifies zero painted pixels initially; loaded overview has 15686 diagram pixels and zero pixels in former clock area, with updated accessible label. Readback emitted a browser performance warning only. No application test network/filesystem I/O or internal spies. Pending rectangle-selection work and unrelated effort-report edits preserved. README updated. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts and .html; sketch-renderer.ts; canvas-diagram-editor.component.spec.ts; README.md; session validation evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-additive-marquee",
+      "title": "Additive background rectangle selection",
+      "beneficiary": "User selecting multiple canvas items",
+      "intendedOutcome": "Draw a dashed selection rectangle by ordinary background dragging and add fully enclosed parts and connections on release.",
+      "successCondition": "Ordinary left-drag starting outside part and connection hit areas draws a normalized dashed rectangle. Releasing adds only fully enclosed parts and entire connection segments, preserving previous membership and selection order. Reverse dragging and combined zoom/pan work. Stationary empty clicks still clear selection; Ctrl+drag remains pan. Cancellation clears the overlay without changing selection, and replacement, connection mode and destruction clean up gestures.",
+      "baseline": "Before this change, an ordinary empty pointer-down immediately clears selection. Ctrl+background-drag pans and Ctrl+wheel zooms; there is no rectangle gesture or dashed overlay. Tracking and measurement retained; user clarified additive selection of both parts and connections.",
+      "startedAt": "2026-10-10T19:50:10.579+02:00",
+      "completedAt": "2026-10-10T19:55:59.1990710+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User requested dashed background-drag rectangle and approved additive selection of fully enclosed parts and connections while preserving Ctrl+drag pan.", "evidence": "Request and scope clarification in this session." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 48.620 seconds elapsed from recorded request to verification checkpoint, including clarification and context compaction. Human active effort and waiting unknown.", "evidence": "Recorded request and local verification timestamp." },
+        { "metricId": "outcome-and-quality", "value": "SketchMarquee owns gesture state, normalized bounds and inclusive full enclosure, reusing existing geometry and ordered selection. Renderer draws the dashed overlay last using saved/restored state. Empty-click clearing deferred until release; cancellation preserves checks; Ctrl+drag and connection destination picking retained. Red observed for pre-existing selection cleared on pointer-down, then Green. Evaluation found connection-mode cancellation needed immediate redraw; second focused Red observed and fixed. Existing injected canvas/scheduler fakes reused; no internal collaborator spies or application test network/filesystem I/O. All 61 client suites/945 tests pass with 100% statements, branches, functions and lines in reported coverage, including changed executable modules and recording helper. Client production build, Jest no-emit TypeScript check and diagnostics pass. Component is 400 physical lines, with cohesive marquee boundary extracted rather than compressed. Initial shared browser page was hidden, so a new visible page was opened. Real mouse drag and screenshot verify dashed rectangle with only the original item checked before release, then [0,1,5,6] after release. Reverse drag retains those checks. Real Ctrl-pan/zoom followed by transformed rectangle selects [0,1,6]. At 360px, zoomed rectangle also selects [0,1,6] and canvas dash state afterward is empty. README and canvas help updated. Stored diagram formats unchanged; unrelated effort-report edits preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/interactive-canvas/sketch-marquee.ts; canvas-diagram-editor.component.ts and .html; sketch-renderer.ts; canvas.ts; related specs and recording helper; README.md; session test/build/type/diagnostic/browser evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-ctrl-wheel-plan",
       "title": "Canvas Ctrl+wheel zoom and Ctrl+drag pan",
       "beneficiary": "User navigating larger canvas diagrams",

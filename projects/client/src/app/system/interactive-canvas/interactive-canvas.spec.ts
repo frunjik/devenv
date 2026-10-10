@@ -28,6 +28,7 @@ class MockBrowser implements IBrowser {
     }
     context: ReturnType<IBrowser['getContext']> = {
         strokeStyle: '', fillStyle: '', save: () => {}, restore: () => {}, clip: () => {},
+        setLineDash: () => {},
         clearRect: (...values) => { this.cleared.push(values); },
         setTransform: (...values: unknown[]) => { this.transforms.push(values); },
         fillText: () => {},

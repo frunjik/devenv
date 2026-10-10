@@ -3,7 +3,7 @@ import { InjectionToken } from '@angular/core';
 export type CanvasRenderContext = Pick<CanvasRenderingContext2D,
     'fillText' | 'strokeRect' | 'beginPath' | 'moveTo' | 'lineTo' | 'stroke'
     | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'
-    | 'strokeStyle' | 'fillStyle' | 'save' | 'restore' | 'clip'>;
+    | 'strokeStyle' | 'fillStyle' | 'save' | 'restore' | 'clip' | 'setLineDash'>;
 
 export interface ICanvas {
     initialize(

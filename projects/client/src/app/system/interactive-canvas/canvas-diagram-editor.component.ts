@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, Output, 
 import { CANVAS } from './canvas';
 import type { ICanvas } from './canvas';
 import { InteractiveCanvas } from './interactive-canvas';
-import { SCHEDULER } from '../../scheduler';
 import { validateDiagramDocument } from '@shared';
 import overview from './devenv-overview.json';
 import { createTechnicalPicture } from './technical-picture';
@@ -11,6 +10,7 @@ import type { PartShape, SketchPart, SketchConnection, SketchBoundary } from './
 import { SketchSelection } from './sketch-selection';
 import { findPartAt, findConnectionAt } from './sketch-geometry';
 import { renderSketch } from './sketch-renderer';
+import { SketchMarquee } from './sketch-marquee';
 
 type PictureKind = 'overview' | 'technical' | 'template';
 
@@ -32,11 +32,10 @@ interface CanvasDrag {
 export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     @Output() readonly pointerMoved = new EventEmitter<ReturnType<ICanvas['point']>>();
     @ViewChild('canvas', { static: true }) private canvas!: ElementRef<HTMLCanvasElement>;
-    private stopRefresh: (() => void) | undefined;
-    private readonly scheduler = inject(SCHEDULER);
     private readonly surface = inject(CANVAS);
     parts: SketchPart[] = [];
     private readonly selection = new SketchSelection();
+    private readonly marquee = new SketchMarquee();
     private get selectedItem(): SketchPart | SketchConnection | undefined {
         return this.selection.active;
     }
@@ -132,6 +131,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         const template = kind === 'template' ? createDefaultTemplate() : undefined;
         const document = technical ? technical.geometry : template ? template.geometry : validateDiagramDocument(overview);
         this.selection.clear();
+        this.marquee.cancel();
         this.parts = document.elements.map(element => ({
             id: this.nextPartId++,
             label: element.label,
@@ -233,6 +233,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         if (this.surface.movePan(event)) return;
         const point = this.surface.point(event);
         this.pointerMoved.emit(point);
+        if (this.marquee.move(event.pointerId, point)) {
+            this.surface.requestDraw();
+            return;
+        }
         if (this.drag && this.drag.pointerId === event.pointerId) {
             if (point.x !== this.drag.part.position.x + this.drag.offset.x
                 || point.y !== this.drag.part.position.y + this.drag.offset.y) {
@@ -244,7 +248,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     selectPart(event: PointerEvent): void {
-        if (event.button !== 0 || this.drag) {
+        if (event.button !== 0 || this.drag || this.marquee.active) {
             return;
         }
         const point = this.surface.point(event);
@@ -281,7 +285,8 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         }
         const wasSelected = item !== undefined && this.selection.has(item);
         if (!item) {
-            this.selection.clear();
+            this.surface.capturePointer(event.pointerId);
+            this.marquee.begin(event.pointerId, point);
         } else {
             this.checkItem(item, part ? true : !wasSelected);
         }
@@ -300,6 +305,8 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     endDrag(event: PointerEvent): void {
         this.surface.endPan(event);
+        if (this.marquee.active && this.marquee.end(event, this.surface.point(event),
+            this.parts, this.connections, this.selection)) this.surface.requestDraw();
         if (this.drag?.pointerId === event.pointerId) {
             // Defer deselection until release so dragging never unchecks the part.
             if (event.type === 'pointerup' && this.drag.deselectOnClick && !this.drag.moved) {
@@ -315,6 +322,8 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             return;
         }
         this.drag = undefined;
+        if (this.marquee.active) this.surface.requestDraw();
+        this.marquee.cancel();
         this.connectionSource = this.selectedPart;
         this.connectionMessage = 'Click a different part to connect, or Cancel.';
     }
@@ -365,22 +374,22 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.surface.initialize(this.canvas.nativeElement, this.render, true);
-        this.stopRefresh = this.scheduler.every(1000, () => this.surface.requestDraw());
     }
 
     ngOnDestroy(): void {
-        this.stopRefresh?.();
+        this.marquee.cancel();
         this.surface.destroy();
     }
 
-    private readonly render: Parameters<ICanvas['initialize']>[1] = (context, width, height) => {
-        renderSketch(context, width, height, {
+    private readonly render: Parameters<ICanvas['initialize']>[1] = context => {
+        renderSketch(context, {
             parts: this.parts,
             connections: this.connections,
             boundaries: this.boundaries,
             selection: this.selection,
             technicalLoaded: this.technicalLoaded,
             overviewLoaded: this.overviewLoaded,
+            marquee: this.marquee.bounds,
         });
     }
 }

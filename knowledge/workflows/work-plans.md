@@ -14,6 +14,26 @@ Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning with
 
 Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.
 
+#### WorkTask: Remove the canvas editor clock
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-remove-clock`
+
+Removed time drawing, one-second refresh scheduling and scheduler dependency from the editor; removed clock-specific canvas accessibility text. Renderer no longer needs dimensions. Red observed for clock drawing and scheduling; all 146 editor tests now pass with 100% changed-module coverage. Client build, Jest TypeScript check, diagnostics and diff check pass. Live browser confirms empty canvas has zero painted pixels and loaded overview draws its diagram with zero pixels in the former clock area. Diagram interactions and pending rectangle work preserved. Tracking and measurement retained. Next step: user review; no commit authorized.
+
+#### WorkTask: Select fully enclosed canvas items by background drag
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-additive-marquee`
+
+Completed ordinary background left-drag with dashed rectangle and additive selection of fully enclosed parts and entire straight connection segments on release. Existing selection order retained; reverse dragging, exact edges, actor bounds and inverse zoom/pan supported. Stationary empty clicks still clear selection, Ctrl+drag still pans, and cancellation preserves selection. Gesture state and enclosure live in SketchMarquee; component remains 400 lines. Red observed for initial selection preservation and immediate overlay removal when connection mode starts; both regressions now pass. All 945 client tests pass with 100% reported coverage including changed executable modules, final client build and Jest TypeScript check pass. Actual browser verifies dashed overlay before release, additive checks after release, reverse drag, transformed drag and 360px interaction; drawing dash restored afterward. Tracking and measurement retained. Next step: user review; no commit authorized.
+
 #### WorkTask: Implement and verify viewport zoom and pan
 
 **Status:** Completed

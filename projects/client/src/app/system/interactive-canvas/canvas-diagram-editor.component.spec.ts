@@ -40,11 +40,13 @@ class MockCanvas implements ICanvas {
     lineWidths: number[] = [];
     operations: string[] = [];
     captured: number[] = [];
+    dashes: number[][] = [];
     element: HTMLCanvasElement | undefined;
     private render: Parameters<ICanvas['initialize']>[1] | undefined;
     private pending = false;
     private readonly context = {
         strokeStyle: '', fillStyle: '', save: () => {}, restore: () => {}, clip: () => {},
+        setLineDash: (segments: number[]) => { this.dashes.push(segments); },
         fillText: (text: string, x: number, y: number, maxWidth?: number) => {
             this.draws.push([text, x, y]);
             this.textWidths.push(maxWidth);
@@ -170,6 +172,108 @@ describe('CanvasDiagramEditor', () => {
     }
 
     function loadOverview(): void { clickButton('Load DevEnv overview'); }
+
+    it('adds fully enclosed parts and connections after background rectangle release', () => {
+        createEditor();
+        loadOverview();
+        checkPartRow(5);
+        dispatch('pointerdown', 20, 20);
+        dispatch('pointermove', 550, 130);
+        surface.paint();
+        expect(surface.dashes.at(-1)).toEqual([6, 4]);
+        expect(surface.boxes.at(-1)).toEqual([20, 20, 530, 110]);
+        expect([...editor.checkedParts]).toEqual([editor.parts[5]]);
+        expect(editor.checkedConnections.size).toBe(0);
+        dispatch('pointerup', 550, 130);
+        expect([...editor.checkedParts]).toEqual([editor.parts[5], editor.parts[0], editor.parts[1]]);
+        expect([...editor.checkedConnections]).toEqual([editor.connections[0]]);
+        expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(4);
+        surface.paint();
+        expect(surface.boxes.at(-1)).not.toEqual([20, 20, 530, 110]);
+    });
+
+    it('normalizes reverse rectangles and does not include partially enclosed boxes or lines', () => {
+        createEditor();
+        loadOverview();
+        drag(519, 130, 40, 40);
+        expect([...editor.checkedParts]).toEqual([editor.parts[0]]);
+        expect([...editor.checkedConnections]).toEqual([editor.connections[0]]);
+        drag(521, 121, 40, 40);
+        expect([...editor.checkedParts]).toEqual([editor.parts[0], editor.parts[1]]);
+        expect(editor.selectedPart).toBe(editor.parts[1]);
+        expect(editor.checkedConnections.size).toBe(1);
+    });
+
+    it.each(['pointercancel', 'lostpointercapture'])('cancels the rectangle on %s without clearing selection', type => {
+        createEditor();
+        loadOverview();
+        checkPartRow(5);
+        dispatch('pointerdown', 20, 20);
+        dispatch('pointermove', 550, 130);
+        dispatch(type, 550, 130);
+        expect([...editor.checkedParts]).toEqual([editor.parts[5]]);
+        dispatch('pointermove', 600, 150);
+        dispatch('pointerup', 600, 150);
+        expect(editor.checkedConnections.size).toBe(0);
+    });
+
+    it('ignores other pointers during a rectangle and uses the release point', () => {
+        createEditor();
+        loadOverview();
+        dispatch('pointerdown', 20, 20, 7);
+        dispatch('pointerdown', 59, 59, 8);
+        dispatch('pointermove', 550, 130, 8);
+        dispatch('pointerup', 550, 130, 8);
+        expect(editor.checkedParts.size).toBe(0);
+        dispatch('pointerup', 520, 120, 7);
+        expect(editor.checkedParts.size).toBe(2);
+        expect(editor.checkedConnections.size).toBe(1);
+    });
+
+    it('immediately erases a rectangle when starting connection mode', () => {
+        createEditor();
+        loadOverview();
+        checkPartRow(5);
+        dispatch('pointerdown', 20, 20);
+        dispatch('pointermove', 550, 130);
+        surface.paint();
+        clickButton('Connect selected part');
+        surface.paint();
+        expect(surface.boxes.at(-1)).not.toEqual([20, 20, 530, 110]);
+        dispatch('pointerup', 550, 130);
+        expect([...editor.checkedParts]).toEqual([editor.parts[5]]);
+        expect(editor.checkedConnections.size).toBe(0);
+    });
+
+    it('selects using padded actor bounds and inverse zoom/pan coordinates', () => {
+        createEditor();
+        chooseShape('actor');
+        addParts(1);
+        surface.viewport.zoom = 2;
+        surface.viewport.x = 100;
+        surface.viewport.y = 50;
+        drag(380, 298, 268, 78);
+        expect(editor.checkedParts.size).toBe(0);
+        drag(388, 298, 268, 78);
+        expect([...editor.checkedParts]).toEqual([editor.parts[0]]);
+    });
+
+    it('retains selection order for already-selected enclosed items and cancels on replacement', () => {
+        createEditor();
+        loadOverview();
+        checkPartRow(0);
+        checkLine(0);
+        checkPartRow(1);
+        drag(20, 20, 550, 130);
+        expect(editor.selectedPart).toBe(editor.parts[1]);
+        dispatch('pointerdown', 20, 20);
+        dispatch('pointermove', 550, 130);
+        loadOverview();
+        clickButton('Confirm replacement');
+        dispatch('pointerup', 550, 130);
+        expect(editor.checkedParts.size).toBe(0);
+        expect(editor.checkedConnections.size).toBe(0);
+    });
 
     it('Ctrl-drags empty canvas without moving parts or clearing selection, and resets on confirmed load', () => {
         createEditor();
@@ -1353,7 +1457,7 @@ describe('CanvasDiagramEditor', () => {
             editor.removeSelectedPart();
             expect(first.label).toBe('Same label');
             expect(editor.parts).toHaveLength(2);
-            expect(surface.requests).toBe(requests + 1);
+            expect(surface.requests).toBe(requests + 2);
         });
 
         it('starts with disabled removal and safely ignores removal without parts', () => {
@@ -1435,39 +1539,37 @@ describe('CanvasDiagramEditor', () => {
         });
     });
 
-    describe('clock and surface lifecycle', () => {
+    describe('surface lifecycle without a clock', () => {
         beforeEach(createEditor);
 
-        it('initializes the actual canvas and draws centered current time', () => {
-            const time = currentTime();
+        it('initializes the actual canvas without drawing a clock', () => {
             surface.paint();
             expect(surface.element).toBe(host.querySelector('canvas'));
-            expect([time, currentTime()]).toContain(surface.draws.at(-1)?.[0]);
-            expect(surface.draws.at(-1)?.slice(1)).toEqual([160, 90]);
+            expect(surface.draws).toEqual([]);
+            expect(host.querySelector('canvas')!.getAttribute('aria-label')).not.toContain('time');
+            expect(host.querySelector('canvas')!.textContent).not.toContain('Current time');
         });
 
-        it('invalidates and repaints once per scheduler tick', () => {
+        it('does not schedule periodic repainting', () => {
             surface.paint();
             const requests = surface.requests;
             const draws = surface.draws.length;
             scheduler.tick();
-            expect(scheduler.interval).toBe(1000);
-            expect(surface.requests).toBe(requests + 1);
+            expect(scheduler.interval).toBeUndefined();
+            expect(surface.requests).toBe(requests);
             surface.paint();
-            expect(surface.draws).toHaveLength(draws + 1);
+            expect(surface.draws).toHaveLength(draws);
         });
 
-        it('recenters current time for new surface dimensions', () => {
+        it('keeps a resized empty canvas free of clock text', () => {
             surface.width = 240;
             surface.height = 135;
             surface.requestDraw();
-            const time = currentTime();
             surface.paint();
-            expect([time, currentTime()]).toContain(surface.draws.at(-1)?.[0]);
-            expect(surface.draws.at(-1)?.slice(1)).toEqual([120, 67.5]);
+            expect(surface.draws).toEqual([]);
         });
 
-        it('stops clock invalidation and destroys the surface', () => {
+        it('destroys the surface without scheduled invalidation', () => {
             fixture.destroy();
             const requests = surface.requests;
             scheduler.tick();
@@ -1493,12 +1595,6 @@ describe('CanvasDiagramEditor', () => {
         expect(surface.destroyed).toBe(true);
     });
 });
-
-function currentTime(): string {
-    return new Date().toLocaleTimeString(undefined, {
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-    });
-}
 
 function pointer(type: string, clientX: number, clientY: number, pointerId: number): MouseEvent {
     const event = new MouseEvent(type, { clientX, clientY, button: 0 });

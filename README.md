@@ -45,10 +45,16 @@ label, rather than the 180x80 box bounds; connection endpoints use these bounds.
 Shapes support the existing selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
 Controls align to the global grid: name and type come before Add.
+The canvas shows only the diagram, without a clock or periodic clock refresh.
 Use **Ctrl+wheel** over the canvas to zoom between 25% and 400%, anchored at
 the pointer. Ordinary wheel scrolling remains unchanged. **Ctrl+left-drag**
 starting outside parts and connection lines pans freely without moving diagram
 elements or clearing selection. Normal part dragging still moves the part.
+Ordinary left-drag starting outside parts and connection lines draws a dashed
+selection rectangle. On release, fully enclosed parts and connection segments
+are added to the current selection; partly enclosed items are excluded.
+Reverse dragging works too. A stationary empty click still clears selection,
+and cancelling the gesture preserves the original selection.
 Confirmed picture loading resets zoom and pan; cancelled replacement preserves
 the view. Zoom and pan are session-only viewport transforms, not stored geometry.
 The editor delegates geometry and hit-testing to `sketch-geometry.ts`, drawing

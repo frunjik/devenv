@@ -3,6 +3,7 @@ import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftw
 import { connectionLine, partBounds } from './sketch-geometry';
 import type { SketchBoundary, SketchConnection, SketchPart } from './sketch.types';
 import type { SketchSelection } from './sketch-selection';
+import type { SymbolBounds } from './canvas-symbols';
 
 const symbolRenderers = {
     artifact: { draw: drawArtifact, heading: 'Artifact:' },
@@ -19,21 +20,24 @@ export interface SketchRenderState {
     selection: SketchSelection;
     technicalLoaded: boolean;
     overviewLoaded: boolean;
+    marquee?: SymbolBounds;
 }
 
-export function renderSketch(context: CanvasRenderContext, width: number, height: number, state: SketchRenderState): void {
+export function renderSketch(context: CanvasRenderContext, state: SketchRenderState): void {
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    if (!state.technicalLoaded) {
-        context.font = '24px sans-serif';
-        context.fillText(
-            new Date().toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-            width / 2, height / 2,
-        );
-    }
     for (const boundary of state.boundaries) drawBoundary(context, boundary);
     for (const part of state.parts) drawPart(context, part, state);
     for (const connection of state.connections) drawConnection(context, connection, state);
+    if (state.marquee) {
+        context.save();
+        context.strokeStyle = '#202020';
+        context.lineWidth = 1;
+        context.setLineDash([6, 4]);
+        const { x, y, width, height } = state.marquee;
+        context.strokeRect(x, y, width, height);
+        context.restore();
+    }
 }
 
 function drawBoundary(context: CanvasRenderContext, boundary: SketchBoundary): void {

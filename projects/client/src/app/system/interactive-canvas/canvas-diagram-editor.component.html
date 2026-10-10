@@ -1,19 +1,39 @@
-<main class="interactive-canvas-page">
+<main class="interactive-canvas-page layout-page">
     <h1>Canvas Diagram Editor</h1>
-    <div class="canvas-controls">
-        <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load DevEnv overview</button>
-        <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
-            (click)="addPart()">Add part</button>
-        <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
-            (click)="startConnection()">Connect</button>
-        <button type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
-            (click)="cancelConnection()">Cancel</button>
-        <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
-            (click)="removeSelectedPart()">Remove selected</button>
+    <div class="canvas-toolbar">
+        <div class="canvas-controls">
+            <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load DevEnv overview</button>
+            <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
+                (click)="addPart()">Add part</button>
+            <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
+                (click)="startConnection()">Connect</button>
+            <button type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
+                (click)="cancelConnection()">Cancel</button>
+            <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
+                (click)="removeSelectedPart()">Remove selected</button>
+        </div>
         <label class="form-field">{{ labelPurpose }}
             <input #label class="form-control" [attr.aria-label]="labelPurpose"
                 [disabled]="!!connectionSource" [value]="labelValue" (input)="editLabel(label.value)">
         </label>
+        <section class="connection-controls" aria-label="Connections">
+            <details class="connection-picker">
+                <summary>Connections ({{ checkedConnections.size }} selected)</summary>
+                <div class="connection-options">
+                    @for (connection of connections; track connection.id) {
+                        <label class="connection-option">
+                            <input #check type="checkbox" [checked]="checkedConnections.has(connection)"
+                                (change)="checkConnection(connection, check.checked)">
+                            <span>{{ connection.first.label }} - {{ connection.second.label }}: {{ connection.label }}</span>
+                        </label>
+                    } @empty {
+                        <p>No connections yet.</p>
+                    }
+                </div>
+            </details>
+            <button type="button" aria-label="Delete selected connections" [disabled]="checkedConnections.size === 0"
+                (click)="deleteCheckedConnections()">Delete selected</button>
+        </section>
     </div>
     <p class="connection-status" role="status">{{ connectionMessage }}</p>
     @if (replacementPending) {
@@ -26,24 +46,6 @@
     @if (overviewLoaded) {
         <p>Explanatory sketch of DevEnv's purpose, not a formal architecture. Boxes and undirected links are editable.</p>
     }
-    <section class="connection-controls" aria-label="Connections">
-        <details class="connection-picker">
-            <summary>Connections ({{ checkedConnections.size }} selected)</summary>
-            <div class="connection-options">
-                @for (connection of connections; track connection.id) {
-                    <label class="connection-option">
-                        <input #check type="checkbox" [checked]="checkedConnections.has(connection)"
-                            (change)="checkConnection(connection, check.checked)">
-                        <span>{{ connection.first.label }} - {{ connection.second.label }}: {{ connection.label }}</span>
-                    </label>
-                } @empty {
-                    <p>No connections yet.</p>
-                }
-            </div>
-        </details>
-        <button type="button" aria-label="Delete selected connections" [disabled]="checkedConnections.size === 0"
-            (click)="deleteCheckedConnections()">Delete selected</button>
-    </section>
     <div class="canvas-viewport" [class.overview-workspace]="overviewLoaded">
         <canvas
             #canvas

@@ -12,23 +12,59 @@
     min-width: 0;
     min-height: 0;
     width: 100%;
-    padding: 1.5rem;
     box-sizing: border-box;
     overflow: auto;
+    gap: var(--layout-space-small);
+
+    h1 {
+        margin: 0;
+    }
+
+    > p {
+        margin: 0;
+        flex-shrink: 0;
+    }
+}
+
+.canvas-toolbar {
+    display: grid;
+    grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr));
+    gap: var(--layout-space-small) var(--layout-gutter);
+    align-items: start;
+    flex-shrink: 0;
+
+    .canvas-controls {
+        grid-column: span 5;
+    }
+
+    .form-field {
+        grid-column: span 3;
+        display: flex;
+        align-items: center;
+        gap: var(--layout-space-small);
+        min-width: 0;
+        min-height: 44px;
+
+        input {
+            flex: 1;
+            min-width: 0;
+            width: 0;
+            min-height: 44px;
+        }
+    }
+
+    .connection-controls {
+        grid-column: span 4;
+    }
 }
 
 .canvas-controls {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 1rem;
-    margin-bottom: 1rem;
+    gap: var(--layout-space-small);
     flex-shrink: 0;
-
-    .form-field {
-        min-width: 0;
-        max-width: 100%;
-    }
+    min-width: 0;
 
     button {
         min-width: 44px;
@@ -37,18 +73,20 @@
 }
 
 .connection-status {
-    min-height: 2.5rem;
-    margin: 0 0 0.5rem;
     flex-shrink: 0;
+
+    &:empty {
+        display: none;
+    }
 }
 
 .connection-controls {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 0.5rem 1rem;
+    gap: var(--layout-space-small);
     flex-shrink: 0;
-    margin-bottom: 0.5rem;
+    min-width: 0;
 
     button {
         min-width: 44px;
@@ -60,13 +98,15 @@
 .connection-picker {
     min-width: 0;
     max-width: 100%;
-    flex: 1 1 16rem;
+    flex: 1 1 10rem;
 
     summary {
         min-height: 44px;
+        align-content: center;
         cursor: pointer;
         overflow-wrap: anywhere;
     }
+
 }
 
 .connection-options {
@@ -117,4 +157,26 @@ canvas {
     border: 1px solid #777;
     background: #fff;
     touch-action: none;
+}
+
+@media (max-width: 80rem) {
+    .canvas-toolbar {
+        .canvas-controls {
+            grid-column: 1 / -1;
+        }
+
+        .form-field,
+        .connection-controls {
+            grid-column: span 6;
+        }
+    }
+}
+
+@media (max-width: 42rem) {
+    .canvas-toolbar {
+        .form-field,
+        .connection-controls {
+            grid-column: 1 / -1;
+        }
+    }
 }

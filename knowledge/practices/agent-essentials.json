@@ -63,6 +63,7 @@
         "  - Use `interface` for grouped records.",
         "  - Use `type` for values, choices and named union alternatives.",
         "  - Follow nearby UI conventions, and don't automatically rewrite correct code.",
+        "  - When you use a non-obvious construct or deviate from the usual approach, add a short comment explaining why.",
         "- **UI layout:** lay out new client views with the global grid in `projects/client/src/styles.scss`:",
         "  - Use `.layout-page` for page padding.",
         "  - Use `--layout-columns`, `--layout-gutter` and `--layout-space-*` for columns, gutters and spacing instead of local offsets.",

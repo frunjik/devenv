@@ -4,14 +4,414 @@
   "waitingMs": null,
   "agentExecutionMs": null,
   "observedWindowsMs": {
-    "Problem/Domain": 11108000,
-    "Meta/DevEnv": 9227071,
-    "Mixed": 330000,
-    "Unclassified": 3823045,
-    "Cross-category overlap": 894000
+    "Problem/Domain": 168000,
+    "Meta/DevEnv": 25729187,
+    "Mixed": 0,
+    "Unclassified": 821181,
+    "Cross-category overlap": 0
   },
-  "observedTotalMs": 25382116,
+  "observedTotalMs": 26718368,
   "rows": [
+    {
+      "id": "glossary-search-icon",
+      "title": "Right-aligned glossary search icon",
+      "beneficiary": "User searching glossary",
+      "intendedOutcome": "Show a search icon inside the field at its right edge.",
+      "successCondition": "Magnifying glass is right aligned and vertically centered without overlapping text or changing search/accessibility behavior; full-width layout preserved.",
+      "baseline": "Full-width search field has no icon.",
+      "startedAt": "2026-10-10T20:24:19.781+02:00",
+      "completedAt": "2026-10-10T20:25:35.7833227+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Right-aligned icon requested; decorative magnifying glass scope announced.",
+          "evidence": "User request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 16.002 seconds elapsed to verification checkpoint. Human effort unknown.",
+          "evidence": "Request and local timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Inline SVG requires no icon font/network dependency. Hidden from accessibility tree, nonfocusable, pointer-events none; wrapper reserves 48px end padding. Focused missing-icon Red observed, then all 16 glossary tests pass with 100% component coverage, client build, Jest TypeScript check and diagnostics pass. Existing HTTP testing adapter reused without internal spies or application test network/filesystem I/O. Browser at 1280/360px verifies 20px icon with 13.59375px right inset and zero center error; input stays full width. Screenshot confirms expected magnifying glass. No extra refactor/runtime logic needed. README updated; pending glossary changes and unrelated effort-report edits preserved. User benefit unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/glossary/glossary.component.html, .scss and .spec.ts; README.md; session test/build/browser evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 76002
+    },
+    {
+      "id": "glossary-full-width-search",
+      "title": "Full-width glossary search",
+      "beneficiary": "User searching glossary terms",
+      "intendedOutcome": "Search field spans glossary content width.",
+      "successCondition": "Input equals content width with aligned edges and no horizontal overflow on desktop and mobile.",
+      "baseline": "Local 32rem cap limits field to 512px inside 1213px content at 1280px viewport.",
+      "startedAt": "2026-10-10T20:22:58.020+02:00",
+      "completedAt": "2026-10-10T20:23:58.3505181+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Full page-content width requested.",
+          "evidence": "User request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 0.331 seconds elapsed to verification checkpoint. Human effort unknown.",
+          "evidence": "Request and local timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Removed one CSS max-width declaration; shared form-control already fills its parent. Read-only browser assertion fails before change at 512/1213px and passes afterward with equal input/content widths 1213, 701 and 303px at viewports 1280, 768 and 360. Edges aligned, no document overflow. Client build and diagnostics pass. No executable module changes; prior unit coverage not rerun for this CSS-only change. No new abstraction needed. README updated; pending tabs/messages and unrelated effort-report edits preserved. User benefit unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/glossary/glossary.component.scss; README.md; browser measurements and build evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 60330
+    },
+    {
+      "id": "glossary-scoped-empty-message",
+      "title": "Scoped glossary empty messages",
+      "beneficiary": "User searching glossary tabs",
+      "intendedOutcome": "Name the active scope when no terms are found.",
+      "successCondition": "Empty results say exactly No System Terms found. or No Project Terms found.; errors do not also show empty results.",
+      "baseline": "Three generic messages cover empty data, empty tab and unmatched search.",
+      "startedAt": "2026-10-10T20:20:27.333+02:00",
+      "completedAt": "2026-10-10T20:22:09.5852084+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Exact System/Project wording requested.",
+          "evidence": "User request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 42.252 seconds elapsed to completion checkpoint. Human active effort and waiting unknown.",
+          "evidence": "Request and local completion timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Single template message replaces three generic messages. Red observed for exact wording; all 15 glossary tests pass with 100% component coverage, client build, Jest TypeScript check and diagnostics pass. Existing HTTP testing adapter reused, no internal spies or application test network/filesystem I/O. Browser DOM confirms both exact messages and only one paragraph. Shared tab became hidden, preventing physical click; DOM-dispatched switch validates text, not physical interaction. Pending glossary tabs and unrelated effort-report edits preserved. README updated. Human effort and user benefit unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/glossary/glossary.component.html and .spec.ts; README.md; session validation evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 102252
+    },
+    {
+      "id": "glossary-system-project-tabs",
+      "title": "System and Project glossary tabs",
+      "beneficiary": "User browsing system and project vocabulary",
+      "intendedOutcome": "Separate AgentPhase terms from the remaining glossary through System and Project tabs.",
+      "successCondition": "Project shows exactly entries tagged AgentPhaseGuide; System shows all remaining entries, including unknown domains. System opens by default. Search filters only active scope and persists across tab switches; keyboard navigation, loading errors, definitions/examples/domains remain available. Data and routes unchanged.",
+      "baseline": "Glossary has one searchable list. Existing AgentPhaseGuide domain identifies 23 of 78 entries; no tab state or partition exists.",
+      "startedAt": "2026-10-10T20:17:10.244+02:00",
+      "completedAt": "2026-10-10T20:19:22.4341671+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "User requested System and Project tabs with AgentPhase terms in Project and the rest in System. Existing AgentPhaseGuide domain used as partition, System default and retained search announced.",
+          "evidence": "Request, source inspection and approach announcement."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "2 minutes 12.190 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.",
+          "evidence": "Request and local verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Added tab state and domain-based partition before existing case-insensitive search; metadata unchanged, mixed-domain AgentPhaseGuide entries remain Project-only. Reused native tab interaction pattern and global spacing/focus tokens; accessible tablist, selected state, roving tab index, labelled panel and Left/Right/Home/End support. Distinguishes empty scope from unmatched query, retains original loading/error behavior. Red observed for missing tabs before production changes. Existing HTTP testing adapter reused, no internal spies or application test network/filesystem I/O. All 34 targeted glossary and source-data tests pass with 100% statements, branches, functions and lines for changed component, plus client build, Jest TypeScript check, diagnostics and diff check. Browser shows exact 55 System/23 Project partition of 78 loaded entries without overlap. At 360px, Understand query persists across Home/ArrowRight switches, restores three Project matches, focuses Project tab and has no document overflow. README updated. Unrelated effort-report edits preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/glossary/glossary.component.ts, .html, .scss and .spec.ts; README.md; session test/build/type/browser evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 132190
+    },
+    {
+      "id": "relocate-visual-foundations",
+      "title": "Relocate Visual foundations and rename Canvas",
+      "beneficiary": "User navigating diagram and supporting tools",
+      "intendedOutcome": "Keep Diagrams in primary meta navigation and place Visual foundations under Tools.",
+      "successCondition": "Primary menu shows Diagrams linking to interactive-canvas, without Visual foundations. Tools includes Visual foundations with its existing route. Other menu items, pending link removals and feature code remain intact.",
+      "baseline": "Following pending three-link removal, primary menu contains WorkPlans, Glossary, Canvas and Visual foundations; Tools lacks Visual foundations.",
+      "startedAt": "2026-10-10T20:13:10.108+02:00",
+      "completedAt": "2026-10-10T20:14:17.2672759+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Explicit relocation into Tools and Canvas text rename to Diagrams; routes unchanged.",
+          "evidence": "User request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 7.159 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.",
+          "evidence": "Request and local verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Template-only relocation and label change. Existing router/overlay tests reused; two focused failures observed before production edits. All 16 toolbar/route tests pass with 100% reported toolbar coverage, client build, Jest TypeScript check, diagnostics and diff check pass. No internal spies or application test network/filesystem I/O. Live browser primary menu reads WorkPlans, Glossary, Diagrams; clicking Diagrams opens interactive-canvas and clicking Tools/Visual foundations opens visual-foundations. Pending menu removal and unrelated effort-report edits preserved. README updated. No further refactoring needed. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html and .spec.ts; README.md; session validation evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; diagram menu naming and supporting tools.",
+      "elapsedMs": 67159
+    },
+    {
+      "id": "remove-three-meta-links",
+      "title": "Remove three meta menu links",
+      "beneficiary": "User navigating the application",
+      "intendedOutcome": "Hide System plan, Terms and Diagram from the menu without removing their code.",
+      "successCondition": "The three links are absent from meta navigation; remaining links and Tools work unchanged. All three feature routes and implementations remain available.",
+      "baseline": "Meta toolbar contains seven links including System plan, Terms and Diagram. Direct routes exist for all three.",
+      "startedAt": "2026-10-10T20:10:08.554+02:00",
+      "completedAt": "2026-10-10T20:12:02.6762031+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Explicit menu-only removal; retain feature code and direct URLs.",
+          "evidence": "User request."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 54.122 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.",
+          "evidence": "Request and local verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Removed three anchors only; no production TypeScript or route changes. Red observed for remaining unwanted links, then all 16 targeted toolbar/route tests pass with 100% toolbar coverage. Client build, Jest TypeScript check, diagnostics and diff check pass. Existing Angular router/overlay test setup reused with no internal spies or application test network/filesystem I/O. Browser menu shows WorkPlans, Glossary, Canvas, Visual foundations and Tools. Direct System plan heading observed; Terms and Diagram component attachment verified. Terms heading check initially timed out because its pre-existing template is empty; no unrelated feature change made. README updated. Unrelated effort-report edits preserved. Human active effort, benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html and .spec.ts; app.routes.spec.ts; README.md; session test/build/type/browser evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; developer-environment diagram navigation.",
+      "elapsedMs": 114122
+    },
+    {
+      "id": "canvas-part-list-types",
+      "title": "Label canvas part rows by type",
+      "beneficiary": "User identifying canvas items",
+      "intendedOutcome": "Show each part's type instead of the generic Part prefix.",
+      "successCondition": "Visible part rows and checkbox names use the same type labels as the picker for every supported shape. Legacy missing shape uses Rectangle, type edits update labels immediately, and names, technologies, connections and selection remain intact.",
+      "baseline": "Part rows hard-code Part: while the editor's seven-option picker holds human-readable type labels.",
+      "startedAt": "2026-10-10T20:06:23.721+02:00",
+      "completedAt": "2026-10-10T20:08:18.6735886+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Direct request to replace Part: with the part type in the list.",
+          "evidence": "User request and scope announcement."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 54.953 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.",
+          "evidence": "Request and local verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Extracted typed shapeLabels and derived shapeOptions into sketch-shapes, keeping one label authority and existing picker order. List uses partTypeLabel with missing-shape Rectangle default. Technology/name suffix and connection rows unchanged. Component reduced to 397 lines. Red observed for seven shapes and legacy default before changes; all 160 editor tests pass with 100% statements, branches, functions and lines in both changed executable modules. Build, Jest TypeScript check, diagnostics and diff check pass. Existing injected boundary fakes reused without internal spies or application test network/filesystem I/O. Browser verifies six distinct template type prefixes, no Part prefix, and changing Actor: Dev to Product: Dev preserves the checked state. Initial browser locator incorrectly assumed an actor named user; corrected by selecting the actual first Actor checkbox. README updated. Unrelated effort-report changes preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/sketch-shapes.ts; canvas-diagram-editor.component.ts, .html and .spec.ts; README.md; session validation evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; canvas item type labels.",
+      "elapsedMs": 114952
+    },
+    {
+      "id": "canvas-selected-group-drag",
+      "title": "Move selected canvas parts together",
+      "beneficiary": "User rearranging multiple canvas parts",
+      "intendedOutcome": "Drag a selected part to translate all selected parts together.",
+      "successCondition": "All parts selected at drag start move by one shared delta, preserving relative positions. Unselected parts remain fixed; selected connections follow their endpoints without automatically including them. Existing additive selection, stationary-click toggling, cancellation, pointer matching, zoom/pan input, loading and removal remain intact.",
+      "baseline": "CanvasDrag tracks one part and pointer offset; movePointer updates only that part. The selection already supports multiple parts/connections through clicks, checkboxes and rectangle selection. User approved selected parts only, with connections following endpoints.",
+      "startedAt": "2026-10-10T19:59:57.201+02:00",
+      "completedAt": "2026-10-10T20:03:55.4110058+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Group movement requested; user approved moving selected parts without including endpoint parts merely because their connections are selected. Existing additive pointer selection preserved.",
+          "evidence": "Request, connection-scope clarification and approach announcement."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "3 minutes 58.210 seconds elapsed to verification checkpoint, including clarification and stale-fixture adjustments. Human active effort and waiting unknown.",
+          "evidence": "Request and local verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Extended existing transient CanvasDrag with pointer start and selected-part position snapshots; apply one delta from the start on each matching move. No persistent grouping or diagram-format change needed. Component stays 400 physical lines. Red observed for second selected part not moving; focused Green verified. Reused existing injected canvas/scheduler fakes with no internal spies or application test network/filesystem I/O. Added shared movement, selected-connection exclusion, repeated moves, inverse zoom/pan, pointerup/cancel/lost-capture, rectangle selection and stationary-click tests. Existing geometry tests previously repositioned a part with another endpoint still selected; fixtures now explicitly clear selection before positioning, preserving original geometry assertions. Final 61 client suites/951 tests pass with 100% statements, branches, functions and lines reported, including changed production module. Client build, final Jest TypeScript check, diagnostics and diff check pass. First browser attempt hit previously observed no-rendered-area errors in a hidden page; opened a new visible page. Real desktop drag moves selected parts from [40,40]/[340,40] to [140,90]/[440,90], all other positions unchanged and checks [0,1,7] retained. At 360px with zoom about 0.3687 both parts move by the same approximately [50.11135,20.04451] logical delta, preserving 300px separation and checks. Browser rounding explains deviation from nominal [50,20]. README and canvas help updated. Unrelated effort-report edits preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts, .html and .spec.ts; README.md; session test/coverage/build/type/diagnostic/browser evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; selected canvas part movement.",
+      "elapsedMs": 238210
+    },
+    {
+      "id": "canvas-remove-clock",
+      "title": "Remove the canvas editor clock",
+      "beneficiary": "User editing canvas diagrams",
+      "intendedOutcome": "Display diagrams without the current-time clock.",
+      "successCondition": "No clock is drawn in any editor picture mode, no periodic clock refresh is scheduled, and accessible canvas text no longer mentions a clock. Diagram rendering and interactions remain intact.",
+      "baseline": "Renderer draws centered current time unless technical picture is loaded; editor schedules refresh every 1000 milliseconds. Clock text appears in the canvas label and fallback description.",
+      "startedAt": "2026-10-10T19:57:24.484+02:00",
+      "completedAt": "2026-10-10T19:58:46.8992053+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Direct request to remove clock from canvas editor, including its now-unnecessary refresh and accessibility text.",
+          "evidence": "User request and implementation scope announcement."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "1 minute 22.415 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.",
+          "evidence": "Request and local verification timestamps."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Removed clock rendering and scheduler injection/start/cleanup; removed unused renderer dimensions and clock-specific accessibility text. Existing injected canvas/scheduler fakes reused; Red observed for drawn time and 1000ms scheduling before production changes. All 146 editor tests pass with 100% statements, branches, functions and lines for both changed executable modules. Client production build, Jest TypeScript check, diagnostics and diff check pass. Browser verifies zero painted pixels initially; loaded overview has 15686 diagram pixels and zero pixels in former clock area, with updated accessible label. Readback emitted a browser performance warning only. No application test network/filesystem I/O or internal spies. Pending rectangle-selection work and unrelated effort-report edits preserved. README updated. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts and .html; sketch-renderer.ts; canvas-diagram-editor.component.spec.ts; README.md; session validation evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; remove editor clock.",
+      "elapsedMs": 82415
+    },
+    {
+      "id": "canvas-additive-marquee",
+      "title": "Additive background rectangle selection",
+      "beneficiary": "User selecting multiple canvas items",
+      "intendedOutcome": "Draw a dashed selection rectangle by ordinary background dragging and add fully enclosed parts and connections on release.",
+      "successCondition": "Ordinary left-drag starting outside part and connection hit areas draws a normalized dashed rectangle. Releasing adds only fully enclosed parts and entire connection segments, preserving previous membership and selection order. Reverse dragging and combined zoom/pan work. Stationary empty clicks still clear selection; Ctrl+drag remains pan. Cancellation clears the overlay without changing selection, and replacement, connection mode and destruction clean up gestures.",
+      "baseline": "Before this change, an ordinary empty pointer-down immediately clears selection. Ctrl+background-drag pans and Ctrl+wheel zooms; there is no rectangle gesture or dashed overlay. Tracking and measurement retained; user clarified additive selection of both parts and connections.",
+      "startedAt": "2026-10-10T19:50:10.579+02:00",
+      "completedAt": "2026-10-10T19:55:59.1990710+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "User requested dashed background-drag rectangle and approved additive selection of fully enclosed parts and connections while preserving Ctrl+drag pan.",
+          "evidence": "Request and scope clarification in this session."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "5 minutes 48.620 seconds elapsed from recorded request to verification checkpoint, including clarification and context compaction. Human active effort and waiting unknown.",
+          "evidence": "Recorded request and local verification timestamp."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "SketchMarquee owns gesture state, normalized bounds and inclusive full enclosure, reusing existing geometry and ordered selection. Renderer draws the dashed overlay last using saved/restored state. Empty-click clearing deferred until release; cancellation preserves checks; Ctrl+drag and connection destination picking retained. Red observed for pre-existing selection cleared on pointer-down, then Green. Evaluation found connection-mode cancellation needed immediate redraw; second focused Red observed and fixed. Existing injected canvas/scheduler fakes reused; no internal collaborator spies or application test network/filesystem I/O. All 61 client suites/945 tests pass with 100% statements, branches, functions and lines in reported coverage, including changed executable modules and recording helper. Client production build, Jest no-emit TypeScript check and diagnostics pass. Component is 400 physical lines, with cohesive marquee boundary extracted rather than compressed. Initial shared browser page was hidden, so a new visible page was opened. Real mouse drag and screenshot verify dashed rectangle with only the original item checked before release, then [0,1,5,6] after release. Reverse drag retains those checks. Real Ctrl-pan/zoom followed by transformed rectangle selects [0,1,6]. At 360px, zoomed rectangle also selects [0,1,6] and canvas dash state afterward is empty. README and canvas help updated. Stored diagram formats unchanged; unrelated effort-report edits preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.",
+          "evidence": "projects/client/src/app/system/interactive-canvas/sketch-marquee.ts; canvas-diagram-editor.component.ts and .html; sketch-renderer.ts; canvas.ts; related specs and recording helper; README.md; session test/build/type/diagnostic/browser evidence."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; rectangle selection.",
+      "elapsedMs": 348620
+    },
     {
       "id": "canvas-ctrl-wheel-plan",
       "title": "Canvas Ctrl+wheel zoom and Ctrl+drag pan",
@@ -48,8 +448,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; viewport zoom and pan.",
       "elapsedMs": 260795
     },
     {
@@ -88,8 +488,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; cohesive editor extraction.",
       "elapsedMs": 150116
     },
     {
@@ -128,8 +528,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; shared list and canvas selection.",
       "elapsedMs": 226752
     },
     {
@@ -168,8 +568,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; editable workflow template.",
       "elapsedMs": 316499
     },
     {
@@ -248,8 +648,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; item list and batch removal.",
       "elapsedMs": 154821
     },
     {
@@ -288,8 +688,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; picture action layout.",
       "elapsedMs": 32692
     },
     {
@@ -328,8 +728,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; compact selection list.",
       "elapsedMs": null
     },
     {
@@ -368,8 +768,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; editor action alignment.",
       "elapsedMs": 46267
     },
     {
@@ -408,8 +808,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; connection list width.",
       "elapsedMs": null
     },
     {
@@ -448,8 +848,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; list and field alignment.",
       "elapsedMs": 78321
     },
     {
@@ -488,8 +888,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; picture button ordering.",
       "elapsedMs": 46895
     },
     {
@@ -528,8 +928,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; label and type layout.",
       "elapsedMs": 43350
     },
     {
@@ -568,8 +968,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; scrollable selection list.",
       "elapsedMs": 132540
     },
     {
@@ -608,8 +1008,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; removal alignment.",
       "elapsedMs": 65585
     },
     {
@@ -648,8 +1048,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; removal placement.",
       "elapsedMs": 90052
     },
     {
@@ -688,8 +1088,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; actor clearance.",
       "elapsedMs": 75160
     },
     {
@@ -728,8 +1128,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; actor interaction bounds.",
       "elapsedMs": 205824
     },
     {
@@ -768,8 +1168,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; responsive buttons.",
       "elapsedMs": 74739
     },
     {
@@ -808,8 +1208,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; editor button sizing.",
       "elapsedMs": 91449
     },
     {
@@ -848,8 +1248,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; unified removal.",
       "elapsedMs": 126344
     },
     {
@@ -888,8 +1288,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; compact mobile controls.",
       "elapsedMs": 108424
     },
     {
@@ -928,8 +1328,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; grid-based editor controls.",
       "elapsedMs": 171474
     },
     {
@@ -968,8 +1368,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; architecture symbol editing.",
       "elapsedMs": 301295
     },
     {
@@ -1008,8 +1408,8 @@
           "evidence": null
         }
       ],
-      "category": "Unclassified",
-      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; architecture symbol preview.",
       "elapsedMs": 573244
     },
     {
@@ -1248,8 +1648,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Usability of the supported sketch-editing workspace.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; sketch workspace usability.",
       "elapsedMs": null
     },
     {
@@ -1288,8 +1688,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Recover usable drawing area for domain sketch editing.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; usable drawing area.",
       "elapsedMs": null
     },
     {
@@ -1808,8 +2208,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Choose and delete supported sketch connections.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; connection selection and removal.",
       "elapsedMs": 214000
     },
     {
@@ -1888,8 +2288,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Create and edit domain sketch labels.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; sketch labels.",
       "elapsedMs": 399000
     },
     {
@@ -1928,8 +2328,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Create and maintain relationships in a sketch.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; sketch relationships.",
       "elapsedMs": 500000
     },
     {
@@ -1968,8 +2368,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Create, arrange and remove domain sketch parts.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; sketch part editing.",
       "elapsedMs": 267000
     },
     {
@@ -2008,8 +2408,8 @@
           "evidence": null
         }
       ],
-      "category": "Mixed",
-      "rationale": "Separates reusable canvas mechanics from sketch editing while introducing a mock boundary; outcome includes domain architecture and test infrastructure.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; reusable surface and editing boundary.",
       "elapsedMs": 330000
     },
     {
@@ -2048,8 +2448,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Create and edit a supported sketch part without position jumps.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; editable sketch part.",
       "elapsedMs": 377000
     },
     {
@@ -2208,8 +2608,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Usable sketch-editing viewport.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; usable viewport.",
       "elapsedMs": 287000
     },
     {
@@ -2248,8 +2648,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Correct logical coordinate conversion for sketch interaction.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; logical coordinate conversion.",
       "elapsedMs": 185000
     },
     {
@@ -2288,8 +2688,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Responsive change-driven canvas rendering; its elapsed window also includes other work and waits.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; change-driven rendering. Elapsed window includes other work and waits.",
       "elapsedMs": 583000
     },
     {
@@ -2368,8 +2768,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Correct displayed canvas size and pixel density; long elapsed window includes intervening work and waits.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; size and pixel density. Elapsed window includes intervening work and waits.",
       "elapsedMs": 3794000
     },
     {
@@ -2408,8 +2808,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Select and move supported diagram entities.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; diagram selection and movement.",
       "elapsedMs": 1005000
     },
     {
@@ -2608,8 +3008,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Interactively move diagram items and persist positions; elapsed window includes pauses between sessions.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; diagram movement and positions. Elapsed window includes session pauses.",
       "elapsedMs": 4966000
     },
     {
@@ -2648,8 +3048,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Create supported diagram relationships; no completion timestamp yet.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; diagram relationships. Completion time remains unknown.",
       "elapsedMs": null
     },
     {
@@ -2768,8 +3168,8 @@
           "evidence": null
         }
       ],
-      "category": "Problem/Domain",
-      "rationale": "Investigate a canvas rendering foundation for the supported diagram editor; provisional prototype, not proven domain benefit.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; provisional rendering prototype.",
       "elapsedMs": 312000
     },
     {
@@ -2808,8 +3208,8 @@
           "evidence": null
         }
       ],
-      "category": "Mixed",
-      "rationale": "Develop sketch-editing capability while describing DevEnv's own architecture; no supported split or completion time.",
+      "category": "Meta/DevEnv",
+      "rationale": "User classifies canvas-related work as Meta/DevEnv; sketch-editing milestone. Completion time remains unknown.",
       "elapsedMs": null
     },
     {
@@ -2934,6 +3334,48 @@
     }
   ],
   "commits": [
+    {
+      "sha": "1ab65ef90479e71f9c0264c6211c663734a91ef4",
+      "authoredAt": "2026-10-10T20:29:02+02:00",
+      "committedAt": "2026-10-10T20:29:02+02:00",
+      "subject": "Refresh work effort report",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "bbc928fabc5398ede270ea7b8bc278c99f454e66",
+      "authoredAt": "2026-10-10T20:26:52+02:00",
+      "committedAt": "2026-10-10T20:26:52+02:00",
+      "subject": "Add glossary scope tabs and improve search",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "1978fb5b574e5ff1c292de8c40951b083ed28ce7",
+      "authoredAt": "2026-10-10T20:15:56+02:00",
+      "committedAt": "2026-10-10T20:15:56+02:00",
+      "subject": "Simplify meta navigation and label canvas Diagrams",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "4968c3a55f1cb4ceb282f1130666883fba967c02",
+      "authoredAt": "2026-10-10T20:09:29+02:00",
+      "committedAt": "2026-10-10T20:09:29+02:00",
+      "subject": "Label canvas part rows by type",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "7940d9265e2f13144f57aebbc051c46e58864c42",
+      "authoredAt": "2026-10-10T20:05:44+02:00",
+      "committedAt": "2026-10-10T20:05:44+02:00",
+      "subject": "Move selected canvas parts together",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "9f8720d850869bd9a8d009a24db78b6d62954f83",
+      "authoredAt": "2026-10-10T19:59:42+02:00",
+      "committedAt": "2026-10-10T19:59:42+02:00",
+      "subject": "Add canvas rectangle selection and remove clock",
+      "category": "Unclassified"
+    },
     {
       "sha": "3772101be454d9ca4a20f95f529590ac78f75c6e",
       "authoredAt": "2026-10-10T19:48:56+02:00",
@@ -8052,16 +8494,16 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T17:51:31.142Z",
-  "sourceCommit": "3772101be454d9ca4a20f95f529590ac78f75c6e",
+  "generatedAt": "2026-10-10T18:33:44.590Z",
+  "sourceCommit": "1ab65ef90479e71f9c0264c6211c663734a91ef4",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",
-      "sha256": "45a6eddee8103b351cae801daa0eb1427208c09e23dd72c7afda8f5a954b36ed"
+      "sha256": "eb4c9d0568c3c0d8af5970e9ded023e916adcfabaa0482e430c3559847fbf857"
     },
     {
       "path": "knowledge/workflows/work-effort-classifications.json",
-      "sha256": "53311a00d5c71c44bdce058ffd89c3b6e9b8883c0710fc23b6f2eabf9ed19ee9"
+      "sha256": "15267a602a09f0d4b603b7c55fad6523bdc19f5310817842cb8d857cf0b2a381"
     },
     {
       "path": "knowledge/workflows/workflow-todo-list.json",
@@ -8069,7 +8511,7 @@
     },
     {
       "path": "knowledge/workflows/work-plans.json",
-      "sha256": "97f98b0b7a6d833d225a788c1757cd941b1cae752c2b2be6d335d17d46540df0"
+      "sha256": "d4ffbc795f398afc42df939039dbe85559f51debd308361e062bca0b5008ef18"
     }
   ],
   "workflowRegistrySnapshot": {
@@ -8362,6 +8804,94 @@
     "schemaVersion": 2,
     "workPlans": [
       {
+        "id": "glossary-scoped-tabs",
+        "title": "Separate glossary scopes",
+        "description": "Present existing glossary entries in System and Project tabs without changing authoritative records.",
+        "topics": [
+          {
+            "id": "glossary-system-project",
+            "title": "System and Project glossary",
+            "description": "AgentPhaseGuide domain entries belong in Project; all remaining entries belong in System.",
+            "tasks": [
+              {
+                "id": "glossary-system-project-tabs",
+                "title": "Add System and Project glossary tabs",
+                "description": "Completed accessible System-default and Project tabs using existing AgentPhaseGuide domain tags. Search filters active scope and persists across switching; empty-tab and no-match messages distinguished. Authoritative glossary unchanged. Red observed for missing tabs; 34 targeted glossary/data tests pass with 100% component coverage, client build, Jest TypeScript check and diagnostics pass. Live browser verifies all 78 entries partition exactly into 55 System and 23 Project with no overlap; 360px keyboard switching retains search and focus without document overflow. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "glossary-system-project-tabs"
+                ]
+              },
+              {
+                "id": "glossary-scoped-empty-message",
+                "title": "Name the glossary scope in empty results",
+                "description": "Unified empty data, empty tab and unmatched search into No System Terms found. or No Project Terms found., suppressing it on loading errors. Focused Red observed; all 15 component tests pass with 100% coverage, build/type-check and diagnostics pass. Browser DOM confirms exact messages and single message; physical click unavailable in hidden shared page. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "glossary-scoped-empty-message"
+                ]
+              },
+              {
+                "id": "glossary-full-width-search",
+                "title": "Expand glossary search to content width",
+                "description": "Removed local 32rem search cap, reusing shared full-width form-control. Browser width assertion fails before change (512px field versus 1213px content), passes afterward at 1280/768/360px with equal widths, aligned edges and no overflow. Client build and diagnostics pass. CSS-only change; no executable module changes or extra tooling. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "glossary-full-width-search"
+                ]
+              },
+              {
+                "id": "glossary-search-icon",
+                "title": "Add a right-aligned glossary search icon",
+                "description": "Added decorative inline SVG magnifying glass at the search input right edge, vertically centered, with reserved text padding and pointer-events none. No dependencies or runtime changes. Red observed for missing icon; 16 glossary tests pass with 100% component coverage, build/type-check and diagnostics pass. Browser geometry and screenshot verify 20px icon, 13.59px right inset, exact vertical centering and full-width input at 1280/360px. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "glossary-search-icon"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "meta-menu-simplification",
+        "title": "Simplify meta navigation",
+        "description": "Remove selected menu links without deleting their features.",
+        "topics": [
+          {
+            "id": "meta-menu-links",
+            "title": "Menu visibility",
+            "description": "Keep direct routes and implementation intact.",
+            "tasks": [
+              {
+                "id": "relocate-visual-foundations",
+                "title": "Move Visual foundations into Tools and rename Canvas",
+                "description": "Moved Visual foundations beside Agent guide in Tools; main Canvas label is now Diagrams, still routing to interactive-canvas. Existing pending link removals preserved; no route or feature code changes. Two focused Red failures observed, then all 16 toolbar/route tests pass with 100% toolbar coverage, build, Jest TypeScript check and diagnostics pass. Actual browser clicks verify Diagrams opens the canvas editor and Tools/Visual foundations opens its existing page. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "relocate-visual-foundations"
+                ]
+              },
+              {
+                "id": "remove-three-meta-links",
+                "title": "Remove System plan, Terms and Diagram menu links",
+                "description": "Removed only three toolbar anchors; direct routes and feature code retained. Red observed for unwanted links; 16 toolbar/route tests pass with 100% toolbar coverage, client build, Jest TypeScript check and diagnostics pass. Browser confirms four remaining navigation links plus Tools and direct feature components remain accessible. Terms remains an empty template as before. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "remove-three-meta-links"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
         "id": "canvas-viewport-zoom",
         "title": "Canvas viewport zoom and pan",
         "description": "Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning without changing diagram coordinates or normal scrolling.",
@@ -8371,6 +8901,46 @@
             "title": "Ctrl+wheel and Ctrl+drag interaction",
             "description": "Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.",
             "tasks": [
+              {
+                "id": "canvas-part-list-types",
+                "title": "Label canvas part rows by type",
+                "description": "Replaced generic Part: prefix with the existing Type picker name in visible rows and implicit checkbox labels. Legacy parts without a shape use Rectangle; live type changes update the row without clearing selection. Extracted authoritative typed shape labels and derived picker options to sketch-shapes; component remains 397 lines. Red observed for all seven types and legacy default; all 160 editor tests pass with 100% changed-module coverage, client build, Jest TypeScript check, diagnostics and diff check pass. Browser confirms all six template types, no Part: prefix and Actor-to-Product checkbox label update with check preserved. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-part-list-types"
+                ]
+              },
+              {
+                "id": "canvas-selected-group-drag",
+                "title": "Move selected canvas parts together",
+                "description": "Completed dragging all selected parts by the same model-coordinate delta, using drag-start snapshots to preserve relative positions and avoid accumulated drift. Unselected dragged parts join existing additive selection. User approved selected parts only: connections follow endpoint geometry but selecting a connection does not include its endpoints. No persistent group or stored-format change needed. Red observed when second selected part remained stationary. Existing endpoint-positioning test fixtures explicitly clear selection before single-part drags, preserving geometry/hit assertions. All 951 client tests pass with 100% reported coverage; client build, Jest TypeScript check, diagnostics and diff check pass. Real desktop drag moves selected parts by 100x50 with other parts fixed and checks preserved. At 360px under zoom both parts move by the same approximately 50.111x20.045 logical delta, retaining 300px separation and checks. Component remains 400 lines. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-selected-group-drag"
+                ]
+              },
+              {
+                "id": "canvas-remove-clock",
+                "title": "Remove the canvas editor clock",
+                "description": "Removed time drawing, one-second refresh scheduling and scheduler dependency from the editor; removed clock-specific canvas accessibility text. Renderer no longer needs dimensions. Red observed for clock drawing and scheduling; all 146 editor tests now pass with 100% changed-module coverage. Client build, Jest TypeScript check, diagnostics and diff check pass. Live browser confirms empty canvas has zero painted pixels and loaded overview draws its diagram with zero pixels in the former clock area. Diagram interactions and pending rectangle work preserved. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-remove-clock"
+                ]
+              },
+              {
+                "id": "canvas-additive-marquee",
+                "title": "Select fully enclosed canvas items by background drag",
+                "description": "Completed ordinary background left-drag with dashed rectangle and additive selection of fully enclosed parts and entire straight connection segments on release. Existing selection order retained; reverse dragging, exact edges, actor bounds and inverse zoom/pan supported. Stationary empty clicks still clear selection, Ctrl+drag still pans, and cancellation preserves selection. Gesture state and enclosure live in SketchMarquee; component remains 400 lines. Red observed for initial selection preservation and immediate overlay removal when connection mode starts; both regressions now pass. All 945 client tests pass with 100% reported coverage including changed executable modules, final client build and Jest TypeScript check pass. Actual browser verifies dashed overlay before release, additive checks after release, reverse drag, transformed drag and 360px interaction; drawing dash restored afterward. Tracking and measurement retained. Next step: user review; no commit authorized.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "canvas-additive-marquee"
+                ]
+              },
               {
                 "id": "canvas-ctrl-wheel-implementation",
                 "title": "Implement and verify viewport zoom and pan",
@@ -9186,14 +9756,14 @@
     },
     {
       "path": "knowledge/workflows/work-plans.md",
-      "sha256": "4575b48f15cb73af45a37bb38cdddcaf40dbfe23622760e3753bbd8173f3fd59",
+      "sha256": "f44b5088b89deac24b4e9022916c6e2c182dd00dcf4e6432217084a7dc547847",
       "statements": [
         {
-          "line": 229,
+          "line": 345,
           "text": "Build an evidence-backed comparison without equating elapsed sessions, commit gaps or agent execution time with human active effort."
         },
         {
-          "line": 239,
+          "line": 355,
           "text": "Agree the reporting period and classification criteria before implementation. Proposed categories: Problem/Domain for work delivering or investigating the supported problem/domain; Meta/DevEnv for tooling, agent rules, workflows, test infrastructure, measurement and environment upkeep. Classify by intended outcome, not merely file path, and retain mixed/unclassified work rather than forcing a binary allocation. Gather as much available evidence as possible from WorkPlans and linked evaluations, knowledge/workflows/devenv-value-evaluation.json, workflow checkpoints and reports, timestamped user/assistant turns, session metadata and tool-execution records where accessible, Git commits/diffs and explicit user time records. Link every classification and time interval to its source and distinguish direct observations, estimates and unknowns. Report human active effort separately from elapsed delivery windows, waiting and agent/tool execution; never infer active effort from commit gaps, message gaps or whole-session duration. Avoid double counting overlapping tasks/sessions and parallel tool or agent activity; document allocation assumptions and missing evidence. Produce a report with category totals and proportions only where supported by comparable evidence, per-task breakdown, evidence coverage, mixed/unclassified time, limitations and reproducible derivation. Use authoritative typed JSON with generated Markdown for structured report data; agree any UI separately. Initial evidence inventory on 2026-10-10: the evaluation ledger has 46 evaluations, 38 with both startedAt/completedAt and 34 with a non-null delivery-flow-and-effort value; values may describe wall-clock time with active effort unknown, so inspect each rather than summing them blindly. Recent commits c7fcf3a, 57ce107 and 74d351d cover AgentPhaseGuide rules/glossary/export; e748394, b074703, ad87c42, d07e878 and e5f827f cover test infrastructure and planning, providing classification leads and commit timestamps but not durations. Cloud and local session-store queries over the last seven days returned no rows in this session; treat history availability as unresolved, not proof that no work occurred. This conversation also provides timestamped evidence of generic-core refinement, tracking-rule decisions and an in-memory export dry run; preserve accessible turns/checkpoints when the task starts. Success: a source-traceable comparison that explicitly reports unknown active effort and demonstrates no overlap double counting; do not present unsupported totals as measured time."
         }
       ]

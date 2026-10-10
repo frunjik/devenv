@@ -14,17 +14,17 @@ Durations use hours:minutes:seconds, rounded to the nearest second. The Problem 
 
 | Window category         | Duration (h:mm:ss) | Minutes | Share of observed union |
 | ----------------------- | -----------------: | ------: | ----------------------: |
-| Problem/Domain          |            3:05:08 |  185.13 |                  43.76% |
-| Meta/DevEnv             |            2:33:47 |  153.78 |                  36.35% |
-| Mixed                   |            0:05:30 |    5.50 |                   1.30% |
-| Unclassified            |            1:03:43 |   63.72 |                  15.06% |
-| Cross-category overlap  |            0:14:54 |   14.90 |                   3.52% |
-| Problem + Meta subtotal |            5:38:55 |  338.92 |                  80.12% |
-| Total observed union    |            7:03:02 |  423.04 |                 100.00% |
+| Problem/Domain          |            0:02:48 |    2.80 |                   0.63% |
+| Meta/DevEnv             |            7:08:49 |  428.82 |                  96.30% |
+| Mixed                   |            0:00:00 |    0.00 |                   0.00% |
+| Unclassified            |            0:13:41 |   13.69 |                   3.07% |
+| Cross-category overlap  |            0:00:00 |    0.00 |                   0.00% |
+| Problem + Meta subtotal |            7:11:37 |  431.62 |                  96.93% |
+| Total observed union    |            7:25:18 |  445.31 |                 100.00% |
 
-Evaluations reviewed: 73. Complete intervals: 63.
+Evaluations reviewed: 83. Complete intervals: 73.
 Unfinished or untimed evaluations: 10.
-Reachable commits inventoried: 731; all commit durations and outcome classifications remain unknown.
+Reachable commits inventoried: 737; all commit durations and outcome classifications remain unknown.
 
 ## Evaluation evidence
 
@@ -33,38 +33,48 @@ Individual elapsed values below overlap and must not be summed.
 
 | Evaluation | Category | Elapsed minutes (not effort) | Classification rationale |
 |---|---|---:|---|
-| canvas-ctrl-wheel-plan: Canvas Ctrl+wheel zoom and Ctrl+drag pan | Unclassified | 4.35 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-functional-boundaries: Extract cohesive editor boundaries | Unclassified | 2.50 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-synchronized-selection: Synchronize list and canvas selection | Unclassified | 3.78 | No outcome classification supplied; no allocation inferred. |
-| canvas-default-workflow-template: Load an editable default workflow template | Unclassified | 5.27 | No outcome classification supplied; no allocation inferred. |
+| glossary-search-icon: Right-aligned glossary search icon | Unclassified | 1.27 | No outcome classification supplied; no allocation inferred. |
+| glossary-full-width-search: Full-width glossary search | Unclassified | 1.01 | No outcome classification supplied; no allocation inferred. |
+| glossary-scoped-empty-message: Scoped glossary empty messages | Unclassified | 1.70 | No outcome classification supplied; no allocation inferred. |
+| glossary-system-project-tabs: System and Project glossary tabs | Unclassified | 2.20 | No outcome classification supplied; no allocation inferred. |
+| relocate-visual-foundations: Relocate Visual foundations and rename Canvas | Meta/DevEnv | 1.12 | User classifies canvas-related work as Meta/DevEnv; diagram menu naming and supporting tools. |
+| remove-three-meta-links: Remove three meta menu links | Meta/DevEnv | 1.90 | User classifies canvas-related work as Meta/DevEnv; developer-environment diagram navigation. |
+| canvas-part-list-types: Label canvas part rows by type | Meta/DevEnv | 1.92 | User classifies canvas-related work as Meta/DevEnv; canvas item type labels. |
+| canvas-selected-group-drag: Move selected canvas parts together | Meta/DevEnv | 3.97 | User classifies canvas-related work as Meta/DevEnv; selected canvas part movement. |
+| canvas-remove-clock: Remove the canvas editor clock | Meta/DevEnv | 1.37 | User classifies canvas-related work as Meta/DevEnv; remove editor clock. |
+| canvas-additive-marquee: Additive background rectangle selection | Meta/DevEnv | 5.81 | User classifies canvas-related work as Meta/DevEnv; rectangle selection. |
+| canvas-ctrl-wheel-plan: Canvas Ctrl+wheel zoom and Ctrl+drag pan | Meta/DevEnv | 4.35 | User classifies canvas-related work as Meta/DevEnv; viewport zoom and pan. |
+| canvas-editor-functional-boundaries: Extract cohesive editor boundaries | Meta/DevEnv | 2.50 | User classifies canvas-related work as Meta/DevEnv; cohesive editor extraction. |
+| canvas-editor-synchronized-selection: Synchronize list and canvas selection | Meta/DevEnv | 3.78 | User classifies canvas-related work as Meta/DevEnv; shared list and canvas selection. |
+| canvas-default-workflow-template: Load an editable default workflow template | Meta/DevEnv | 5.27 | User classifies canvas-related work as Meta/DevEnv; editable workflow template. |
 | repository-coverage-completion: Complete reported repository coverage | Unclassified | 3.46 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-all-items: List and select every canvas item | Unclassified | 2.58 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-bottom-picture-actions: Anchor left picture actions above canvas | Unclassified | 0.54 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-condensed-list: Condense connection selection rows | Unclassified | unknown | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-bottom-actions: Anchor right-side actions above canvas | Unclassified | 0.77 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-half-list: Expand connections list to half the page | Unclassified | unknown | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-top-list: Align narrow connections list with left fields | Unclassified | 1.31 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-picture-order: Stack Technical picture above Load overview | Unclassified | 0.78 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-left-fields: Align label and type in the left half | Unclassified | 0.72 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-connection-list: Show a scrollable connection selection list | Unclassified | 2.21 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-removal-alignment: Right-align connection controls toward removal | Unclassified | 1.09 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-removal-placement: Place connections beside removal | Unclassified | 1.50 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-actor-top-margin: Add top clearance to Actor bounds | Unclassified | 1.25 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-actor-bounds: Tighten Actor interaction bounds | Unclassified | 3.43 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-button-growth: Grow small toolbar buttons when space permits | Unclassified | 1.25 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-button-variants: Use small and grid-filling wide editor buttons | Unclassified | 1.52 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-unified-removal: Unify selected part and connection removal | Unclassified | 2.11 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-controls-compact: Use two mobile control columns and compact editor buttons | Unclassified | 1.81 | No outcome classification supplied; no allocation inferred. |
-| canvas-editor-controls-grid: Arrange canvas editor controls on the global grid | Unclassified | 2.86 | No outcome classification supplied; no allocation inferred. |
-| canvas-symbol-editor: Use generic architecture symbols in the canvas editor | Unclassified | 5.02 | No outcome classification supplied; no allocation inferred. |
-| canvas-symbol-preview: Render architecture symbols with a sample canvas preview | Unclassified | 9.55 | No outcome classification supplied; no allocation inferred. |
+| canvas-editor-all-items: List and select every canvas item | Meta/DevEnv | 2.58 | User classifies canvas-related work as Meta/DevEnv; item list and batch removal. |
+| canvas-editor-bottom-picture-actions: Anchor left picture actions above canvas | Meta/DevEnv | 0.54 | User classifies canvas-related work as Meta/DevEnv; picture action layout. |
+| canvas-editor-condensed-list: Condense connection selection rows | Meta/DevEnv | unknown | User classifies canvas-related work as Meta/DevEnv; compact selection list. |
+| canvas-editor-bottom-actions: Anchor right-side actions above canvas | Meta/DevEnv | 0.77 | User classifies canvas-related work as Meta/DevEnv; editor action alignment. |
+| canvas-editor-half-list: Expand connections list to half the page | Meta/DevEnv | unknown | User classifies canvas-related work as Meta/DevEnv; connection list width. |
+| canvas-editor-top-list: Align narrow connections list with left fields | Meta/DevEnv | 1.31 | User classifies canvas-related work as Meta/DevEnv; list and field alignment. |
+| canvas-editor-picture-order: Stack Technical picture above Load overview | Meta/DevEnv | 0.78 | User classifies canvas-related work as Meta/DevEnv; picture button ordering. |
+| canvas-editor-left-fields: Align label and type in the left half | Meta/DevEnv | 0.72 | User classifies canvas-related work as Meta/DevEnv; label and type layout. |
+| canvas-editor-connection-list: Show a scrollable connection selection list | Meta/DevEnv | 2.21 | User classifies canvas-related work as Meta/DevEnv; scrollable selection list. |
+| canvas-editor-removal-alignment: Right-align connection controls toward removal | Meta/DevEnv | 1.09 | User classifies canvas-related work as Meta/DevEnv; removal alignment. |
+| canvas-editor-removal-placement: Place connections beside removal | Meta/DevEnv | 1.50 | User classifies canvas-related work as Meta/DevEnv; removal placement. |
+| canvas-editor-actor-top-margin: Add top clearance to Actor bounds | Meta/DevEnv | 1.25 | User classifies canvas-related work as Meta/DevEnv; actor clearance. |
+| canvas-editor-actor-bounds: Tighten Actor interaction bounds | Meta/DevEnv | 3.43 | User classifies canvas-related work as Meta/DevEnv; actor interaction bounds. |
+| canvas-editor-button-growth: Grow small toolbar buttons when space permits | Meta/DevEnv | 1.25 | User classifies canvas-related work as Meta/DevEnv; responsive buttons. |
+| canvas-editor-button-variants: Use small and grid-filling wide editor buttons | Meta/DevEnv | 1.52 | User classifies canvas-related work as Meta/DevEnv; editor button sizing. |
+| canvas-editor-unified-removal: Unify selected part and connection removal | Meta/DevEnv | 2.11 | User classifies canvas-related work as Meta/DevEnv; unified removal. |
+| canvas-editor-controls-compact: Use two mobile control columns and compact editor buttons | Meta/DevEnv | 1.81 | User classifies canvas-related work as Meta/DevEnv; compact mobile controls. |
+| canvas-editor-controls-grid: Arrange canvas editor controls on the global grid | Meta/DevEnv | 2.86 | User classifies canvas-related work as Meta/DevEnv; grid-based editor controls. |
+| canvas-symbol-editor: Use generic architecture symbols in the canvas editor | Meta/DevEnv | 5.02 | User classifies canvas-related work as Meta/DevEnv; architecture symbol editing. |
+| canvas-symbol-preview: Render architecture symbols with a sample canvas preview | Meta/DevEnv | 9.55 | User classifies canvas-related work as Meta/DevEnv; architecture symbol preview. |
 | self-cloning-agent-guide-package: Package the exported Guide so it can clone itself | Unclassified | 4.04 | No outcome classification supplied; no allocation inferred. |
 | report-domain-versus-meta-time: Create an evidence-backed Problem/Domain versus Meta/DevEnv time report | Meta/DevEnv | 5.95 | The report itself is development-process measurement work; its recorded window includes scope decisions and checks, not measured human effort. |
 | agent-guide-preview: Preview AgentPhaseGuide and generated Copilot files | Meta/DevEnv | 4.84 | Agent configuration preview and transfer tooling. |
 | darwin-agent-essentials: Evolve Agent Essentials through Darwin | Meta/DevEnv | unknown | Development-practice extraction and agent rules. |
 | visual-foundations-main-navigation: Expose visual foundations directly in main navigation | Meta/DevEnv | 1.06 | Discoverability of a developer visual-foundations preview, not a supported domain behavior. |
-| canvas-page-height-and-controls: Fill the canvas page and move connection controls above the workspace | Problem/Domain | unknown | Usability of the supported sketch-editing workspace. |
-| canvas-compact-grid-toolbar: Compact canvas controls using the global layout grid | Problem/Domain | unknown | Recover usable drawing area for domain sketch editing. |
+| canvas-page-height-and-controls: Fill the canvas page and move connection controls above the workspace | Meta/DevEnv | unknown | User classifies canvas-related work as Meta/DevEnv; sketch workspace usability. |
+| canvas-compact-grid-toolbar: Compact canvas controls using the global layout grid | Meta/DevEnv | unknown | User classifies canvas-related work as Meta/DevEnv; usable drawing area. |
 | canvas-technical-picture: Show DevEnv local-development architecture in the canvas | Meta/DevEnv | unknown | Explain DevEnv's own development architecture, rather than a supported external problem. |
 | visual-foundations-preview: Try an isolated DevEnv visual-foundations preview | Meta/DevEnv | unknown | Evaluate visual conventions for the development environment. |
 | ruleset-reduction: Create a substantially smaller repository ruleset | Meta/DevEnv | unknown | Reduce and clarify repository agent rules. |
@@ -77,32 +87,32 @@ Individual elapsed values below overlap and must not be summed.
 | workflow-todo-group-totals: Show product/meta evaluated subtotals and grand total | Meta/DevEnv | 2.13 | Work evaluation aggregation tooling. |
 | workflow-todo-summed-elapsed: Show summed evaluated elapsed time per workflow | Meta/DevEnv | 2.75 | Time-evidence presentation in workflow tooling. |
 | workflow-todo-compact-navigation: Compact workflow navigation and expandable evaluation history | Meta/DevEnv | 5.70 | Workflow navigation and evaluation history tooling. |
-| canvas-connection-picker: Pick and delete multiple canvas connections | Problem/Domain | 3.57 | Choose and delete supported sketch connections. |
+| canvas-connection-picker: Pick and delete multiple canvas connections | Meta/DevEnv | 3.57 | User classifies canvas-related work as Meta/DevEnv; connection selection and removal. |
 | canvas-devenv-overview: Load a reusable DevEnv overview sketch | Meta/DevEnv | 7.03 | Explain what DevEnv itself does through an overview sketch. |
-| canvas-shared-label-input: Reuse one input for canvas labels | Problem/Domain | 6.65 | Create and edit domain sketch labels. |
-| canvas-diagram-connections: Connect canvas sketch parts | Problem/Domain | 8.33 | Create and maintain relationships in a sketch. |
-| canvas-diagram-multiple-parts: Arrange and remove multiple canvas sketch parts | Problem/Domain | 4.45 | Create, arrange and remove domain sketch parts. |
-| canvas-editor-surface-separation: Separate canvas surface from diagram editing | Mixed | 5.50 | Separates reusable canvas mechanics from sketch editing while introducing a mock boundary; outcome includes domain architecture and test infrastructure. |
-| interactive-canvas-one-editable-part: Create and edit one canvas sketch part | Problem/Domain | 6.28 | Create and edit a supported sketch part without position jumps. |
+| canvas-shared-label-input: Reuse one input for canvas labels | Meta/DevEnv | 6.65 | User classifies canvas-related work as Meta/DevEnv; sketch labels. |
+| canvas-diagram-connections: Connect canvas sketch parts | Meta/DevEnv | 8.33 | User classifies canvas-related work as Meta/DevEnv; sketch relationships. |
+| canvas-diagram-multiple-parts: Arrange and remove multiple canvas sketch parts | Meta/DevEnv | 4.45 | User classifies canvas-related work as Meta/DevEnv; sketch part editing. |
+| canvas-editor-surface-separation: Separate canvas surface from diagram editing | Meta/DevEnv | 5.50 | User classifies canvas-related work as Meta/DevEnv; reusable surface and editing boundary. |
+| interactive-canvas-one-editable-part: Create and edit one canvas sketch part | Meta/DevEnv | 6.28 | User classifies canvas-related work as Meta/DevEnv; editable sketch part. |
 | toolbar-design-refinement: Refine status toolbar visual design | Meta/DevEnv | 3.10 | Developer workflow and test-status readability. |
 | toolbar-scheduling-boundary: Explicit toolbar scheduling boundary | Meta/DevEnv | 2.05 | Scheduling fake and test-boundary refactoring. |
 | active-workflow-status-toolbar: Active workflow in status toolbar | Meta/DevEnv | 5.03 | Expose current development workflow status. |
-| interactive-canvas-viewport-stretch: Fill available canvas viewport space | Problem/Domain | 4.78 | Usable sketch-editing viewport. |
-| interactive-canvas-pointer-coordinates: Canvas pointer-coordinate conversion | Problem/Domain | 3.08 | Correct logical coordinate conversion for sketch interaction. |
-| interactive-canvas-frame-scheduling: Change-driven canvas frame scheduling | Problem/Domain | 9.72 | Responsive change-driven canvas rendering; its elapsed window also includes other work and waits. |
+| interactive-canvas-viewport-stretch: Fill available canvas viewport space | Meta/DevEnv | 4.78 | User classifies canvas-related work as Meta/DevEnv; usable viewport. |
+| interactive-canvas-pointer-coordinates: Canvas pointer-coordinate conversion | Meta/DevEnv | 3.08 | User classifies canvas-related work as Meta/DevEnv; logical coordinate conversion. |
+| interactive-canvas-frame-scheduling: Change-driven canvas frame scheduling | Meta/DevEnv | 9.72 | User classifies canvas-related work as Meta/DevEnv; change-driven rendering. Elapsed window includes other work and waits. |
 | interactive-canvas-typed-boundary: Typed canvas boundary and plain browser fake | Meta/DevEnv | 4.72 | Typed test boundary and fake replacing unsafe browser patching. |
-| interactive-canvas-responsive-sizing: Responsive canvas sizing and pixel density | Problem/Domain | 63.23 | Correct displayed canvas size and pixel density; long elapsed window includes intervening work and waits. |
-| diagram-selection-and-movement: Diagram selection and movement | Problem/Domain | 16.75 | Select and move supported diagram entities. |
+| interactive-canvas-responsive-sizing: Responsive canvas sizing and pixel density | Meta/DevEnv | 63.23 | User classifies canvas-related work as Meta/DevEnv; size and pixel density. Elapsed window includes intervening work and waits. |
+| diagram-selection-and-movement: Diagram selection and movement | Meta/DevEnv | 16.75 | User classifies canvas-related work as Meta/DevEnv; diagram selection and movement. |
 | workflow-todo-value-metrics-view: Show current evaluation metrics on the Workflow TODO view | Meta/DevEnv | 18.92 | Display development-work evaluations and metric definitions. |
 | glossary-client-search: Search the Glossary view | Problem/Domain | 2.80 | Find supported domain terms and definitions. |
 | principle-register-organization-review: Review principle register organization and precedence | Meta/DevEnv | 8.93 | Review repository development rules and precedence. |
 | workflow-evaluation-associations: Associate evaluations with workflow records | Meta/DevEnv | 11.05 | Maintain links between workflow and evaluation records. |
-| diagram-editor-drag-interaction: Diagnose and fix workspace item movement | Problem/Domain | 82.77 | Interactively move diagram items and persist positions; elapsed window includes pauses between sessions. |
-| diagram-connection-workflow: Implement diagram connection interaction | Problem/Domain | unknown | Create supported diagram relationships; no completion timestamp yet. |
+| diagram-editor-drag-interaction: Diagnose and fix workspace item movement | Meta/DevEnv | 82.77 | User classifies canvas-related work as Meta/DevEnv; diagram movement and positions. Elapsed window includes session pauses. |
+| diagram-connection-workflow: Implement diagram connection interaction | Meta/DevEnv | unknown | User classifies canvas-related work as Meta/DevEnv; diagram relationships. Completion time remains unknown. |
 | copilot-ai-credit-estimator: Estimate Copilot AI credits from imported token usage | Meta/DevEnv | 33.08 | Assess development-agent usage and costs. |
 | active-workflow-on-todo-view: Show active workflow on TODO view | Meta/DevEnv | 12.83 | Display active development workflow. |
-| interactive-canvas-clock-prototype: InteractiveCanvas clock prototype (provisional) | Problem/Domain | 5.20 | Investigate a canvas rendering foundation for the supported diagram editor; provisional prototype, not proven domain benefit. |
-| interactive-canvas-editor-milestone: Canvas editor first useful milestone (provisional) | Mixed | unknown | Develop sketch-editing capability while describing DevEnv's own architecture; no supported split or completion time. |
+| interactive-canvas-clock-prototype: InteractiveCanvas clock prototype (provisional) | Meta/DevEnv | 5.20 | User classifies canvas-related work as Meta/DevEnv; provisional rendering prototype. |
+| interactive-canvas-editor-milestone: Canvas editor first useful milestone (provisional) | Meta/DevEnv | unknown | User classifies canvas-related work as Meta/DevEnv; sketch-editing milestone. Completion time remains unknown. |
 | reusable-filesystem-http-test-doubles: Reusable filesystem and HTTP test doubles | Meta/DevEnv | 15.50 | Reusable test isolation infrastructure. |
 | replace-real-fs-reads-in-tests: Replace real filesystem reads in tests with mocks | Meta/DevEnv | 3.93 | Test fixtures and filesystem isolation. |
 | separate-generic-core-from-devenv-profile: Separate the generic AgentPhaseGuide core from the DevEnv project profile | Meta/DevEnv | 7.37 | Agent rules portability and export tooling. |
@@ -112,6 +122,12 @@ Individual elapsed values below overlap and must not be summed.
 Author and commit dates are events, not work intervals. No time is inferred from commit gaps. Inspect referenced diffs before assigning older work to outcomes.
 | Commit | Author timestamp | Commit timestamp | Subject |
 |---|---|---|---|
+| 1ab65ef90479e71f9c0264c6211c663734a91ef4 | 2026-10-10T20:29:02+02:00 | 2026-10-10T20:29:02+02:00 | Refresh work effort report |
+| bbc928fabc5398ede270ea7b8bc278c99f454e66 | 2026-10-10T20:26:52+02:00 | 2026-10-10T20:26:52+02:00 | Add glossary scope tabs and improve search |
+| 1978fb5b574e5ff1c292de8c40951b083ed28ce7 | 2026-10-10T20:15:56+02:00 | 2026-10-10T20:15:56+02:00 | Simplify meta navigation and label canvas Diagrams |
+| 4968c3a55f1cb4ceb282f1130666883fba967c02 | 2026-10-10T20:09:29+02:00 | 2026-10-10T20:09:29+02:00 | Label canvas part rows by type |
+| 7940d9265e2f13144f57aebbc051c46e58864c42 | 2026-10-10T20:05:44+02:00 | 2026-10-10T20:05:44+02:00 | Move selected canvas parts together |
+| 9f8720d850869bd9a8d009a24db78b6d62954f83 | 2026-10-10T19:59:42+02:00 | 2026-10-10T19:59:42+02:00 | Add canvas rectangle selection and remove clock |
 | 3772101be454d9ca4a20f95f529590ac78f75c6e | 2026-10-10T19:48:56+02:00 | 2026-10-10T19:48:56+02:00 | Add canvas Ctrl-wheel zoom and free panning |
 | 82a65b74792061fde9f8a90c9bd802eb6b1ab49b | 2026-10-10T19:41:29+02:00 | 2026-10-10T19:41:29+02:00 | Plan canvas zoom and free background panning |
 | 342841083e706acb24cf12635057a6c290cd9894 | 2026-10-10T19:36:42+02:00 | 2026-10-10T19:36:42+02:00 | Add 400-line production extraction rule |
@@ -846,7 +862,7 @@ Author and commit dates are events, not work intervals. No time is inferred from
 
 ## Scope, sources and limitations
 
-Git inventory pinned to 3772101be454d9ca4a20f95f529590ac78f75c6e. Snapshot generated at 2026-10-10T17:51:31.142Z.
+Git inventory pinned to 1ab65ef90479e71f9c0264c6211c663734a91ef4. Snapshot generated at 2026-10-10T18:33:44.590Z.
 Classification source: [reviewed outcome classifications](./work-effort-classifications.json).
 Exact source hashes, original workflow/WorkPlan records, and extracted checkpoint evidence are retained in [the JSON snapshot](./work-effort-report.json).
 - Scope is all reachable HEAD history and current repository records, not deleted branches, inaccessible chats or all work ever done.
@@ -1006,8 +1022,8 @@ These are corroborating records, not additional durations.
 
 ### [knowledge/workflows/work-plans.md](../../knowledge/workflows/work-plans.md)
 
-- Line 229: Build an evidence-backed comparison without equating elapsed sessions, commit gaps or agent execution time with human active effort.
-- Line 239: Agree the reporting period and classification criteria before implementation. Proposed categories: Problem/Domain for work delivering or investigating the supported problem/domain; Meta/DevEnv for tooling, agent rules, workflows, test infrastructure, measurement and environment upkeep. Classify by intended outcome, not merely file path, and retain mixed/unclassified work rather than forcing a binary allocation. Gather as much available evidence as possible from WorkPlans and linked evaluations, knowledge/workflows/devenv-value-evaluation.json, workflow checkpoints and reports, timestamped user/assistant turns, session metadata and tool-execution records where accessible, Git commits/diffs and explicit user time records. Link every classification and time interval to its source and distinguish direct observations, estimates and unknowns. Report human active effort separately from elapsed delivery windows, waiting and agent/tool execution; never infer active effort from commit gaps, message gaps or whole-session duration. Avoid double counting overlapping tasks/sessions and parallel tool or agent activity; document allocation assumptions and missing evidence. Produce a report with category totals and proportions only where supported by comparable evidence, per-task breakdown, evidence coverage, mixed/unclassified time, limitations and reproducible derivation. Use authoritative typed JSON with generated Markdown for structured report data; agree any UI separately. Initial evidence inventory on 2026-10-10: the evaluation ledger has 46 evaluations, 38 with both startedAt/completedAt and 34 with a non-null delivery-flow-and-effort value; values may describe wall-clock time with active effort unknown, so inspect each rather than summing them blindly. Recent commits c7fcf3a, 57ce107 and 74d351d cover AgentPhaseGuide rules/glossary/export; e748394, b074703, ad87c42, d07e878 and e5f827f cover test infrastructure and planning, providing classification leads and commit timestamps but not durations. Cloud and local session-store queries over the last seven days returned no rows in this session; treat history availability as unresolved, not proof that no work occurred. This conversation also provides timestamped evidence of generic-core refinement, tracking-rule decisions and an in-memory export dry run; preserve accessible turns/checkpoints when the task starts. Success: a source-traceable comparison that explicitly reports unknown active effort and demonstrates no overlap double counting; do not present unsupported totals as measured time.
+- Line 345: Build an evidence-backed comparison without equating elapsed sessions, commit gaps or agent execution time with human active effort.
+- Line 355: Agree the reporting period and classification criteria before implementation. Proposed categories: Problem/Domain for work delivering or investigating the supported problem/domain; Meta/DevEnv for tooling, agent rules, workflows, test infrastructure, measurement and environment upkeep. Classify by intended outcome, not merely file path, and retain mixed/unclassified work rather than forcing a binary allocation. Gather as much available evidence as possible from WorkPlans and linked evaluations, knowledge/workflows/devenv-value-evaluation.json, workflow checkpoints and reports, timestamped user/assistant turns, session metadata and tool-execution records where accessible, Git commits/diffs and explicit user time records. Link every classification and time interval to its source and distinguish direct observations, estimates and unknowns. Report human active effort separately from elapsed delivery windows, waiting and agent/tool execution; never infer active effort from commit gaps, message gaps or whole-session duration. Avoid double counting overlapping tasks/sessions and parallel tool or agent activity; document allocation assumptions and missing evidence. Produce a report with category totals and proportions only where supported by comparable evidence, per-task breakdown, evidence coverage, mixed/unclassified time, limitations and reproducible derivation. Use authoritative typed JSON with generated Markdown for structured report data; agree any UI separately. Initial evidence inventory on 2026-10-10: the evaluation ledger has 46 evaluations, 38 with both startedAt/completedAt and 34 with a non-null delivery-flow-and-effort value; values may describe wall-clock time with active effort unknown, so inspect each rather than summing them blindly. Recent commits c7fcf3a, 57ce107 and 74d351d cover AgentPhaseGuide rules/glossary/export; e748394, b074703, ad87c42, d07e878 and e5f827f cover test infrastructure and planning, providing classification leads and commit timestamps but not durations. Cloud and local session-store queries over the last seven days returned no rows in this session; treat history availability as unresolved, not proof that no work occurred. This conversation also provides timestamped evidence of generic-core refinement, tracking-rule decisions and an in-memory export dry run; preserve accessible turns/checkpoints when the task starts. Success: a source-traceable comparison that explicitly reports unknown active effort and demonstrates no overlap double counting; do not present unsupported totals as measured time.
 
 ### [knowledge/workflows/workflow-evaluation-associations.md](../../knowledge/workflows/workflow-evaluation-associations.md)
 

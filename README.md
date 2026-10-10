@@ -121,6 +121,9 @@ clears both kinds of checkbox selection; cancelling preserves them.
 
 ## Work time evidence
 
+Canvas-related work, including diagram interactions and supporting editor navigation,
+is classified as `Meta/DevEnv` in the reviewed effort classifications.
+
 The [Problem/Domain versus Meta/DevEnv report](./knowledge/workflows/work-effort-report.generated.md)
 compares the union of recorded evaluation delivery windows, not human hours worked.
 Its summary shows category durations in hours:minutes:seconds alongside minutes,

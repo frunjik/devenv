@@ -3,7 +3,7 @@ import fs from 'fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 
 jest.mock('fs', () => {
@@ -52,31 +52,31 @@ describe('files folders public API', () => {
     });
 
     it('reads an existing file', async () => {
-        const response = await request(app).get('/files').query({ path: 'sample.txt' });
+        const response = await requestApp(app).get('/files').query({ path: 'sample.txt' });
         expect(response.body).toEqual({ data: 'initial' });
         expect(fileReader).toHaveBeenCalledWith(join(root, 'sample.txt'), 'utf-8');
     });
 
     it('rejects a file request without a path', async () => {
-        const response = await request(app).get('/files');
+        const response = await requestApp(app).get('/files');
         expect(response.body).toEqual({ error: { message: "ERROR: invalid path ''" } });
         expect(fileReader).not.toHaveBeenCalled();
     });
 
     it('reports an unknown file path', async () => {
         fileReader.mockRejectedValueOnce(Object.assign(new Error('File not found'), { code: 'ENOENT' }));
-        const response = await request(app).get('/files').query({ path: 'missing.txt' });
+        const response = await requestApp(app).get('/files').query({ path: 'missing.txt' });
         expect(response.body).toEqual({ error: { message: "ERROR: invalid path 'missing.txt'" } });
     });
 
     it('forwards file read errors for directory paths', async () => {
         fileReader.mockRejectedValueOnce(Object.assign(new Error('Is a directory'), { code: 'EISDIR' }));
-        const response = await request(app).get('/files').query({ path: '.' });
+        const response = await requestApp(app).get('/files').query({ path: '.' });
         expect(response.status).toBe(500);
     });
 
     it('rejects a write request without a path', async () => {
-        const response = await request(app).post('/files').send({ data: 'ignored' });
+        const response = await requestApp(app).post('/files').send({ data: 'ignored' });
         expect(response.body).toEqual({ error: { message: "ERROR: invalid path ''" } });
         expect(fileWriter).not.toHaveBeenCalled();
     });
@@ -87,11 +87,11 @@ describe('files folders public API', () => {
             expect(contents).toBe('updated');
             fileReader.mockResolvedValue('updated');
         });
-        const writeResponse = await request(app)
+        const writeResponse = await requestApp(app)
             .post('/files')
             .query({ path: 'sample.txt' })
             .send({ data: 'updated' });
-        const readResponse = await request(app).get('/files').query({ path: 'sample.txt' });
+        const readResponse = await requestApp(app).get('/files').query({ path: 'sample.txt' });
         expect({ write: writeResponse.body, read: readResponse.body }).toEqual({
             write: { data: 'OK' },
             read: { data: 'updated' },
@@ -105,8 +105,8 @@ describe('files folders public API', () => {
             expect(contents).toBe('');
             fileReader.mockResolvedValue('');
         });
-        const writeResponse = await request(app).post('/files').query({ path: 'empty.txt' }).send({});
-        const readResponse = await request(app).get('/files').query({ path: 'empty.txt' });
+        const writeResponse = await requestApp(app).post('/files').query({ path: 'empty.txt' }).send({});
+        const readResponse = await requestApp(app).get('/files').query({ path: 'empty.txt' });
         expect({ write: writeResponse.body, read: readResponse.body }).toEqual({
             write: { data: 'OK' },
             read: { data: '' },
@@ -116,7 +116,7 @@ describe('files folders public API', () => {
 
     it('reports asynchronous write errors for missing directories', async () => {
         fileWriter.mockRejectedValueOnce(Object.assign(new Error('Directory not found'), { code: 'ENOENT' }));
-        const response = await request(app)
+        const response = await requestApp(app)
             .post('/files')
             .query({ path: 'missing/file.txt' })
             .send({ data: 'unwritten' });
@@ -127,18 +127,18 @@ describe('files folders public API', () => {
 
     it('forwards write errors for directory paths', async () => {
         fileWriter.mockRejectedValueOnce(Object.assign(new Error('Is a directory'), { code: 'EISDIR' }));
-        const response = await request(app).post('/files').query({ path: '.' }).send({ data: 'unwritten' });
+        const response = await requestApp(app).post('/files').query({ path: '.' }).send({ data: 'unwritten' });
         expect(response.status).toBe(500);
     });
 
     it('lists the server root when no folder path is supplied', async () => {
-        const response = await request(app).get('/folders');
+        const response = await requestApp(app).get('/folders');
         expect(response.status).toBe(200);
         expect(folderReader).toHaveBeenCalledWith(root);
     });
 
     it('lists files and directories with their kinds', async () => {
-        const response = await request(app).get('/folders').query({ path: '.' });
+        const response = await requestApp(app).get('/folders').query({ path: '.' });
         expect(response.body.data).toEqual(expect.arrayContaining([
             { filename: 'nested', isFolder: true },
             { filename: 'sample.txt', isFolder: false },
@@ -151,27 +151,27 @@ describe('files folders public API', () => {
     });
 
     it('rejects folder traversal paths', async () => {
-        const response = await request(app).get('/folders').query({ path: '..' });
+        const response = await requestApp(app).get('/folders').query({ path: '..' });
         expect(response.body).toEqual({ error: { message: "ERROR: invalid path '..'" } });
         expect(folderReader).not.toHaveBeenCalled();
     });
 
     it('reports unknown folder paths', async () => {
         folderReader.mockRejectedValueOnce(Object.assign(new Error('Folder not found'), { code: 'ENOENT' }));
-        const response = await request(app).get('/folders').query({ path: 'missing' });
+        const response = await requestApp(app).get('/folders').query({ path: 'missing' });
         expect(response.body).toEqual({ error: { message: "ERROR: invalid path 'missing'" } });
     });
 
     it('forwards folder read errors for file paths', async () => {
         folderReader.mockRejectedValueOnce(Object.assign(new Error('Not a directory'), { code: 'ENOTDIR' }));
-        const response = await request(app).get('/folders').query({ path: 'sample.txt' });
+        const response = await requestApp(app).get('/folders').query({ path: 'sample.txt' });
         expect(response.status).toBe(500);
     });
 
     it('returns the last nonempty line from the current file', async () => {
         currentReader.mockResolvedValueOnce('Current\n// older entry\n// latest entry\n');
 
-        const response = await request(app).get('/current');
+        const response = await requestApp(app).get('/current');
 
         expect(response.body).toEqual({ data: '// latest entry' });
         expect(currentReader).toHaveBeenCalledWith(join(root, '.current'), 'utf8');
@@ -180,14 +180,14 @@ describe('files folders public API', () => {
     it('returns null when the current file is empty', async () => {
         currentReader.mockResolvedValueOnce(' \n\n');
 
-        const response = await request(app).get('/current');
+        const response = await requestApp(app).get('/current');
 
         expect(response.body).toEqual({ data: null });
     });
 
     it('returns null when the current file does not exist', async () => {
         currentReader.mockRejectedValueOnce(Object.assign(new Error('File not found'), { code: 'ENOENT' }));
-        const response = await request(app).get('/current');
+        const response = await requestApp(app).get('/current');
 
         expect(response.body).toEqual({ data: null });
     });
@@ -195,7 +195,7 @@ describe('files folders public API', () => {
     it('forwards current file read errors to Express', async () => {
         currentReader.mockRejectedValueOnce(Object.assign(new Error('Is a directory'), { code: 'EISDIR' }));
 
-        const response = await request(app).get('/current');
+        const response = await requestApp(app).get('/current');
 
         expect(response.status).toBe(500);
     });

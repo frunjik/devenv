@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import express from 'express';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 import { createGitDiffHandler } from '../src/lib/handlers/git-diff';
 
@@ -44,7 +44,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/diff');
+            const response = await requestApp(createApp(root, { gitCommitCwd: root })).get('/git/diff');
 
             expect(response.status).toBe(200);
             expect(response.body.data).toContain('diff --git a/unstaged.txt b/unstaged.txt');
@@ -75,7 +75,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/diff');
+            const response = await requestApp(createApp(root, { gitCommitCwd: root })).get('/git/diff');
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual({ data: '' });
@@ -93,7 +93,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/diff');
+            const response = await requestApp(createApp(root, { gitCommitCwd: root })).get('/git/diff');
 
             expect(response.status).toBe(500);
             expect(response.body.error.stderr.toLowerCase()).toContain('not a git repository');
@@ -111,7 +111,7 @@ describe('git diff public API', () => {
         process.env['NODE_ENV'] = 'production';
 
         try {
-            const response = await request(createApp(root)).get('/git/diff');
+            const response = await requestApp(createApp(root)).get('/git/diff');
             expect(response.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {
@@ -132,7 +132,7 @@ describe('git diff public API', () => {
         }));
         gitApp.use(handleError);
 
-        const response = await request(gitApp).get('/git/diff');
+        const response = await requestApp(gitApp).get('/git/diff');
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({

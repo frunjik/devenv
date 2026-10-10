@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp, type TestCommandEvent, type TestCommandExecutor } from '../src/public-api';
 import { forwardTestProcessOutput } from '../src/lib/handlers/test-runner';
 
@@ -45,7 +45,7 @@ describe('test runner public API', () => {
         testApp.use(handleError);
 
         try {
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.headers['content-type']).toContain('application/x-ndjson');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'stdout', data: 'client and server tests passed' },
@@ -79,7 +79,7 @@ describe('test runner public API', () => {
                 testCommandExecutor: execute,
                 testRunCacheDirectory: cacheDirectory,
             });
-            const runResponse = await request(testApp).post('/tests/run');
+            const runResponse = await requestApp(testApp).post('/tests/run');
             expect(runResponse.status).toBe(200);
             expect(runResponse.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'stdout', data: 'tests passed' },
@@ -87,7 +87,7 @@ describe('test runner public API', () => {
                 { type: 'complete', exitCode: 0 },
             ]);
 
-            const cachedResponse = await request(testApp).get('/tests/last');
+            const cachedResponse = await requestApp(testApp).get('/tests/last');
             expect(cachedResponse.status).toBe(200);
             expect(cachedResponse.body.data).toMatchObject({
                 exitCode: 0,
@@ -120,7 +120,7 @@ describe('test runner public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { testRunCacheDirectory: cacheDirectory }))
+            const response = await requestApp(createApp(root, { testRunCacheDirectory: cacheDirectory }))
                 .get('/tests/last');
             expect(response.body).toEqual({ data: null });
         } finally {
@@ -138,7 +138,7 @@ describe('test runner public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { testRunCacheDirectory: cacheDirectory }))
+            const response = await requestApp(createApp(root, { testRunCacheDirectory: cacheDirectory }))
                 .get('/tests/cache/status');
             expect(response.body).toEqual({
                 data: {
@@ -173,7 +173,7 @@ describe('test runner public API', () => {
         }));
 
         try {
-            const response = await request(createApp(root, { testRunCacheDirectory: cacheDirectory }))
+            const response = await requestApp(createApp(root, { testRunCacheDirectory: cacheDirectory }))
                 .get('/tests/cache/status');
             expect(response.body).toEqual({
                 data: {
@@ -209,9 +209,9 @@ describe('test runner public API', () => {
 
         try {
             const testApp = createApp(root, { testRunCacheDirectory: cacheDirectory });
-            const response = await request(testApp).get('/tests/cache/status');
+            const response = await requestApp(testApp).get('/tests/cache/status');
             expect(response.body.data).toMatchObject({ available: true, status: 'failed', exitCode: 1 });
-            const lastRun = await request(testApp).get('/tests/last');
+            const lastRun = await requestApp(testApp).get('/tests/last');
             expect(lastRun.body.data).toMatchObject({
                 exitCode: 1,
                 stdout: '',
@@ -242,7 +242,7 @@ describe('test runner public API', () => {
         }));
 
         try {
-            const response = await request(createApp(root, { testRunCacheDirectory: cacheDirectory }))
+            const response = await requestApp(createApp(root, { testRunCacheDirectory: cacheDirectory }))
                 .get('/tests/cache/status');
             expect(response.body.data).toMatchObject({ available: true, status: 'error', exitCode: null });
         } finally {
@@ -264,7 +264,7 @@ describe('test runner public API', () => {
         try {
             const testApp = createApp(root, { testRunCacheDirectory: cacheDirectory });
             testApp.use(handleError);
-            const response = await request(testApp).get('/tests/cache/status');
+            const response = await requestApp(testApp).get('/tests/cache/status');
             expect(response.status).toBe(500);
         } finally {
             if (originalNodeEnv === undefined) {
@@ -287,7 +287,7 @@ describe('test runner public API', () => {
         };
 
         try {
-            const response = await request(createApp(root, {
+            const response = await requestApp(createApp(root, {
                 testCommandExecutor: execute,
                 testRunCacheDirectory: cacheDirectory,
             }))
@@ -328,7 +328,7 @@ describe('test runner public API', () => {
                 testRunCacheDirectory: cacheDirectory,
             });
             testApp.use(handleError);
-            const runResponse = await request(testApp).post('/tests/run');
+            const runResponse = await requestApp(testApp).post('/tests/run');
             expect(runResponse.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'complete', exitCode: 0 },
                 expect.objectContaining({
@@ -342,7 +342,7 @@ describe('test runner public API', () => {
             await writeFile(join(corruptCacheDirectory, 'last-test-run.json'), '{invalid json');
             const corruptCacheApp = createApp(root, { testRunCacheDirectory: corruptCacheDirectory });
             corruptCacheApp.use(handleError);
-            const cachedResponse = await request(corruptCacheApp).get('/tests/last');
+            const cachedResponse = await requestApp(corruptCacheApp).get('/tests/last');
             expect(cachedResponse.status).toBe(500);
         } finally {
             if (originalNpmExecPath === undefined) {
@@ -366,7 +366,7 @@ describe('test runner public API', () => {
 
         try {
             const testApp = createApp(root);
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'stdout', data: 'captured stdout' },
                 { type: 'stderr', data: 'captured stderr' },
@@ -387,7 +387,7 @@ describe('test runner public API', () => {
 
         try {
             const testApp = createApp(root);
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             const events = response.text.split('\n').filter(Boolean).map(line => JSON.parse(line));
             const stderr = events
                 .filter((event): event is { type: 'stderr'; data: string } => event.type === 'stderr')
@@ -413,7 +413,7 @@ describe('test runner public API', () => {
 
         try {
             const testApp = createApp(root);
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'stdout', data: 'test failure' },
                 { type: 'complete', exitCode: 2 },
@@ -435,7 +435,7 @@ describe('test runner public API', () => {
 
         try {
             const testApp = createApp(root);
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             const events = response.text.split('\n').filter(Boolean).map(line => JSON.parse(line));
             expect(events).toHaveLength(1);
             expect(events[0]).toMatchObject({ type: 'error' });
@@ -458,7 +458,7 @@ describe('test runner public API', () => {
 
         try {
             const testApp = createApp(root);
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'complete', exitCode: 1 },
             ]);
@@ -496,7 +496,7 @@ describe('test runner public API', () => {
         testApp.use(handleError);
 
         try {
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'stdout', data: 'test output' },
                 { type: 'stderr', data: 'failure details' },
@@ -521,7 +521,7 @@ describe('test runner public API', () => {
         testApp.use(handleError);
 
         try {
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.status).toBe(200);
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'error', message: 'npm could not start' },
@@ -541,11 +541,11 @@ describe('test runner public API', () => {
 
         try {
             const productionApp = createApp(root);
-            const response = await request(productionApp).post('/tests/run');
+            const response = await requestApp(productionApp).post('/tests/run');
             expect(response.status).toBe(404);
-            const cachedResponse = await request(productionApp).get('/tests/last');
+            const cachedResponse = await requestApp(productionApp).get('/tests/last');
             expect(cachedResponse.status).toBe(404);
-            const cacheStatusResponse = await request(productionApp).get('/tests/cache/status');
+            const cacheStatusResponse = await requestApp(productionApp).get('/tests/cache/status');
             expect(cacheStatusResponse.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {
@@ -563,7 +563,7 @@ describe('test runner public API', () => {
         try {
             const testApp = createApp(root);
             testApp.use(handleError);
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.status).toBe(500);
         } finally {
             if (originalNpmExecPath !== undefined) {
@@ -590,11 +590,11 @@ describe('test runner public API', () => {
         let firstRequest = Promise.resolve();
 
         try {
-            firstRequest = request(testApp).post('/tests/run').then((response) => {
+            firstRequest = requestApp(testApp).post('/tests/run').then((response) => {
                 firstStatus = response.status;
             });
             await runStarted;
-            const secondRequest = request(testApp).post('/tests/run');
+            const secondRequest = requestApp(testApp).post('/tests/run');
             const secondResponse = await secondRequest;
             expect(secondResponse.status).toBe(409);
         } finally {
@@ -619,7 +619,7 @@ describe('test runner public API', () => {
         const testApp = createApp(root, { testCommandExecutor: execute });
 
         try {
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'error', message: 'process could not start' },
             ]);
@@ -641,7 +641,7 @@ describe('test runner public API', () => {
         const testApp = createApp(root, { testCommandExecutor: execute });
 
         try {
-            const response = await request(testApp).post('/tests/run');
+            const response = await requestApp(testApp).post('/tests/run');
             expect(response.text.split('\n').filter(Boolean).map(line => JSON.parse(line))).toEqual([
                 { type: 'error', message: 'Unable to start test process' },
             ]);

@@ -992,17 +992,17 @@
       "successCondition": "Reusable filesystem and HTTP doubles exist, are usable from both client and server Jest suites, have their own tests at 100% coverage, and are adopted by at least one existing client test and one existing server test that previously used ad hoc mocks.",
       "baseline": "On 2026-10-10 no shared test-double modules existed (no *mock*/*fake*/*stub*/*double* files under projects). HTTP: 19 client spec files use Angular HttpTestingController and 14 server spec files match HTTP-test patterns (HttpTestingController, fetch, supertest or request(app)). Filesystem: 13 server spec files define ad hoc fs mocks (jest.fn readFileSync/writeFileSync/existsSync/readdirSync/mkdirSync or jest.mock of fs). Four separate filesystem boundary interfaces exist: WorkflowTodoExportFileSystem, WorkPlanExportFileSystem, GlossaryExportFileSystem and DevEnvCloneFileSystem. Counts come from repository text searches and may include non-double matches.",
       "startedAt": "2026-10-10T15:15:10+02:00",
-      "completedAt": null,
+      "completedAt": "2026-10-10T15:30:40+02:00",
       "measures": [
         {
           "metricId": "goal-success-clarity",
-          "value": "Outcome, beneficiary and success condition recorded before implementation. Boundary contract names, and whether Angular HttpTestingController already counts as an acceptable reusable client HTTP double, remain open.",
-          "evidence": "User chose Measured when starting WorkTask reusable-filesystem-http-test-doubles; WorkPlan registry and this baseline."
+          "value": "Outcome, beneficiary and success condition recorded before implementation. Open points were resolved during the task: Angular HttpTestingController counts as the reusable client HTTP double, and server HTTP work targets removing supertest's localhost listener. Contract and helper names (TextFileSystem, createMemoryTextFileSystem, requestApp) remain provisional.",
+          "evidence": "User chose Measured when starting WorkTask reusable-filesystem-http-test-doubles; user answers to the scoping questions recorded in the session."
         },
         {
           "metricId": "decision-latency",
-          "value": null,
-          "evidence": null
+          "value": "Five user decisions (measure the task, filesystem-first scope, HTTP scope, in-house HTTP fakes over a new dependency, keep the supertest devDependency for now), each answered at the prompt without blocking work.",
+          "evidence": "Session ask_user exchanges between startedAt and completedAt."
         },
         {
           "metricId": "delivery-flow-and-effort",
@@ -1011,8 +1011,8 @@
         },
         {
           "metricId": "outcome-and-quality",
-          "value": "Partial (filesystem slice): shared TextFileSystem contract exported from @shared replaces the three duplicate script interfaces; runtime-neutral createMemoryTextFileSystem fake in projects/shared/src/testing is exercised by server and client Jest suites at 100% statement/branch/function/line coverage and adopted by three existing server specs (work-plans, workflow-todo-json, glossary-markdown). Not yet met: HTTP double, adoption by an existing client spec, DevEnvCloneFileSystem and the 13 jest.mock(fs) server specs; supertest localhost listeners remain.",
-          "evidence": "Server Jest 826/826 and client Jest 384/384 passing; changed modules at 100% coverage; shared build and strict tsc of changed scripts pass; git diff --check clean."
+          "value": "Met for the agreed scope. Filesystem: TextFileSystem contract exported from @shared replaces three duplicate script interfaces; runtime-neutral createMemoryTextFileSystem fake is exercised by server and client Jest suites and adopted by three existing server specs. HTTP: client keeps Angular HttpTestingController; new server requestApp helper drives Express in-process with no listener and replaced supertest in all 14 server specs. Both doubles have their own tests at 100% statement/branch/function/line coverage. Not addressed: DevEnvCloneFileSystem, the 13 jest.mock(fs) server specs, real port binding in server-startup startServer tests, real temp-directory writes in some server specs, and removal of the now-unused supertest devDependency.",
+          "evidence": "Client Jest 826/826 and server Jest 390/390 passing; changed modules at 100% coverage; shared build, strict tsc of changed scripts and tsc -p projects/server/tsconfig.spec.json pass; git diff --check clean."
         },
         {
           "metricId": "devenv-process-overhead",

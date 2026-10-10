@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import express from 'express';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 import { createGitLogHandler } from '../src/lib/handlers/git-log';
 
@@ -35,7 +35,7 @@ describe('git log public API', () => {
 
         try {
             const gitApp = createApp(root, { gitCommitCwd: root });
-            const response = await request(gitApp).get('/git/log');
+            const response = await requestApp(gitApp).get('/git/log');
             expect(response.status).toBe(500);
             expect(response.body.error.stderr).toContain('not a git repository');
         } finally {
@@ -55,7 +55,7 @@ describe('git log public API', () => {
         })));
         gitApp.use(handleError);
 
-        const response = await request(gitApp).get('/git/log');
+        const response = await requestApp(gitApp).get('/git/log');
 
         expect(response.status).toBe(500);
         expect(response.body.error.message).toBe('Git returned an invalid log result');
@@ -67,7 +67,7 @@ describe('git log public API', () => {
 
         try {
             const productionApp = createApp(root);
-            const response = await request(productionApp).get('/git/log');
+            const response = await requestApp(productionApp).get('/git/log');
             expect(response.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {
@@ -97,7 +97,7 @@ describe('git log public API', () => {
 
         try {
             const gitApp = createApp(root, { gitCommitCwd: gitRoot });
-            const response = await request(gitApp).get('/git/log');
+            const response = await requestApp(gitApp).get('/git/log');
             expect(response.status).toBe(200);
             expect(response.body.data).toHaveLength(1);
             expect(response.body.data[0]).toMatchObject({
@@ -124,7 +124,7 @@ describe('git log public API', () => {
 
         try {
             const gitApp = createApp(root, { gitCommitCwd: gitRoot });
-            const response = await request(gitApp).get('/git/log');
+            const response = await requestApp(gitApp).get('/git/log');
             expect(response.body).toEqual({ data: [] });
         } finally {
             if (originalNodeEnv === undefined) {

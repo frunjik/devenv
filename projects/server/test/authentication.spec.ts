@@ -3,7 +3,7 @@ import fs from 'fs';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import {
     createApp,
     startServer,
@@ -40,7 +40,7 @@ describe('authentication public API', () => {
 
         try {
             const developmentApp = createApp(root);
-            const response = await request(developmentApp).get('/files').query({ path: 'sample.txt' });
+            const response = await requestApp(developmentApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual({ data: 'initial' });
@@ -67,7 +67,7 @@ describe('authentication public API', () => {
 
         try {
             const authenticatedApp = createApp(root, { authenticationService });
-            const response = await request(authenticatedApp)
+            const response = await requestApp(authenticatedApp)
                 .get('/files')
                 .set('Authorization', 'Bearer valid-token')
                 .query({ path: 'sample.txt' });
@@ -94,7 +94,7 @@ describe('authentication public API', () => {
 
         try {
             const authenticatedApp = createApp(root, { authenticationService });
-            const response = await request(authenticatedApp).get('/files').query({ path: 'sample.txt' });
+            const response = await requestApp(authenticatedApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(401);
             expect(response.body).toEqual({ error: { message: 'Authentication required' } });
@@ -120,7 +120,7 @@ describe('authentication public API', () => {
         try {
             const authenticatedApp = createApp(root, { authenticationService });
             authenticatedApp.use(((_error, _request, response, _next) => response.status(503).end()) as ErrorRequestHandler);
-            const response = await request(authenticatedApp).get('/files').query({ path: 'sample.txt' });
+            const response = await requestApp(authenticatedApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(503);
             expect(fileReader).not.toHaveBeenCalled();
@@ -139,7 +139,7 @@ describe('authentication public API', () => {
 
         try {
             const productionApp = createApp(root);
-            const response = await request(productionApp).get('/files').query({ path: 'sample.txt' });
+            const response = await requestApp(productionApp).get('/files').query({ path: 'sample.txt' });
 
             expect(response.status).toBe(200);
             expect(response.body).toEqual({ data: 'initial' });
@@ -172,7 +172,7 @@ describe('authentication public API', () => {
 
         try {
             await startServer(root, 3000, listener, authenticationService);
-            const response = await request(startedApp!)
+            const response = await requestApp(startedApp!)
                 .get('/files')
                 .set('Authorization', 'Bearer startup-token')
                 .query({ path: 'sample.txt' });

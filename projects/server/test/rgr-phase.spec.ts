@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 
 jest.mock('node:fs/promises', () => {
@@ -30,7 +30,7 @@ describe('RGR phase', () => {
     it('returns the last recorded phase from the phase file', async () => {
         fileReader.mockResolvedValue('red\ngreen\n');
 
-        const response = await request(app).get('/rgr-phase');
+        const response = await requestApp(app).get('/rgr-phase');
 
         expect(response.body).toEqual({ data: 'green' });
         expect(fileReader).toHaveBeenCalledWith(join(root, '.rgr-phase'), 'utf8');
@@ -39,7 +39,7 @@ describe('RGR phase', () => {
     it('returns null for an unrecognized phase value', async () => {
         fileReader.mockResolvedValue('purple');
 
-        const response = await request(app).get('/rgr-phase');
+        const response = await requestApp(app).get('/rgr-phase');
 
         expect(response.body).toEqual({ data: null });
     });
@@ -47,13 +47,13 @@ describe('RGR phase', () => {
     it('returns null when the phase file is empty', async () => {
         fileReader.mockResolvedValue(' \n\n');
 
-        const response = await request(app).get('/rgr-phase');
+        const response = await requestApp(app).get('/rgr-phase');
 
         expect(response.body).toEqual({ data: null });
     });
 
     it('returns null when the phase file does not exist', async () => {
-        const response = await request(app).get('/rgr-phase');
+        const response = await requestApp(app).get('/rgr-phase');
 
         expect(response.body).toEqual({ data: null });
     });
@@ -61,7 +61,7 @@ describe('RGR phase', () => {
     it('forwards phase file read errors to Express', async () => {
         fileReader.mockRejectedValue(Object.assign(new Error('Not a file'), { code: 'EISDIR' }));
 
-        const response = await request(app).get('/rgr-phase');
+        const response = await requestApp(app).get('/rgr-phase');
 
         expect(response.status).toBe(500);
     });
@@ -69,7 +69,7 @@ describe('RGR phase', () => {
     it('accepts refactor as a recorded phase', async () => {
         fileReader.mockResolvedValue('refactor');
 
-        const response = await request(app).get('/rgr-phase');
+        const response = await requestApp(app).get('/rgr-phase');
 
         expect(response.body).toEqual({ data: 'refactor' });
     });

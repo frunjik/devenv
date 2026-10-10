@@ -16,7 +16,7 @@ Inventory existing test doubles and reuse or add suitable fakes/mocks for filesy
 
 #### WorkTask: Create or reuse filesystem and HTTP test doubles
 
-**Status:** Active
+**Status:** Completed
 
 **Measurement:** Measured
 

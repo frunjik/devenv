@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import express from 'express';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 import { createGitStatusHandler } from '../src/lib/handlers/git-status';
 
@@ -48,7 +48,7 @@ describe('git status public API', () => {
 
         try {
             const gitApp = createApp(root, { gitCommitCwd: gitRoot });
-            const response = await request(gitApp).get('/git/status');
+            const response = await requestApp(gitApp).get('/git/status');
 
             expect(response.status).toBe(200);
             expect(response.body.data).toMatchObject({
@@ -109,7 +109,7 @@ describe('git status public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { gitCommitCwd: gitRoot })).get('/git/status');
+            const response = await requestApp(createApp(root, { gitCommitCwd: gitRoot })).get('/git/status');
             expect(response.status).toBe(200);
             expect(response.body.data).toEqual({
                 branch: expect.any(String),
@@ -132,7 +132,7 @@ describe('git status public API', () => {
         process.env['NODE_ENV'] = 'test';
 
         try {
-            const response = await request(createApp(root, { gitCommitCwd: root })).get('/git/status');
+            const response = await requestApp(createApp(root, { gitCommitCwd: root })).get('/git/status');
             expect(response.status).toBe(500);
             expect(response.body.error.stderr).toContain('not a git repository');
         } finally {
@@ -152,7 +152,7 @@ describe('git status public API', () => {
         })));
         gitApp.use(handleError);
 
-        const response = await request(gitApp).get('/git/status');
+        const response = await requestApp(gitApp).get('/git/status');
 
         expect(response.status).toBe(500);
         expect(response.body.error.message).toBe('Git returned an invalid status result');
@@ -181,7 +181,7 @@ describe('git status public API', () => {
             stderr: '',
         })));
 
-        const response = await request(gitApp).get('/git/status');
+        const response = await requestApp(gitApp).get('/git/status');
 
         expect(response.status).toBe(200);
         expect(response.body.data).toMatchObject({
@@ -215,7 +215,7 @@ describe('git status public API', () => {
         for (const { stdout, branch, ahead, behind } of outputs) {
             const gitApp = express();
             gitApp.get('/git/status', createGitStatusHandler(root, async () => ({ stdout, stderr: '' })));
-            const response = await request(gitApp).get('/git/status');
+            const response = await requestApp(gitApp).get('/git/status');
 
             expect(response.status).toBe(200);
             expect(response.body.data).toMatchObject({ branch, ahead, behind });
@@ -228,7 +228,7 @@ describe('git status public API', () => {
             gitApp.get('/git/status', createGitStatusHandler(root, async () => ({ stdout, stderr: '' })));
             gitApp.use(handleError);
 
-            const response = await request(gitApp).get('/git/status');
+            const response = await requestApp(gitApp).get('/git/status');
 
             expect(response.status).toBe(500);
             expect(response.body.error.message).toBe('Git returned an invalid status result');
@@ -241,7 +241,7 @@ describe('git status public API', () => {
             throw Object.assign(new Error('git status failed'), { stdout: 'out', stderr: 'err' });
         }));
 
-        const response = await request(gitApp).get('/git/status');
+        const response = await requestApp(gitApp).get('/git/status');
 
         expect(response.status).toBe(500);
         expect(response.body.error).toEqual({
@@ -256,7 +256,7 @@ describe('git status public API', () => {
         process.env['NODE_ENV'] = 'production';
 
         try {
-            const response = await request(createApp(root)).get('/git/status');
+            const response = await requestApp(createApp(root)).get('/git/status');
             expect(response.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {

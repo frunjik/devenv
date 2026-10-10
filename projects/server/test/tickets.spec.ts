@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import type { NewProblemTicket } from '@shared';
 import { createApp } from '../src/public-api';
 import { InMemoryTicketStore } from '../src/lib/storage/in-memory-ticket-store';
@@ -25,8 +25,8 @@ describe('ticket routes', () => {
     it('creates a ticket as open, version 1, and lists it', async () => {
         const app = appWithStore();
 
-        const created = await request(app).post('/tickets').send({ ticket: newTicket, dataKind: 'real' });
-        const listed = await request(app).get('/tickets');
+        const created = await requestApp(app).post('/tickets').send({ ticket: newTicket, dataKind: 'real' });
+        const listed = await requestApp(app).get('/tickets');
 
         expect(created.status).toBe(201);
         expect(created.body.data).toMatchObject({ id: 'T-1', status: { state: 'open' }, version: 1, dataKind: 'real' });
@@ -34,7 +34,7 @@ describe('ticket routes', () => {
     });
 
     it('defaults the data kind to sample', async () => {
-        const created = await request(appWithStore()).post('/tickets').send({ ticket: newTicket });
+        const created = await requestApp(appWithStore()).post('/tickets').send({ ticket: newTicket });
 
         expect(created.body.data.dataKind).toBe('sample');
     });
@@ -42,8 +42,8 @@ describe('ticket routes', () => {
     it('rejects a create request without a ticket or with an unknown data kind', async () => {
         const app = appWithStore();
 
-        const missing = await request(app).post('/tickets').send({});
-        const badKind = await request(app).post('/tickets').send({ ticket: newTicket, dataKind: 'fake' });
+        const missing = await requestApp(app).post('/tickets').send({});
+        const badKind = await requestApp(app).post('/tickets').send({ ticket: newTicket, dataKind: 'fake' });
 
         expect(missing.status).toBe(400);
         expect(badKind.status).toBe(400);
@@ -53,15 +53,15 @@ describe('ticket routes', () => {
         const app = appWithStore();
         const estimate = { impact: 4, urgency: 5, effort: 2 };
 
-        const valid = await request(app).post('/tickets').send({ ticket: { ...newTicket, estimate } });
-        const incomplete = await request(app).post('/tickets').send({ ticket: { ...newTicket, estimate: { impact: 4 } } });
-        const outOfRange = await request(app)
+        const valid = await requestApp(app).post('/tickets').send({ ticket: { ...newTicket, estimate } });
+        const incomplete = await requestApp(app).post('/tickets').send({ ticket: { ...newTicket, estimate: { impact: 4 } } });
+        const outOfRange = await requestApp(app)
             .post('/tickets')
             .send({ ticket: { ...newTicket, estimate: { ...estimate, effort: 6 } } });
-        const fractional = await request(app)
+        const fractional = await requestApp(app)
             .post('/tickets')
             .send({ ticket: { ...newTicket, estimate: { ...estimate, effort: 2.5 } } });
-        const notAnObject = await request(app).post('/tickets').send({ ticket: { ...newTicket, estimate: 3 } });
+        const notAnObject = await requestApp(app).post('/tickets').send({ ticket: { ...newTicket, estimate: 3 } });
 
         expect(valid.status).toBe(201);
         expect(valid.body.data.estimate).toEqual(estimate);
@@ -70,15 +70,15 @@ describe('ticket routes', () => {
 
     it('creates a ticket that depends on existing tickets, and rejects one that depends on an unknown id', async () => {
         const app = appWithStore();
-        const original = await request(app).post('/tickets').send({ ticket: newTicket });
+        const original = await requestApp(app).post('/tickets').send({ ticket: newTicket });
 
-        const valid = await request(app)
+        const valid = await requestApp(app)
             .post('/tickets')
             .send({ ticket: { ...newTicket, dependsOnTicketIds: [original.body.data.id] } });
-        const unknown = await request(app)
+        const unknown = await requestApp(app)
             .post('/tickets')
             .send({ ticket: { ...newTicket, dependsOnTicketIds: ['missing'] } });
-        const notAnArray = await request(app)
+        const notAnArray = await requestApp(app)
             .post('/tickets')
             .send({ ticket: { ...newTicket, dependsOnTicketIds: 'T-1' } });
 
@@ -91,12 +91,12 @@ describe('ticket routes', () => {
 
     it('changes a ticket and records the server-known actor in the history', async () => {
         const app = appWithStore();
-        await request(app).post('/tickets').send({ ticket: newTicket });
+        await requestApp(app).post('/tickets').send({ ticket: newTicket });
 
-        const changed = await request(app)
+        const changed = await requestApp(app)
             .post('/tickets/T-1/changes')
             .send({ command: { kind: 'assign', assigneeId: 'user-2' }, expectedVersion: 1 });
-        const history = await request(app).get('/tickets/T-1/history');
+        const history = await requestApp(app).get('/tickets/T-1/history');
 
         expect(changed.status).toBe(200);
         expect(changed.body.data.ticket).toMatchObject({ version: 2, status: { state: 'assigned', assigneeId: 'user-2' } });
@@ -110,26 +110,26 @@ describe('ticket routes', () => {
             ticketStore,
             authenticationService: { authenticate: async () => ({ id: 'user-9', name: 'Grace' }) },
         });
-        await request(app).post('/tickets').send({ ticket: newTicket });
+        await requestApp(app).post('/tickets').send({ ticket: newTicket });
 
-        await request(app).post('/tickets/T-1/changes')
+        await requestApp(app).post('/tickets/T-1/changes')
             .send({ command: { kind: 'assign', assigneeId: 'user-2' }, expectedVersion: 1 });
-        const history = await request(app).get('/tickets/T-1/history');
+        const history = await requestApp(app).get('/tickets/T-1/history');
 
         expect(history.body.data[0].actor).toEqual({ id: 'user-9', name: 'Grace' });
     });
 
     it('answers 404, 409 and 422 for unknown, stale and refused changes', async () => {
         const app = appWithStore();
-        await request(app).post('/tickets').send({ ticket: newTicket });
-        await request(app).post('/tickets/T-1/changes')
+        await requestApp(app).post('/tickets').send({ ticket: newTicket });
+        await requestApp(app).post('/tickets/T-1/changes')
             .send({ command: { kind: 'assign', assigneeId: 'user-2' }, expectedVersion: 1 });
 
-        const unknown = await request(app).post('/tickets/nope/changes')
+        const unknown = await requestApp(app).post('/tickets/nope/changes')
             .send({ command: { kind: 'resolve' }, expectedVersion: 1 });
-        const stale = await request(app).post('/tickets/T-1/changes')
+        const stale = await requestApp(app).post('/tickets/T-1/changes')
             .send({ command: { kind: 'resolve' }, expectedVersion: 1 });
-        const refused = await request(app).post('/tickets/T-1/changes')
+        const refused = await requestApp(app).post('/tickets/T-1/changes')
             .send({ command: { kind: 'close' }, expectedVersion: 2 });
 
         expect(unknown.status).toBe(404);
@@ -142,8 +142,8 @@ describe('ticket routes', () => {
     it('rejects a malformed change request', async () => {
         const app = appWithStore();
 
-        const noCommand = await request(app).post('/tickets/T-1/changes').send({ expectedVersion: 1 });
-        const noVersion = await request(app).post('/tickets/T-1/changes').send({ command: { kind: 'resolve' } });
+        const noCommand = await requestApp(app).post('/tickets/T-1/changes').send({ expectedVersion: 1 });
+        const noVersion = await requestApp(app).post('/tickets/T-1/changes').send({ command: { kind: 'resolve' } });
 
         expect(noCommand.status).toBe(400);
         expect(noVersion.status).toBe(400);
@@ -160,10 +160,10 @@ describe('ticket routes', () => {
 
         it('edits the content, bumps the version, and shows the edit in the history', async () => {
             const app = appWithStore();
-            await request(app).post('/tickets').send({ ticket: newTicket });
+            await requestApp(app).post('/tickets').send({ ticket: newTicket });
 
-            const response = await request(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
-            const history = await request(app).get('/tickets/T-1/history');
+            const response = await requestApp(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
+            const history = await requestApp(app).get('/tickets/T-1/history');
 
             expect(response.status).toBe(200);
             expect(response.body.data.ticket).toMatchObject({ ...edited, version: 2 });
@@ -178,12 +178,12 @@ describe('ticket routes', () => {
 
         it('answers 404, 409 and 422 for unknown, stale and refused edits', async () => {
             const app = appWithStore();
-            await request(app).post('/tickets').send({ ticket: newTicket });
-            await request(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
+            await requestApp(app).post('/tickets').send({ ticket: newTicket });
+            await requestApp(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
 
-            const unknown = await request(app).post('/tickets/nope/edits').send({ content: edited, expectedVersion: 1 });
-            const stale = await request(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
-            const refused = await request(app)
+            const unknown = await requestApp(app).post('/tickets/nope/edits').send({ content: edited, expectedVersion: 1 });
+            const stale = await requestApp(app).post('/tickets/T-1/edits').send({ content: edited, expectedVersion: 1 });
+            const refused = await requestApp(app)
                 .post('/tickets/T-1/edits')
                 .send({ content: { ...edited, title: ' ' }, expectedVersion: 2 });
 
@@ -196,7 +196,7 @@ describe('ticket routes', () => {
 
         it('rejects malformed edits', async () => {
             const app = appWithStore();
-            const send = (body: unknown) => request(app).post('/tickets/T-1/edits').send(body as object);
+            const send = (body: unknown) => requestApp(app).post('/tickets/T-1/edits').send(body as object);
 
             const responses = await Promise.all([
                 send({ expectedVersion: 1 }),
@@ -207,7 +207,7 @@ describe('ticket routes', () => {
                 send({ content: { ...edited, scope: { level: 'galaxy', label: 'x' } }, expectedVersion: 1 }),
                 send({ content: { ...edited, scope: { level: 'system' } }, expectedVersion: 1 }),
                 send({ content: { ...edited, estimate: { impact: 9, urgency: 1, effort: 1 } }, expectedVersion: 1 }),
-                request(app).post('/tickets/T-1/edits'),
+                requestApp(app).post('/tickets/T-1/edits'),
             ]);
 
             expect(responses.map(response => response.status)).toEqual([400, 400, 400, 400, 400, 400, 400, 400, 400]);
@@ -216,7 +216,7 @@ describe('ticket routes', () => {
     it('uses its own in-memory store when none is supplied', async () => {
         const app = createApp('./');
 
-        const listed = await request(app).get('/tickets');
+        const listed = await requestApp(app).get('/tickets');
 
         expect(listed.status).toBe(200);
         expect(listed.body.data).toEqual([]);
@@ -227,10 +227,10 @@ describe('ticket routes', () => {
         process.env['NODE_ENV'] = 'production';
         try {
             const app = appWithStore();
-            await request(app).post('/tickets').send({ ticket: newTicket });
-            await request(app).post('/tickets/T-1/changes')
+            await requestApp(app).post('/tickets').send({ ticket: newTicket });
+            await requestApp(app).post('/tickets/T-1/changes')
                 .send({ command: { kind: 'assign', assigneeId: 'user-2' }, expectedVersion: 1 });
-            const history = await request(app).get('/tickets/T-1/history');
+            const history = await requestApp(app).get('/tickets/T-1/history');
 
             expect(history.body.data[0].actor).toEqual({ id: 'anonymous' });
         } finally {
@@ -245,8 +245,8 @@ describe('ticket routes', () => {
     it('treats a request without a body as malformed', async () => {
         const app = appWithStore();
 
-        const create = await request(app).post('/tickets');
-        const change = await request(app).post('/tickets/T-1/changes');
+        const create = await requestApp(app).post('/tickets');
+        const change = await requestApp(app).post('/tickets/T-1/changes');
 
         expect(create.status).toBe(400);
         expect(change.status).toBe(400);
@@ -268,11 +268,11 @@ describe('ticket routes', () => {
         }) as ErrorRequestHandler);
 
         const responses = await Promise.all([
-            request(app).get('/tickets'),
-            request(app).post('/tickets').send({ ticket: newTicket }),
-            request(app).post('/tickets/T-1/changes').send({ command: { kind: 'resolve' }, expectedVersion: 1 }),
-            request(app).post('/tickets/T-1/edits').send({ content: newTicket, expectedVersion: 1 }),
-            request(app).get('/tickets/T-1/history'),
+            requestApp(app).get('/tickets'),
+            requestApp(app).post('/tickets').send({ ticket: newTicket }),
+            requestApp(app).post('/tickets/T-1/changes').send({ command: { kind: 'resolve' }, expectedVersion: 1 }),
+            requestApp(app).post('/tickets/T-1/edits').send({ content: newTicket, expectedVersion: 1 }),
+            requestApp(app).get('/tickets/T-1/history'),
         ]);
 
         expect(responses.map(response => response.status)).toEqual([500, 500, 500, 500, 500]);

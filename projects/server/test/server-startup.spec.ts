@@ -3,7 +3,7 @@ import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createServer } from 'node:http';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp, startServer, type ServerListener } from '../src/public-api';
 
 const mockFiles = new Map<string, string>();
@@ -71,7 +71,7 @@ describe('server startup public API', () => {
     });
 
     it('exposes the server version', async () => {
-        const response = await request(app).get('/version');
+        const response = await requestApp(app).get('/version');
 
         expect(response.status).toBe(200);
         expect(response.body.data).toMatch(/^\d+\.\d+\.\d+/);
@@ -100,12 +100,12 @@ describe('server startup public API', () => {
         it('keeps tickets in a file under the root by default', async () => {
             const started = await startedApp();
 
-            const created = await request(started).post('/tickets').send({ ticket });
+            const created = await requestApp(started).post('/tickets').send({ ticket });
             expect(created.status).toBe(201);
 
             const saved = JSON.parse(await readFile(join(root, '.tickets.json'), 'utf8'));
             expect(saved.tickets).toHaveLength(1);
-            expect((await request(await startedApp()).get('/tickets')).body.data).toEqual([created.body.data]);
+            expect((await requestApp(await startedApp()).get('/tickets')).body.data).toEqual([created.body.data]);
             expect(directoryMaker).toHaveBeenCalledWith(root, { recursive: true });
             expect(fileReader).toHaveBeenCalledWith(join(root, '.tickets.json'), 'utf8');
             expect(fileWriter).toHaveBeenCalledTimes(1);
@@ -119,7 +119,7 @@ describe('server startup public API', () => {
             const original = process.env['TICKETS_FILE'];
             process.env['TICKETS_FILE'] = join(root, 'elsewhere.json');
             try {
-                const created = await request(await startedApp()).post('/tickets').send({ ticket });
+                const created = await requestApp(await startedApp()).post('/tickets').send({ ticket });
                 expect(created.status).toBe(201);
 
                 expect(JSON.parse(await readFile(join(root, 'elsewhere.json'), 'utf8')).tickets).toHaveLength(1);

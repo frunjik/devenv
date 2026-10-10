@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import express from 'express';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 import { createGitCommitHandler } from '../src/lib/handlers/git-commit';
 
@@ -46,7 +46,7 @@ describe('git commit public API', () => {
 
         try {
             const gitApp = createApp(root, { gitCommitCwd: gitRoot });
-            const response = await request(gitApp)
+            const response = await requestApp(gitApp)
                 .post('/git/commit')
                 .send({ message: 'Commit all worktree changes' });
             expect(response.status).toBe(200);
@@ -75,7 +75,7 @@ describe('git commit public API', () => {
 
         try {
             const gitApp = createApp(root);
-            const response = await request(gitApp).post('/git/commit').send({ message: '  ' });
+            const response = await requestApp(gitApp).post('/git/commit').send({ message: '  ' });
             expect(response.status).toBe(400);
             expect(response.body.error.message).toContain('commit message');
         } finally {
@@ -93,7 +93,7 @@ describe('git commit public API', () => {
 
         try {
             const gitApp = createApp(root);
-            const response = await request(gitApp).post('/git/commit').send({ message: 123 });
+            const response = await requestApp(gitApp).post('/git/commit').send({ message: 123 });
             expect(response.status).toBe(400);
         } finally {
             if (originalNodeEnv === undefined) {
@@ -110,7 +110,7 @@ describe('git commit public API', () => {
 
         try {
             const gitApp = createApp(root);
-            const response = await request(gitApp).post('/git/commit').send({ message: 'x'.repeat(5001) });
+            const response = await requestApp(gitApp).post('/git/commit').send({ message: 'x'.repeat(5001) });
             expect(response.status).toBe(400);
         } finally {
             if (originalNodeEnv === undefined) {
@@ -133,7 +133,7 @@ describe('git commit public API', () => {
 
         try {
             const gitApp = createApp(root, { gitCommitCwd: root });
-            const response = await request(gitApp)
+            const response = await requestApp(gitApp)
                 .post('/git/commit')
                 .send({ message: 'Nothing to commit' });
             expect(response.status).toBe(500);
@@ -163,12 +163,12 @@ describe('git commit public API', () => {
             });
         }));
         let firstStatus: number | undefined;
-        const firstRequest = request(app).post('/git/commit').send({ message: 'first' })
+        const firstRequest = requestApp(app).post('/git/commit').send({ message: 'first' })
             .then(response => firstStatus = response.status);
 
         try {
             await commitStarted;
-            const secondResponse = await request(app).post('/git/commit').send({ message: 'second' });
+            const secondResponse = await requestApp(app).post('/git/commit').send({ message: 'second' });
             expect(secondResponse.status).toBe(409);
         } finally {
             finishCommit?.();
@@ -184,7 +184,7 @@ describe('git commit public API', () => {
 
         try {
             const productionApp = createApp(root);
-            const response = await request(productionApp).post('/git/commit').send({ message: 'not committed' });
+            const response = await requestApp(productionApp).post('/git/commit').send({ message: 'not committed' });
             expect(response.status).toBe(404);
         } finally {
             if (originalNodeEnv === undefined) {

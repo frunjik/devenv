@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 
 jest.mock('node:fs/promises', () => {
@@ -54,7 +54,7 @@ describe('system plan route', () => {
             'Record the alternative for reconsideration.',
         ].join('\n'));
 
-        const response = await request(createApp(root)).get('/system-plan');
+        const response = await requestApp(createApp(root)).get('/system-plan');
 
         expect(fileReader).toHaveBeenCalledWith(join(root, 'knowledge', 'domain-models', 'problem-inquiry-system', 'concerns.md'), 'utf8');
         expect(response.status).toBe(200);
@@ -108,7 +108,7 @@ describe('system plan route', () => {
     it('returns an explicit server error for a malformed register', async () => {
         fileReader.mockResolvedValue('No concern entries');
 
-        const response = await request(createApp(process.cwd())).get('/system-plan');
+        const response = await requestApp(createApp(process.cwd())).get('/system-plan');
 
         expect(response.status).toBe(500);
     });
@@ -126,7 +126,7 @@ describe('system plan route', () => {
 
         for (const entry of malformedEntries) {
             fileReader.mockResolvedValue(entry);
-            const response = await request(createApp(process.cwd())).get('/system-plan');
+            const response = await requestApp(createApp(process.cwd())).get('/system-plan');
             expect(response.status).toBe(500);
         }
     });
@@ -134,13 +134,13 @@ describe('system plan route', () => {
     it('reports filesystem read failures instead of returning an empty plan', async () => {
         fileReader.mockRejectedValue(new Error('Permission denied'));
 
-        const response = await request(createApp(process.cwd())).get('/system-plan');
+        const response = await requestApp(createApp(process.cwd())).get('/system-plan');
 
         expect(response.status).toBe(500);
     });
 
     it('loads the repository concern register without a duplicated dashboard snapshot', async () => {
-        const response = await request(createApp(process.cwd())).get('/system-plan');
+        const response = await requestApp(createApp(process.cwd())).get('/system-plan');
 
         expect(response.status).toBe(200);
         expect(response.body.data.find((concern: { id: string }) => concern.id === 'SC-021'))

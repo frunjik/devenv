@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 
 jest.mock('node:fs/promises', () => {
@@ -31,25 +31,25 @@ describe('glossary API', () => {
 
     it('returns validated structured entries from the authoritative JSON file', async () => {
         fileReader.mockResolvedValueOnce(JSON.stringify(glossary));
-        expect((await request(app).get('/glossary')).body).toEqual({ data: glossary });
+        expect((await requestApp(app).get('/glossary')).body).toEqual({ data: glossary });
         expect(fileReader).toHaveBeenCalledTimes(1);
         expect(fileReader).toHaveBeenCalledWith(join(root, '.glossary.json'), 'utf8');
     });
 
     it('does not fall back to legacy .terms when the JSON file is missing', async () => {
-        expect((await request(app).get('/glossary')).status).toBe(500);
+        expect((await requestApp(app).get('/glossary')).status).toBe(500);
         expect(fileReader).toHaveBeenCalledTimes(1);
         expect(fileReader).toHaveBeenCalledWith(join(root, '.glossary.json'), 'utf8');
     });
 
     it('rejects invalid structured entries', async () => {
         fileReader.mockResolvedValueOnce(JSON.stringify([{ term: 'Term', definitions: [] }]));
-        expect((await request(app).get('/glossary')).status).toBe(500);
+        expect((await requestApp(app).get('/glossary')).status).toBe(500);
     });
 
     it('forwards glossary read errors that are not missing files', async () => {
         fileReader.mockRejectedValue(Object.assign(new Error('Not a file'), { code: 'EISDIR' }));
 
-        expect((await request(app).get('/glossary')).status).toBe(500);
+        expect((await requestApp(app).get('/glossary')).status).toBe(500);
     });
 });

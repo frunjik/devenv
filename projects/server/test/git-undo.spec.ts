@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import type { ExecFileException, ExecFileOptions } from 'node:child_process';
 import express from 'express';
 import type { ErrorRequestHandler } from 'express';
-import request from 'supertest';
+import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 import { createGitUndoHandler } from '../src/lib/handlers/git-undo';
 
@@ -39,7 +39,7 @@ describe('git undo public API', () => {
             .mockImplementationOnce((_command, _args, _options, callback) => callback(null, '', ''))
             .mockImplementationOnce((_command, _args, _options, callback) => callback(null, output, ''));
 
-        const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
+        const response = await requestApp(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ data: { stdout: output, stderr: '' } });
@@ -54,7 +54,7 @@ describe('git undo public API', () => {
             callback(null, ' M tracked.txt\n?? untracked.txt\n', '');
         });
 
-        const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
+        const response = await requestApp(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(409);
         expect(response.body.error.message).toContain('uncommitted changes');
@@ -66,7 +66,7 @@ describe('git undo public API', () => {
         mockExecFile.mockImplementationOnce((_command, _args, _options, callback) => {
             callback(new Error('git status failed'), 'partial status', 'fatal: not a git repository');
         });
-        const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
+        const response = await requestApp(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(500);
         expect(`${response.body.error.stdout}${response.body.error.stderr}`.toLowerCase())
@@ -82,7 +82,7 @@ describe('git undo public API', () => {
                 callback(new Error('git revert failed'), '', 'fatal: bad revision HEAD');
             });
 
-        const response = await request(createApp(root, { gitCommitCwd: root })).post('/git/undo');
+        const response = await requestApp(createApp(root, { gitCommitCwd: root })).post('/git/undo');
 
         expect(response.status).toBe(500);
         expect(response.body.error.message).toBeTruthy();
@@ -95,7 +95,7 @@ describe('git undo public API', () => {
         process.env['NODE_ENV'] = 'production';
 
         try {
-            const response = await request(createApp(root)).post('/git/undo');
+            const response = await requestApp(createApp(root)).post('/git/undo');
             expect(response.status).toBe(404);
             expect(mockExecFile).not.toHaveBeenCalled();
         } finally {
@@ -111,7 +111,7 @@ describe('git undo public API', () => {
         const app = express();
         app.post('/git/undo', createGitUndoHandler());
 
-        expect((await request(app).post('/git/undo')).status).toBe(200);
+        expect((await requestApp(app).post('/git/undo')).status).toBe(200);
         expect(mockExecFile.mock.calls.map(([, , options]) => options.cwd)).toEqual([process.cwd(), process.cwd()]);
     });
 
@@ -133,12 +133,12 @@ describe('git undo public API', () => {
         }));
 
         let firstStatus: number | undefined;
-        const firstRequest = request(app).post('/git/undo')
+        const firstRequest = requestApp(app).post('/git/undo')
             .then(response => firstStatus = response.status);
 
         try {
             await statusStarted;
-            const secondResponse = await request(app).post('/git/undo');
+            const secondResponse = await requestApp(app).post('/git/undo');
             expect(secondResponse.status).toBe(409);
         } finally {
             finishStatus?.();
@@ -158,8 +158,8 @@ describe('git undo public API', () => {
         });
         const app = createApp(root, { gitCommitCwd: root });
 
-        const refused = await request(app).post('/git/undo');
-        const retried = await request(app).post('/git/undo');
+        const refused = await requestApp(app).post('/git/undo');
+        const retried = await requestApp(app).post('/git/undo');
 
         expect(refused.status).toBe(failure === 'command failure' ? 500 : 409);
         expect(retried.status).toBe(200);
@@ -180,7 +180,7 @@ describe('git undo public API', () => {
         }));
         app.use(handleError);
 
-        const response = await request(app).post('/git/undo');
+        const response = await requestApp(app).post('/git/undo');
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({

@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-part-list-types",
+      "title": "Label canvas part rows by type",
+      "beneficiary": "User identifying canvas items",
+      "intendedOutcome": "Show each part's type instead of the generic Part prefix.",
+      "successCondition": "Visible part rows and checkbox names use the same type labels as the picker for every supported shape. Legacy missing shape uses Rectangle, type edits update labels immediately, and names, technologies, connections and selection remain intact.",
+      "baseline": "Part rows hard-code Part: while the editor's seven-option picker holds human-readable type labels.",
+      "startedAt": "2026-10-10T20:06:23.721+02:00",
+      "completedAt": "2026-10-10T20:08:18.6735886+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Direct request to replace Part: with the part type in the list.", "evidence": "User request and scope announcement." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 54.953 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.", "evidence": "Request and local verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Extracted typed shapeLabels and derived shapeOptions into sketch-shapes, keeping one label authority and existing picker order. List uses partTypeLabel with missing-shape Rectangle default. Technology/name suffix and connection rows unchanged. Component reduced to 397 lines. Red observed for seven shapes and legacy default before changes; all 160 editor tests pass with 100% statements, branches, functions and lines in both changed executable modules. Build, Jest TypeScript check, diagnostics and diff check pass. Existing injected boundary fakes reused without internal spies or application test network/filesystem I/O. Browser verifies six distinct template type prefixes, no Part prefix, and changing Actor: Dev to Product: Dev preserves the checked state. Initial browser locator incorrectly assumed an actor named user; corrected by selecting the actual first Actor checkbox. README updated. Unrelated effort-report changes preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/interactive-canvas/sketch-shapes.ts; canvas-diagram-editor.component.ts, .html and .spec.ts; README.md; session validation evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-selected-group-drag",
       "title": "Move selected canvas parts together",
       "beneficiary": "User rearranging multiple canvas parts",

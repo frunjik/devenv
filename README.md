@@ -86,7 +86,9 @@ both control columns.
 The right-side actions anchor to the bottom of the toolbar above the canvas,
 while the Items list stays aligned with the top of the left fields.
 All canvas parts and connections appear in an always-visible checkbox list above
-Remove selected, with parts first and connections second. The heading shows total
+Remove selected, with parts first and connections second. Part rows are prefixed
+with their type (for example, `Actor:` or `Artifact:`), using the same names as
+the Type picker; older parts default to `Rectangle:`. The heading shows total
 parts, total connections and the number selected. The list and canvas share one
 multi-selection: checking a row or clicking an unselected item selects it and
 makes it active for label/type editing. Clicking a selected item without dragging,

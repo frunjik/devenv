@@ -11,6 +11,7 @@ import { SketchSelection } from './sketch-selection';
 import { findPartAt, findConnectionAt } from './sketch-geometry';
 import { renderSketch } from './sketch-renderer';
 import { SketchMarquee } from './sketch-marquee';
+import { shapeLabels, shapeOptions } from './sketch-shapes';
 
 type PictureKind = 'overview' | 'technical' | 'template';
 
@@ -48,15 +49,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private draftLabel = 'Part 1';
     private customDraft = false;
     private draftShape: PartShape = 'rectangle';
-    readonly shapeOptions: { value: PartShape; label: string }[] = [
-        { value: 'rectangle', label: 'Rectangle' },
-        { value: 'artifact', label: 'Artifact' },
-        { value: 'system-software', label: 'System software' },
-        { value: 'business-role', label: 'Business role' },
-        { value: 'product', label: 'Product' },
-        { value: 'actor', label: 'Actor' },
-        { value: 'tech-process', label: 'Tech process' },
-    ];
+    readonly shapeOptions = shapeOptions;
     private drag: CanvasDrag | undefined;
     private loadedPicture: PictureKind | undefined;
     private pendingPicture: PictureKind | undefined;
@@ -173,6 +166,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     get shapeValue(): PartShape {
         return this.selectedPart ? this.selectedPart.shape ?? 'rectangle' : this.draftShape;
+    }
+
+    partTypeLabel(part: SketchPart): string {
+        return shapeLabels[part.shape ?? 'rectangle'];
     }
 
     editShape(value: string): void {

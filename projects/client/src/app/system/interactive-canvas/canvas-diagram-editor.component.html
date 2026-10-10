@@ -25,7 +25,7 @@
                         <label class="item-option part-option">
                             <input #partCheck type="checkbox" [checked]="checkedParts.has(part)"
                                 (change)="checkPart(part, partCheck.checked)">
-                            <span>Part: {{ part.label }}{{ part.technology ? ' (' + part.technology + ')' : '' }}</span>
+                            <span>{{ partTypeLabel(part) }}: {{ part.label }}{{ part.technology ? ' (' + part.technology + ')' : '' }}</span>
                         </label>
                     }
                     @for (connection of connections; track connection.id) {

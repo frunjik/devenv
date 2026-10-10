@@ -10,6 +10,13 @@
         "title": "Ctrl+wheel and Ctrl+drag interaction",
         "description": "Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.",
         "tasks": [{
+          "id": "canvas-part-list-types",
+          "title": "Label canvas part rows by type",
+          "description": "Replaced generic Part: prefix with the existing Type picker name in visible rows and implicit checkbox labels. Legacy parts without a shape use Rectangle; live type changes update the row without clearing selection. Extracted authoritative typed shape labels and derived picker options to sketch-shapes; component remains 397 lines. Red observed for all seven types and legacy default; all 160 editor tests pass with 100% changed-module coverage, client build, Jest TypeScript check, diagnostics and diff check pass. Browser confirms all six template types, no Part: prefix and Actor-to-Product checkbox label update with check preserved. Tracking and measurement retained. Next step: user review; no commit authorized.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-part-list-types"]
+        }, {
           "id": "canvas-selected-group-drag",
           "title": "Move selected canvas parts together",
           "description": "Completed dragging all selected parts by the same model-coordinate delta, using drag-start snapshots to preserve relative positions and avoid accumulated drift. Unselected dragged parts join existing additive selection. User approved selected parts only: connections follow endpoint geometry but selecting a connection does not include its endpoints. No persistent group or stored-format change needed. Red observed when second selected part remained stationary. Existing endpoint-positioning test fixtures explicitly clear selection before single-part drags, preserving geometry/hit assertions. All 951 client tests pass with 100% reported coverage; client build, Jest TypeScript check, diagnostics and diff check pass. Real desktop drag moves selected parts by 100x50 with other parts fixed and checks preserved. At 360px under zoom both parts move by the same approximately 50.111x20.045 logical delta, retaining 300px separation and checks. Component remains 400 lines. Tracking and measurement retained. Next step: user review; no commit authorized.",

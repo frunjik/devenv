@@ -411,6 +411,28 @@ describe('CanvasDiagramEditor', () => {
         fixture.detectChanges();
     }
 
+    it.each([
+        ['rectangle', 'Rectangle'], ['artifact', 'Artifact'], ['system-software', 'System software'],
+        ['business-role', 'Business role'], ['product', 'Product'], ['actor', 'Actor'], ['tech-process', 'Tech process'],
+    ])('labels the part row with its %s type', (shape, label) => {
+        createEditor();
+        enterLabel('Workflow');
+        chooseShape(shape);
+        clickButton('Add part');
+        expect(host.querySelector('.part-option')!.textContent?.trim()).toBe(`${label}: Workflow`);
+    });
+
+    it('uses Rectangle for legacy parts and updates the row when the selected type changes', () => {
+        createEditor();
+        loadOverview();
+        expect(editor.parts[0].shape).toBeUndefined();
+        expect(host.querySelector('.part-option')!.textContent?.trim()).toBe('Rectangle: People / product team');
+        checkPartRow(0);
+        chooseShape('actor');
+        expect(host.querySelector('.part-option')!.textContent?.trim()).toBe('Actor: People / product team');
+        expect(host.querySelector<HTMLInputElement>('.part-option input')!.checked).toBe(true);
+    });
+
     it('presents name and type before adding, followed by grouped connection and picture actions', () => {
         createEditor();
         const groups = host.querySelectorAll('.canvas-toolbar > [role="group"], .canvas-toolbar > section');

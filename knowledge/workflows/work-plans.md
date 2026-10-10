@@ -14,6 +14,16 @@ Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning with
 
 Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.
 
+#### WorkTask: Label canvas part rows by type
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-part-list-types`
+
+Replaced generic Part: prefix with the existing Type picker name in visible rows and implicit checkbox labels. Legacy parts without a shape use Rectangle; live type changes update the row without clearing selection. Extracted authoritative typed shape labels and derived picker options to sketch-shapes; component remains 397 lines. Red observed for all seven types and legacy default; all 160 editor tests pass with 100% changed-module coverage, client build, Jest TypeScript check, diagnostics and diff check pass. Browser confirms all six template types, no Part: prefix and Actor-to-Product checkbox label update with check preserved. Tracking and measurement retained. Next step: user review; no commit authorized.
+
 #### WorkTask: Move selected canvas parts together
 
 **Status:** Completed

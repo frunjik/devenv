@@ -3,14 +3,15 @@ import { createAgentGuidePreview } from './agent-guide-preview';
 import { agentPhaseSkills } from '../../../../../../knowledge/workflows/agent-phase-guide.types';
 
 describe('agent guide preview', () => {
-    it('includes work continuity and measurement intent without adopting the current tracking system', () => {
+    it('includes the selected WorkTask measurement rule and remaining continuity intent', () => {
         const preview = createAgentGuidePreview();
         const agent = preview.files.find(file => file.path.endsWith('.agent.md'))!;
         expect(agent.content).toContain('## Work continuity and measurement intent');
         expect(agent.content).toContain('Resume work');
-        expect(agent.content).toContain('5. Trace work to its evaluations');
-        expect(agent.content).toContain('6. Capture baseline and completion evidence with little upkeep');
-        expect(agent.content).toContain('not selected rules');
+        expect(agent.content).toContain('## WorkTask measurement');
+        expect(agent.content).toContain('ask the user whether to measure it');
+        expect(agent.content).not.toContain('5. Trace work to its evaluations');
+        expect(agent.content).toContain('announce the phase and its current goal');
         expect(agent.content).toContain('Understand:');
         expect(agent.content).toContain('Evaluate:');
         expect(agent.content).toContain('Goal and success clarity');
@@ -41,7 +42,7 @@ describe('agent guide preview', () => {
     it('keeps exploration intents distinct and resolves all generated local Markdown links', () => {
         const { files } = createAgentGuidePreview();
         expect(files[0].content).toContain('Intents to explore');
-        expect(files[0].content).toContain('not selected rules');
+        expect(files[0].content).toContain('not an active rule');
         for (const file of files) {
             for (const match of file.content.matchAll(/\]\(([^)]+)\)/g)) {
                 const target = match[1].split('#')[0];

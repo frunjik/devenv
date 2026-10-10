@@ -70,17 +70,17 @@ Repository quick reference (informational):
 - Production build: shared first (`npm run build -- --project shared`), then client (`npm run build -- --project client`). Server Angular build is unsupported with known errors.
 - Dev: `npm run dev:client` / `npm run dev:server`; client consumes shared source. Windows: use `npm.cmd`/`npx.cmd` if wrappers are blocked.
 
+## WorkTask measurement
+
+Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep).
+
+- Each WorkTask in `knowledge/workflows/work-plans.json` records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
+- `Measured` tasks link one or more evaluation IDs in the evaluation ledger (`knowledge/workflows/devenv-value-evaluation.json`); record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
+- Edit the JSON and regenerate with `npm run generate:work-plans:markdown`; generation rejects started tasks without a decision and unknown evaluation links.
+
 ## Intents to explore
 
-The following are proposed practices, not active rules. Before activating any of them, ask the user to define its intended behavior and scope; keep it inactive until the user approves activation. Names and mechanisms remain open.
-
-### 5. Trace work to its evaluations
-
-Retain understandable links between work and its evaluations even when names change or one effort has several evaluations. Explore stable identity and history access without assuming the existing workflow/TODO/evaluation structure must transfer.
-
-### 6. Capture baseline and completion evidence with little upkeep
-
-Make observed changes, decisions and unknowns available across follow-ups. Explore a lightweight mechanism that reliably records opted-in evidence without repeated prompting or retrospective repair. Effort and user benefits must remain unknown when unmeasured.
+The following is a proposed practice, not an active rule. Before activating it, ask the user to define its intended behavior and scope; keep it inactive until the user approves activation. Names and mechanisms remain open.
 
 ### 7. Trial changes in isolation before broad adoption
 
@@ -88,6 +88,6 @@ Explore small, reversible trials with explicit success conditions and evaluation
 
 ## Basis and limits
 
-Selection: the user's first four priorities from the retrospective ranking; priorities 5-7 are intents for further exploration only. Evidence: [canvas repair and three-slice work-loop trial](../workflows/interactive-canvas-workflow.md), plus scheduler-boundary, client-coverage, evaluation-association, metrics-repair and visual-preview results recorded in the [evaluation ledger](../workflows/devenv-value-evaluation.json).
+Selection: the user's first four priorities from the retrospective ranking; priorities 5-6 are now active as WorkTask measurement; priority 7 remains an intent for further exploration only. Evidence: [canvas repair and three-slice work-loop trial](../workflows/interactive-canvas-workflow.md), plus scheduler-boundary, client-coverage, evaluation-association, metrics-repair and visual-preview results recorded in the [evaluation ledger](../workflows/devenv-value-evaluation.json).
 
 The detailed testing procedure is pinned to v4. These practices seed the new candidate; the remaining rules and the proposed AgentPhaseGuide still require review and trials. No effectiveness improvement is claimed for this candidate yet.

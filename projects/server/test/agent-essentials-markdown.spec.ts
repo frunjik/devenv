@@ -65,11 +65,13 @@ describe('Agent Essentials Markdown', () => {
         expect(view).toMatch(/not active repository guidance/i);
     });
 
-    it('preserves the distinction between selected rules and exploration intents', () => {
+    it('preserves the distinction between selected rules, activated WorkTask measurement and exploration intents', () => {
         const source = JSON.parse(readFileSync(resolve(__dirname, '../../../knowledge/practices/agent-essentials.json'), 'utf8'));
+        const sectionBody = (heading: string) => source.sections.find((section: { heading: string }) => section.heading === heading).body.join(' ');
         expect(source.sections.filter((section: { heading: string }) => /^[1-4]\./.test(section.heading))).toHaveLength(4);
-        expect(source.sections.filter((section: { level: number; heading: string }) => section.level === 3 && /^[5-7]\./.test(section.heading))).toHaveLength(3);
-        expect(source.sections.find((section: { heading: string }) => section.heading === 'Intents to explore').body.join(' '))
-            .toContain('not selected rules');
+        expect(source.sections.filter((section: { level: number; heading: string }) => section.level === 3 && /^[5-7]\./.test(section.heading))
+            .map((section: { heading: string }) => section.heading)).toEqual(['7. Trial changes in isolation before broad adoption']);
+        expect(sectionBody('WorkTask measurement')).toContain('Activated from intents 5');
+        expect(sectionBody('Intents to explore')).toContain('not an active rule');
     });
 });

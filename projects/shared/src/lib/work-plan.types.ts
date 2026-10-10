@@ -1,10 +1,16 @@
+import { validateWorkEvaluationDataset } from './value-evaluation.types';
+
 export type WorkTaskStatus = 'Pending' | 'Active' | 'Paused' | 'Blocked' | 'Completed';
+
+export type WorkTaskMeasurement = 'Undecided' | 'Measured' | 'NotMeasured';
 
 export interface WorkTask {
     id: string;
     title: string;
     description: string;
     status: WorkTaskStatus;
+    measurement: WorkTaskMeasurement;
+    evaluationIds: string[];
 }
 
 export interface WorkTopic {
@@ -22,7 +28,7 @@ export interface WorkPlan {
 }
 
 export interface WorkPlanRegistry {
-    schemaVersion: 1;
+    schemaVersion: 2;
     workPlans: WorkPlan[];
 }
 
@@ -69,14 +75,40 @@ function requireArray(value: unknown, name: string): unknown[] {
     return value;
 }
 
+function validateMeasurement(value: unknown): WorkTaskMeasurement {
+    if (value !== 'Undecided' && value !== 'Measured' && value !== 'NotMeasured') {
+        throw new Error('Invalid WorkPlanRegistry: unknown WorkTask measurement');
+    }
+    return value;
+}
+
+function validateEvaluationIds(value: unknown): string[] {
+    const ids = requireArray(value, 'WorkTask evaluationIds').map(requireSingleLineText);
+    if (new Set(ids).size !== ids.length) {
+        throw new Error('Invalid WorkPlanRegistry: evaluation IDs must be unique per WorkTask');
+    }
+    return ids;
+}
+
 function validateTask(value: unknown): WorkTask {
     const task = requireRecord(value);
-    requireFields(task, ['id', 'title', 'description', 'status']);
+    requireFields(task, ['id', 'title', 'description', 'status', 'measurement', 'evaluationIds']);
+    const status = validateStatus(task['status']);
+    const measurement = validateMeasurement(task['measurement']);
+    const evaluationIds = validateEvaluationIds(task['evaluationIds']);
+    if (status !== 'Pending' && measurement === 'Undecided') {
+        throw new Error('Invalid WorkPlanRegistry: started WorkTasks need a measurement decision');
+    }
+    if ((measurement === 'Measured') !== (evaluationIds.length > 0)) {
+        throw new Error('Invalid WorkPlanRegistry: only Measured WorkTasks link evaluations, and they need at least one');
+    }
     return {
         id: requireSingleLineText(task['id']),
         title: requireSingleLineText(task['title']),
         description: requireText(task['description']),
-        status: validateStatus(task['status']),
+        status,
+        measurement,
+        evaluationIds,
     };
 }
 
@@ -105,8 +137,8 @@ function validatePlan(value: unknown): WorkPlan {
 export function validateWorkPlanRegistry(value: unknown): WorkPlanRegistry {
     const registry = requireRecord(value);
     requireFields(registry, ['schemaVersion', 'workPlans']);
-    if (registry['schemaVersion'] !== 1) {
-        throw new Error('Invalid WorkPlanRegistry: expected schema version 1');
+    if (registry['schemaVersion'] !== 2) {
+        throw new Error('Invalid WorkPlanRegistry: expected schema version 2');
     }
     const workPlans = requireArray(registry['workPlans'], 'workPlans').map(validatePlan);
     const ids = workPlans.flatMap(plan => [
@@ -116,7 +148,22 @@ export function validateWorkPlanRegistry(value: unknown): WorkPlanRegistry {
     if (new Set(ids).size !== ids.length) {
         throw new Error('Invalid WorkPlanRegistry: IDs must be unique across the hierarchy');
     }
-    return { schemaVersion: 1, workPlans };
+    return { schemaVersion: 2, workPlans };
+}
+
+export function validateWorkPlanEvaluationLinks(registryValue: unknown, ledgerValue: unknown): void {
+    const registry = validateWorkPlanRegistry(registryValue);
+    const known = new Set(validateWorkEvaluationDataset(ledgerValue).evaluations.map(e => e.id));
+    for (const plan of registry.workPlans) {
+        for (const topic of plan.topics) {
+            for (const task of topic.tasks) {
+                const missing = task.evaluationIds.find(id => !known.has(id));
+                if (missing !== undefined) {
+                    throw new Error(`Invalid WorkPlanRegistry: unknown evaluation "${missing}"`);
+                }
+            }
+        }
+    }
 }
 
 export function workPlanRegistryToMarkdown(value: unknown): string {
@@ -128,7 +175,7 @@ export function workPlanRegistryToMarkdown(value: unknown): string {
         '',
         'Hierarchy: WorkPlan > WorkTopic > WorkTask. IDs are unique across the registry.',
         'WorkTask statuses: Pending, Active, Paused, Blocked, Completed.',
-        'Evaluation links and baseline/completion evidence are not part of this schema yet.',
+        'WorkTask measurement: Undecided, Measured, NotMeasured. Decide before a task leaves Pending; Measured tasks link evaluation ledger IDs.',
         '',
     ];
     if (!registry.workPlans.length) {
@@ -153,9 +200,13 @@ export function workPlanRegistryToMarkdown(value: unknown): string {
                     '',
                     `**Status:** ${task.status}`,
                     '',
-                    task.description,
+                    `**Measurement:** ${task.measurement}`,
                     '',
                 );
+                if (task.evaluationIds.length) {
+                    lines.push(`**Evaluations:** ${task.evaluationIds.map(id => `\`${id}\``).join(', ')}`, '');
+                }
+                lines.push(task.description, '');
             }
         }
     }

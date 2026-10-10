@@ -15,6 +15,7 @@ describe('Work Plans Markdown generator entry point', () => {
 
         expect(writeWorkPlanMarkdown).toHaveBeenCalledWith(
             resolve(process.cwd(), 'knowledge/workflows/work-plans.json'),
+            resolve(process.cwd(), 'knowledge/workflows/devenv-value-evaluation.json'),
             resolve(process.cwd(), 'knowledge/workflows/work-plans.md'),
             {},
         );

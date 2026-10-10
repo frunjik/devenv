@@ -29,21 +29,17 @@ At each Agent phase, announce the phase and its current goal. During Make, when 
 
 ## Work continuity and measurement intent
 
-Intent to explore; not selected rules or an implemented tracking system
+WorkTask measurement is selected (from intents 5 and 6); broader continuity remains an intent to explore
 
 Resume work, retain decisions and open questions, see progress and assess outcomes without burdensome upkeep.
 
-## Intents to explore
+## WorkTask measurement
 
-The following preserve desired outcomes, not selected rules or the current implementation. Names, mechanisms and adoption remain open.
+Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep).
 
-### 5. Trace work to its evaluations
-
-Retain understandable links between work and its evaluations even when names change or one effort has several evaluations. Explore stable identity and history access without assuming the existing workflow/TODO/evaluation structure must transfer.
-
-### 6. Capture baseline and completion evidence with little upkeep
-
-Make observed changes, decisions and unknowns available across follow-ups. Explore a lightweight mechanism that reliably records opted-in evidence without repeated prompting or retrospective repair. Effort and user benefits must remain unknown when unmeasured.
+- Each WorkTask in `knowledge/workflows/work-plans.json` records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
+- `Measured` tasks link one or more evaluation IDs in the evaluation ledger (`knowledge/workflows/devenv-value-evaluation.json`); record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
+- Edit the JSON and regenerate with `npm run generate:work-plans:markdown`; generation rejects started tasks without a decision and unknown evaluation links.
 
 - **Understand:** Recover the current work context and tracking choices; identify intended benefit, success conditions and available baseline.
 - **Explore:** Retain evidence, decisions, alternatives and open questions; consider which observations will meaningfully assess the work.
@@ -60,8 +56,8 @@ Make observed changes, decisions and unknowns available across follow-ups. Explo
 
 - Unknown measurements remain unknown; elapsed time is not active effort and passing tests are not proof of user benefit.
 - Preserve intent and access to evidence, not the current workflow/TODO/evaluation names, schemas, UI or historical records as a new implementation.
-- Names, storage, identity, measurement mechanisms and adoption remain open for exploration.
-- No new mandatory tracking prompts, time gates, reporting format or automated collection are introduced.
+- Names, storage, identity and measurement mechanisms beyond the WorkTask measurement decision remain open for exploration.
+- No mandatory tracking prompts, time gates, reporting format or automated collection are introduced beyond the WorkTask measurement decision.
 
 ## Understand
 

@@ -1,29 +1,60 @@
 import { describe, expect, it, jest } from '@jest/globals';
-import { validateWorkPlanRegistry, workPlanRegistryToMarkdown } from '@shared';
+import {
+    validateWorkPlanEvaluationLinks,
+    validateWorkPlanRegistry,
+    workPlanRegistryToMarkdown,
+} from '@shared';
 import { writeWorkPlanMarkdown } from '../../../scripts/work-plans-export';
 
-const emptyRegistry = {
-    schemaVersion: 1,
-    workPlans: [],
+const task = {
+    id: 'persist-plan',
+    title: 'Persist structured plans',
+    description: 'Add a validated WorkPlan registry.',
+    status: 'Active',
+    measurement: 'Measured',
+    evaluationIds: ['work-plan-registry'],
 };
 
-const registry = {
-    schemaVersion: 1,
-    workPlans: [{
-        id: 'agent-practices',
-        title: 'Agent practices',
-        description: 'Improve development guidance.',
-        topics: [{
-            id: 'agent-essentials',
-            title: 'Agent Essentials',
-            description: 'Maintain the selected guidance.',
-            tasks: [{
-                id: 'persist-plan',
-                title: 'Persist structured plans',
-                description: 'Add a validated WorkPlan registry.',
-                status: 'Active',
+function withTask(overrides: Record<string, unknown>) {
+    return {
+        schemaVersion: 2,
+        workPlans: [{
+            id: 'agent-practices',
+            title: 'Agent practices',
+            description: 'Improve development guidance.',
+            topics: [{
+                id: 'agent-essentials',
+                title: 'Agent Essentials',
+                description: 'Maintain the selected guidance.',
+                tasks: [{ ...task, ...overrides }],
             }],
         }],
+    };
+}
+
+const emptyRegistry = { schemaVersion: 2, workPlans: [] };
+const registry = withTask({});
+const plan = registry.workPlans[0];
+const topic = plan.topics[0];
+
+const ledger = {
+    schemaVersion: 1,
+    metrics: [{
+        id: 'outcome-and-quality',
+        name: 'Outcome and quality',
+        definition: 'Was the requested result achieved?',
+        interpretation: 'Observed outcome, not test results alone.',
+    }],
+    evaluations: [{
+        id: 'work-plan-registry',
+        title: 'WorkPlan registry',
+        beneficiary: 'DevEnv developer',
+        intendedOutcome: 'Structured, resumable plans.',
+        successCondition: 'Plans validate and render.',
+        baseline: 'No structured plan registry.',
+        startedAt: null,
+        completedAt: null,
+        measures: [{ metricId: 'outcome-and-quality', value: null, evidence: null }],
     }],
 };
 
@@ -33,150 +64,129 @@ describe('WorkPlan persistence model', () => {
         expect(workPlanRegistryToMarkdown(emptyRegistry)).toContain('No WorkPlans registered.');
     });
 
-    it.each(['Pending', 'Active', 'Paused', 'Blocked', 'Completed'])(
-        'accepts the WorkTask status %s',
+    it.each(['Active', 'Paused', 'Blocked', 'Completed'])(
+        'accepts a decided measurement for the started WorkTask status %s',
         status => {
-            const taskRegistry = {
-                ...registry,
-                workPlans: [{
-                    ...registry.workPlans[0],
-                    topics: [{
-                        ...registry.workPlans[0].topics[0],
-                        tasks: [{
-                            ...registry.workPlans[0].topics[0].tasks[0],
-                            status,
-                        }],
-                    }],
-                }],
-            };
-            expect(validateWorkPlanRegistry(taskRegistry).workPlans[0].topics[0].tasks[0].status)
-                .toBe(status);
+            expect(validateWorkPlanRegistry(withTask({ status })).workPlans[0].topics[0].tasks[0])
+                .toMatchObject({ status, measurement: 'Measured' });
+            expect(validateWorkPlanRegistry(withTask({
+                status, measurement: 'NotMeasured', evaluationIds: [],
+            })).workPlans[0].topics[0].tasks[0].measurement).toBe('NotMeasured');
         },
     );
 
-    it('validates and renders the WorkPlan > WorkTopic > WorkTask hierarchy', () => {
-        const validated = validateWorkPlanRegistry(registry);
-        expect(validated.workPlans[0].topics[0].tasks[0].status).toBe('Active');
+    it('allows a Pending WorkTask to leave measurement Undecided until it becomes Active', () => {
+        const pending = withTask({ status: 'Pending', measurement: 'Undecided', evaluationIds: [] });
+        expect(validateWorkPlanRegistry(pending).workPlans[0].topics[0].tasks[0].measurement)
+            .toBe('Undecided');
+    });
 
-        const markdown = workPlanRegistryToMarkdown(validated);
+    it('validates and renders the hierarchy with measurement choices and evaluation links', () => {
+        const markdown = workPlanRegistryToMarkdown(validateWorkPlanRegistry(registry));
         expect(markdown).toContain('# Work Plans');
         expect(markdown).toContain('## WorkPlan: Agent practices');
         expect(markdown).toContain('### WorkTopic: Agent Essentials');
         expect(markdown).toContain('#### WorkTask: Persist structured plans');
         expect(markdown).toContain('**Status:** Active');
+        expect(markdown).toContain('**Measurement:** Measured');
+        expect(markdown).toContain('**Evaluations:** `work-plan-registry`');
         expect(markdown).toContain('Add a validated WorkPlan registry.');
-        expect(markdown).toContain(
-            'WorkTask statuses: Pending, Active, Paused, Blocked, Completed.',
-        );
-        expect(markdown).toContain(
-            'Evaluation links and baseline/completion evidence are not part of this schema yet.',
-        );
+        expect(markdown).toContain('WorkTask statuses: Pending, Active, Paused, Blocked, Completed.');
+        expect(markdown).toContain('WorkTask measurement: Undecided, Measured, NotMeasured.');
+
+        const notMeasured = workPlanRegistryToMarkdown(withTask({
+            measurement: 'NotMeasured', evaluationIds: [],
+        }));
+        expect(notMeasured).toContain('**Measurement:** NotMeasured');
+        expect(notMeasured).not.toContain('**Evaluations:**');
     });
 
     it('preserves multi-line descriptions while keeping hierarchy labels single-line', () => {
-        const multilineRegistry = {
-            ...registry,
-            workPlans: [{
-                ...registry.workPlans[0],
-                description: 'First line.\nSecond line.',
-            }],
-        };
-        expect(workPlanRegistryToMarkdown(multilineRegistry)).toContain(
-            'First line.\nSecond line.',
-        );
+        const multiline = { ...registry, workPlans: [{ ...plan, description: 'First line.\nSecond line.' }] };
+        expect(workPlanRegistryToMarkdown(multiline)).toContain('First line.\nSecond line.');
         expect(() => validateWorkPlanRegistry({
             ...registry,
-            workPlans: [{ ...registry.workPlans[0], title: 'First line.\nSecond line.' }],
+            workPlans: [{ ...plan, title: 'First line.\nSecond line.' }],
         })).toThrow('Invalid WorkPlanRegistry: expected single-line text');
     });
 
     it('renders plans without topics and topics without tasks', () => {
-        const sparseRegistry = {
-            schemaVersion: 1,
-            workPlans: [{
-                ...registry.workPlans[0],
-                topics: [
-                    { ...registry.workPlans[0].topics[0], tasks: [] },
-                    { ...registry.workPlans[0].topics[0], id: 'empty-topic', tasks: [] },
-                ],
-            }],
-        };
-        const markdown = workPlanRegistryToMarkdown(sparseRegistry);
-        expect(markdown).toContain('No WorkTasks registered.');
         expect(workPlanRegistryToMarkdown({
-            schemaVersion: 1,
-            workPlans: [{ ...registry.workPlans[0], topics: [] }],
-        })).toContain('No WorkTopics registered.');
+            schemaVersion: 2,
+            workPlans: [{
+                ...plan,
+                topics: [{ ...topic, tasks: [] }, { ...topic, id: 'empty-topic', tasks: [] }],
+            }],
+        })).toContain('No WorkTasks registered.');
+        expect(workPlanRegistryToMarkdown({ schemaVersion: 2, workPlans: [{ ...plan, topics: [] }] }))
+            .toContain('No WorkTopics registered.');
+    });
+
+    it.each([
+        ['an Active task with an Undecided measurement', withTask({ measurement: 'Undecided', evaluationIds: [] })],
+        ['a Measured task without evaluation links', withTask({ evaluationIds: [] })],
+        ['a NotMeasured task with evaluation links', withTask({ measurement: 'NotMeasured' })],
+        ['an Undecided task with evaluation links', withTask({ status: 'Pending', measurement: 'Undecided' })],
+        ['an unknown measurement choice', withTask({ measurement: 'Maybe' })],
+        ['non-array evaluation links', withTask({ evaluationIds: 'work-plan-registry' })],
+        ['blank evaluation links', withTask({ evaluationIds: [' '] })],
+        ['duplicate evaluation links', withTask({ evaluationIds: ['work-plan-registry', 'work-plan-registry'] })],
+        ['an unknown task status', withTask({ status: 'In progress' })],
+    ])('rejects %s', (_name, value) => {
+        expect(() => validateWorkPlanRegistry(value)).toThrow('Invalid WorkPlanRegistry');
     });
 
     it.each([
         null,
         [],
         12,
-        { ...emptyRegistry, schemaVersion: 2 },
+        { ...emptyRegistry, schemaVersion: 1 },
         { ...emptyRegistry, extra: true },
         { ...emptyRegistry, workPlans: null },
         { ...emptyRegistry, workPlans: [null] },
-        { ...registry, workPlans: [{ ...registry.workPlans[0], id: ' ' }] },
-        { ...registry, workPlans: [{ ...registry.workPlans[0], id: 'multi\nline' }] },
-        { ...registry, workPlans: [{ ...registry.workPlans[0], title: '' }] },
-        { ...registry, workPlans: [{ ...registry.workPlans[0], description: 1 }] },
-        { ...registry, workPlans: [{ ...registry.workPlans[0], topics: null }] },
-        {
-            ...registry,
-            workPlans: [{
-                ...registry.workPlans[0],
-                topics: [null],
-            }],
-        },
-        {
-            ...registry,
-            workPlans: [{
-                ...registry.workPlans[0],
-                topics: [{
-                    ...registry.workPlans[0].topics[0],
-                    tasks: [null],
-                }],
-            }],
-        },
-        {
-            ...registry,
-            workPlans: [{
-                ...registry.workPlans[0],
-                topics: [{
-                    ...registry.workPlans[0].topics[0],
-                    tasks: [{
-                        ...registry.workPlans[0].topics[0].tasks[0],
-                        status: 'In progress',
-                    }],
-                }],
-            }],
-        },
-        {
-            ...registry,
-            workPlans: [
-                registry.workPlans[0],
-                { ...registry.workPlans[0], id: registry.workPlans[0].topics[0].id },
-            ],
-        },
+        { ...registry, workPlans: [{ ...plan, id: ' ' }] },
+        { ...registry, workPlans: [{ ...plan, id: 'multi\nline' }] },
+        { ...registry, workPlans: [{ ...plan, title: '' }] },
+        { ...registry, workPlans: [{ ...plan, description: 1 }] },
+        { ...registry, workPlans: [{ ...plan, topics: null }] },
+        { ...registry, workPlans: [{ ...plan, topics: [null] }] },
+        { ...registry, workPlans: [{ ...plan, topics: [{ ...topic, tasks: [null] }] }] },
+        { ...registry, workPlans: [{ ...plan, topics: [{ ...topic, tasks: [{ ...task, extra: 1 }] }] }] },
+        { ...registry, workPlans: [plan, { ...plan, id: topic.id }] },
     ])('rejects invalid registry values', value => {
         expect(() => validateWorkPlanRegistry(value)).toThrow('Invalid WorkPlanRegistry');
     });
 
-    it('writes a generated view from validated JSON and does not write invalid data', () => {
+    it('accepts evaluation links present in the evaluation ledger and rejects missing ones', () => {
+        expect(() => validateWorkPlanEvaluationLinks(registry, ledger)).not.toThrow();
+        expect(() => validateWorkPlanEvaluationLinks(
+            withTask({ evaluationIds: ['missing-evaluation'] }),
+            ledger,
+        )).toThrow('Invalid WorkPlanRegistry: unknown evaluation "missing-evaluation"');
+    });
+
+    it('writes a generated view only after validating the registry and its ledger links', () => {
+        const files: Record<string, string> = {
+            'work-plans.json': JSON.stringify(registry),
+            'evaluations.json': JSON.stringify(ledger),
+        };
         const filesystem = {
-            readFileSync: jest.fn(() => JSON.stringify(registry)),
+            readFileSync: jest.fn((path: string) => files[path]),
             writeFileSync: jest.fn(),
         };
-        writeWorkPlanMarkdown('work-plans.json', 'work-plans.md', filesystem);
+        writeWorkPlanMarkdown('work-plans.json', 'evaluations.json', 'work-plans.md', filesystem);
         expect(filesystem.writeFileSync).toHaveBeenCalledWith(
             'work-plans.md',
             expect.stringContaining('Generated from [work-plans.json]'),
             'utf8',
         );
 
-        filesystem.readFileSync.mockReturnValue(JSON.stringify({ ...emptyRegistry, schemaVersion: 2 }));
-        expect(() => writeWorkPlanMarkdown('work-plans.json', 'work-plans.md', filesystem))
+        files['work-plans.json'] = JSON.stringify(withTask({ evaluationIds: ['missing-evaluation'] }));
+        expect(() => writeWorkPlanMarkdown('work-plans.json', 'evaluations.json', 'work-plans.md', filesystem))
+            .toThrow('unknown evaluation "missing-evaluation"');
+
+        files['work-plans.json'] = JSON.stringify({ ...emptyRegistry, schemaVersion: 1 });
+        expect(() => writeWorkPlanMarkdown('work-plans.json', 'evaluations.json', 'work-plans.md', filesystem))
             .toThrow('Invalid WorkPlanRegistry');
         expect(filesystem.writeFileSync).toHaveBeenCalledTimes(1);
     });

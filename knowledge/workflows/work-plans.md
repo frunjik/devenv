@@ -4,7 +4,7 @@ Generated from [work-plans.json](./work-plans.json). Edit the JSON source, not t
 
 Hierarchy: WorkPlan > WorkTopic > WorkTask. IDs are unique across the registry.
 WorkTask statuses: Pending, Active, Paused, Blocked, Completed.
-Evaluation links and baseline/completion evidence are not part of this schema yet.
+WorkTask measurement: Undecided, Measured, NotMeasured. Decide before a task leaves Pending; Measured tasks link evaluation ledger IDs.
 
 ## WorkPlan: Test Boundary Mocks
 
@@ -17,5 +17,7 @@ Inventory existing test doubles and reuse or add suitable fakes/mocks for filesy
 #### WorkTask: Create or reuse filesystem and HTTP test doubles
 
 **Status:** Pending
+
+**Measurement:** Undecided
 
 Inspect existing filesystem and HTTP test mocks/fakes. Reuse or create reusable test doubles that can be used in both client and server tests, without introducing real filesystem writes or network I/O in tests.

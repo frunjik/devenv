@@ -30,7 +30,8 @@
     "Select and load applicable capabilities before acting; references alone are insufficient.",
     "Resolve overlapping triggers and conflicting requirements.",
     "Expose enabled, disabled and unavailable capabilities.",
-    "Preserve scope, authorization and honest verification safeguards."
+    "Preserve scope, authorization and honest verification safeguards.",
+    "At each Agent phase, announce the phase and its current goal. During Make, when following TDD, also announce the current Red, Green, or Refactor phase and its goal. Format: `**Phase** — goal`, without a \"Goal:\" label."
   ],
   "switchingPolicy": [
     "Start with one coordinator and phase-specific skills; do not require four separate agents.",
@@ -61,12 +62,10 @@
     ]
   },
   "workIntent": {
-    "status": "Intent to explore; not selected rules or an implemented tracking system",
+    "status": "WorkTask measurement is selected (from intents 5 and 6); broader continuity remains an intent to explore",
     "purpose": "Resume work, retain decisions and open questions, see progress and assess outcomes without burdensome upkeep.",
     "sourceSections": [
-      "Intents to explore",
-      "5. Trace work to its evaluations",
-      "6. Capture baseline and completion evidence with little upkeep"
+      "WorkTask measurement"
     ],
     "phases": {
       "Understand": "Recover the current work context and tracking choices; identify intended benefit, success conditions and available baseline.",
@@ -84,8 +83,8 @@
     "boundaries": [
       "Unknown measurements remain unknown; elapsed time is not active effort and passing tests are not proof of user benefit.",
       "Preserve intent and access to evidence, not the current workflow/TODO/evaluation names, schemas, UI or historical records as a new implementation.",
-      "Names, storage, identity, measurement mechanisms and adoption remain open for exploration.",
-      "No new mandatory tracking prompts, time gates, reporting format or automated collection are introduced."
+      "Names, storage, identity and measurement mechanisms beyond the WorkTask measurement decision remain open for exploration.",
+      "No mandatory tracking prompts, time gates, reporting format or automated collection are introduced beyond the WorkTask measurement decision."
     ]
   },
   "practices": {
@@ -111,6 +110,7 @@
     "Which runtime will host the coordinator and what switching controls does it support?",
     "Which optional capabilities should be configurable?",
     "What evidence will justify separate agents rather than skills?",
-    "Which routing and handoff trials will establish acceptable reliability and overhead?"
+    "Which routing and handoff trials will establish acceptable reliability and overhead?",
+    "Known difference: the installed .github/agents/agent-phase-guide.agent.md places the phase-announcement rule as a paragraph after the purpose, while generation renders it as a Responsibilities bullet. Should this source gain a dedicated field and generator support for that placement, or should the installed guide follow the generated layout?"
   ]
 }

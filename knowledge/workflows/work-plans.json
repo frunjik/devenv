@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "workPlans": [
     {
       "id": "test-boundary-mocks",
@@ -15,7 +15,9 @@
               "id": "reusable-filesystem-http-test-doubles",
               "title": "Create or reuse filesystem and HTTP test doubles",
               "description": "Inspect existing filesystem and HTTP test mocks/fakes. Reuse or create reusable test doubles that can be used in both client and server tests, without introducing real filesystem writes or network I/O in tests.",
-              "status": "Pending"
+              "status": "Pending",
+              "measurement": "Undecided",
+              "evaluationIds": []
             }
           ]
         }

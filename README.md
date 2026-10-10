@@ -43,8 +43,12 @@ selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
 Controls align to the global grid: name and type come before Add and Remove,
 followed by connection actions and picture loading. Narrow screens use two
-control columns without splitting the canvas. Editor buttons use content-sized
-widths and a compact 36px minimum height.
+control columns without splitting the canvas. Wide buttons (Add, Remove selected
+and picture loading) fill their assigned grid space. Small toolbar buttons
+(Connect and Cancel) use content-sized widths on mobile and fill their grid
+cells above the 42rem mobile breakpoint. Replacement confirmation stays
+content-sized. Both variants
+retain a compact 36px minimum height.
 One **Remove selected** action removes the selected part, its incident
 connections, any connection selected on the canvas and all checked connections.
 

@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-button-growth",
+      "title": "Grow small toolbar buttons when space permits",
+      "beneficiary": "User editing canvas sketches",
+      "intendedOutcome": "Small buttons fill their allocated grid space on tablet and desktop while remaining compact on mobile.",
+      "successCondition": "Connect and Cancel fill their grid cells above 42rem and remain content-sized at or below 42rem; height, wide buttons, canvas and action behavior are preserved.",
+      "baseline": "Uncommitted small/wide variants have been verified; Connect and Cancel remain content-sized at all widths. User approved growth above the mobile breakpoint. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:37:50.858+02:00",
+      "completedAt": "2026-10-10T18:39:05.5972055+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Grow small grid buttons above mobile breakpoint only.", "evidence": "Current request and clarification." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 14.739 seconds elapsed from request to final verification, including clarification. Active human effort and waiting remain unknown.", "evidence": "Request 2026-10-10T18:37:50.858+02:00 and local verification clock 2026-10-10T18:39:05.5972055+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Small toolbar buttons now stretch only above 42rem; non-grid replacement buttons stay content-sized. Runtime width assertions caught and corrected CSS selector specificity before completion. Final assertions pass at 320, 360, 672, 673, 768 and 1280px: mobile Connect/Cancel remain 67.75/58.65625px wide, at 673px both fill 317.046875px cells, at 768px 362.640625px and at 1280px 188.8125px. All toolbar buttons remain 36px high, wide buttons still fill cells, and no document overflow occurs. Canvas CSS unchanged. Final client production build passes; relevant diagnostics clear before specificity correction and final build validates SCSS. CSS-only follow-up; no new TDD claim or unnecessary behavior test rerun. Prior 122 editor tests remain evidence for unchanged action behavior. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser geometry at http://localhost:4200/interactive-canvas and production build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-button-variants",
+      "title": "Use small and grid-filling wide editor buttons",
+      "beneficiary": "User editing canvas sketches",
+      "intendedOutcome": "Distinguish compact content-sized controls from wide actions that fill their assigned grid cells.",
+      "successCondition": "Add, Remove selected and both picture-loading buttons fill their assigned grid space. Connect and Cancel remain content-sized. Both variants retain compact height, two-column mobile controls and existing behavior without overflow.",
+      "baseline": "At 88e5f39 all editor buttons are content-sized with 36px minimum height. User clarified separate variants and approved which toolbar actions should be wide. Replacement confirmation remains content-sized. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:35:42.010+02:00",
+      "completedAt": "2026-10-10T18:37:13.4590321+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Wide Add, Remove selected and picture loading; small Connect and Cancel; keep existing height and grid spans.", "evidence": "Current request and two clarification answers." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 31.449 seconds elapsed from request to final verification, including clarification. Human active effort, waiting and agent execution remain unknown.", "evidence": "Request 2026-10-10T18:35:42.010+02:00 and local clock 2026-10-10T18:37:13.4590321+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Explicit button-wide and button-small classes added locally without changing grid spans or action bindings. Wide Add, Remove selected and picture-loading buttons fill their allocated cells; small Connect and Cancel remain content-sized. Replacement confirmation controls retain small widths. Runtime assertions compare measured widths to grid track/gutter allocation at 1280, 768, 360 and 320px with less than 1px tolerance. At 360px wide buttons are 162px; at 320px, 142px. Connect remains 67.75px and Cancel 58.65625px. All toolbar buttons remain 36px high. No horizontal document overflow; mobile toolbar has two columns and canvas layout unchanged. Screenshot confirms variants. All 122 editor tests and client production build pass, relevant template/SCSS diagnostics clear. Presentation-only change; no production TypeScript change or new TDD claim. Existing plain boundary fakes retained. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html and .scss; README.md; current session browser width assertions/screenshot at http://localhost:4200/interactive-canvas, editor tests, production build and diagnostics." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-unified-removal",
       "title": "Unify selected part and connection removal",
       "beneficiary": "User editing canvas sketches",

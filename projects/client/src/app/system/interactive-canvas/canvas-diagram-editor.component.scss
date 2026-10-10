@@ -111,13 +111,20 @@
 
 .canvas-toolbar button,
 .canvas-controls button {
-    width: fit-content;
     max-width: 100%;
     min-width: 0;
     min-height: 36px;
     padding: calc(var(--layout-space-small) / 2) var(--layout-space-small);
     box-sizing: border-box;
-    justify-self: start;
+    &.button-small {
+        width: fit-content;
+        justify-self: start;
+    }
+
+    &.button-wide {
+        width: 100%;
+        justify-self: stretch;
+    }
 }
 
 .connection-status {
@@ -202,6 +209,13 @@ canvas {
     border: 1px solid #777;
     background: #fff;
     touch-action: none;
+}
+
+@media (width > 42rem) {
+    .canvas-toolbar button.button-small {
+        width: 100%;
+        justify-self: stretch;
+    }
 }
 
 @media (max-width: 60rem) {

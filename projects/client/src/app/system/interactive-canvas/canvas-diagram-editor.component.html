@@ -14,16 +14,16 @@
                     }
                 </select>
             </label>
-            <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
+            <button class="button-wide" type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
                 (click)="addPart()">Add part</button>
-            <button type="button" aria-label="Remove selected"
+            <button class="button-wide" type="button" aria-label="Remove selected"
                 [disabled]="!selectedPart && !selectedConnection && checkedConnections.size === 0"
                 (click)="removeSelected()">Remove selected</button>
         </div>
         <section class="connection-controls" aria-label="Connections">
-            <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
+            <button class="button-small" type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
                 (click)="startConnection()">Connect</button>
-            <button type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
+            <button class="button-small" type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
                 (click)="cancelConnection()">Cancel</button>
             <details class="connection-picker">
                 <summary>Connections ({{ checkedConnections.size }} selected)</summary>
@@ -41,16 +41,16 @@
             </details>
         </section>
         <div class="picture-controls" role="group" aria-label="Load picture">
-            <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load overview</button>
-            <button type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
+            <button class="button-wide" type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load overview</button>
+            <button class="button-wide" type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
         </div>
     </div>
     <p class="connection-status" role="status">{{ connectionMessage }}</p>
     @if (replacementPending) {
         <div class="canvas-controls" role="group" aria-label="Replace current sketch">
             <span>Replace the current sketch? Unsaved boxes and connections will be lost.</span>
-            <button type="button" aria-label="Confirm replacement" (click)="confirmReplacement()">Confirm replacement</button>
-            <button type="button" aria-label="Cancel replacement" (click)="cancelReplacement()">Cancel</button>
+            <button class="button-small" type="button" aria-label="Confirm replacement" (click)="confirmReplacement()">Confirm replacement</button>
+            <button class="button-small" type="button" aria-label="Cancel replacement" (click)="cancelReplacement()">Cancel</button>
         </div>
     }
     @if (overviewLoaded) {

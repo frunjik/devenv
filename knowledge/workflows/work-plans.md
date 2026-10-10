@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Use small and grid-filling wide editor buttons
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-button-variants`, `canvas-editor-button-growth`
+
+Completed wide Add/Remove/picture actions and responsive small Connect/Cancel: fill grid cells above 42rem, content-sized on mobile. Replacement controls, 36px minimum height and canvas unchanged. Initial variants passed 122 editor tests. Follow-up runtime assertions pass at 320, 360, 672, 673, 768 and 1280px; client build passes and no overflow. Next step: user review and optional commit approval.
+
 #### WorkTask: Unify selected part and connection removal
 
 **Status:** Completed

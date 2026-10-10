@@ -10,6 +10,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-button-variants",
+          "title": "Use small and grid-filling wide editor buttons",
+          "description": "Completed wide Add/Remove/picture actions and responsive small Connect/Cancel: fill grid cells above 42rem, content-sized on mobile. Replacement controls, 36px minimum height and canvas unchanged. Initial variants passed 122 editor tests. Follow-up runtime assertions pass at 320, 360, 672, 673, 768 and 1280px; client build passes and no overflow. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-button-variants", "canvas-editor-button-growth"]
+        }, {
           "id": "canvas-editor-unified-removal",
           "title": "Unify selected part and connection removal",
           "description": "Completed one Remove selected action for the selected part, its incident connections, directly selected canvas connection and checked connections. Reuses existing cleanup and preserves unrelated items. Verified 122 editor tests, 100% changed-module coverage, TypeScript check, client build and live combined/direct connection removal with one button and no mobile overflow. Next step: user review and optional commit approval.",

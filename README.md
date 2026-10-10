@@ -34,13 +34,17 @@ downloads. The preview uses a single column on narrow screens and preserves the
 stored diagram formats. This is a vector interpretation,
 not a pixel-identical reproduction of handwriting.
 
-In `/interactive-canvas`, the Shape picker offers Rectangle, Artifact, System
+In `/interactive-canvas`, the Type picker offers Rectangle, Artifact, System
 software, Business role, Product and Actor. Choose a shape and enter a name before
 adding a part, or change the shape of a selected part. The shared label input edits
 only the name: an artifact named `AI Workflow` displays `Artifact:` and
 `<AI Workflow>`. Actor names appear below the figure. Shapes support the existing
 selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
+Controls align to the global grid: name and type come before Add and Remove,
+followed by connection actions and picture loading. Narrow screens use two
+control columns without splitting the canvas. Editor buttons use content-sized
+widths and a compact 36px minimum height.
 
 ## Work time evidence
 

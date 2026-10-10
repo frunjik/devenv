@@ -29,32 +29,60 @@
 .canvas-toolbar {
     display: grid;
     grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr));
-    gap: var(--layout-space-small) var(--layout-gutter);
+    gap: var(--layout-space-section) var(--layout-gutter);
     align-items: start;
     flex-shrink: 0;
 
-    .canvas-controls {
-        grid-column: span 5;
+    .part-controls,
+    .connection-controls,
+    .picture-controls {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: subgrid;
+        gap: var(--layout-space-small) var(--layout-gutter);
+        align-items: end;
+        min-width: 0;
+    }
+
+    .form-field,
+    .shape-field {
+        display: flex;
+        flex-direction: column;
+        gap: var(--layout-space-small);
+        min-width: 0;
     }
 
     .form-field {
+        grid-column: span 4;
+    }
+
+    .shape-field {
         grid-column: span 3;
-        display: flex;
-        align-items: center;
-        gap: var(--layout-space-small);
+    }
+
+    input.form-control,
+    select {
         min-width: 0;
         min-height: 44px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-        input {
-            flex: 1;
-            min-width: 0;
-            width: 0;
-            min-height: 44px;
+    .part-controls button,
+    .connection-controls button {
+        grid-column: span 2;
+
+        &:last-child {
+            grid-column: span 3;
         }
     }
 
-    .connection-controls {
-        grid-column: span 4;
+    .connection-picker {
+        grid-column: span 5;
+    }
+
+    .picture-controls button {
+        grid-column: span 6;
     }
 }
 
@@ -66,7 +94,7 @@
     flex-shrink: 0;
     min-width: 0;
 
-    button, select {
+    select {
         min-width: 44px;
         min-height: 44px;
     }
@@ -79,6 +107,17 @@
     }
 }
 
+.canvas-toolbar button,
+.canvas-controls button {
+    width: fit-content;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 36px;
+    padding: calc(var(--layout-space-small) / 2) var(--layout-space-small);
+    box-sizing: border-box;
+    justify-self: start;
+}
+
 .connection-status {
     flex-shrink: 0;
 
@@ -87,25 +126,9 @@
     }
 }
 
-.connection-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: var(--layout-space-small);
-    flex-shrink: 0;
-    min-width: 0;
-
-    button {
-        min-width: 44px;
-        min-height: 44px;
-        max-width: 100%;
-    }
-}
-
 .connection-picker {
     min-width: 0;
     max-width: 100%;
-    flex: 1 1 10rem;
 
     summary {
         min-height: 44px;
@@ -124,7 +147,7 @@
 .connection-option {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--layout-space-small);
     min-height: 44px;
     cursor: pointer;
 
@@ -179,14 +202,15 @@ canvas {
     touch-action: none;
 }
 
-@media (max-width: 80rem) {
+@media (max-width: 60rem) {
     .canvas-toolbar {
-        .canvas-controls {
-            grid-column: 1 / -1;
-        }
-
         .form-field,
-        .connection-controls {
+        .shape-field,
+        .part-controls button,
+        .part-controls button:last-child,
+        .connection-controls button,
+        .connection-controls button:last-child,
+        .connection-picker {
             grid-column: span 6;
         }
     }
@@ -194,9 +218,18 @@ canvas {
 
 @media (max-width: 42rem) {
     .canvas-toolbar {
+        // Only the controls use two columns; the global page grid remains single-column.
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
         .form-field,
-        .connection-controls {
-            grid-column: 1 / -1;
+        .shape-field,
+        .part-controls button,
+        .part-controls button:last-child,
+        .connection-controls button,
+        .connection-controls button:last-child,
+        .connection-picker,
+        .picture-controls button {
+            grid-column: span 1;
         }
     }
 }

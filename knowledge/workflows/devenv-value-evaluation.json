@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-controls-compact",
+      "title": "Use two mobile control columns and compact editor buttons",
+      "beneficiary": "User creating and editing canvas sketches",
+      "intendedOutcome": "Reduce control space and use two columns on mobile without splitting the canvas.",
+      "successCondition": "Mobile controls use exactly two equal columns, preserve name/type-before-Add ordering, and remain readable without horizontal overflow. Editor buttons are smaller across viewports; canvas width and existing behavior remain unchanged.",
+      "baseline": "Follow-up to the uncommitted global-grid layout. At 1280px all toolbar buttons are 44px high, toolbar height is 208.375px and canvas width is 1228.8125px. At 360px controls use one column, toolbar height is 600.375px and canvas width is 321px. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:29:24.5043675+02:00",
+      "completedAt": "2026-10-10T18:31:12.9282631+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Two mobile control columns only, smaller editor buttons across all views, unchanged canvas and functionality.", "evidence": "Current follow-up request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 48.424 seconds elapsed from recorded baseline to final verification. Human active effort, waiting and agent execution remain unknown.", "evidence": "Local clocks 2026-10-10T18:29:24.5043675+02:00 and 2026-10-10T18:31:12.9282631+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Mobile toolbar explicitly overrides its own grid to two equal columns while retaining global gutters and the single-column page grid. All editor buttons, including replacement confirmation controls, use content-sized widths and 36px minimum height. Shortened visible Load DevEnv overview to Load overview while retaining its accessible name and action. Runtime checks caught an incorrectly nested button rule; corrected it and verified actual dimensions, not just a passing build. Final measured toolbar buttons are all 36px high at 1280, 768, 360 and 320px with no document overflow. At 360px equal tracks are 162px; at 320px, 142px. At 360px toolbar height fell from 600.375px to 288.375px (312px reduction); at 1280px, from 208.375px to 200.375px. No canvas CSS changed or column split introduced; the mobile canvas gains 15px usable width because vertical page overflow no longer requires a scrollbar. Buttons remain larger than 24px with existing spacing, but intentionally no longer use the previous 44px height. Screenshot at 320px confirms readable controls, wrapped connection summary and intact canvas. Live mobile creation, selection, connection-mode entry, Cancel and removal verified. All 120 editor tests and final client production build pass; relevant SCSS diagnostics clear. This follow-up is CSS/presentation-only and does not claim new TDD or coverage changes. Actual user benefit, active effort and follow-up defects remain unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss and .html; README.md; current session baseline/final browser geometry and screenshot at http://localhost:4200/interactive-canvas; editor tests, production build and diagnostics." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-controls-grid",
+      "title": "Arrange canvas editor controls on the global grid",
+      "beneficiary": "User creating and editing canvas sketches",
+      "intendedOutcome": "Make the editor controls follow a useful task sequence and align with the global grid.",
+      "successCondition": "Name and type precede Add in visual and DOM order; part editing, connections and picture loading are grouped logically. Controls use global grid columns, gutters and spacing, stack into one column on narrow screens, remain usable without document overflow and preserve existing actions.",
+      "baseline": "At e393f03, Shape and loading/actions wrap together in a flex group spanning five columns, while name is a later three-column field and connections span four columns. User screenshots show name after Add and unrelated controls mixed together. Tracking and measurement approved.",
+      "startedAt": "2026-10-10T18:25:28.0782608+02:00",
+      "completedAt": "2026-10-10T18:28:19.5524988+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Global-grid controls with name and type before Add and task-oriented grouping; preserve existing functionality.", "evidence": "Current request and screenshots." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 51.474 seconds elapsed from recorded baseline to final verification. Human active effort, waiting and agent execution remain unknown.", "evidence": "Local clocks 2026-10-10T18:25:28.0782608+02:00 and 2026-10-10T18:28:19.5524988+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Name and type precede Add in visual and DOM order. Parts, connections and picture loading have distinct accessible groups aligned to the global 12-column grid with CSS subgrid and global spacing tokens. Intermediate widths use six-column cells; the existing 42rem global breakpoint gives single-column controls. Runtime geometry at 1440, 1280, 768 and 360px confirms exact shared track alignment, 44px control targets and no document overflow. Screenshots confirm desktop and narrow ordering. Live creation of an artifact named Workflow, selection, connection-mode disabling of name/type, Cancel, removal and overview loading verified after awaiting rendered states. A DOM-order regression failed before template changes; one existing test assumed the connection section contained only the delete button and was updated to assert exactly one delete action while retaining its disabled-state requirement. All 120 editor tests pass with 100% statement, branch, function and line coverage of the unchanged editor logic; client TypeScript check, production client build and relevant diagnostics pass. No production TypeScript, stored schema or canvas behavior changed. Existing Canvas and Scheduler fakes reused; tests perform no application-data writes or network I/O. No further abstraction or unrelated refactor needed. Actual user benefit, active effort and follow-up defects remain unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html, .scss and .spec.ts; README.md; runtime http://localhost:4200/interactive-canvas; current session Red/Green, coverage, type-check, build, diagnostics, browser geometry and screenshot evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-symbol-editor",
       "title": "Use generic architecture symbols in the canvas editor",
       "beneficiary": "User creating labeled architecture sketches",

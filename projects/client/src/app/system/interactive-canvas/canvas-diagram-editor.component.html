@@ -1,8 +1,12 @@
 <main class="interactive-canvas-page layout-page">
     <h1>Canvas Diagram Editor</h1>
     <div class="canvas-toolbar">
-        <div class="canvas-controls">
-            <label>Shape
+        <div class="part-controls" role="group" aria-label="Parts">
+            <label class="form-field">{{ labelPurpose }}
+                <input #label class="form-control" [attr.aria-label]="labelPurpose"
+                    [disabled]="!!connectionSource" [value]="labelValue" (input)="editLabel(label.value)">
+            </label>
+            <label class="shape-field">Type
                 <select #shape aria-label="Part shape" [value]="shapeValue"
                     [disabled]="!!connectionSource || !!selectedConnection" (change)="editShape(shape.value)">
                     @for (option of shapeOptions; track option.value) {
@@ -10,22 +14,16 @@
                     }
                 </select>
             </label>
-            <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load DevEnv overview</button>
-            <button type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
             <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
                 (click)="addPart()">Add part</button>
+            <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
+                (click)="removeSelectedPart()">Remove selected</button>
+        </div>
+        <section class="connection-controls" aria-label="Connections">
             <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
                 (click)="startConnection()">Connect</button>
             <button type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
                 (click)="cancelConnection()">Cancel</button>
-            <button type="button" aria-label="Remove selected part" [disabled]="!selectedPart"
-                (click)="removeSelectedPart()">Remove selected</button>
-        </div>
-        <label class="form-field">{{ labelPurpose }}
-            <input #label class="form-control" [attr.aria-label]="labelPurpose"
-                [disabled]="!!connectionSource" [value]="labelValue" (input)="editLabel(label.value)">
-        </label>
-        <section class="connection-controls" aria-label="Connections">
             <details class="connection-picker">
                 <summary>Connections ({{ checkedConnections.size }} selected)</summary>
                 <div class="connection-options">
@@ -43,6 +41,10 @@
             <button type="button" aria-label="Delete selected connections" [disabled]="checkedConnections.size === 0"
                 (click)="deleteCheckedConnections()">Delete selected</button>
         </section>
+        <div class="picture-controls" role="group" aria-label="Load picture">
+            <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load overview</button>
+            <button type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
+        </div>
     </div>
     <p class="connection-status" role="status">{{ connectionMessage }}</p>
     @if (replacementPending) {

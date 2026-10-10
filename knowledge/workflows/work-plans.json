@@ -10,6 +10,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-controls-grid",
+          "title": "Arrange canvas editor controls on the global grid",
+          "description": "Completed name/type-before-Add global-grid ordering and compact-controls follow-up. Mobile controls use two equal columns, scoped only to the toolbar; canvas layout and global page grid remain unchanged. Editor buttons are content-sized and 36px high across tested viewports. Verified 120 editor tests, client production build, live dimensions at desktop/tablet/360/320px, no document overflow and mobile creation/selection/connect/cancel/removal. At 360px toolbar height reduced from 600.375px to 288.375px. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-controls-grid", "canvas-editor-controls-compact"]
+        }, {
           "id": "canvas-symbol-editor",
           "title": "Use generic architecture symbols in the canvas editor",
           "description": "Completed artifact, system software, business role, product and actor choices in the canvas editor. Existing label input edits the name; box symbols keep their fixed heading and show the name inside angle brackets, while actor names appear below a centered figure. Rectangle default, loaded pictures, selection bounds, dragging, connections and deletion preserved. Verified 143 focused tests, 100% coverage of both changed production modules, TypeScript check, shared/client builds and live creation, movement, relabeling, connection and removal. Narrow controls have no document overflow. Baseline and completion evidence are in the linked evaluation. Next step: user review and optional commit approval.",

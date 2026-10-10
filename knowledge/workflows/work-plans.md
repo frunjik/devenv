@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Arrange canvas editor controls on the global grid
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-controls-grid`, `canvas-editor-controls-compact`
+
+Completed name/type-before-Add global-grid ordering and compact-controls follow-up. Mobile controls use two equal columns, scoped only to the toolbar; canvas layout and global page grid remain unchanged. Editor buttons are content-sized and 36px high across tested viewports. Verified 120 editor tests, client production build, live dimensions at desktop/tablet/360/320px, no document overflow and mobile creation/selection/connect/cancel/removal. At 360px toolbar height reduced from 600.375px to 288.375px. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.
+
 #### WorkTask: Use generic architecture symbols in the canvas editor
 
 **Status:** Completed

@@ -171,6 +171,26 @@ describe('CanvasDiagramEditor', () => {
         fixture.detectChanges();
     }
 
+    it('presents name and type before adding, followed by grouped connection and picture actions', () => {
+        createEditor();
+        const groups = host.querySelectorAll('.canvas-toolbar [role="group"], .canvas-toolbar section');
+        expect(Array.from(groups, group => group.getAttribute('aria-label'))).toEqual([
+            'Parts', 'Connections', 'Load picture',
+        ]);
+        const controls = groups[0].querySelectorAll('input, select, button');
+        expect(Array.from(controls, control => control.getAttribute('aria-label'))).toEqual([
+            'Label for next part', 'Part shape', 'Add part', 'Remove selected part',
+        ]);
+        expect(Array.from(groups[1].querySelectorAll('button'), control => control.getAttribute('aria-label'))).toEqual([
+            'Connect selected part', 'Cancel connection', 'Delete selected connections',
+        ]);
+        enterLabel('Workflow');
+        chooseShape('artifact');
+        clickButton('Add part');
+        expect(editor.parts[0].label).toBe('Workflow');
+        expect(editor.parts[0].shape).toBe('artifact');
+    });
+
     it.each([
         ['artifact', 'Artifact:'], ['system-software', 'System software:'],
         ['business-role', 'Business role:'], ['product', 'Product:'], ['actor', ''],
@@ -526,7 +546,7 @@ describe('CanvasDiagramEditor', () => {
         it('starts collapsed with six unchecked lines and one disabled delete button', () => {
             expect(host.querySelector<HTMLDetailsElement>('.connection-picker')!.open).toBe(false);
             expect(host.querySelectorAll('.connection-picker input')).toHaveLength(6);
-            expect(host.querySelectorAll('.connection-controls button')).toHaveLength(1);
+            expect(host.querySelectorAll('.connection-controls [aria-label="Delete selected connections"]')).toHaveLength(1);
             expect(button('Delete selected connections').disabled).toBe(true);
         });
 

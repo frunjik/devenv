@@ -1,6 +1,6 @@
 # Reduced repository guidance - candidate
 
-Not active. Native instruction draft from the authoritative [review ledger](./ruleset-review.json), not replacement approval. Items are grouped, not ranked.
+Historical draft, installed with cutover link adjustments in [AGENTS.md](../../AGENTS.md) after explicit user approval. Not an independently maintained active ruleset. The [review ledger](./ruleset-review.json) preserves selection decisions.
 
 ## Must - essentials
 

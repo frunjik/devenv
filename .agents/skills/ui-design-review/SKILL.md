@@ -1,50 +1,29 @@
 ---
 name: ui-design-review
-description: Review a system's running UI and relevant source/styles for visual design quality and actionable improvements.
+description: "Only on explicit request or agreement: review the visual design of a running UI and relevant source/styles. Review only; no automatic implementation."
 ---
 
 # Review UI Design
 
-## Trigger
-- Use when the user asks to review, assess, or critique the visual design of a system UI.
+Invoke only when requested or agreed. Follow the repository Must/Should/Could distinctions; UI changes do not automatically require this review.
 
-## Scope
-- Review the requested UI, route, or flow; clarify the target if it is not identifiable.
-- Identify the users' main tasks. Inspect the running UI at relevant viewport sizes and states, then check relevant templates, styles, and shared design tokens.
-- Review only. Do not edit code or apply recommendations unless the user separately asks for implementation.
+## Scope and method
 
-## Review Criteria
-Assess each criterion in the context of the target UI:
+1. Establish the requested UI/route/flow, user tasks and available states. Do not invent product intent.
+2. Inspect representative viewports and interactions, including keyboard focus and narrow reflow where available. Check observations against relevant templates, styles and shared tokens.
+3. Assess color/contrast, whitespace, alignment, scale, hierarchy, consistency, simplicity and typography together. Use applicable WCAG thresholds: 4.5:1 normal text; 3:1 large text and meaningful graphics.
+4. Report concrete findings with severity, route/state, evidence, impact and recommendation; prioritize severity and avoid duplicate findings. Distinguish strengths, limitations and unverified observations.
 
-1. **Color and contrast** — palette use, text and control contrast, and whether color is the only way meaning or state is conveyed. Check WCAG contrast thresholds: 4.5:1 for normal text, 3:1 for large text and meaningful UI graphics.
-2. **Whitespace** — spacing and empty areas support grouping, readability, and focus rather than creating crowding or unexplained gaps.
-3. **Alignment** — related elements share intentional edges, baselines, and spacing.
-4. **Scale** — relative sizes and proportions make content legible and controls usable without distorting priority.
-5. **Visual hierarchy** — layout, size, contrast, and emphasis make the intended order of attention clear.
-6. **Consistency** — repeated elements and patterns behave and appear alike; local variations have a reason.
-7. **Simplicity** — remove or consolidate visual and interaction complexity that does not help users complete their tasks.
-8. **Typography** — readable type sizes, line lengths, hierarchy, and consistent text styles.
+- **High:** prevents or seriously impairs a common task.
+- **Medium:** creates avoidable effort, confusion or reduced readability.
+- **Low:** limited-impact refinement.
 
-## Workflow
-1. Establish the target, main tasks, and available states; do not invent product intent.
-2. Inspect representative viewports and interaction states, including keyboard focus and narrow/reflowed layouts when available. Verify visual observations against source and design tokens where possible.
-3. Assess all eight criteria together. Report concrete issues, not taste; avoid duplicate findings.
-4. For each finding, give severity, route/state, evidence, user impact, and a practical recommendation. Label unverified observations and cite source locations when identifiable.
-5. List criteria with no material issue briefly. State what could not be inspected.
-6. Order findings by severity, then summarize strengths and review limits. Make no UI changes.
+Do not modify UI, data or behavior without separate implementation scope approval. Report criteria proportionally; no repetitive empty checklists or mandatory old workflow ceremony.
 
-## Severity
-- **High:** A substantial visual or interaction barrier that prevents or seriously impairs a common task.
-- **Medium:** A noticeable issue that creates avoidable effort, confusion, or reduced readability.
-- **Low:** A refinement with limited task impact that would improve polish or consistency.
-
-## Success Criteria
-- The review addresses all eight requested criteria without inventing product requirements.
-- Findings are specific, supported by inspected evidence, prioritized, and paired with actionable recommendations.
-- Strengths, limitations, and unknowns are distinguished from findings.
-- No implementation changes are made as part of the review.
+**Concrete instance:** DevEnv's Tools menu can be checked for focus visibility, keyboard navigation and narrow-screen fit.
 
 ## References
-- [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/) — contrast, focus visibility, and reflow.
-- [Understanding WCAG 2.2: Contrast Minimum](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) and [Non-text Contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
-- [Nielsen Norman Group: 10 Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/) — consistency, status, user control, and simplicity.
+
+- [WCAG 2.2 Quick Reference](https://www.w3.org/WAI/WCAG22/quickref/)
+- [Contrast Minimum](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html) and [Non-text Contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html)
+- [Nielsen Norman Group: Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/)

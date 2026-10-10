@@ -51,7 +51,12 @@ describe('DevEnv clone package', () => {
         await cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem);
 
         const copiedPaths = fileSystem.cp.mock.calls.map(([source]) => source);
-        for (const resource of ['agent-practices.md', join('knowledge', 'practices', 'practice-set-versions.json')]) {
+        for (const resource of [
+            'agent-practices.md',
+            join('knowledge', 'practices', 'practice-set-versions.json'),
+            join('knowledge', 'practices', 'example-led-knowledge-modeling.md'),
+            join('reviews', 'rice-prioritization.md'),
+        ]) {
             expect(fileSystem.cp).toHaveBeenCalledWith(
                 join(root, resource),
                 join(stage, resource),
@@ -61,6 +66,7 @@ describe('DevEnv clone package', () => {
         expect(copiedPaths).not.toContain(join(root, 'knowledge'));
         expect(copiedPaths).not.toContain(join(root, 'knowledge', 'practices'));
         expect(copiedPaths).not.toContain(join(root, 'knowledge', 'practices', 'archives'));
+        expect(copiedPaths).not.toContain(join(root, 'reviews'));
     });
 
     it.each([root, join(root, 'clone'), dirname(root)])('rejects source-overlapping destination %s', async destination => {

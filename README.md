@@ -81,12 +81,15 @@ The dialog requires acknowledgement that existing destination contents will be r
 The server stages the curated package before replacing the destination, rejects source/destination overlap
 and existing symbolic-link destinations, and attempts restoration if installation fails.
 The package includes client/server/shared source, scripts, configuration, documentation, agents,
-skills and glossary, including `agent-practices.md` and the scoped
-`knowledge/practices/practice-set-versions.json` guidance dependency. It otherwise excludes
+skills and glossary, including `agent-practices.md`, the scoped
+`knowledge/practices/practice-set-versions.json` policy, and the opt-in
+`knowledge/practices/example-led-knowledge-modeling.md` and `reviews/rice-prioritization.md` processes. It otherwise excludes
 the root `knowledge` and `reviews` folders, including practice archives, Git history, dependencies, build output,
 cache folders, workspace-specific task/input/scratch resources and `.env` files.
 Design-backed features such as System Plan and Workflow TODO require recipient-provided resources;
 the export does not recreate those excluded documents or rewrite references to them.
+Historical review-ledger, reference-archive and modeling-example links are unavailable in clones;
+they are provenance references, not required guidance or active procedures.
 An indeterminate progress bar is shown while exporting. Success closes the dialog automatically
 and shows a success snackbar. Export errors keep the dialog open for retry; any failure to remove
 the previous destination is included in a persistent warning snackbar after the successful export.

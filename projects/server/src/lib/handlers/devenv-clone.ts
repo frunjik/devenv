@@ -42,6 +42,8 @@ const PACKAGE_FILES = [
     'AGENTS.md',
     'agent-practices.md',
     'knowledge/practices/practice-set-versions.json',
+    'knowledge/practices/example-led-knowledge-modeling.md',
+    'reviews/rice-prioritization.md',
     'CHANGELOG.md',
     'DEVENVOPDEV.md',
     'LICENSE',

@@ -1,26 +1,21 @@
 # Example-Led Knowledge Modeling
 
-**Recorded:** 2026-10-07
-**Status:** User-agreed working pattern; not an implemented export format.
+Use only on explicit request or agreement.
 
-## Purpose
+## Purpose and method
 
-Develop a knowledge-transfer model from concrete meaning and examples rather than choosing a schema or serialization shape prematurely.
-
-## Pattern
+Develop a knowledge-transfer model from meaning and examples rather than choosing a schema prematurely.
 
 **Meaning -> concrete example -> candidate Type -> JSON -> check preserved meaning.**
 
-1. Describe one complete transfer example in Markdown. State what the recipient must understand, including context, current instructions, exceptions, local preferences, source decisions, and unresolved questions.
-2. Derive a candidate Type from the distinctions needed to preserve that meaning. A Type defines meaning and constraints; JSON encodes values.
-3. Represent the example in JSON. Check for lost information, ambiguity, and proposals incorrectly presented as agreed rules. Do not assume automatic extraction.
-4. Try a contrasting example, such as a provisional definition or a SubjectDomain (WMS) observation. Do not force process rules and domain evidence into the same record shape merely for uniformity.
-5. Only after these checks, choose the authoritative representation. Generated Markdown views may become useful if the structured model proves adequate; do not maintain two independent authoritative copies.
+1. Describe one complete transfer example in Markdown: context, instructions, exceptions, preferences, source decisions and unresolved questions.
+2. Derive candidate Types from distinctions needed to preserve meaning and constraints.
+3. Encode the example in JSON; check lost information, ambiguity and proposals incorrectly presented as agreed rules. Do not assume automatic extraction.
+4. Try a contrasting example before choosing the authoritative representation; do not force process rules and domain evidence into one shape.
+5. Choose the authoritative representation only after these checks. Generate Markdown views when useful; do not maintain two authorities.
 
-## Naming and Boundaries
+Use the repository's proportional Type/naming guidance: discuss consequential names and keep unapproved names provisional. The removed P-012 procedure is not a dependency or separate naming gate.
 
-Ask the user for candidate names before adopting them, following P-012. Distinguish a method name, an example's subject, a conceptual Type, and a file or serialization format.
+## Concrete historical instance
 
-The initial example is [Commit Process](./commit-process.md), the user-selected title. [MetaExport](../workflows/meta-export.md) is the user-selected provisional name for the transfer collection, and KnowledgeStatement is the agreed candidate name for an individually referenceable piece of knowledge. Their structures and further candidate Type and field names remain to be agreed. No Class, schema, generator, external destination, or transmission is authorized by recording this pattern.
-
-This pattern supports SC-049's Rule Set exploration; it does not complete that concern or settle whether Rule Set, Domain Definition, or another concept best describes the eventual export.
+The recorded initial example is [Commit Process](./commit-process.md), with [MetaExport](../workflows/meta-export.md) as the provisional transfer collection and KnowledgeStatement as the agreed candidate for an individually referenceable piece of knowledge. These links explain prior modeling context; they do not activate the excluded Commit Process or authorize a schema, generator or transmission. Further structure remains subject to agreement. Historical example documents are intentionally unavailable in curated clones; use an agreed local example instead, without inventing the original contents.

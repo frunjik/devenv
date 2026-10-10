@@ -1,7 +1,7 @@
 {
   "title": "Ruleset reduction decision ledger",
-  "status": "Authoritative user-reviewed decision ledger for a proposed replacement; current rules remain active",
-  "scope": "Repository-controlled practices, processes, agents and skills only. Decisions describe a proposed replacement, not changes to current active rules. Platform/runtime constraints cannot be removed by this review; profile/plugin changes require separate approval.",
+  "status": "User-authorized repository cutover installed and locally verified in the worktree; uncommitted; fresh-chat loading unverified; historical decisions retained",
+  "scope": "Repository-controlled practices, processes, agents and skills only. Ranked non-Won't decisions form the selected replacement installed after explicit cutover approval. Platform/runtime constraints cannot be removed by this review; profile/plugin changes require separate approval.",
   "budget": { "maximumNonEmptyAlwaysOnLines": 60, "includesMandatoryReferences": true },
   "categoryMeanings": {
     "must": "Essential to the new ruleset.",
@@ -9,7 +9,7 @@
     "could": "Optional/on-demand; invoke optional skills and agents only on request or after agreement.",
     "wont": "Excluded from this version's active rules, not deleted from history."
   },
-  "preservationPolicy": "Archive useful excluded skill/agent/process details outside active discovery, extract agreed essentials after preservation review, and retain history. Reference archives are not mandatory indirect reading. Current rules remain active until replacement approval.",
+  "preservationPolicy": "Preserve excluded details outside active discovery in the commit-pinned reference ZIP; retain review history and folded safeguards. Historical references do not activate removed rules. Repository cutover authorized; fresh-chat loading remains to be verified.",
   "orderingPolicy": "Current proposed selection contains only decisions with a non-null order and category other than Won't: 12 Must, 16 Should and 4 Could. All unranked and Won't items are removed from selection, not awaiting ranking. Decisions retain the full historical review inventory; their earlier categories/dispositions are not independent authorization to retain excluded items. Preserve already-folded safeguards in selected rules and historical references without making excluded procedures mandatory. Order does not override dependencies or categories.",
   "decisions": [
     { "id": 1, "summary": "Core test-first development", "sources": [".agents/system-task-principles.md#P-001"], "category": "Must", "order": 1, "disposition": "Keep one concise essential Red-Green-Refactor definition; classify phase announcements and phase file separately.", "rationale": null },
@@ -103,6 +103,8 @@
     { "decisionIds": [27], "text": "Use the staged UI Design Review skill only on explicit request/agreement; review does not authorize implementation." }
   ],
   "clarifications": [
+    "Cutover local verification complete: 35 non-empty core lines/642 words; scoped UI defaults add 9 lines, plus one conservatively counted version-policy line (45 applicable lines, under 60). Discovery audit finds only the opt-in UI review SKILL.md, no custom agents or excluded SKILL.md files. Archive SHA256 unchanged. Clone optional-process repair observed Red then Green: 28 boundary-mocked package tests pass; server Jest-source and ledger TypeScript checks pass, editor diagnostics clear. Focused handler coverage is 85.36% statements/lines, 76% branches, 75% functions; uncovered HTTP adapter lines 228-255 were not exercised by the boundary-mocked package suite. No real-service API suite run. Configuration comparison confirms only global threshold blocks removed, reporting/collection preserved. No new domain Type required: existing DevEnvCloneFileSystem reused. Clone history links explicitly documented as unavailable, optional process files individually included. Fresh-chat behavior and version registration remain pending; no cutover commit authorized.",
+    "User explicitly authorized cutover on 2026-10-10. Installed reduced AGENTS.md, scoped local UI defaults, a non-binding historical register pointer, the opt-in UI Design Review skill and repaired Example-Led process. Removed four excluded skills and both custom agents from discovery. Removed only client/server global coverageThreshold blocks; collection/reporting unchanged. Local links and 35-line core budget verified. Clone packaging needs follow-up for newly retained optional process references; fresh-chat loading cannot be inferred from this conversation. No commit requested for cutover; version registry unchanged pending actual committed content.",
     "User removed all unranked and Won't items from the proposed selection, then explicitly approved preserving review history and already-folded safeguards while repairing retained references. Selected set: 12 Must, 16 Should, 4 Could (32 total). The 28 excluded records remain historical inventory only. Removed optional drafts are not approved for installation under this selection. Example-Led Knowledge Modeling is staged without the removed P-012 gate; Commit Process remains a non-binding historical example. Active guidance and cutover authorization are unchanged.",
     "User stopped the ordering interview before choosing Could rank 5. Could ranks 1-4 remain assigned; no rank 5 inferred. Resume only on request, from Could rank 5 among the 11 remaining items.",
     "User assigned Could rank 4 to decision 20, suggested commit subject. Could ranks 1-4 assigned; 11 remain unranked. Next choice is Could rank 5. No commit or subject suggestion requested by this ranking.",
@@ -206,7 +208,7 @@
   ],
   "openQuestions": [
     "Complete source inventory and preservation audit; classifications are not proof that every detailed obligation is covered.",
-    "Selection complete: only the 32 ranked non-Won't decisions are retained. No further ranking of excluded items is pending. Review the trimmed candidate before separate cutover; archive-reference repairs and fresh effective-loading/representative checks remain pending.",
+    "Cutover installed and locally verified for the 32 selected decisions. No excluded-item ranking remains pending. Fresh-chat effective loading and representative behavior remain unverified. Changes await an explicit commit request; register the new version only after actual cutover content is committed.",
     "Ledger migration approved; verify any later changes against user decisions.",
     "Draft no more than 60 non-empty always-on lines including mandatory references, then review conflicts and retained detail.",
     "Implement approved retained optional-skill trigger/internal-obligation alignment after replacement scope approval; verify they do not recreate automatic mandatory invocation.",

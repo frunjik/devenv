@@ -1,24 +1,48 @@
-# Agent guidance
+# Repository guidance
 
-## Required work checkpoints
+User-approved reduced ruleset. Items are grouped, not execution-ranked.
 
-Use this checklist in order. Before acting, read the [detailed repository practices](./agent-practices.md) and the applicable [system task principles](./.agents/system-task-principles.md). They remain binding; this summary does not waive requirements, exceptions or approval gates.
+## Must - essentials
 
-1. **Start or resume:** Read the saved workflow checkpoint and state the outcome and acceptance condition. Before a new substantive task, ask separately whether to track resumable work and whether to keep WorkEvaluation metrics; wait for both choices. Explain ineligibility where applicable. Do not infer consent from scope approval or repeat the questions for a same-task follow-up (P-026). Record the agreed choices.
-2. **Implement:** Check established practice, scope and external boundaries before editing. Reuse contracts and mocks. Apply the relevant TDD/phase, Type/naming, test-I/O and duplication checks. Surface conflicts before acting; do not silently skip a required check because a change is small or presentation-only.
-3. **Verify:** Test the requested outcome, not a proxy. Run the smallest relevant tests, required all-four coverage and TypeScript-aware checks. Review practice compliance separately from test results. Report failures, unavailable checks and unknowns honestly.
-4. **Pause or finish:** Save evidence, decisions and the next step in the opted-in workflow; maintain the global list as required. Clear owned phase state. Consider a concrete meta lesson. At each three-minute active-work gate, pause and ask before continuing.
-5. **Report:** Include the required global workflow/status and available evaluation-metrics summary (P-021/P-023), plus the task's tracking and metrics choices and validation limitations. End with a blank line, a `Status:` line, and an informational `Suggested commit subject:` line when relevant (P-005). A suggested subject is not a commit request.
-6. **Commit only on request:** Read P-005/P-011, verify scope and current naming/attribution preference, present the subject for approval, then wait. Never initiate a commit or approval prompt without an explicit user request. Omit the Copilot co-author trailer under the current standing waiver.
+- Fully satisfy agreed scope; preserve unrelated work, intended behavior and stored formats. Ask before consequential expansion/destruction. Update stale tests for agreed changes, never weaken them to hide regressions.
+- Production behavior: focused failing test first, minimal passing implementation, then refactor as needed with tests green.
+- Tests must not mutate real files or contact external services. Reads, console logging, test-local memory/DOM and runner reports/caches are allowed; application-data writes are not. Boundary-adapter/mock tests may use spies/fake time.
+- Verify exact requested outcomes with relevant tests, type-check/build and affected API producers/consumers; use UI/runtime checks when needed. Report failed/unavailable checks and uncertainty. Expose errors, never disguise failures as success.
+- Keep one authoritative source, not independently maintained derived views. Validate external input at appropriate runtime boundaries; reuse validated boundaries. Interfaces are not runtime validation.
+- For opted-in tracking/metrics, carry choices through follow-ups; record baseline and completion/follow-up evidence, leaving unknowns unknown. Save decisions, open questions and next step before pausing/switching tracked work.
+- Commit only on explicit request and within authorized scope; verify scope and resulting worktree. No Copilot co-author trailer.
+- Ruleset changes require approval; do not change rules automatically.
+- Keep `@shared`, including dependencies and public exports, valid in browser and server runtimes; keep runtime-specific integrations outside shared.
 
-## Repository essentials
+## Should - applicable defaults
 
-- Angular client: `projects/client`; runtime-neutral shared contracts/validation: `projects/shared`, imported as `@shared`; Express API: `projects/server`.
-- Follow nearby patterns. Angular templates/styles are external files. View requests preserve Types, APIs and source data unless separately approved. Reuse palette and layout tokens where roles match.
-- Use maintained Jest scripts: `npm run test:client`, `npm run test:server`, or `npm run test:all` for both. Build shared before client: `npm run build -- --project shared`, then `npm run build -- --project client`. The server Angular build target has known unsupported errors. On Windows use `npm.cmd`/`npx.cmd` when PowerShell script policy blocks the wrappers.
-- Development: `npm run dev:client` and `npm run dev:server`; client development consumes shared source without a separate shared watch.
-- Preserve existing feature-store workflows and structured-source authority. Follow the detailed practices for storage, runtime validation, UI conventions and scope-specific gates.
+Applicable defaults, not completion gates; briefly justify meaningful deviations.
 
-## Trial
+- For ruleset/versioning work, default to a version pinned to committed content; preserve history and unknown activation dates. Consult the scoped `versioningPolicy` in [practice-set-versions.json](./knowledge/practices/practice-set-versions.json) when applicable.
+- Aim for 100% statement/branch/function/line coverage in changed production modules; explain meaningful gaps.
+- Test requirements through public behavior with concise fixtures preserving tested distinctions, not live-record copies. Identify boundaries first; reuse simple boundary mocks/injection, avoiding framework internals. Justify internal-unit tests or necessary interception.
+- After Green, review duplication/function cohesion; extract real responsibilities/reuse, not forced abstractions. Avoid coverage/testability distortions; justify legitimate refactors or proven unreachable-code cleanup.
+- Review missing/refinable Types and evidence-backed complexity when concepts/representations change, using meaning, constraints and genuine examples. Report only meaningful findings/alternatives. Discuss consequential names; keep unapproved names provisional without local-name approval gates.
+- Prefer Typed JSON with explicit interfaces and generated Markdown for structured data; retain narrative/native customization Markdown exceptions.
+- Interface for grouped records; type for values/choices and named structured-union alternatives. Follow nearby UI conventions; keep feature details local. No automatic correct-code rewrites. Relevant UI details: [local conventions](./agent-practices.md).
+- Jest: import used helpers from `@jest/globals` on the first line. Primary concern commits: `SystemConcern-NNN:` plus the specific contribution.
+- Ask separately about new-task tracking/metrics when useful unless specified; honor choices without re-asking. After commit requests, seek exact short-subject approval.
+- Check maintained guidance when uncertain or consequential; explain consequential departures from credible practice.
 
-This is a reading-order and repetition-reduction trial, not a policy relaxation. For the next new task, same-task follow-up and requested commit, record whether tracking/metrics prompts and the stable-summary subject were correctly handled. Outcomes are unknown until observed; a fresh chat is needed to assess the new entry point rather than assuming this conversation has reloaded it.
+## Could - only on request or after agreement
+
+- [Example-Led Knowledge Modeling](./knowledge/practices/example-led-knowledge-modeling.md) and [RICE](./reviews/rice-prioritization.md). RICE requires suitable comparable contexts and evidence-backed estimates; scores do not override constraints or dependencies.
+- UI Design Review skill; informational commit-subject suggestions, never commit initiation.
+
+## Excluded from active guidance
+
+Only ranked non-Won't [ledger](./knowledge/practices/ruleset-review.json) items are selected. All unranked/Won't items are excluded as standalone practices or customizations; already-folded safeguards remain in selected rules. [Originals/history](./knowledge/practices/archives/reference-snapshot-c35d399.zip) are outside discovery, never mandatory indirect reading. Ledger/archive and historical-example links are unavailable in curated clones. Historical examples do not activate excluded procedures.
+
+## Repository quick reference
+
+Informational context, not additional practices.
+
+- Angular client: `projects/client`; shared contracts: `projects/shared` (`@shared`); Express API: `projects/server`.
+- Tests: `npm run test:client`, `npm run test:server`, or `npm run test:all`; coverage scripts also exist. Use the smallest relevant check.
+- Production build: shared first (`npm run build -- --project shared`), then client (`npm run build -- --project client`). Server Angular build is unsupported with known errors.
+- Dev: `npm run dev:client` / `npm run dev:server`; client consumes shared source. Windows: `npm.cmd`/`npx.cmd` if wrappers are blocked. Setup: [README](./README.md).

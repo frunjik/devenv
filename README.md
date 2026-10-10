@@ -81,7 +81,9 @@ The dialog requires acknowledgement that existing destination contents will be r
 The server stages the curated package before replacing the destination, rejects source/destination overlap
 and existing symbolic-link destinations, and attempts restoration if installation fails.
 The package includes client/server/shared source, scripts, configuration, documentation, agents,
-skills and glossary. It excludes the root `knowledge` and `reviews` folders, Git history, dependencies, build output,
+skills and glossary, including `agent-practices.md` and the scoped
+`knowledge/practices/practice-set-versions.json` guidance dependency. It otherwise excludes
+the root `knowledge` and `reviews` folders, including practice archives, Git history, dependencies, build output,
 cache folders, workspace-specific task/input/scratch resources and `.env` files.
 Design-backed features such as System Plan and Workflow TODO require recipient-provided resources;
 the export does not recreate those excluded documents or rewrite references to them.

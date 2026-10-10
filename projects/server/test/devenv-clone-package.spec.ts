@@ -47,6 +47,22 @@ describe('DevEnv clone package', () => {
         expect(filter(join(root, 'projects/client/src/app.ts'), '')).toBe(true);
     });
 
+    it('includes required guidance files without exporting the knowledge archive', async () => {
+        await cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem);
+
+        const copiedPaths = fileSystem.cp.mock.calls.map(([source]) => source);
+        for (const resource of ['agent-practices.md', join('knowledge', 'practices', 'practice-set-versions.json')]) {
+            expect(fileSystem.cp).toHaveBeenCalledWith(
+                join(root, resource),
+                join(stage, resource),
+                { recursive: true, filter: expect.any(Function) },
+            );
+        }
+        expect(copiedPaths).not.toContain(join(root, 'knowledge'));
+        expect(copiedPaths).not.toContain(join(root, 'knowledge', 'practices'));
+        expect(copiedPaths).not.toContain(join(root, 'knowledge', 'practices', 'archives'));
+    });
+
     it.each([root, join(root, 'clone'), dirname(root)])('rejects source-overlapping destination %s', async destination => {
         await expect(cloneDevEnv(root, {
             destination,

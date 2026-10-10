@@ -40,6 +40,8 @@ const PACKAGE_FILES = [
     '.glossary',
     '.glossary.json',
     'AGENTS.md',
+    'agent-practices.md',
+    'knowledge/practices/practice-set-versions.json',
     'CHANGELOG.md',
     'DEVENVOPDEV.md',
     'LICENSE',

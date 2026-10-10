@@ -788,6 +788,18 @@ Find System Concerns in the client System Plan by ID, title, or displayed descri
 **Validation evidence:** Public-interface tests cover each searchable field, casing, whitespace, multiple matches, excluded metadata, no-match feedback, clearing, and unchanged overall totals, alongside loading/error/empty states. All 14 component tests pass with 100% coverage on all four metrics; shared/client builds pass. Reuse `SystemPlanConcern`; no new domain Type or Glossary term is needed.
 **Search styling (2026-10-07):** Added external SCSS for label/input spacing, a full-width dark input, placeholder contrast, keyboard focus, and disabled feedback. Browser checks at 320, 768, and 1440 px confirm the input fits its container and keyboard focus is visible. Existing concern cards overflow at 320 px; that is separate from this search change. All 14 tests pass with 100% component coverage. The production build succeeds but reports the component stylesheet 467 bytes over its 4 kB warning budget. The user chose to retain the styling and record the warning; no budget was raised.
 
+### SC-057 — Investigate the unsupported Angular server build
+
+**Kind:** Design · **Status:** Ready · **Depends on:** None
+
+The configured Angular `server` library build has known TypeScript errors and is excluded from the supported shared-then-client production build sequence. Keep this limitation visible as follow-up work rather than only a ruleset caveat.
+
+**Direction (user, 2026-10-10):** Record a note while reviewing the reduced ruleset; no build repair or target removal is authorized.
+**Working boundary:** This concerns the Angular library build target, not a claim that the Express API runtime or server Jest suite is broken. Preserve their supported workflows.
+**Open questions:** What errors does the target currently produce? Is this Angular library target still intended, or should server compilation use another supported path? Decide whether to repair, replace or retire the target only after inspecting its purpose and reproducing the errors.
+**Validation evidence:** The [README build guidance](../../../README.md#build) documents the limitation. No fresh server build was run for this note; current diagnostics and root cause remain unverified.
+**Vocabulary and Type review:** This is a technical build/configuration concern; no new domain Term or Type is established.
+
 ## Working Sequence
 
 1. Resolve enough of SC-001–SC-005 to define the converter boundary and observable behavior.

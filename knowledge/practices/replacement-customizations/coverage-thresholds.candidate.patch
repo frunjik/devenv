@@ -1,0 +1,32 @@
+diff --git a/projects/client/jest.config.cjs b/projects/client/jest.config.cjs
+--- a/projects/client/jest.config.cjs
++++ b/projects/client/jest.config.cjs
+@@ -13,12 +13,4 @@ module.exports = {
+     },
+     setupFilesAfterEnv: ['<rootDir>/projects/client/setup-jest.ts'],
+     testMatch: ['<rootDir>/projects/client/src/**/*.spec.ts'],
+-    coverageThreshold: {
+-        global: {
+-            branches: 100,
+-            functions: 100,
+-            lines: 100,
+-            statements: 100,
+-        },
+-    },
+ };
+diff --git a/projects/server/jest.config.cjs b/projects/server/jest.config.cjs
+--- a/projects/server/jest.config.cjs
++++ b/projects/server/jest.config.cjs
+@@ -24,12 +24,4 @@ module.exports = {
+     ],
+     coverageDirectory: '<rootDir>/coverage/server',
+     coverageReporters: ['text', 'lcov'],
+-    coverageThreshold: {
+-        global: {
+-            branches: 100,
+-            functions: 100,
+-            lines: 100,
+-            statements: 100,
+-        },
+-    },
+ };

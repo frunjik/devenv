@@ -1,9 +1,26 @@
 <section class="glossary">
     <h1>Glossary</h1>
+    <div class="glossary-tabs" role="tablist" aria-label="Glossary scope">
+        <button #systemTab type="button" role="tab" id="glossary-system-tab" aria-controls="glossary-panel"
+            [attr.aria-selected]="activeTab === 'system'" [tabIndex]="activeTab === 'system' ? 0 : -1"
+            (click)="activeTab = 'system'"
+            (keydown.arrowright)="projectTab.click(); projectTab.focus(); $event.preventDefault()"
+            (keydown.arrowleft)="projectTab.click(); projectTab.focus(); $event.preventDefault()"
+            (keydown.home)="systemTab.click(); systemTab.focus(); $event.preventDefault()"
+            (keydown.end)="projectTab.click(); projectTab.focus(); $event.preventDefault()">System</button>
+        <button #projectTab type="button" role="tab" id="glossary-project-tab" aria-controls="glossary-panel"
+            [attr.aria-selected]="activeTab === 'project'" [tabIndex]="activeTab === 'project' ? 0 : -1"
+            (click)="activeTab = 'project'"
+            (keydown.arrowright)="systemTab.click(); systemTab.focus(); $event.preventDefault()"
+            (keydown.arrowleft)="systemTab.click(); systemTab.focus(); $event.preventDefault()"
+            (keydown.home)="systemTab.click(); systemTab.focus(); $event.preventDefault()"
+            (keydown.end)="projectTab.click(); projectTab.focus(); $event.preventDefault()">Project</button>
+    </div>
+    <div id="glossary-panel" role="tabpanel" [attr.aria-labelledby]="'glossary-' + activeTab + '-tab'">
     <p *ngIf="errorMessage" role="alert">{{ errorMessage }}</p>
-    <p *ngIf="!errorMessage && entries.length === 0">No terms yet.</p>
     <div *ngIf="entries.length > 0" class="glossary-search form-field">
         <label for="glossary-search">Search terms and content</label>
+        <div class="glossary-search-input">
         <input
             #search
             id="glossary-search"
@@ -11,8 +28,13 @@
             type="search"
             [value]="searchQuery"
             (input)="searchQuery = search.value">
+            <svg class="glossary-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="10" cy="10" r="6"></circle>
+                <path d="M14.5 14.5 21 21"></path>
+            </svg>
+        </div>
     </div>
-    <p *ngIf="entries.length > 0 && filteredEntries.length === 0">No Glossary entries match your search.</p>
+    <p *ngIf="!errorMessage && filteredEntries.length === 0" class="glossary-empty">No {{ activeTab === 'system' ? 'System' : 'Project' }} Terms found.</p>
     <dl *ngIf="filteredEntries.length > 0" class="glossary-list">
         <div *ngFor="let entry of filteredEntries" class="glossary-entry accent-card">
             <dt class="glossary-term">{{ entry.term }}</dt>
@@ -32,4 +54,5 @@
             </dd>
         </div>
     </dl>
+    </div>
 </section>

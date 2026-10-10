@@ -21,6 +21,91 @@ describe('GlossaryComponent', () => {
 
     afterEach(() => http.verify());
 
+    it('includes a decorative search icon beside the labelled search input', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({
+            data: [{ term: 'Outcome', definitions: [], examples: [], domains: [] }],
+        });
+        fixture.detectChanges();
+        const host: HTMLElement = fixture.nativeElement;
+        const icon = host.querySelector('.glossary-search-input svg');
+        expect(icon).not.toBeNull();
+        expect(icon?.getAttribute('aria-hidden')).toBe('true');
+        expect(icon?.getAttribute('focusable')).toBe('false');
+        expect(host.querySelector('.glossary-search-input input')?.id).toBe('glossary-search');
+    });
+
+    it('preserves search across tabs and names Project in empty and unmatched results', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({
+            data: [
+                { term: 'Outcome', definitions: [], examples: [], domains: ['DevEnv'] },
+                { term: 'Understand', definitions: ['Outcome clarity'], examples: [], domains: ['AgentPhaseGuide'] },
+            ],
+        });
+        fixture.detectChanges();
+        const host: HTMLElement = fixture.nativeElement;
+        const search = host.querySelector<HTMLInputElement>('#glossary-search')!;
+        search.value = ' outcome ';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(host.querySelector('.glossary-term')!.textContent).toBe('Outcome');
+        host.querySelector<HTMLButtonElement>('#glossary-project-tab')!.click();
+        fixture.detectChanges();
+        expect(search.value).toBe(' outcome ');
+        expect(host.querySelector('.glossary-term')!.textContent).toBe('Understand');
+        search.value = 'unknown';
+        search.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        expect(host.textContent).toContain('No Project Terms found.');
+        fixture.componentInstance.entries = fixture.componentInstance.entries.filter(entry => entry.term === 'Outcome');
+        fixture.detectChanges();
+        expect(host.textContent).toContain('No Project Terms found.');
+        expect(host.querySelectorAll('.glossary-empty')).toHaveLength(1);
+    });
+
+    it.each([
+        ['system', 'ArrowRight', 'project'], ['system', 'ArrowLeft', 'project'],
+        ['system', 'Home', 'system'], ['system', 'End', 'project'],
+        ['project', 'ArrowRight', 'system'], ['project', 'ArrowLeft', 'system'],
+        ['project', 'Home', 'system'], ['project', 'End', 'project'],
+    ])('supports %s tab keyboard %s to %s', (start, key, destination) => {
+        http.expectOne('http://localhost:3000/glossary').flush({ data: [] });
+        const host: HTMLElement = fixture.nativeElement;
+        const tab = host.querySelector<HTMLButtonElement>(`#glossary-${start}-tab`)!;
+        tab.click();
+        fixture.detectChanges();
+        const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+        tab.dispatchEvent(event);
+        fixture.detectChanges();
+        const selected = host.querySelector<HTMLButtonElement>(`#glossary-${destination}-tab`)!;
+        expect(selected.getAttribute('aria-selected')).toBe('true');
+        expect(selected.tabIndex).toBe(0);
+        expect(document.activeElement).toBe(selected);
+        expect(event.defaultPrevented).toBe(true);
+        expect(host.querySelector('[role="tabpanel"]')!.getAttribute('aria-labelledby')).toBe(selected.id);
+    });
+
+    it('partitions AgentPhaseGuide terms into Project and all remaining terms into System', () => {
+        http.expectOne('http://localhost:3000/glossary').flush({
+            data: [
+                { term: 'Understand', definitions: ['Clarify intent'], examples: [], domains: ['AgentPhaseGuide', 'Meta'] },
+                { term: 'SystemConcern', definitions: [], examples: [], domains: ['DevEnv'] },
+                { term: 'Unknown', definitions: [], examples: [], domains: [] },
+            ],
+        });
+        fixture.detectChanges();
+        const host: HTMLElement = fixture.nativeElement;
+        const terms = () => Array.from(host.querySelectorAll('.glossary-term'), item => item.textContent);
+        expect(Array.from(host.querySelectorAll('[role="tab"]'), tab => tab.textContent?.trim())).toEqual(['System', 'Project']);
+        expect(terms()).toEqual(['SystemConcern', 'Unknown']);
+        host.querySelector<HTMLButtonElement>('#glossary-project-tab')!.click();
+        fixture.detectChanges();
+        expect(terms()).toEqual(['Understand']);
+        expect(host.querySelector('#glossary-project-tab')!.getAttribute('aria-selected')).toBe('true');
+        host.querySelector<HTMLButtonElement>('#glossary-system-tab')!.click();
+        fixture.detectChanges();
+        expect(terms()).toEqual(['SystemConcern', 'Unknown']);
+    });
+
     it('displays structured terms returned by the API', () => {
         http.expectOne('http://localhost:3000/glossary').flush({
             data: [
@@ -100,18 +185,21 @@ describe('GlossaryComponent', () => {
 
         searchFor('no matching entry');
         expect(terms()).toEqual([]);
-        expect(fixture.nativeElement.textContent).toContain('No Glossary entries match your search.');
+        expect(fixture.nativeElement.textContent).toContain('No System Terms found.');
 
         searchFor('  ');
         expect(terms()).toEqual(['Outcome', 'State', 'Scenario', 'Domain']);
-        expect(fixture.nativeElement.textContent).not.toContain('No Glossary entries match your search.');
+        expect(fixture.nativeElement.textContent).not.toContain('No System Terms found.');
     });
 
     it('shows an empty message when the JSON array is empty', () => {
         http.expectOne('http://localhost:3000/glossary').flush({ data: [] });
         fixture.detectChanges();
 
-        expect(fixture.nativeElement.textContent).toContain('No terms yet.');
+        expect(fixture.nativeElement.textContent).toContain('No System Terms found.');
+        fixture.nativeElement.querySelector('#glossary-project-tab').click();
+        fixture.detectChanges();
+        expect(fixture.nativeElement.textContent).toContain('No Project Terms found.');
     });
 
     it('shows an error message when loading fails', () => {
@@ -122,6 +210,6 @@ describe('GlossaryComponent', () => {
         fixture.detectChanges();
 
         expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('500');
-        expect(fixture.nativeElement.textContent).not.toContain('No terms yet.');
+        expect(fixture.nativeElement.textContent).not.toContain('Terms found.');
     });
 });

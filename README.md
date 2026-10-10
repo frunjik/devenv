@@ -10,6 +10,15 @@ See the [Project Knowledge Index](./knowledge/index.md) for the locations and ro
 
 The root `.glossary.json` is the authoritative Glossary data source, with `term`, `definitions`, `examples`, and `domains` fields. The Glossary UI and API read these structured records directly; legacy `.terms` content is not used as a fallback. An empty `domains` array means usage is unknown or unrecorded, not confirmed absent. These labels record occurrence, not defining-Domain ownership.
 
+The Glossary opens on **System**, showing entries not tagged with `AgentPhaseGuide`.
+The **Project** tab shows all entries carrying that domain, even if they also carry
+other domains. Search filters the active tab and retains its query when switching.
+Tabs support Left/Right arrow keys and Home/End. This is a view partition only;
+the authoritative records and domain tags remain unchanged.
+Empty results show `No System Terms found.` or `No Project Terms found.` for the active tab.
+The search field spans the glossary content width, retaining the page margins.
+A decorative magnifying-glass icon sits at its right edge without changing search behavior.
+
 Generate the human-readable `.glossary` Markdown view from the JSON source with `npm run generate:glossary:markdown`. The command reads `.glossary.json` and overwrites only `.glossary`; edit the JSON source, not the generated Markdown. Invalid records and file read/write errors fail the command.
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `knowledge/knowledge-transfer/meta-export-example.json` and overwrites only `knowledge/knowledge-transfer/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.

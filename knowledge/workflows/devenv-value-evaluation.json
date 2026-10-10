@@ -34,6 +34,74 @@
   ],
   "evaluations": [
     {
+      "id": "glossary-search-icon",
+      "title": "Right-aligned glossary search icon",
+      "beneficiary": "User searching glossary",
+      "intendedOutcome": "Show a search icon inside the field at its right edge.",
+      "successCondition": "Magnifying glass is right aligned and vertically centered without overlapping text or changing search/accessibility behavior; full-width layout preserved.",
+      "baseline": "Full-width search field has no icon.",
+      "startedAt": "2026-10-10T20:24:19.781+02:00",
+      "completedAt": "2026-10-10T20:25:35.7833227+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Right-aligned icon requested; decorative magnifying glass scope announced.", "evidence": "User request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 16.002 seconds elapsed to verification checkpoint. Human effort unknown.", "evidence": "Request and local timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Inline SVG requires no icon font/network dependency. Hidden from accessibility tree, nonfocusable, pointer-events none; wrapper reserves 48px end padding. Focused missing-icon Red observed, then all 16 glossary tests pass with 100% component coverage, client build, Jest TypeScript check and diagnostics pass. Existing HTTP testing adapter reused without internal spies or application test network/filesystem I/O. Browser at 1280/360px verifies 20px icon with 13.59375px right inset and zero center error; input stays full width. Screenshot confirms expected magnifying glass. No extra refactor/runtime logic needed. README updated; pending glossary changes and unrelated effort-report edits preserved. User benefit unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/glossary/glossary.component.html, .scss and .spec.ts; README.md; session test/build/browser evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "glossary-full-width-search",
+      "title": "Full-width glossary search",
+      "beneficiary": "User searching glossary terms",
+      "intendedOutcome": "Search field spans glossary content width.",
+      "successCondition": "Input equals content width with aligned edges and no horizontal overflow on desktop and mobile.",
+      "baseline": "Local 32rem cap limits field to 512px inside 1213px content at 1280px viewport.",
+      "startedAt": "2026-10-10T20:22:58.020+02:00",
+      "completedAt": "2026-10-10T20:23:58.3505181+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Full page-content width requested.", "evidence": "User request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 0.331 seconds elapsed to verification checkpoint. Human effort unknown.", "evidence": "Request and local timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Removed one CSS max-width declaration; shared form-control already fills its parent. Read-only browser assertion fails before change at 512/1213px and passes afterward with equal input/content widths 1213, 701 and 303px at viewports 1280, 768 and 360. Edges aligned, no document overflow. Client build and diagnostics pass. No executable module changes; prior unit coverage not rerun for this CSS-only change. No new abstraction needed. README updated; pending tabs/messages and unrelated effort-report edits preserved. User benefit unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/glossary/glossary.component.scss; README.md; browser measurements and build evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "glossary-scoped-empty-message",
+      "title": "Scoped glossary empty messages",
+      "beneficiary": "User searching glossary tabs",
+      "intendedOutcome": "Name the active scope when no terms are found.",
+      "successCondition": "Empty results say exactly No System Terms found. or No Project Terms found.; errors do not also show empty results.",
+      "baseline": "Three generic messages cover empty data, empty tab and unmatched search.",
+      "startedAt": "2026-10-10T20:20:27.333+02:00",
+      "completedAt": "2026-10-10T20:22:09.5852084+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Exact System/Project wording requested.", "evidence": "User request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 42.252 seconds elapsed to completion checkpoint. Human active effort and waiting unknown.", "evidence": "Request and local completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Single template message replaces three generic messages. Red observed for exact wording; all 15 glossary tests pass with 100% component coverage, client build, Jest TypeScript check and diagnostics pass. Existing HTTP testing adapter reused, no internal spies or application test network/filesystem I/O. Browser DOM confirms both exact messages and only one paragraph. Shared tab became hidden, preventing physical click; DOM-dispatched switch validates text, not physical interaction. Pending glossary tabs and unrelated effort-report edits preserved. README updated. Human effort and user benefit unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/glossary/glossary.component.html and .spec.ts; README.md; session validation evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "glossary-system-project-tabs",
+      "title": "System and Project glossary tabs",
+      "beneficiary": "User browsing system and project vocabulary",
+      "intendedOutcome": "Separate AgentPhase terms from the remaining glossary through System and Project tabs.",
+      "successCondition": "Project shows exactly entries tagged AgentPhaseGuide; System shows all remaining entries, including unknown domains. System opens by default. Search filters only active scope and persists across tab switches; keyboard navigation, loading errors, definitions/examples/domains remain available. Data and routes unchanged.",
+      "baseline": "Glossary has one searchable list. Existing AgentPhaseGuide domain identifies 23 of 78 entries; no tab state or partition exists.",
+      "startedAt": "2026-10-10T20:17:10.244+02:00",
+      "completedAt": "2026-10-10T20:19:22.4341671+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User requested System and Project tabs with AgentPhase terms in Project and the rest in System. Existing AgentPhaseGuide domain used as partition, System default and retained search announced.", "evidence": "Request, source inspection and approach announcement." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 12.190 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.", "evidence": "Request and local verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Added tab state and domain-based partition before existing case-insensitive search; metadata unchanged, mixed-domain AgentPhaseGuide entries remain Project-only. Reused native tab interaction pattern and global spacing/focus tokens; accessible tablist, selected state, roving tab index, labelled panel and Left/Right/Home/End support. Distinguishes empty scope from unmatched query, retains original loading/error behavior. Red observed for missing tabs before production changes. Existing HTTP testing adapter reused, no internal spies or application test network/filesystem I/O. All 34 targeted glossary and source-data tests pass with 100% statements, branches, functions and lines for changed component, plus client build, Jest TypeScript check, diagnostics and diff check. Browser shows exact 55 System/23 Project partition of 78 loaded entries without overlap. At 360px, Understand query persists across Home/ArrowRight switches, restores three Project matches, focuses Project tab and has no document overflow. README updated. Unrelated effort-report edits preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/glossary/glossary.component.ts, .html, .scss and .spec.ts; README.md; session test/build/type/browser evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "relocate-visual-foundations",
       "title": "Relocate Visual foundations and rename Canvas",
       "beneficiary": "User navigating diagram and supporting tools",

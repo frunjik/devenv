@@ -14,14 +14,20 @@ export class GlossaryComponent implements OnInit {
     entries: GlossaryEntry[] = [];
     errorMessage = '';
     searchQuery = '';
+    activeTab: 'system' | 'project' = 'system';
+
+    get tabEntries(): GlossaryEntry[] {
+        return this.entries.filter(entry =>
+            entry.domains.includes('AgentPhaseGuide') === (this.activeTab === 'project'));
+    }
 
     get filteredEntries(): GlossaryEntry[] {
         const query = this.searchQuery.trim().toLowerCase();
         if (query.length === 0) {
-            return this.entries;
+            return this.tabEntries;
         }
 
-        return this.entries.filter(entry => [
+        return this.tabEntries.filter(entry => [
             entry.term,
             ...entry.definitions,
             ...entry.examples,

@@ -6,6 +6,54 @@ Hierarchy: WorkPlan > WorkTopic > WorkTask. IDs are unique across the registry.
 WorkTask statuses: Pending, Active, Paused, Blocked, Completed.
 WorkTask measurement: Undecided, Measured, NotMeasured. Decide before a task leaves Pending; Measured tasks link evaluation ledger IDs.
 
+## WorkPlan: Separate glossary scopes
+
+Present existing glossary entries in System and Project tabs without changing authoritative records.
+
+### WorkTopic: System and Project glossary
+
+AgentPhaseGuide domain entries belong in Project; all remaining entries belong in System.
+
+#### WorkTask: Add System and Project glossary tabs
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `glossary-system-project-tabs`
+
+Completed accessible System-default and Project tabs using existing AgentPhaseGuide domain tags. Search filters active scope and persists across switching; empty-tab and no-match messages distinguished. Authoritative glossary unchanged. Red observed for missing tabs; 34 targeted glossary/data tests pass with 100% component coverage, client build, Jest TypeScript check and diagnostics pass. Live browser verifies all 78 entries partition exactly into 55 System and 23 Project with no overlap; 360px keyboard switching retains search and focus without document overflow. Tracking and measurement retained. Next step: user review; no commit authorized.
+
+#### WorkTask: Name the glossary scope in empty results
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `glossary-scoped-empty-message`
+
+Unified empty data, empty tab and unmatched search into No System Terms found. or No Project Terms found., suppressing it on loading errors. Focused Red observed; all 15 component tests pass with 100% coverage, build/type-check and diagnostics pass. Browser DOM confirms exact messages and single message; physical click unavailable in hidden shared page. Tracking and measurement retained. Next step: user review; no commit authorized.
+
+#### WorkTask: Expand glossary search to content width
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `glossary-full-width-search`
+
+Removed local 32rem search cap, reusing shared full-width form-control. Browser width assertion fails before change (512px field versus 1213px content), passes afterward at 1280/768/360px with equal widths, aligned edges and no overflow. Client build and diagnostics pass. CSS-only change; no executable module changes or extra tooling. Tracking and measurement retained. Next step: user review; no commit authorized.
+
+#### WorkTask: Add a right-aligned glossary search icon
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `glossary-search-icon`
+
+Added decorative inline SVG magnifying glass at the search input right edge, vertically centered, with reserved text padding and pointer-events none. No dependencies or runtime changes. Red observed for missing icon; 16 glossary tests pass with 100% component coverage, build/type-check and diagnostics pass. Browser geometry and screenshot verify 20px icon, 13.59px right inset, exact vertical centering and full-width input at 1280/360px. Tracking and measurement retained. Next step: user review; no commit authorized.
+
 ## WorkPlan: Simplify meta navigation
 
 Remove selected menu links without deleting their features.

@@ -9,6 +9,7 @@ Project-specific rules for the generic [Agent Essentials](../../AGENTS.md) and [
 ## Safeguards
 
 - Keep `@shared`, including dependencies and public exports, valid in browser and server runtimes; keep runtime-specific integrations outside shared.
+- When a production source file exceeds 400 lines during a change, extract functions or classes at cohesive functional boundaries. Preserve behavior and verify the extraction with relevant tests; do not split arbitrarily just to meet the line limit. This rule does not apply to test files or generated files.
 
 ## Applicable defaults
 

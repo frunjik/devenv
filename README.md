@@ -86,7 +86,7 @@ and disappear when empty; newly added boxes have no boundary membership. Larger 
 Expand the technical notes for responsibilities and deployment caveats. This does not change
 the shared undirected document contract or the existing `/diagram` editor.
 
-The **Tools → Visual foundations** preview at `/visual-foundations` compares trial typography,
+The **Visual foundations** link beside Canvas in the meta navigation opens `/visual-foundations` to compare trial typography,
 semantic color roles, control states and an illustrative diagram using the current font and
 palette. It reads the global CSS tokens rather than maintaining a separate palette. Selection
 and input samples stay local to the page; nothing is saved. Trial typography, warning and

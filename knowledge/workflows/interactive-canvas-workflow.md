@@ -290,6 +290,8 @@ The entries preserve supported baseline/results and linked commits, explicitly d
 
 Execution for the existing metrics opt-in: create and associate each eligible evaluation before implementation; update the same record after verification; verify registration and evidence before pausing or committing. This applies the already-agreed tracking choice, not a new ruleset. Next: obtain user feedback on the technical picture and visual preview and append that evidence to these evaluations; do not infer benefit from passing tests.
 
+Navigation follow-up: on 2026-10-10 the user approved moving Visual foundations from Tools to the main meta navigation beside Canvas. `visual-foundations-main-navigation` was created and associated before implementation, then updated after verification. See the evaluation ledger for measurements; user feedback remains pending.
+
 The completed clock evaluation is preserved. The `interactive-canvas-editor-milestone` record in [devenv-value-evaluation.json](./devenv-value-evaluation.json) tracks the new first milestone with all five existing metrics. Its ID is a bookkeeping identifier, not an adopted domain Term. Keep unknown measures unknown and do not record completion until acceptance is verified. Track subsequent eligible slices separately as they begin, retaining their links in the workflow registry.
 
 For each production slice: Red-Green-Refactor, public-interface tests, 100% statement/branch/function/line coverage for changed modules, Type review, an appropriate client build, and real browser/pointer checks. Tests mock external boundaries and do not mutate the real filesystem. Record acceptance evidence, elapsed time, observed decision points, and unresolved user outcomes without inferring active effort or AI credits.

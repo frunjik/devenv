@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "visual-foundations-main-navigation",
+      "title": "Expose visual foundations directly in main navigation",
+      "beneficiary": "DevEnv users looking for the visual foundations preview",
+      "intendedOutcome": "Make the preview discoverable beside Canvas without opening Tools.",
+      "successCondition": "One Visual foundations link appears after Canvas in main navigation, none remains in Tools, existing routes and responsive navigation are preserved.",
+      "baseline": "Visual foundations is available only inside the Tools dropdown.",
+      "startedAt": "2026-10-10T05:41:08.657+02:00",
+      "completedAt": "2026-10-10T05:42:12.0084396+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User requested a menu link and approved moving the existing Tools link beside Canvas. Evaluation registered before implementation; start is the recorded request timestamp.", "evidence": "Session request and scope approval; interactive-canvas-workflow.md#measurement-and-verification." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 3.351 seconds wall-clock from recorded request to verified completion, including scope clarification and checks. Active effort and waiting duration unknown.", "evidence": "Recorded request timestamp and local completion clock after tests/build/browser checks." },
+        { "metricId": "outcome-and-quality", "value": "Two navigation tests failed before moving the link; all 50 navigation/app-shell/routes tests passed afterward and production client build passed. Browser DOM/layout checks at 1440 and 375 px confirmed the link after Canvas and no horizontal overflow; mobile link height is 44 px. Tools removal and preservation of other links verified by tests. Browser page was not visible, so this is DOM/layout evidence rather than visual acceptance. User discoverability improvement and follow-up defects remain unknown.", "evidence": "NavigationToolbarComponent tests; session browser layout outputs and client build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-page-height-and-controls",
       "title": "Fill the canvas page and move connection controls above the workspace",
       "beneficiary": "DevEnv canvas editor users",

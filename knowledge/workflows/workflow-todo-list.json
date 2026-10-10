@@ -222,7 +222,8 @@
         "canvas-page-height-and-controls",
         "canvas-compact-grid-toolbar",
         "canvas-technical-picture",
-        "visual-foundations-preview"
+        "visual-foundations-preview",
+        "visual-foundations-main-navigation"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Paused",

@@ -27,7 +27,7 @@ describe('NavigationToolbarComponent', () => {
         await fixture.whenStable();
     }
 
-    it('shows the host, seven process links and Tools as the final navigation item', () => {
+    it('shows the host, eight navigation links and Tools as the final navigation item', () => {
         expect(fixture.nativeElement.querySelector('.meta-badge').textContent.trim()).toBe('DevEnv');
         expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
         const nav = fixture.nativeElement.querySelector('nav') as HTMLElement;
@@ -40,6 +40,7 @@ describe('NavigationToolbarComponent', () => {
                 ['Glossary', '/glossary'],
                 ['Diagram', '/diagram'],
                 ['Canvas', '/interactive-canvas'],
+                ['Visual foundations', '/visual-foundations'],
             ]);
         expect(nav.lastElementChild?.textContent?.trim()).toBe('Tools');
         expect(overlay.querySelector('[role="menu"]')).toBeNull();
@@ -51,7 +52,6 @@ describe('NavigationToolbarComponent', () => {
         expect(Array.from(overlay.querySelectorAll('a')).map(link => link.getAttribute('href'))).toEqual([
             '/browse',
             '/tests',
-            '/visual-foundations',
             '/browse?path=.%2Fprojects%2Fserver%2Fsrc%2Flib&file=',
             '/browse?path=.%2Fprojects%2Fclient%2Fsrc%2Fapp&file=',
             '/browse?path=&file=TODO.md',

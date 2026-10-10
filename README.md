@@ -41,6 +41,13 @@ Run `npm run generate:work-effort:slices` to refresh the same evidence files and
 print only the aligned per-slice table instead of the category summary.
 It lists every recorded evaluation as a slice, with its ID/title, category,
 elapsed duration and minutes. Untimed or unfinished slices show `unknown`.
+Slices are ordered by category, linked WorkPlan topic, then title and ID.
+Topic and category totals count recorded windows once. Topic totals exclude
+cross-topic overlaps; category totals include those overlaps but exclude
+cross-category overlaps. Both kinds of overlap have explicit rows.
+The Untimed column counts excluded unknown intervals; groups with no complete
+intervals retain unknown totals. Unlinked evaluations stay under
+`No linked WorkPlan topic`; multiple topic links form one explicit combined group.
 Individual slice windows overlap and must not be summed; use the category summary
 for overlap-safe totals. This inventory does not cover historical work without
 evaluation records.

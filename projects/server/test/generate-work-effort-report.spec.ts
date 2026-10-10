@@ -46,7 +46,18 @@ describe('work effort report generator entry', () => {
                 { id: 'meta', category: 'Meta/DevEnv', rationale: 'Development tooling.' },
             ]),
             [resolve('knowledge/workflows/workflow-todo-list.json')]: '{}',
-            [resolve('knowledge/workflows/work-plans.json')]: '{}',
+            [resolve('knowledge/workflows/work-plans.json')]: JSON.stringify({
+                schemaVersion: 2, workPlans: [{
+                    id: 'plan', title: 'Plan', description: 'Plan',
+                    topics: [{
+                        id: 'topic', title: 'Topic', description: 'Topic',
+                        tasks: [{
+                            id: 'task', title: 'Task', description: 'Task', status: 'Completed',
+                            measurement: 'Measured', evaluationIds: ['problem', 'meta'],
+                        }],
+                    }],
+                }],
+            }),
             [resolve('knowledge/workflows/sample.md')]: 'No time here.\nElapsed time unknown.\n',
         });
         // The entry executes on import, so intercept only filesystem and subprocess boundaries; retain the real report calculation.
@@ -74,7 +85,7 @@ describe('work effort report generator entry', () => {
         expect(markdown).toContain('Elapsed time unknown.');
         const terminal = output.join('\n');
         expect(terminal.split('\n').filter(line => line.startsWith('|')))
-            .toHaveLength(view === 'summary' ? 9 : 5);
+            .toHaveLength(view === 'summary' ? 9 : 13);
         expect(terminal).toContain('Generated report: 3 evaluations, 0 commits, 1 workflow documents.');
         expect(terminal).not.toContain('## Git evidence inventory');
         if (view === 'summary') {
@@ -94,9 +105,10 @@ describe('work effort report generator entry', () => {
         } else {
             expect(terminal).not.toContain('Window category');
             const compact = terminal.replace(/ {2,}/g, ' ');
-            expect(compact).toContain('| unknown: Unknown work | Unclassified | unknown | unknown |');
-            expect(compact).toContain('| problem: Problem work | Problem/Domain | 1:00:00 | 60.00 |');
-            expect(compact).toContain('| meta: Meta work | Meta/DevEnv | 0:30:00 | 30.00 |');
+            expect(compact).toContain('| unknown: Unknown work | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
+            expect(compact).toContain('| problem: Problem work | Problem/Domain | Plan / Topic | 1:00:00 | 60.00 | 0 |');
+            expect(compact).toContain('| meta: Meta work | Meta/DevEnv | Plan / Topic | 0:30:00 | 30.00 | 0 |');
+            expect(compact).toContain('| Category total | Unclassified | - | unknown | unknown | 1 |');
             expect(terminal).toContain('Individual elapsed values overlap and must not be summed.');
         }
     });

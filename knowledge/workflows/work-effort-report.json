@@ -1935,6 +1935,13 @@
   ],
   "commits": [
     {
+      "sha": "e343ecbcc0a3c97b6797ebc6242cfb43f222effa",
+      "authoredAt": "2026-10-10T17:36:08+02:00",
+      "committedAt": "2026-10-10T17:36:08+02:00",
+      "subject": "Add separate effort summary and slice commands",
+      "category": "Unclassified"
+    },
+    {
       "sha": "9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7",
       "authoredAt": "2026-10-10T17:30:18+02:00",
       "committedAt": "2026-10-10T17:30:18+02:00",
@@ -6898,8 +6905,8 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T15:35:34.049Z",
-  "sourceCommit": "9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7",
+  "generatedAt": "2026-10-10T15:40:47.001Z",
+  "sourceCommit": "e343ecbcc0a3c97b6797ebc6242cfb43f222effa",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",

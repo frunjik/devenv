@@ -75,4 +75,4 @@ const evidenceMarkdown = [
 writeFileSync(resolve(root, 'knowledge/workflows/work-effort-report.json'), `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
 writeFileSync(resolve(root, 'knowledge/workflows/work-effort-report.generated.md'), `${workEffortReportToMarkdown(report)}\n${evidenceMarkdown}\n`, 'utf8');
 console.log(`Generated report: ${report.rows.length} evaluations, ${report.commits.length} commits, ${workflowTimingEvidence.length} workflow documents.`);
-console.log(`\n${showSlices ? workEffortReportSlicesToMarkdown(report) : workEffortReportSummaryToMarkdown(report)}`);
+console.log(`\n${showSlices ? workEffortReportSlicesToMarkdown(report, sources[3].value) : workEffortReportSummaryToMarkdown(report)}`);

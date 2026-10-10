@@ -28,24 +28,130 @@ const classifications = [
     { id: 'mixed', category: 'Mixed', rationale: 'Inseparable outcomes.' },
 ];
 const gitLog = `${'a'.repeat(40)}\t2025-04-18T00:00:00Z\t2025-04-18T01:00:00Z\tInitial commit\n`;
+const registry = {
+    schemaVersion: 2,
+    workPlans: [{
+        id: 'plan', title: 'Plan', description: 'Plan',
+        topics: [
+            { id: 'alpha', title: 'Alpha', description: 'Alpha', tasks: [{
+                id: 'task-alpha', title: 'Task', description: 'Task', status: 'Completed',
+                measurement: 'Measured', evaluationIds: ['domain', 'domain-overlap'],
+            }] },
+            { id: 'beta', title: 'Beta', description: 'Beta', tasks: [{
+                id: 'task-beta', title: 'Task', description: 'Task', status: 'Completed',
+                measurement: 'Measured', evaluationIds: ['meta'],
+            }] },
+        ],
+    }],
+};
+const emptyRegistry = { schemaVersion: 2, workPlans: [] };
 
 describe('work effort report', () => {
+    it('separates same-category cross-topic overlap so topic totals reconcile to category totals', () => {
+        const splitRegistry = {
+            ...registry,
+            workPlans: registry.workPlans.map(plan => ({
+                ...plan,
+                topics: plan.topics.map(topic => ({
+                    ...topic,
+                    tasks: topic.tasks.map(task => ({
+                        ...task, evaluationIds: topic.id === 'alpha' ? ['domain'] : ['domain-overlap', 'meta'],
+                    })),
+                })),
+            })),
+        };
+        const report = createWorkEffortReport(ledger, classifications, '');
+        const before = JSON.stringify(report);
+        const output = workEffortReportSlicesToMarkdown(report, splitRegistry).replace(/ {2,}/g, ' ');
+        expect(output).toContain('| Topic total | Problem/Domain | Plan / Alpha | 0:05:00 | 5.00 | 0 |');
+        expect(output).toContain('| Topic total | Problem/Domain | Plan / Beta | 0:00:00 | 0.00 | 0 |');
+        expect(output).toContain('| Cross-topic overlap | Problem/Domain | - | 0:05:00 | 5.00 | 0 |');
+        expect(output).toContain('| Category total | Problem/Domain | - | 0:10:00 | 10.00 | 0 |');
+        expect(output.indexOf('| domain: domain')).toBeLessThan(output.indexOf('| domain-overlap: domain-overlap'));
+        expect(JSON.stringify(report)).toBe(before);
+    });
+
+    it('keeps multiple topic links in one group, deduplicates repeated links and breaks title ties by IDs', () => {
+        const linkedRegistry = {
+            ...registry,
+            workPlans: registry.workPlans.map(plan => ({
+                ...plan,
+                topics: plan.topics.map(topic => ({
+                    ...topic, title: 'Same title',
+                    tasks: [
+                        { ...topic.tasks[0], evaluationIds: topic.id === 'alpha' ? ['domain', 'domain-overlap'] : ['domain', 'meta'] },
+                        { ...topic.tasks[0], id: `${topic.id}-extra-task`, evaluationIds: ['domain'] },
+                    ],
+                })),
+            })),
+        };
+        const tiedLedger = { ...ledger, evaluations: ledger.evaluations.map(row => ({ ...row, title: 'Same title' })) };
+        const report = createWorkEffortReport(tiedLedger, classifications, '');
+        const output = workEffortReportSlicesToMarkdown(report, linkedRegistry).replace(/ {2,}/g, ' ');
+        expect(output).toContain('| domain: Same title | Problem/Domain | Multiple linked topics: Plan / Same title; Plan / Same title |');
+        expect(output.split('\n').filter(line => line.startsWith('| domain: Same title |'))).toHaveLength(1);
+        expect(output.indexOf('| unfinished: Same title')).toBeLessThan(output.indexOf('| unknown: Same title'));
+        expect(output.indexOf('| unknown: Same title')).toBeLessThan(output.indexOf('| untimed: Same title'));
+
+        const sameLabelRegistry = {
+            ...linkedRegistry,
+            workPlans: linkedRegistry.workPlans.map(plan => ({
+                ...plan,
+                topics: plan.topics.map(topic => ({
+                    ...topic, tasks: [{ ...topic.tasks[0], evaluationIds: topic.id === 'alpha' ? ['domain'] : ['domain-overlap'] }],
+                })),
+            })),
+        };
+        const sameLabelOutput = workEffortReportSlicesToMarkdown(report, sameLabelRegistry).replace(/ {2,}/g, ' ');
+        expect(sameLabelOutput.indexOf('| domain: Same title')).toBeLessThan(sameLabelOutput.indexOf('| domain-overlap: Same title'));
+    });
+
+    it('rejects invalid registries and stale evaluation links explicitly', () => {
+        const report = createWorkEffortReport(ledger, classifications, '');
+        expect(() => workEffortReportSlicesToMarkdown(report, {})).toThrow('Invalid WorkPlanRegistry');
+        const staleReport = createWorkEffortReport({ ...ledger, evaluations: [ledger.evaluations[0]] }, [classifications[0]], '');
+        expect(() => workEffortReportSlicesToMarkdown(staleReport, registry))
+            .toThrow('Invalid WorkPlanRegistry: unknown evaluation "domain-overlap"');
+    });
+
+    it('reports unknown totals when every slice is untimed', () => {
+        const report = createWorkEffortReport({ ...ledger, evaluations: [evaluation('untimed', null, null)] }, [], '');
+        const output = workEffortReportSlicesToMarkdown(report, emptyRegistry).replace(/ {2,}/g, ' ');
+        expect(output).toContain('| Topic total | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
+        expect(output).toContain('| Category total | Unclassified | - | unknown | unknown | 1 |');
+        expect(output).toContain('| Total observed union | All categories | - | unknown | unknown | 1 |');
+    });
+
+    it('orders slices by category and linked topic with overlap-safe topic and category totals', () => {
+        const report = createWorkEffortReport({ ...ledger, evaluations: [...ledger.evaluations].reverse() }, classifications, '');
+        const output = workEffortReportSlicesToMarkdown(report, registry).replace(/ {2,}/g, ' ');
+        expect(output.indexOf('domain: domain')).toBeLessThan(output.indexOf('domain-overlap: domain-overlap'));
+        expect(output.indexOf('domain-overlap: domain-overlap')).toBeLessThan(output.indexOf('meta: meta'));
+        expect(output).toContain('| Topic total | Problem/Domain | Plan / Alpha | 0:10:00 | 10.00 | 0 |');
+        expect(output).toContain('| Category total | Problem/Domain | - | 0:10:00 | 10.00 | 0 |');
+        expect(output).toContain('| Topic total | Meta/DevEnv | Plan / Beta | 0:10:00 | 10.00 | 0 |');
+        expect(output).toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
+        expect(output).toContain('| Category total | Unclassified | - | 0:05:00 | 5.00 | 2 |');
+        expect(output).toContain('| Cross-category overlap | Cross-category overlap | - | 0:10:00 | 10.00 | 0 |');
+        expect(output).toContain('| Total observed union | All categories | - | 0:40:00 | 40.00 | 2 |');
+    });
+
     it('lists every slice once with aligned text and numbers, including unknown intervals', () => {
         const report = createWorkEffortReport(ledger, classifications, '');
-        const table = workEffortReportSlicesToMarkdown(report).split('\n').filter(line => line.startsWith('|'));
-        expect(table).toHaveLength(ledger.evaluations.length + 2);
+        const table = workEffortReportSlicesToMarkdown(report, emptyRegistry).split('\n').filter(line => line.startsWith('|'));
+        expect(table).toHaveLength(ledger.evaluations.length + 12);
         const columns = table.map(line => line.split('|').slice(1, -1));
         const widths = columns[0].map(column => column.length - 2);
         for (const row of columns) {
             row.forEach((column, index) => {
-                expect(column).toBe(` ${index < 2 ? column.trim().padEnd(widths[index]) : column.trim().padStart(widths[index])} `);
+                expect(column).toBe(` ${index < 3 ? column.trim().padEnd(widths[index]) : column.trim().padStart(widths[index])} `);
             });
         }
         const compact = table.join('\n').replace(/ {2,}/g, ' ');
-        expect(compact).toContain('| domain: domain | Problem/Domain | 0:20:00 | 20.00 |');
-        expect(compact).toContain('| mixed: mixed | Mixed | 0:05:00 | 5.00 |');
-        expect(compact).toContain('| unfinished: unfinished | Unclassified | unknown | unknown |');
-        expect(compact).toContain('| untimed: untimed | Unclassified | unknown | unknown |');
+        expect(compact).toContain('| domain: domain | Problem/Domain | No linked WorkPlan topic | 0:20:00 | 20.00 | 0 |');
+        expect(compact).toContain('| mixed: mixed | Mixed | No linked WorkPlan topic | 0:05:00 | 5.00 | 0 |');
+        expect(compact).toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
+        expect(compact).toContain('| untimed: untimed | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
         expect(report.observedTotalMs).toBe(40 * 60000);
     });
 
@@ -55,8 +161,8 @@ describe('work effort report', () => {
         const report = createWorkEffortReport({
             ...ledger, evaluations: [{ ...evaluation('zero', timestamp(0), timestamp(0)), title: 'A | B\nnew' }],
         }, [], '');
-        expect(workEffortReportSlicesToMarkdown(report).replace(/ {2,}/g, ' '))
-            .toContain('| zero: A \\| B new | Unclassified | 0:00:00 | 0.00 |');
+        expect(workEffortReportSlicesToMarkdown(report, emptyRegistry).replace(/ {2,}/g, ' '))
+            .toContain('| zero: A \\| B new | Unclassified | No linked WorkPlan topic | 0:00:00 | 0.00 | 0 |');
     });
 
     it.each(['2026-10-10T01:00:00Z', '9999-12-31T23:59:59Z'])('aligns summary columns with spaces for an interval ending %s', end => {

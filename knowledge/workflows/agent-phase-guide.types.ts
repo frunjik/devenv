@@ -33,6 +33,15 @@ export interface AgentPractice {
     handoff: string[];
 }
 
+export interface AgentWorkIntent {
+    status: string;
+    purpose: string;
+    sourceSections: string[];
+    phases: Record<CoordinatorPhase, string>;
+    measurementQuestions: string[];
+    boundaries: string[];
+}
+
 export interface AgentPhaseGuide {
     name: string;
     status: string;
@@ -42,6 +51,7 @@ export interface AgentPhaseGuide {
     coordinatorResponsibilities: string[];
     switchingPolicy: string[];
     commitProcedure: AgentCommitProcedure;
+    workIntent: AgentWorkIntent;
     practices: {
         tdd: AgentPractice;
     };

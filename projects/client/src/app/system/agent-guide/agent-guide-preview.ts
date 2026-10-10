@@ -56,6 +56,15 @@ export function createAgentGuidePreview(): AgentGuidePreview {
         `# ${guide.name}`, '', notice, '', guide.purpose, '',
         '## Responsibilities', '', bullets(guide.coordinatorResponsibilities), '',
         '## Switching policy', '', bullets(guide.switchingPolicy), '',
+        '## Work continuity and measurement intent', '',
+        guide.workIntent.status, '', guide.workIntent.purpose, '',
+        renderSections(
+            agentEssentials.sections.filter(section => guide.workIntent.sourceSections.includes(section.heading)),
+            '../../.agents/skills/tdd/SKILL.md', '../../AGENTS.md',
+        ), '',
+        ...phases.map(phase => `- **${phase}:** ${guide.workIntent.phases[phase]}`),
+        '', '### Measurement questions', '', bullets(guide.workIntent.measurementQuestions),
+        '', bullets(guide.workIntent.boundaries), '',
         ...phases.flatMap(phase => [
             `## ${phase}`, '',
             guide.phases[phase].purpose, '',

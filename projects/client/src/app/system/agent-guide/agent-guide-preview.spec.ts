@@ -3,6 +3,20 @@ import { createAgentGuidePreview } from './agent-guide-preview';
 import { agentPhaseSkills } from '../../../../../../knowledge/workflows/agent-phase-guide.types';
 
 describe('agent guide preview', () => {
+    it('includes work continuity and measurement intent without adopting the current tracking system', () => {
+        const preview = createAgentGuidePreview();
+        const agent = preview.files.find(file => file.path.endsWith('.agent.md'))!;
+        expect(agent.content).toContain('## Work continuity and measurement intent');
+        expect(agent.content).toContain('Resume work');
+        expect(agent.content).toContain('5. Trace work to its evaluations');
+        expect(agent.content).toContain('6. Capture baseline and completion evidence with little upkeep');
+        expect(agent.content).toContain('not selected rules');
+        expect(agent.content).toContain('Understand:');
+        expect(agent.content).toContain('Evaluate:');
+        expect(agent.content).toContain('Goal and success clarity');
+        expect(agent.content).toContain('Process overhead');
+        expect(agent.content).toContain('Unknown measurements remain unknown');
+    });
     it('generates an entry point, coordinator and five skills entirely in memory', () => {
         const preview = createAgentGuidePreview();
         expect(preview.files.map(file => file.path)).toEqual([

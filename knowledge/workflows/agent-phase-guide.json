@@ -60,6 +60,34 @@
       "Active AGENTS.md remains unchanged; no runtime enforcement is implemented."
     ]
   },
+  "workIntent": {
+    "status": "Intent to explore; not selected rules or an implemented tracking system",
+    "purpose": "Resume work, retain decisions and open questions, see progress and assess outcomes without burdensome upkeep.",
+    "sourceSections": [
+      "Intents to explore",
+      "5. Trace work to its evaluations",
+      "6. Capture baseline and completion evidence with little upkeep"
+    ],
+    "phases": {
+      "Understand": "Recover the current work context and tracking choices; identify intended benefit, success conditions and available baseline.",
+      "Explore": "Retain evidence, decisions, alternatives and open questions; consider which observations will meaningfully assess the work.",
+      "Make": "Keep progress, blockers and verification evidence available across follow-ups without repeatedly asking for the same tracking choices.",
+      "Evaluate": "Compare observations with the baseline and success conditions; retain completion evidence, unresolved questions and the next step before pausing or continuing."
+    },
+    "measurementQuestions": [
+      "Goal and success clarity: are the outcome, beneficiary and success conditions clear?",
+      "Decision latency: how long did a material uncertainty take to resolve, where timestamps exist?",
+      "Delivery flow and effort: what elapsed time, waiting and active effort were actually observed?",
+      "Outcome and quality: was the requested result achieved, and what defects or rework were observed?",
+      "Process overhead: what upkeep or friction did tracking itself add?"
+    ],
+    "boundaries": [
+      "Unknown measurements remain unknown; elapsed time is not active effort and passing tests are not proof of user benefit.",
+      "Preserve intent and access to evidence, not the current workflow/TODO/evaluation names, schemas, UI or historical records as a new implementation.",
+      "Names, storage, identity, measurement mechanisms and adoption remain open for exploration.",
+      "No new mandatory tracking prompts, time gates, reporting format or automated collection are introduced."
+    ]
+  },
   "practices": {
     "tdd": {
       "name": "Test-Driven Development",

@@ -32,6 +32,10 @@ the guide and selected testing requirements remain in their existing JSON source
 Folder exports include only the six JSON/type dependencies needed by this preview,
 not the full knowledge folder or its archives. Runtime invocation and toggle
 enforcement remain unimplemented; generated file contents are proposals.
+The guide also previews work continuity and measurement intent across its phases:
+resuming work, retaining decisions, comparing outcomes with baselines and assessing
+tracking overhead. These are exploration intents, not an adopted replacement for
+the current workflow TODO and evaluation system.
 
 Custom agents live in [`.github/agents`](./.github/agents), the standard project-level
 Copilot agent discovery location. Their YAML metadata declares names, descriptions,

@@ -19,6 +19,8 @@ Develop Agent Essentials as a new ruleset spawned from the current one, guided b
 
 ## Checkpoint
 
+- Work continuity and measurement intent added to AgentPhaseGuide as a typed proposal record and projected into its agent Markdown. Reuses the selected exploration-intent sections rather than copying them. Captures resumability, decisions, progress, baseline/completion evidence and five measurement questions across the four phases. No current tracking schema, records or new mandatory procedure adopted.
+
 - Latest refinement: Preview precedes Source in every file's display controls; initial Source selection is unchanged. Control-order test observed Red before the template reorder.
 - Subsequent refinement: Preview is now the default for all generated files; Source remains selectable. Default-mode test observed Red before initialization changed.
 

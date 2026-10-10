@@ -7,7 +7,7 @@ Regenerate with `npm run generate:practice-set-versions:markdown` using [the reg
 
 **Versioning policy:** Use sequential positive integers\. For each agent or skill, record its tracked revisions by kind and repository path, pinning each revision to the commit containing its content\. Version 1 establishes the initial tracked baseline, not necessarily the artifact's historical introduction\. Commit practice\-set changes first, then add one set\-level version entry in a follow\-up commit pinned to that prior practice\-change commit; never store a commit's own hash\. Record verified UTC activation and deactivation timestamps; null means unknown and must not be inferred from Git commit dates\.
 
-**Latest recorded version:** **4**
+**Latest recorded version:** **5**
 **Active version:** **Not verified**
 **Duration calculation as of:** Not recorded
 
@@ -47,6 +47,16 @@ Activation dates are recorded only when verified; Git commit dates do not establ
 
 **Changes:** Concise checkpoint\-driven agent entry point links to exactly preserved detailed practices; separately prompts for tracking and metrics, and highlights stable\-summary commit subjects without changing policy\. Fresh\-chat consistency trial remains unverified\.
 **Source commit:** `1565e27e87d17ed793b842a37abd6c20e76682a5`
+**Activated:** Unknown
+**Deactivated:** Unknown / not recorded
+**Used for:** Unknown (activation dates not fully recorded)
+**Activation evidence:** Not recorded
+**Deactivation evidence:** Not recorded
+
+## Version 5
+
+**Changes:** Reduced repository ruleset selected through MoSCoW: 12 Must, 16 Should and 4 opt\-in Could practices\. Cutover removes excluded skills/agents and blanket coverage gates, preserves historical originals, and retains scoped UI conventions including the global layout grid\. Cutover committed as 22cce3533ee0744e9622ac32b70444c1a27b6cdb; this snapshot includes the subsequent grid note\. Fresh\-chat loading remains unverified\.
+**Source commit:** `3aeb73c8d6c5ab71adb23d497966a541682f5d1d`
 **Activated:** Unknown
 **Deactivated:** Unknown / not recorded
 **Used for:** Unknown (activation dates not fully recorded)
@@ -94,5 +104,6 @@ Activation dates are recorded only when verified; Git commit dates do not establ
 ### `.agents/skills/ui-design-review/SKILL.md`
 
 **Kind:** skill
-**Current version:** 1
+**Current version:** 2
 - **v1:** Tracked baseline of the review\-only workflow for running user interfaces\. (source commit: `d7df187a133f9d174d08ed61e64d790a88abe5b9`)
+- **v2:** Explicit request/agreement\-only visual review aligned with the reduced ruleset; no automatic implementation or retired workflow gates\. Other customization records remain historical, not an active discovery list\. (source commit: `22cce3533ee0744e9622ac32b70444c1a27b6cdb`)

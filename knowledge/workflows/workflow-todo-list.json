@@ -2,13 +2,22 @@
   "schemaVersion": 2,
   "title": "Workflow TODO List",
   "introduction": "Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.",
-  "activeWorkflow": "Ruleset Reduction",
+  "activeWorkflow": "Darwin",
   "workflows": [
+    {
+      "name": "Darwin",
+      "evaluationIds": ["darwin-agent-essentials"],
+      "primaryWorkPurpose": "Meta work",
+      "status": "Active",
+      "resumeLabel": "Agent Essentials plan and checkpoint",
+      "resumePath": "./darwin-workflow.md#checkpoint",
+      "relatedConcern": "Not assigned"
+    },
     {
       "name": "Ruleset Reduction",
       "evaluationIds": ["ruleset-reduction"],
       "primaryWorkPurpose": "Meta work",
-      "status": "Active",
+      "status": "Paused",
       "resumeLabel": "MoSCoW review checkpoint",
       "resumePath": "./ruleset-reduction-workflow.md#checkpoint",
       "relatedConcern": "Not assigned"

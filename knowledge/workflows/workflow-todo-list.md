@@ -4,13 +4,14 @@ Generated from [workflow-todo-list.json](./workflow-todo-list.json). Edit the JS
 
 Repository-wide navigation for resumable work. This list does not replace SystemConcerns, application tickets, or the detailed workflow documents.
 
-**Active workflow:** Ruleset Reduction.
+**Active workflow:** Darwin.
 
 ## Workflows
 
 | Workflow | Primary work purpose | Status | Resume reference | Related concern |
 | --- | --- | --- | --- | --- |
-| Ruleset Reduction | Meta work | Active | [MoSCoW review checkpoint](./ruleset-reduction-workflow.md#checkpoint) | Not assigned |
+| Darwin | Meta work | Active | [Agent Essentials plan and checkpoint](./darwin-workflow.md#checkpoint) | Not assigned |
+| Ruleset Reduction | Meta work | Paused | [MoSCoW review checkpoint](./ruleset-reduction-workflow.md#checkpoint) | Not assigned |
 | Client Test Repair | Meta work | Completed | [Test repair checkpoint](./client-test-repair.md#checkpoint) | Not assigned |
 | Active workflow in status toolbar | Meta work | Completed | [Toolbar refresh implementation checkpoint](./active-workflow-toolbar-workflow.md#checkpoint) | Not assigned |
 | MetaExport | Meta work | Paused | [Current checkpoint and remaining steps](./meta-export.md#resumable-workflow) | SC-049 |

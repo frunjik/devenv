@@ -105,10 +105,10 @@ describe('work effort report generator entry', () => {
         } else {
             expect(terminal).not.toContain('Window category');
             const compact = terminal.replace(/ {2,}/g, ' ');
-            expect(compact).toContain('| unknown: Unknown work | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
-            expect(compact).toContain('| problem: Problem work | Problem/Domain | Plan / Topic | 1:00:00 | 60.00 | 0 |');
-            expect(compact).toContain('| meta: Meta work | Meta/DevEnv | Plan / Topic | 0:30:00 | 30.00 | 0 |');
-            expect(compact).toContain('| Category total | Unclassified | - | unknown | unknown | 1 |');
+            expect(compact).toContain('| unknown: Unknown work | Unclassified | No linked WorkPlan topic | unknown | unknown |');
+            expect(compact).toContain('| problem: Problem work | Problem/Domain | Plan / Topic | 1:00:00 | 60.00 |');
+            expect(compact).toContain('| meta: Meta work | Meta/DevEnv | Plan / Topic | 0:30:00 | 30.00 |');
+            expect(compact).toContain('| Category total | Unclassified | - | unknown | unknown |');
             expect(terminal).toContain('Individual elapsed values overlap and must not be summed.');
         }
     });

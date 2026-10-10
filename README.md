@@ -47,7 +47,7 @@ including a trailing `...` when truncated; full descriptions remain in the evide
 Topic and category totals count recorded windows once. Topic totals exclude
 cross-topic overlaps; category totals include those overlaps but exclude
 cross-category overlaps. Both kinds of overlap have explicit rows.
-The Untimed column counts excluded unknown intervals; groups with no complete
+Untimed or unfinished intervals are excluded from totals; groups with no complete
 intervals retain unknown totals. Unlinked evaluations stay under
 `No linked WorkPlan topic`; multiple topic links form one explicit combined group.
 Individual slice windows overlap and must not be summed; use the category summary

@@ -157,9 +157,9 @@ export function workEffortReportSlicesToMarkdown(report: WorkEffortReport, regis
     const topics = sliceTopics(report, registryValue);
     const windows = observedWindows(report.rows);
     const rows: string[][] = [];
-    const append = (label: string, category: string, topic: string, ms: number | null, untimed: number) => {
+    const append = (label: string, category: string, topic: string, ms: number | null) => {
         rows.push([cell(label), category, cell(topic), ms === null ? 'unknown' : duration(ms),
-            ms === null ? 'unknown' : (ms / 60000).toFixed(2), String(untimed)]);
+            ms === null ? 'unknown' : (ms / 60000).toFixed(2)]);
     };
     for (const category of categories) {
         const members = report.rows.filter(row => row.category === category);
@@ -192,29 +192,26 @@ export function workEffortReportSlicesToMarkdown(report: WorkEffortReport, regis
             for (const row of group) {
                 const description = `${row.id}: ${row.title}`;
                 append(description.length > 64 ? `${description.slice(0, 61)}...` : description,
-                    category, topic.label, row.elapsedMs, Number(row.elapsedMs === null));
+                    category, topic.label, row.elapsedMs);
             }
             append('Topic total', category, topic.label,
-                group.some(row => row.elapsedMs !== null) ? allocated.get(topic.key)! : null,
-                group.filter(row => row.elapsedMs === null).length);
+                group.some(row => row.elapsedMs !== null) ? allocated.get(topic.key)! : null);
         }
-        if (crossTopicMs > 0) append('Cross-topic overlap', category, '-', crossTopicMs, 0);
+        if (crossTopicMs > 0) append('Cross-topic overlap', category, '-', crossTopicMs);
         append('Category total', category, '-',
-            members.some(row => row.elapsedMs !== null) ? report.observedWindowsMs[category] : null,
-            members.filter(row => row.elapsedMs === null).length);
+            members.some(row => row.elapsedMs !== null) ? report.observedWindowsMs[category] : null);
     }
-    append('Cross-category overlap', 'Cross-category overlap', '-', report.observedWindowsMs['Cross-category overlap'], 0);
+    append('Cross-category overlap', 'Cross-category overlap', '-', report.observedWindowsMs['Cross-category overlap']);
     append('Total observed union', 'All categories', '-',
-        report.rows.some(row => row.elapsedMs !== null) ? report.observedTotalMs : null,
-        report.rows.filter(row => row.elapsedMs === null).length);
+        report.rows.some(row => row.elapsedMs !== null) ? report.observedTotalMs : null);
     return [
         '## Recorded slices', '',
         `Recorded evaluations: ${report.rows.length}. This lists available evaluation records, not every historical change in the repository.`,
         'Durations are elapsed delivery windows, not active effort. Individual elapsed values overlap and must not be summed.',
         'Ordered by category, WorkPlan topic, then slice title and ID. Unlinked slices stay in No linked WorkPlan topic; multiple links form one explicit combined group.',
         'Topic totals exclude cross-category and cross-topic overlaps, which have separate rows. Category totals include cross-topic overlap but exclude cross-category overlap.',
-        'Untimed counts identify excluded unknown intervals; totals with no complete intervals remain unknown. Subtotals and totals must not be added to their detail rows.', '',
-        alignedTable(['Slice (evaluation ID: title)', 'Category', 'WorkPlan topic', 'Duration (h:mm:ss)', 'Minutes', 'Untimed'], rows, [3, 4, 5]),
+        'Untimed or unfinished intervals are excluded from totals; totals with no complete intervals remain unknown. Subtotals and totals must not be added to their detail rows.', '',
+        alignedTable(['Slice (evaluation ID: title)', 'Category', 'WorkPlan topic', 'Duration (h:mm:ss)', 'Minutes'], rows, [3, 4]),
     ].join('\n');
 }
 

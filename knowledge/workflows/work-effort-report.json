@@ -1935,6 +1935,13 @@
   ],
   "commits": [
     {
+      "sha": "af11c04dcffbd2afe0f01172419f795159900f5a",
+      "authoredAt": "2026-10-10T17:45:25+02:00",
+      "committedAt": "2026-10-10T17:45:25+02:00",
+      "subject": "Limit slice descriptions to 64 characters",
+      "category": "Unclassified"
+    },
+    {
       "sha": "2d70183dea21a2d848af73661136a0b44e40b4cb",
       "authoredAt": "2026-10-10T17:40:56+02:00",
       "committedAt": "2026-10-10T17:40:56+02:00",
@@ -6912,8 +6919,8 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T15:44:10.050Z",
-  "sourceCommit": "2d70183dea21a2d848af73661136a0b44e40b4cb",
+  "generatedAt": "2026-10-10T15:48:06.759Z",
+  "sourceCommit": "af11c04dcffbd2afe0f01172419f795159900f5a",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",

@@ -24,7 +24,7 @@ Durations use hours:minutes:seconds, rounded to the nearest second. The Problem 
 
 Evaluations reviewed: 48. Complete intervals: 40.
 Unfinished or untimed evaluations: 8.
-Reachable commits inventoried: 711; all commit durations and outcome classifications remain unknown.
+Reachable commits inventoried: 712; all commit durations and outcome classifications remain unknown.
 
 ## Evaluation evidence
 
@@ -87,6 +87,7 @@ Individual elapsed values below overlap and must not be summed.
 Author and commit dates are events, not work intervals. No time is inferred from commit gaps. Inspect referenced diffs before assigning older work to outcomes.
 | Commit | Author timestamp | Commit timestamp | Subject |
 |---|---|---|---|
+| af11c04dcffbd2afe0f01172419f795159900f5a | 2026-10-10T17:45:25+02:00 | 2026-10-10T17:45:25+02:00 | Limit slice descriptions to 64 characters |
 | 2d70183dea21a2d848af73661136a0b44e40b4cb | 2026-10-10T17:40:56+02:00 | 2026-10-10T17:40:56+02:00 | Group effort slices by category and topic with totals |
 | e343ecbcc0a3c97b6797ebc6242cfb43f222effa | 2026-10-10T17:36:08+02:00 | 2026-10-10T17:36:08+02:00 | Add separate effort summary and slice commands |
 | 9a2aef6bf8c5350e28cb7b8b71e8d79c183f29b7 | 2026-10-10T17:30:18+02:00 | 2026-10-10T17:30:18+02:00 | Print aligned effort report summary in terminal |
@@ -801,7 +802,7 @@ Author and commit dates are events, not work intervals. No time is inferred from
 
 ## Scope, sources and limitations
 
-Git inventory pinned to 2d70183dea21a2d848af73661136a0b44e40b4cb. Snapshot generated at 2026-10-10T15:44:10.050Z.
+Git inventory pinned to af11c04dcffbd2afe0f01172419f795159900f5a. Snapshot generated at 2026-10-10T15:48:06.759Z.
 Classification source: [reviewed outcome classifications](./work-effort-classifications.json).
 Exact source hashes, original workflow/WorkPlan records, and extracted checkpoint evidence are retained in [the JSON snapshot](./work-effort-report.json).
 - Scope is all reachable HEAD history and current repository records, not deleted branches, inaccessible chats or all work ever done.

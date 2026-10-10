@@ -47,6 +47,17 @@ const registry = {
 const emptyRegistry = { schemaVersion: 2, workPlans: [] };
 
 describe('work effort report', () => {
+    it('omits the Untimed column while retaining unknown durations', () => {
+        const report = createWorkEffortReport(ledger, classifications, '');
+        const output = workEffortReportSlicesToMarkdown(report, emptyRegistry);
+        const table = output.split('\n').filter(line => line.startsWith('|'));
+        expect(table[0].split('|').slice(1, -1).map(value => value.trim()))
+            .toEqual(['Slice (evaluation ID: title)', 'Category', 'WorkPlan topic', 'Duration (h:mm:ss)', 'Minutes']);
+        for (const row of table) expect(row.split('|').slice(1, -1)).toHaveLength(5);
+        expect(output.replace(/ {2,}/g, ' '))
+            .toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown |');
+    });
+
     it.each([63, 64, 65])('caps a %i-character slice description at 64 characters including ellipsis', length => {
         const title = 'x'.repeat(length - 'short: '.length);
         const report = createWorkEffortReport({
@@ -79,10 +90,10 @@ describe('work effort report', () => {
         const report = createWorkEffortReport(ledger, classifications, '');
         const before = JSON.stringify(report);
         const output = workEffortReportSlicesToMarkdown(report, splitRegistry).replace(/ {2,}/g, ' ');
-        expect(output).toContain('| Topic total | Problem/Domain | Plan / Alpha | 0:05:00 | 5.00 | 0 |');
-        expect(output).toContain('| Topic total | Problem/Domain | Plan / Beta | 0:00:00 | 0.00 | 0 |');
-        expect(output).toContain('| Cross-topic overlap | Problem/Domain | - | 0:05:00 | 5.00 | 0 |');
-        expect(output).toContain('| Category total | Problem/Domain | - | 0:10:00 | 10.00 | 0 |');
+        expect(output).toContain('| Topic total | Problem/Domain | Plan / Alpha | 0:05:00 | 5.00 |');
+        expect(output).toContain('| Topic total | Problem/Domain | Plan / Beta | 0:00:00 | 0.00 |');
+        expect(output).toContain('| Cross-topic overlap | Problem/Domain | - | 0:05:00 | 5.00 |');
+        expect(output).toContain('| Category total | Problem/Domain | - | 0:10:00 | 10.00 |');
         expect(output.indexOf('| domain: domain')).toBeLessThan(output.indexOf('| domain-overlap: domain-overlap'));
         expect(JSON.stringify(report)).toBe(before);
     });
@@ -133,9 +144,9 @@ describe('work effort report', () => {
     it('reports unknown totals when every slice is untimed', () => {
         const report = createWorkEffortReport({ ...ledger, evaluations: [evaluation('untimed', null, null)] }, [], '');
         const output = workEffortReportSlicesToMarkdown(report, emptyRegistry).replace(/ {2,}/g, ' ');
-        expect(output).toContain('| Topic total | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
-        expect(output).toContain('| Category total | Unclassified | - | unknown | unknown | 1 |');
-        expect(output).toContain('| Total observed union | All categories | - | unknown | unknown | 1 |');
+        expect(output).toContain('| Topic total | Unclassified | No linked WorkPlan topic | unknown | unknown |');
+        expect(output).toContain('| Category total | Unclassified | - | unknown | unknown |');
+        expect(output).toContain('| Total observed union | All categories | - | unknown | unknown |');
     });
 
     it('orders slices by category and linked topic with overlap-safe topic and category totals', () => {
@@ -143,13 +154,13 @@ describe('work effort report', () => {
         const output = workEffortReportSlicesToMarkdown(report, registry).replace(/ {2,}/g, ' ');
         expect(output.indexOf('domain: domain')).toBeLessThan(output.indexOf('domain-overlap: domain-overlap'));
         expect(output.indexOf('domain-overlap: domain-overlap')).toBeLessThan(output.indexOf('meta: meta'));
-        expect(output).toContain('| Topic total | Problem/Domain | Plan / Alpha | 0:10:00 | 10.00 | 0 |');
-        expect(output).toContain('| Category total | Problem/Domain | - | 0:10:00 | 10.00 | 0 |');
-        expect(output).toContain('| Topic total | Meta/DevEnv | Plan / Beta | 0:10:00 | 10.00 | 0 |');
-        expect(output).toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
-        expect(output).toContain('| Category total | Unclassified | - | 0:05:00 | 5.00 | 2 |');
-        expect(output).toContain('| Cross-category overlap | Cross-category overlap | - | 0:10:00 | 10.00 | 0 |');
-        expect(output).toContain('| Total observed union | All categories | - | 0:40:00 | 40.00 | 2 |');
+        expect(output).toContain('| Topic total | Problem/Domain | Plan / Alpha | 0:10:00 | 10.00 |');
+        expect(output).toContain('| Category total | Problem/Domain | - | 0:10:00 | 10.00 |');
+        expect(output).toContain('| Topic total | Meta/DevEnv | Plan / Beta | 0:10:00 | 10.00 |');
+        expect(output).toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown |');
+        expect(output).toContain('| Category total | Unclassified | - | 0:05:00 | 5.00 |');
+        expect(output).toContain('| Cross-category overlap | Cross-category overlap | - | 0:10:00 | 10.00 |');
+        expect(output).toContain('| Total observed union | All categories | - | 0:40:00 | 40.00 |');
     });
 
     it('lists every slice once with aligned text and numbers, including unknown intervals', () => {
@@ -164,10 +175,10 @@ describe('work effort report', () => {
             });
         }
         const compact = table.join('\n').replace(/ {2,}/g, ' ');
-        expect(compact).toContain('| domain: domain | Problem/Domain | No linked WorkPlan topic | 0:20:00 | 20.00 | 0 |');
-        expect(compact).toContain('| mixed: mixed | Mixed | No linked WorkPlan topic | 0:05:00 | 5.00 | 0 |');
-        expect(compact).toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
-        expect(compact).toContain('| untimed: untimed | Unclassified | No linked WorkPlan topic | unknown | unknown | 1 |');
+        expect(compact).toContain('| domain: domain | Problem/Domain | No linked WorkPlan topic | 0:20:00 | 20.00 |');
+        expect(compact).toContain('| mixed: mixed | Mixed | No linked WorkPlan topic | 0:05:00 | 5.00 |');
+        expect(compact).toContain('| unfinished: unfinished | Unclassified | No linked WorkPlan topic | unknown | unknown |');
+        expect(compact).toContain('| untimed: untimed | Unclassified | No linked WorkPlan topic | unknown | unknown |');
         expect(report.observedTotalMs).toBe(40 * 60000);
     });
 
@@ -178,7 +189,7 @@ describe('work effort report', () => {
             ...ledger, evaluations: [{ ...evaluation('zero', timestamp(0), timestamp(0)), title: 'A | B\nnew' }],
         }, [], '');
         expect(workEffortReportSlicesToMarkdown(report, emptyRegistry).replace(/ {2,}/g, ' '))
-            .toContain('| zero: A \\| B new | Unclassified | No linked WorkPlan topic | 0:00:00 | 0.00 | 0 |');
+            .toContain('| zero: A \\| B new | Unclassified | No linked WorkPlan topic | 0:00:00 | 0.00 |');
     });
 
     it.each(['2026-10-10T01:00:00Z', '9999-12-31T23:59:59Z'])('aligns summary columns with spaces for an interval ending %s', end => {

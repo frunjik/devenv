@@ -29,7 +29,7 @@ No generated Markdown decision view exists yet; read JSON directly. Source refer
 
 ## Checkpoint
 
-Current resume point: cutover committed as `22cce3533ee0744e9622ac32b70444c1a27b6cdb`; local grid convention committed as `3aeb73c8d6c5ab71adb23d497966a541682f5d1d`. Version 5 registration prepared against the latter snapshot, with UI review revision 2 pinned to the cutover commit. Follow-up registration/checkpoint changes are uncommitted. Next: verify effective guidance loading in a fresh chat; no activation dates inferred. Chronological bullets below retain earlier states as history.
+Current resume point: cutover committed as `22cce3533ee0744e9622ac32b70444c1a27b6cdb`; local grid convention committed as `3aeb73c8d6c5ab71adb23d497966a541682f5d1d`. Version 5 registration, pinned to the latter snapshot with UI review revision 2 pinned to the cutover commit, is committed as `dd090b9`. A later session loaded AGENTS.md (48 lines, links resolve), the UI design review skill and this checkpoint; whether that chat was fresh is unconfirmed. Next: representative-task validation (workflow steps 5-6); no activation dates inferred. Chronological bullets below retain earlier states as history.
 
 - Started 2026-10-10 at the user's explicit request; new workflow and WorkEvaluation both opted in. Canvas paused at its architecture-meaning decision; earlier Principle Register review preserved as paused historical work.
 - User requested continuous one-item questions until stopped, with the ability to redirect by naming their priorities. Continue this interview without repeated continuation prompts; pause for explicit stop or unresolved ambiguity.

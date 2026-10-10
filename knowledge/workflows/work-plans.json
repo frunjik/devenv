@@ -10,6 +10,27 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-bottom-actions",
+          "title": "Anchor right-side actions above canvas",
+          "description": "Completed bottom-anchored right-side removal and connection buttons with top-aligned list. Verified empty/populated lists at 320, 360, 768 and 1280px; desktop buttons align with toolbar bottom, mobile panel flow preserved, no overflow. Client build passes. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-bottom-actions"]
+        }, {
+          "id": "canvas-editor-top-list",
+          "title": "Align half-width connections list with left fields",
+          "description": "Completed right-side Connections panel starting at Label/Type height above mobile. User corrected width to half the page: list spans six global columns, with removal and connection actions below; left fields/Add and stacked picture loading remain on the left. Mobile list spans both control columns. Verified exact width/top alignment at 768/1280px, mobile at 320/360px, 12rem cap, no overflow and client build. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-top-list", "canvas-editor-half-list"]
+        }, {
+          "id": "canvas-editor-left-fields",
+          "title": "Align label and type in the left half",
+          "description": "Completed side-by-side Label/Type within the left half above mobile, matching Load overview width, with Add beneath. Follow-up stacks Technical picture above Load overview in the same left-side grid space. Mobile two-column controls preserved. Runtime edge/stacking assertions pass at 320, 360, 768 and 1280px without overflow; 123 editor tests and client build pass. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-left-fields", "canvas-editor-picture-order"]
+        }, {
           "id": "canvas-editor-connection-list",
           "title": "Show a scrollable connection selection list",
           "description": "Completed always-visible checkbox list above Remove selected, capped at 12rem with vertical scrolling. Multiple selection and removal preserved. Verified list dimensions and scrolling at 320, 360, 768 and 1280px, checked last-row removal, 123 editor tests, client build without style-budget warning and clear diagnostics. Tracking and measurement retained. Next step: user review and optional commit approval.",

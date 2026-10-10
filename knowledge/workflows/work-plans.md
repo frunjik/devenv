@@ -14,6 +14,36 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Anchor right-side actions above canvas
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-bottom-actions`
+
+Completed bottom-anchored right-side removal and connection buttons with top-aligned list. Verified empty/populated lists at 320, 360, 768 and 1280px; desktop buttons align with toolbar bottom, mobile panel flow preserved, no overflow. Client build passes. Tracking and measurement retained. Next step: user review and optional commit approval.
+
+#### WorkTask: Align half-width connections list with left fields
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-top-list`, `canvas-editor-half-list`
+
+Completed right-side Connections panel starting at Label/Type height above mobile. User corrected width to half the page: list spans six global columns, with removal and connection actions below; left fields/Add and stacked picture loading remain on the left. Mobile list spans both control columns. Verified exact width/top alignment at 768/1280px, mobile at 320/360px, 12rem cap, no overflow and client build. Tracking and measurement retained. Next step: user review and optional commit approval.
+
+#### WorkTask: Align label and type in the left half
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-left-fields`, `canvas-editor-picture-order`
+
+Completed side-by-side Label/Type within the left half above mobile, matching Load overview width, with Add beneath. Follow-up stacks Technical picture above Load overview in the same left-side grid space. Mobile two-column controls preserved. Runtime edge/stacking assertions pass at 320, 360, 768 and 1280px without overflow; 123 editor tests and client build pass. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: Show a scrollable connection selection list
 
 **Status:** Completed

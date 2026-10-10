@@ -34,6 +34,91 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-bottom-actions",
+      "title": "Anchor right-side actions above canvas",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Right-side buttons align to toolbar bottom above the canvas while the list stays at the top.",
+      "successCondition": "Above mobile, right-side panel stretches to toolbar bottom and final action row matches that bottom with empty and populated lists. Mobile flow and list top alignment preserved.",
+      "baseline": "Uncommitted half-width Connections panel has content-height rows and may leave action buttons above the toolbar bottom. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:03:55.369+02:00",
+      "completedAt": "2026-10-10T19:04:41.6365260+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Bottom-anchor right-side actions, top-align list.", "evidence": "Current request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "46.268 seconds elapsed. Human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Connection panel stretches with one flexible list row and two content-sized action rows; picker aligns to row start. Runtime assertions with empty and populated lists at 320, 360, 768 and 1280px verify action bottom equals panel bottom; desktop also equals toolbar bottom and list top equals Label top within 1px. Mobile remains sequential with loading controls after connection panel. No overflow. Client production build passes without warnings. CSS-only follow-up, no action/canvas changes or new TDD claim. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser geometry and build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-half-list",
+      "title": "Expand connections list to half the page",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Connections list fills the right half, six global grid columns.",
+      "successCondition": "Above mobile, list fills six tracks and matches the left-half width, still top-aligned with Label/Type. Mobile and 12rem scrolling cap preserved.",
+      "baseline": "User corrected prior two-global-column interpretation to half-page width. Tracking and measurement retained. Follow-up start timestamp not recorded.",
+      "startedAt": null,
+      "completedAt": "2026-10-10T19:02:48.8921671+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Half-page width means six global grid columns above mobile.", "evidence": "Current correction." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "List fills the right panel instead of two tracks. Runtime assertions at 768/1280px verify widths 362.640625/604.8125px equal six tracks plus gutters and matching left-half overview width within 1px; top matches Label. At 320/360px list spans both mobile columns, 281/321px. Height remains capped at 192px and no document overflow. Final client build passes without warnings. CSS-only correction; existing action behavior unchanged and no new TDD claim. Prior narrow-width evidence retained as historical, superseded by this correction. Human effort and user benefit unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser geometry and build output." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-top-list",
+      "title": "Align narrow connections list with left fields",
+      "beneficiary": "User editing canvas connections",
+      "intendedOutcome": "Connections start level with Label/Type on the right and span two global grid columns.",
+      "successCondition": "Above mobile, list top matches left fields and width equals two global tracks plus gutter. Removal stays below. Mobile list spans both control columns; scrolling and canvas preserved.",
+      "baseline": "Uncommitted left-field/picture layout still puts connections in a separate lower row. User requested top alignment then clarified two global grid columns, not two entry columns. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:00:38.642+02:00",
+      "completedAt": "2026-10-10T19:01:56.9633463+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Top-aligned right list spanning two global columns; mobile preserved.", "evidence": "Current two requests and clarification answer." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 18.321 seconds elapsed, including clarification. Human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Desktop toolbar now uses parallel left/right panels with CSS subgrid: left part controls first row and picture controls second row; right connection controls span both rows. List occupies the rightmost two global columns, top-aligned with left fields, removal and connection actions beneath. Mobile retains sequential two-column controls with full-width list. Runtime assertions at 768/1280px verify matching top coordinates and list widths 112.890625/188.8125px matching two tracks plus gutter within 1px. At 320/360px list spans both control columns, 281/321px with page scrollbar. All measured lists cap at 192px and retain scrollable content; no horizontal overflow. Final client build passes without warnings. CSS-only follow-up; no new TDD or unit test claim, action bindings and canvas unchanged. Narrow global-column choice causes more wrapping at tablet widths as expected; user benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser width/top/height assertions and client build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-picture-order",
+      "title": "Stack Technical picture above Load overview",
+      "beneficiary": "User loading canvas pictures",
+      "intendedOutcome": "Technical picture above Load overview in the same left-side grid space.",
+      "successCondition": "Technical picture precedes overview in DOM and visual order, directly above with matching left edge and width across mobile and desktop. Loading actions remain unchanged.",
+      "baseline": "Uncommitted left-field layout retains picture buttons side by side. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:58:59.842+02:00",
+      "completedAt": "2026-10-10T18:59:46.7370522+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Technical picture above Load overview on the left.", "evidence": "Current request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "46.895 seconds elapsed. Human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Reordered picture buttons in template and assigned both to the same left-side grid columns. Runtime assertions at 320, 360, 768 and 1280px confirm Technical picture above overview, matching widths/left edges and no horizontal overflow. All 123 editor tests and client production build pass without warnings. No action bindings, TypeScript or canvas changes; presentation-only, no new TDD claim. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html and .scss; README.md; current session browser geometry, editor tests and production build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-left-fields",
+      "title": "Align label and type in the left half",
+      "beneficiary": "User creating canvas parts",
+      "intendedOutcome": "Label and Type share the left half aligned with Load overview, Add below.",
+      "successCondition": "Above mobile, combined Label/Type width and Add width match Load overview with shared left/right edges. Preserve side-by-side mobile fields, global grid and existing behavior.",
+      "baseline": "At 15d8ff8 Label spans four tracks, Type three and Add two, extending past the left half. User approved side-by-side fields within the left half and Add beneath. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:57:48.994+02:00",
+      "completedAt": "2026-10-10T18:58:32.3442110+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Combined fields align to Load overview width above mobile; Add below.", "evidence": "Request and approved clarification." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "43.350 seconds elapsed. Human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Label/Type now each span three global tracks above mobile, together occupying the left six tracks; Add spans the same six below. Removed conflicting intermediate overrides. Runtime assertions at 768 and 1280px confirm Label left and Type/Add right edges match Load overview within 1px. At 320 and 360px fields remain side by side with Add below and no overflow. Final client build passes without warnings, SCSS diagnostics clear. CSS-only change; no TypeScript/action/canvas changes, no new TDD or unit test claims. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session browser edge measurements and client build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-connection-list",
       "title": "Show a scrollable connection selection list",
       "beneficiary": "User selecting connections to remove",

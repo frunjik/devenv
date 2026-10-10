@@ -24,6 +24,8 @@ the authoritative JSON, not the generated views.
 
 The [Problem/Domain versus Meta/DevEnv report](./knowledge/workflows/work-effort-report.generated.md)
 compares the union of recorded evaluation delivery windows, not human hours worked.
+Its summary shows category durations in hours:minutes:seconds alongside minutes,
+a Problem + Meta subtotal, and the total observed union across all categories.
 Human active effort, waiting and agent/tool execution remain unknown where no direct
 observations exist. Same-category overlap counts once; cross-category overlaps stay
 separate, and missing intervals are not converted to zero effort.

@@ -97,7 +97,17 @@ function cell(value: string): string {
     return value.replace(/\|/g, '\\|').replace(/[\r\n]/g, ' ');
 }
 
+function duration(ms: number): string {
+    const seconds = Math.round(ms / 1000);
+    return `${Math.floor(seconds / 3600)}:${String(Math.floor(seconds / 60) % 60).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
 export function workEffortReportToMarkdown(report: WorkEffortReport): string {
+    const summaryRows: [string, number][] = [
+        ...Object.entries(report.observedWindowsMs),
+        ['Problem + Meta subtotal', report.observedWindowsMs['Problem/Domain'] + report.observedWindowsMs['Meta/DevEnv']],
+        ['Total observed union', report.observedTotalMs],
+    ];
     const lines = [
         '# Problem/Domain versus Meta/DevEnv time evidence', '',
         'Generated from the report JSON snapshot. Regenerate; do not edit this view.', '',
@@ -107,10 +117,11 @@ export function workEffortReportToMarkdown(report: WorkEffortReport): string {
         'Same-category overlaps count once. Windows containing multiple categories are kept in Cross-category overlap, not assigned to either category.',
         'Mixed means inseparable outcomes; Unclassified means insufficient classification evidence. Gaps and incomplete intervals are excluded, not treated as zero effort.',
         'Percentages use only the recorded window union as denominator; they are not proportions of all work.', '',
-        '| Window category | Minutes | Share of observed union |',
-        '|---|---:|---:|',
-        ...Object.entries(report.observedWindowsMs).map(([category, ms]) =>
-            `| ${category} | ${(ms / 60000).toFixed(2)} | ${report.observedTotalMs === 0 ? 'unknown' : `${(100 * ms / report.observedTotalMs).toFixed(2)}%`} |`),
+        'Durations use hours:minutes:seconds, rounded to the nearest second. The Problem + Meta subtotal excludes Mixed, Unclassified and Cross-category overlap; the total includes all five categories. Subtotal and total rows summarize the categories and must not be added to them.', '',
+        '| Window category | Duration (h:mm:ss) | Minutes | Share of observed union |',
+        '|---|---:|---:|---:|',
+        ...summaryRows.map(([category, ms]) =>
+            `| ${category} | ${duration(ms)} | ${(ms / 60000).toFixed(2)} | ${report.observedTotalMs === 0 ? 'unknown' : `${(100 * ms / report.observedTotalMs).toFixed(2)}%`} |`),
         '',
         `Evaluations reviewed: ${report.rows.length}. Complete intervals: ${report.rows.filter(row => row.elapsedMs !== null).length}.`,
         `Unfinished or untimed evaluations: ${report.rows.filter(row => row.elapsedMs === null).length}.`,

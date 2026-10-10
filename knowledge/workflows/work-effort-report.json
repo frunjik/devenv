@@ -7,11 +7,51 @@
     "Problem/Domain": 11108000,
     "Meta/DevEnv": 9227071,
     "Mixed": 330000,
-    "Unclassified": 0,
+    "Unclassified": 242633,
     "Cross-category overlap": 894000
   },
-  "observedTotalMs": 21559071,
+  "observedTotalMs": 21801704,
   "rows": [
+    {
+      "id": "self-cloning-agent-guide-package",
+      "title": "Package the exported Guide so it can clone itself",
+      "beneficiary": "Maintainer reusing or adapting the exported Guide in another project",
+      "intendedOutcome": "The exported folder can clone its current Guide files without the source repository or Git.",
+      "successCondition": "A minimal tsx package and portable TypeScript scripts are exported and survive subsequent clones; current profile/glossary are preserved, unrelated project files excluded, existing or overlapping destinations rejected, provenance described honestly, and changed modules fully covered and type checked.",
+      "baseline": "The export currently contains 12 files plus a source-commit manifest, but no package.json or cloning script. User chose to preserve the receiving profile/glossary, use TypeScript with tsx, track the task and measure it.",
+      "startedAt": "2026-10-10T16:56:41.286+02:00",
+      "completedAt": "2026-10-10T17:00:43.9192385+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Preserve current Guide data; tsx dependency approved; tracking and measurement enabled.",
+          "evidence": "User choices in the current conversation."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": "4 minutes 2.633 seconds elapsed from recorded baseline to verified completion. Human active effort, waiting and agent execution durations remain unknown.",
+          "evidence": "Recorded baseline and local completion clock after coverage and both type checks."
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Exporter now includes 15 Guide files plus manifest: minimal tsx package and portable TypeScript module/entry survive clone-of-clone. Actual source texts exported into injected memory filesystem and cloned twice with an adapted profile; all Guide file contents preserved and unrelated data excluded. Entry executes real clone with mocked Node filesystem, without Git or DevEnv. Existing destinations fail through exclusive mkdir; overlapping paths including symlinked parents, invalid manifests and missing inputs fail before writes; write errors propagate. Original manifest retained as provenance, not proof of adapted content. Red observed before clone implementation and package/entry wiring; Green followed by cohesion/duplication review. 48 focused tests pass; all three changed production modules have 100% statement/branch/function/line coverage, server-spec and standalone strict TypeScript checks pass, editor diagnostics and diff whitespace check clean. Tests perform no application-data writes or network I/O. Existing external export not refreshed; no real-disk clone or clean-machine npm installation performed. No commit made; sources must be committed before official provenance-pinned export. Next step: review and optionally authorize commit, then export to a new destination.",
+          "evidence": "projects/server/test/agent-phase-guide-export.spec.ts; clone-agent-guide.spec.ts; clone-guide-entry.spec.ts; export-agent-phase-guide.spec.ts; Jest coverage and TypeScript output in current session; .agents/agent-phase-guide.README.md."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ],
+      "category": "Unclassified",
+      "rationale": "No outcome classification supplied; no allocation inferred.",
+      "elapsedMs": 242633
+    },
     {
       "id": "report-domain-versus-meta-time",
       "title": "Create an evidence-backed Problem/Domain versus Meta/DevEnv time report",
@@ -1894,6 +1934,62 @@
     }
   ],
   "commits": [
+    {
+      "sha": "fa30dafb52261868e89a87198fdd0a6f6c189d24",
+      "authoredAt": "2026-10-10T17:14:25+02:00",
+      "committedAt": "2026-10-10T17:14:25+02:00",
+      "subject": "Add glossary shortcut to AgentPhaseGuide guidance",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "1dadc44a81d1d49cfbe47c8c250e180633bee199",
+      "authoredAt": "2026-10-10T17:10:18+02:00",
+      "committedAt": "2026-10-10T17:10:18+02:00",
+      "subject": "Remove development remnants from portable AgentPhaseGuide",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "185886cbe64ae26637c0271ea1bad098bb7233de",
+      "authoredAt": "2026-10-10T17:05:06+02:00",
+      "committedAt": "2026-10-10T17:05:06+02:00",
+      "subject": "Default AgentPhaseGuide export to devenv-agent-guide",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "d18f6355cae7c459195212c046233000e99ce39f",
+      "authoredAt": "2026-10-10T17:01:25+02:00",
+      "committedAt": "2026-10-10T17:01:25+02:00",
+      "subject": "Add self-cloning package to AgentPhaseGuide export",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "7246bafb2c78945dea7b7cd3c086f88229afeb7c",
+      "authoredAt": "2026-10-10T16:56:03+02:00",
+      "committedAt": "2026-10-10T16:56:03+02:00",
+      "subject": "Include setup README in AgentPhaseGuide export",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "8ff7b8f964fe48ce44953f850c93c7a7a838ae30",
+      "authoredAt": "2026-10-10T16:46:14+02:00",
+      "committedAt": "2026-10-10T16:46:14+02:00",
+      "subject": "Migrate MetaExport Markdown generator to TypeScript",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "dccd3c40b7321c575e1357660fe7fed17c7cb98c",
+      "authoredAt": "2026-10-10T16:43:15+02:00",
+      "committedAt": "2026-10-10T16:43:15+02:00",
+      "subject": "Migrate practice Markdown generators to TypeScript",
+      "category": "Unclassified"
+    },
+    {
+      "sha": "32ffe00d81fb9ba7130fd07fd9929c995962685b",
+      "authoredAt": "2026-10-10T16:35:48+02:00",
+      "committedAt": "2026-10-10T16:35:48+02:00",
+      "subject": "Add evidence-backed domain versus meta time report",
+      "category": "Unclassified"
+    },
     {
       "sha": "1e3c9cebcc9b5ad8ec6ad4b821f69d8baae5833b",
       "authoredAt": "2026-10-10T16:25:13+02:00",
@@ -6788,12 +6884,12 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T14:31:40.859Z",
-  "sourceCommit": "1e3c9cebcc9b5ad8ec6ad4b821f69d8baae5833b",
+  "generatedAt": "2026-10-10T15:25:48.444Z",
+  "sourceCommit": "fa30dafb52261868e89a87198fdd0a6f6c189d24",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",
-      "sha256": "a9603a6843ed9cd107c1118267209bbb7239387260c7caba6e1c9fb5881a5436"
+      "sha256": "68e5a10b608859122d80a392d4f84a75e76571f00c6d8ecb2b8502645e4981a7"
     },
     {
       "path": "knowledge/workflows/work-effort-classifications.json",
@@ -6805,7 +6901,7 @@
     },
     {
       "path": "knowledge/workflows/work-plans.json",
-      "sha256": "4fe64c6cd45ed9e89e2ef2869689685c07fcd251704dd0f244280a4a4c134e37"
+      "sha256": "46e148824fba43360e9f92d65f54f35bc916e9866e38f8872ec0a9f24178b30e"
     }
   ],
   "workflowRegistrySnapshot": {
@@ -7234,6 +7330,16 @@
                 "measurement": "Measured",
                 "evaluationIds": [
                   "separate-generic-core-from-devenv-profile"
+                ]
+              },
+              {
+                "id": "self-cloning-agent-guide-package",
+                "title": "Package the exported Guide so it can clone itself",
+                "description": "Include a minimal package.json with tsx and self-contained TypeScript clone scripts. Preserve the current profile and glossary, copy only Guide files, work without DevEnv or Git, reject existing/overlapping destinations and explain inherited provenance. Verify isolated clone and subsequent clone using public behavior.",
+                "status": "Completed",
+                "measurement": "Measured",
+                "evaluationIds": [
+                  "self-cloning-agent-guide-package"
                 ]
               }
             ]
@@ -7674,7 +7780,7 @@
     },
     {
       "path": "knowledge/workflows/work-plans.md",
-      "sha256": "f868bc605ca392057f6d6e13222f5bcd636e6cca5e18d2cfa6551a215c43fd36",
+      "sha256": "88438fe539b4284bbce1a17bc570ba2b1c72ef51e785c397b005bb1d7a9fb79c",
       "statements": [
         {
           "line": 15,

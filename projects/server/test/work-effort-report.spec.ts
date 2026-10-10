@@ -52,7 +52,10 @@ describe('work effort report', () => {
             category: 'Unclassified',
         }]);
         const markdown = workEffortReportToMarkdown(report);
-        expect(markdown).toContain('| Problem/Domain | 10.00 | 25.00% |');
+        expect(markdown).toContain('| Problem/Domain | 0:10:00 | 10.00 | 25.00% |');
+        expect(markdown).toContain('| Meta/DevEnv | 0:10:00 | 10.00 | 25.00% |');
+        expect(markdown).toContain('| Problem + Meta subtotal | 0:20:00 | 20.00 | 50.00% |');
+        expect(markdown).toContain('| Total observed union | 0:40:00 | 40.00 | 100.00% |');
         expect(markdown).toContain('Human active effort: **unknown**');
         expect(markdown).toContain('Initial commit');
         expect(markdown).toContain('devenv-value-evaluation.json');
@@ -62,7 +65,22 @@ describe('work effort report', () => {
     it('handles no usable intervals without reporting zero active effort or invented proportions', () => {
         const report = createWorkEffortReport({ ...ledger, evaluations: [evaluation('unknown', null, null)] }, [], '');
         expect(report.observedTotalMs).toBe(0);
-        expect(workEffortReportToMarkdown(report)).toContain('| Problem/Domain | 0.00 | unknown |');
+        const markdown = workEffortReportToMarkdown(report);
+        expect(markdown).toContain('| Problem/Domain | 0:00:00 | 0.00 | unknown |');
+        expect(markdown).toContain('| Problem + Meta subtotal | 0:00:00 | 0.00 | unknown |');
+        expect(markdown).toContain('| Total observed union | 0:00:00 | 0.00 | unknown |');
+    });
+
+    it('renders elapsed duration with unbounded hours and rounds to the nearest second', () => {
+        const report = createWorkEffortReport({
+            ...ledger,
+            evaluations: [evaluation('domain', '2026-10-08T00:00:00Z', '2026-10-09T01:02:59.600Z')],
+        }, [classifications[0]], '');
+        const markdown = workEffortReportToMarkdown(report);
+        expect(markdown).toContain('| Window category | Duration (h:mm:ss) | Minutes | Share of observed union |');
+        expect(markdown).toContain('| Problem/Domain | 25:03:00 | 1502.99 | 100.00% |');
+        expect(markdown).toContain('| Problem + Meta subtotal | 25:03:00 | 1502.99 | 100.00% |');
+        expect(markdown).toContain('| Total observed union | 25:03:00 | 1502.99 | 100.00% |');
     });
 
     it.each([

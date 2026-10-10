@@ -10,17 +10,21 @@ Same-category overlaps count once. Windows containing multiple categories are ke
 Mixed means inseparable outcomes; Unclassified means insufficient classification evidence. Gaps and incomplete intervals are excluded, not treated as zero effort.
 Percentages use only the recorded window union as denominator; they are not proportions of all work.
 
-| Window category | Minutes | Share of observed union |
-|---|---:|---:|
-| Problem/Domain | 185.13 | 51.52% |
-| Meta/DevEnv | 153.78 | 42.80% |
-| Mixed | 5.50 | 1.53% |
-| Unclassified | 0.00 | 0.00% |
-| Cross-category overlap | 14.90 | 4.15% |
+Durations use hours:minutes:seconds, rounded to the nearest second. The Problem + Meta subtotal excludes Mixed, Unclassified and Cross-category overlap; the total includes all five categories. Subtotal and total rows summarize the categories and must not be added to them.
 
-Evaluations reviewed: 47. Complete intervals: 39.
+| Window category | Duration (h:mm:ss) | Minutes | Share of observed union |
+|---|---:|---:|---:|
+| Problem/Domain | 3:05:08 | 185.13 | 50.95% |
+| Meta/DevEnv | 2:33:47 | 153.78 | 42.32% |
+| Mixed | 0:05:30 | 5.50 | 1.51% |
+| Unclassified | 0:04:03 | 4.04 | 1.11% |
+| Cross-category overlap | 0:14:54 | 14.90 | 4.10% |
+| Problem + Meta subtotal | 5:38:55 | 338.92 | 93.27% |
+| Total observed union | 6:03:22 | 363.36 | 100.00% |
+
+Evaluations reviewed: 48. Complete intervals: 40.
 Unfinished or untimed evaluations: 8.
-Reachable commits inventoried: 699; all commit durations and outcome classifications remain unknown.
+Reachable commits inventoried: 707; all commit durations and outcome classifications remain unknown.
 
 ## Evaluation evidence
 
@@ -29,6 +33,7 @@ Individual elapsed values below overlap and must not be summed.
 
 | Evaluation | Category | Elapsed minutes (not effort) | Classification rationale |
 |---|---|---:|---|
+| self-cloning-agent-guide-package: Package the exported Guide so it can clone itself | Unclassified | 4.04 | No outcome classification supplied; no allocation inferred. |
 | report-domain-versus-meta-time: Create an evidence-backed Problem/Domain versus Meta/DevEnv time report | Meta/DevEnv | 5.95 | The report itself is development-process measurement work; its recorded window includes scope decisions and checks, not measured human effort. |
 | agent-guide-preview: Preview AgentPhaseGuide and generated Copilot files | Meta/DevEnv | 4.84 | Agent configuration preview and transfer tooling. |
 | darwin-agent-essentials: Evolve Agent Essentials through Darwin | Meta/DevEnv | unknown | Development-practice extraction and agent rules. |
@@ -82,6 +87,14 @@ Individual elapsed values below overlap and must not be summed.
 Author and commit dates are events, not work intervals. No time is inferred from commit gaps. Inspect referenced diffs before assigning older work to outcomes.
 | Commit | Author timestamp | Commit timestamp | Subject |
 |---|---|---|---|
+| fa30dafb52261868e89a87198fdd0a6f6c189d24 | 2026-10-10T17:14:25+02:00 | 2026-10-10T17:14:25+02:00 | Add glossary shortcut to AgentPhaseGuide guidance |
+| 1dadc44a81d1d49cfbe47c8c250e180633bee199 | 2026-10-10T17:10:18+02:00 | 2026-10-10T17:10:18+02:00 | Remove development remnants from portable AgentPhaseGuide |
+| 185886cbe64ae26637c0271ea1bad098bb7233de | 2026-10-10T17:05:06+02:00 | 2026-10-10T17:05:06+02:00 | Default AgentPhaseGuide export to devenv-agent-guide |
+| d18f6355cae7c459195212c046233000e99ce39f | 2026-10-10T17:01:25+02:00 | 2026-10-10T17:01:25+02:00 | Add self-cloning package to AgentPhaseGuide export |
+| 7246bafb2c78945dea7b7cd3c086f88229afeb7c | 2026-10-10T16:56:03+02:00 | 2026-10-10T16:56:03+02:00 | Include setup README in AgentPhaseGuide export |
+| 8ff7b8f964fe48ce44953f850c93c7a7a838ae30 | 2026-10-10T16:46:14+02:00 | 2026-10-10T16:46:14+02:00 | Migrate MetaExport Markdown generator to TypeScript |
+| dccd3c40b7321c575e1357660fe7fed17c7cb98c | 2026-10-10T16:43:15+02:00 | 2026-10-10T16:43:15+02:00 | Migrate practice Markdown generators to TypeScript |
+| 32ffe00d81fb9ba7130fd07fd9929c995962685b | 2026-10-10T16:35:48+02:00 | 2026-10-10T16:35:48+02:00 | Add evidence-backed domain versus meta time report |
 | 1e3c9cebcc9b5ad8ec6ad4b821f69d8baae5833b | 2026-10-10T16:25:13+02:00 | 2026-10-10T16:25:13+02:00 | Plan Problem/Domain versus Meta/DevEnv time report |
 | c7fcf3a23d4c745960e052fa4234a86f02347092 | 2026-10-10T16:22:56+02:00 | 2026-10-10T16:22:56+02:00 | Refine generic AgentPhaseGuide rules and tracking opt-ins |
 | 57ce107fa99cc12676fe8ed66a2ff24743961cc3 | 2026-10-10T16:12:39+02:00 | 2026-10-10T16:12:39+02:00 | Add AgentPhaseGuide glossary to generic export |
@@ -784,7 +797,7 @@ Author and commit dates are events, not work intervals. No time is inferred from
 
 ## Scope, sources and limitations
 
-Git inventory pinned to 1e3c9cebcc9b5ad8ec6ad4b821f69d8baae5833b. Snapshot generated at 2026-10-10T14:31:40.859Z.
+Git inventory pinned to fa30dafb52261868e89a87198fdd0a6f6c189d24. Snapshot generated at 2026-10-10T15:25:48.444Z.
 Classification source: [reviewed outcome classifications](./work-effort-classifications.json).
 Exact source hashes, original workflow/WorkPlan records, and extracted checkpoint evidence are retained in [the JSON snapshot](./work-effort-report.json).
 - Scope is all reachable HEAD history and current repository records, not deleted branches, inaccessible chats or all work ever done.

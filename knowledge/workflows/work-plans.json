@@ -65,6 +65,14 @@
               "status": "Pending",
               "measurement": "Undecided",
               "evaluationIds": []
+            },
+            {
+              "id": "replace-real-fs-reads-in-tests",
+              "title": "Replace real filesystem reads in tests with mocks",
+              "description": "Some specs still read real repository files (for example agent-essentials-markdown.spec.ts reading knowledge/practices JSON) or real temp files. Inventory these reads and replace them with concise fixtures served through injected boundaries or in-memory fakes such as createMemoryTextFileSystem. This goes beyond the current test-isolation rule, which permits read-only filesystem access; decide whether that rule should change and keep any intentional source-consistency checks explicit.",
+              "status": "Pending",
+              "measurement": "Undecided",
+              "evaluationIds": []
             }
           ]
         }

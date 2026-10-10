@@ -68,6 +68,14 @@ The async DevEnvCloneFileSystem boundary in projects/server/src/lib/handlers/dev
 
 No spec imports supertest after the requestApp migration. Uninstall supertest and @types/supertest and update package-lock.json once removal is approved.
 
+#### WorkTask: Replace real filesystem reads in tests with mocks
+
+**Status:** Pending
+
+**Measurement:** Undecided
+
+Some specs still read real repository files (for example agent-essentials-markdown.spec.ts reading knowledge/practices JSON) or real temp files. Inventory these reads and replace them with concise fixtures served through injected boundaries or in-memory fakes such as createMemoryTextFileSystem. This goes beyond the current test-isolation rule, which permits read-only filesystem access; decide whether that rule should change and keep any intentional source-consistency checks explicit.
+
 ## WorkPlan: WorkPlan Tooling
 
 Make the repository-backed WorkPlan registry easier to inspect and use.

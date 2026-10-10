@@ -10,6 +10,10 @@ import { VisualFoundationsComponent } from './system/visual-foundations/visual-f
 import { WorkPlansComponent } from './system/work-plans/work-plans.component';
 
 describe('routes', () => {
+    it('exposes the isolated canvas symbol preview', () => {
+        expect(routes.find(route => route.path === 'canvas-symbol-preview')?.component?.name)
+            .toBe('CanvasSymbolPreviewComponent');
+    });
     it('exposes the read-only agent guide preview', () => {
         expect(routes.find(route => route.path === 'agent-guide')?.component?.name).toBe('AgentGuideComponent');
     });

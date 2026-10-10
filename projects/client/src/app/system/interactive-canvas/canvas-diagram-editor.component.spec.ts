@@ -38,6 +38,7 @@ class MockCanvas implements ICanvas {
     private render: Parameters<ICanvas['initialize']>[1] | undefined;
     private pending = false;
     private readonly context = {
+        strokeStyle: '', fillStyle: '', save: () => {}, restore: () => {}, clip: () => {},
         fillText: (text: string, x: number, y: number, maxWidth?: number) => {
             this.draws.push([text, x, y]);
             this.textWidths.push(maxWidth);

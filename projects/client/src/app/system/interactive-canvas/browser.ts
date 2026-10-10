@@ -1,13 +1,12 @@
 import { InjectionToken } from '@angular/core';
+import type { CanvasRenderContext } from './canvas';
 
 export interface IBrowser {
     capturePointer(canvas: HTMLCanvasElement, pointerId: number): void;
     requestAnimationFrame(callback: () => void): number;
     cancelAnimationFrame(id: number): void;
-    getContext(canvas: HTMLCanvasElement): Pick<CanvasRenderingContext2D,
-        'clearRect' | 'setTransform' | 'fillText' | 'strokeRect'
-        | 'beginPath' | 'moveTo' | 'lineTo' | 'stroke'
-        | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'> | null;
+    getContext(canvas: HTMLCanvasElement): (CanvasRenderContext
+        & Pick<CanvasRenderingContext2D, 'clearRect' | 'setTransform'>) | null;
     displayedWidth(canvas: HTMLCanvasElement): number;
     displayedHeight(canvas: HTMLCanvasElement): number;
     devicePixelRatio(): number;

@@ -27,6 +27,7 @@ class MockBrowser implements IBrowser {
         callbacks.forEach(callback => callback());
     }
     context: ReturnType<IBrowser['getContext']> = {
+        strokeStyle: '', fillStyle: '', save: () => {}, restore: () => {}, clip: () => {},
         clearRect: (...values) => { this.cleared.push(values); },
         setTransform: (...values: unknown[]) => { this.transforms.push(values); },
         fillText: () => {},
@@ -115,14 +116,11 @@ describe('InteractiveCanvas surface', () => {
         const { browser, surface, element } = setup();
         expect(() => surface.requestDraw()).toThrow('Canvas is not initialized.');
         surface.destroy();
+        const context = browser.context;
         browser.context = null;
         expect(() => surface.initialize(element, () => {})).toThrow('Unable to initialize canvas: 2D context is unavailable.');
         surface.destroy();
-        browser.context = {
-            clearRect: () => {}, setTransform: () => {}, fillText: () => {}, strokeRect: () => {},
-            beginPath: () => {}, moveTo: () => {}, lineTo: () => {}, stroke: () => {},
-            textAlign: 'center', textBaseline: 'middle', font: '', lineWidth: 1,
-        };
+        browser.context = context;
         surface.initialize(element, () => {});
         expect(() => surface.initialize(element, () => {})).toThrow('Canvas is already initialized.');
         surface.destroy();

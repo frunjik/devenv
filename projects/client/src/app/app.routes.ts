@@ -13,8 +13,13 @@ import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-
 import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
 import { AgentGuideComponent } from './system/agent-guide/agent-guide.component';
 import { WorkPlansComponent } from './system/work-plans/work-plans.component';
+import { CanvasSymbolPreviewComponent } from './system/interactive-canvas/canvas-symbol-preview.component';
 
 export const routes: Routes = [
+    {
+        path: 'canvas-symbol-preview',
+        component: CanvasSymbolPreviewComponent,
+    },
     {
         path: 'agent-guide',
         component: AgentGuideComponent,

@@ -1,12 +1,15 @@
 import { InjectionToken } from '@angular/core';
 
+export type CanvasRenderContext = Pick<CanvasRenderingContext2D,
+    'fillText' | 'strokeRect' | 'beginPath' | 'moveTo' | 'lineTo' | 'stroke'
+    | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'
+    | 'strokeStyle' | 'fillStyle' | 'save' | 'restore' | 'clip'>;
+
 export interface ICanvas {
     initialize(
         element: HTMLCanvasElement,
         render: (
-            context: Pick<CanvasRenderingContext2D,
-                'fillText' | 'strokeRect' | 'beginPath' | 'moveTo' | 'lineTo' | 'stroke'
-                | 'lineWidth' | 'textAlign' | 'textBaseline' | 'font'>,
+            context: CanvasRenderContext,
             width: number,
             height: number,
         ) => void,

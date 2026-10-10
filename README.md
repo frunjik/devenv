@@ -20,6 +20,20 @@ These commands and `export:meta:markdown` use thin TypeScript entry scripts run 
 validation. They retain the existing JSON inputs and Markdown output paths; edit
 the authoritative JSON, not the generated views.
 
+## Canvas symbol preview
+
+Open `/canvas-symbol-preview` in the client for a read-only sample inspired by
+the architecture sketch: green artifacts and system software, orange business
+roles and products, and a cross-hatched developer figure.
+
+The reusable Canvas 2D functions in
+[canvas-symbols.ts](./projects/client/src/app/system/interactive-canvas/canvas-symbols.ts)
+accept logical-pixel bounds and labels and restore canvas drawing state.
+They use clipped hatch fills and vector corner icons, without image or font
+downloads. The preview uses a single column on narrow screens and preserves the
+existing canvas editor and stored diagram formats. This is a vector interpretation,
+not a pixel-identical reproduction of handwriting.
+
 ## Work time evidence
 
 The [Problem/Domain versus Meta/DevEnv report](./knowledge/workflows/work-effort-report.generated.md)

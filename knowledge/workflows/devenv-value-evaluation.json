@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-symbol-preview",
+      "title": "Render architecture symbols with a sample canvas preview",
+      "beneficiary": "User exploring reusable architecture sketch symbols",
+      "intendedOutcome": "Render artifact, system software, business role, product and actor shapes as reusable canvas vectors with an isolated preview.",
+      "successCondition": "Five recognizable symbol types match the supplied reference conventions: green/orange outlines, diagonal hatching, corner icons and readable labels; reusable functions and a responsive preview with connections work at narrow and wide widths, preserve the existing editor and pass targeted coverage and type/build checks.",
+      "baseline": "User approved reusable rendering functions plus a sample preview, tracking and measurement. Existing ICanvas/IBrowser render basic boxes, labels and connections; no hatch fills or architecture symbol palette exists. Reference is a supplied sketch, not a requirement for pixel-identical handwriting. No editor controls or stored schema changes are in scope.",
+      "startedAt": "2026-10-10T18:05:51.890+02:00",
+      "completedAt": "2026-10-10T18:15:25.1343250+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Reusable renderers plus isolated preview approved; tracking and measurement enabled.", "evidence": "Current conversation and supplied sketch." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "9 minutes 33.244 seconds elapsed from the initial request to final verification, including scope/tracking decisions and checks. Human active effort, waiting and agent execution remain unknown.", "evidence": "Request timestamp 2026-10-10T18:05:51.890+02:00 and local verification clock 2026-10-10T18:15:25.1343250+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Reusable artifact, system software, business role, product, actor and connection rendering functions implemented with clipped hatch fills and canvas state restoration. Isolated read-only preview uses existing InteractiveCanvas lifecycle and typed browser boundary; no stored schema or editor controls changed. Green/orange outlines, corner symbols and readable labels visually verified in the running client; screenshots at narrow and wide widths confirm single-column and multi-column layouts. At 360px viewport, canvas is 321x900 logical pixels; at 1280px, 1214x900, with no horizontal document overflow or alerts. Pixel readback confirms green and orange content. Red observed for missing renderers and preview route before implementation. 156 focused tests pass; every changed production module has 100% statement, branch, function and line coverage. Client test TypeScript check, shared build and production client build pass. Test boundary uses an in-memory recording Canvas context, no real test application-data writes or network I/O. Invalid geometry, drawing errors, lifecycle cleanup and existing editor behavior covered. This is a deterministic vector interpretation, not pixel-identical handwriting. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-symbols.ts; canvas-symbol-preview.component.ts; their specs; browser.spec.ts; interactive-canvas.spec.ts; canvas-diagram-editor.component.spec.ts; app.routes.spec.ts; browser preview at http://localhost:4200/canvas-symbol-preview; current session test, coverage, type-check and build output." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "self-cloning-agent-guide-package",
       "title": "Package the exported Guide so it can clone itself",
       "beneficiary": "Maintainer reusing or adapting the exported Guide in another project",

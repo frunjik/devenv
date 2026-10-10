@@ -6,6 +6,24 @@ Hierarchy: WorkPlan > WorkTopic > WorkTask. IDs are unique across the registry.
 WorkTask statuses: Pending, Active, Paused, Blocked, Completed.
 WorkTask measurement: Undecided, Measured, NotMeasured. Decide before a task leaves Pending; Measured tasks link evaluation ledger IDs.
 
+## WorkPlan: Canvas symbol rendering
+
+Reusable vector symbols and an isolated preview inspired by the supplied architecture sketch.
+
+### WorkTopic: Reusable symbol renderers
+
+Artifact, system software, business role, product and actor symbols with hatching and labels.
+
+#### WorkTask: Render architecture symbols with a sample canvas preview
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-symbol-preview`
+
+Completed reusable deterministic Canvas 2D renderers and the isolated /canvas-symbol-preview route. Verified all five symbol types, green/orange styling, clipped hatch fills, corner icons, labels, connections, narrow/wide layout, cleanup and visible errors. Existing editor and stored formats preserved. Tracking and measurement approved; baseline and completion evidence are in the linked evaluation. Next step: user review and optional commit approval; editable symbol integration and pixel-identical handwriting remain out of scope.
+
 ## WorkPlan: Work effort reporting
 
 Assess how observed work time is distributed between Problem/Domain delivery and Meta/DevEnv work, retaining source evidence and uncertainty.

@@ -80,13 +80,17 @@
         justify-self: end;
     }
 
+    .connection-controls .button-wide {
+        grid-column: -4 / -1;
+    }
+
     .connection-controls .connect-action {
         grid-column: 7 / span 3;
     }
 
     .connection-picker {
-        grid-column: span 9;
-        justify-self: end;
+        grid-column: -7 / -1;
+        min-width: 0;
     }
 
     .picture-controls button {
@@ -141,17 +145,8 @@
     }
 }
 
-.connection-picker {
-    min-width: 0;
-    max-width: 100%;
-
-    summary {
-        min-height: 44px;
-        align-content: center;
-        cursor: pointer;
-        overflow-wrap: anywhere;
-    }
-
+.connection-picker p {
+    margin: 0 0 var(--layout-space-small);
 }
 
 .connection-options {
@@ -229,13 +224,20 @@ canvas {
         .form-field,
         .shape-field,
         .part-controls button,
-        .connection-controls button,
-        .connection-picker {
+        .connection-controls button {
             grid-column: span 6;
         }
 
         .connection-controls .connect-action {
             grid-column: 1 / span 6;
+        }
+
+        .connection-picker {
+            grid-column: 1 / -1;
+        }
+
+        .connection-controls .button-wide {
+            grid-column: -7 / -1;
         }
     }
 }
@@ -249,13 +251,16 @@ canvas {
         .shape-field,
         .part-controls button,
         .connection-controls button,
-        .connection-picker,
         .picture-controls button {
             grid-column: span 1;
         }
 
         .connection-controls .connect-action {
             grid-column: 1 / span 1;
+        }
+
+        .connection-controls .button-wide {
+            grid-column: -2 / -1;
         }
     }
 }

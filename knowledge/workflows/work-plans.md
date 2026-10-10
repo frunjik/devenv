@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Show a scrollable connection selection list
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-connection-list`
+
+Completed always-visible checkbox list above Remove selected, capped at 12rem with vertical scrolling. Multiple selection and removal preserved. Verified list dimensions and scrolling at 320, 360, 768 and 1280px, checked last-row removal, 123 editor tests, client build without style-budget warning and clear diagnostics. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: Place connections beside removal
 
 **Status:** Completed

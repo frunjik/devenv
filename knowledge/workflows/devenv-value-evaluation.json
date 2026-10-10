@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-connection-list",
+      "title": "Show a scrollable connection selection list",
+      "beneficiary": "User selecting connections to remove",
+      "intendedOutcome": "Always-visible multi-selection list above the removal action.",
+      "successCondition": "Checkbox connections stay visible, scroll vertically above a 12rem height limit, sit above Remove selected and preserve multiple selection/removal on mobile and desktop.",
+      "baseline": "At 1fd60a5 connections are a collapsed details picker beside removal. User approved always-visible checkboxes and existing 12rem cap. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:54:12.397+02:00",
+      "completedAt": "2026-10-10T18:56:24.9371376+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Always-visible checkbox list above removal with 12rem cap.", "evidence": "Current request and approved clarification." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 12.540 seconds elapsed; human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Replaced details/summary with labeled always-visible checkbox group and kept existing selection bindings. List sits above removal, with shared right edge; full control width on mobile/intermediate and right half on desktop. Runtime assertions at 320, 360, 768 and 1280px confirm 192px maximum/client height, 264px content height and successful scrollTop=72, above-removal placement and no overflow. Checked last connection and removed it live, retaining five others. All 123 editor tests pass; test expectations now require no disclosure and accessible list labeling. Simplified redundant styles after initial budget warnings; final production client build passes without warning and relevant diagnostics clear. No TypeScript/action/canvas change; presentation-only, no new TDD claim. Existing boundary fakes retained, no test application-data writes/network. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html, .scss and .spec.ts; README.md; current session tests/build/diagnostics and live browser geometry/removal at http://localhost:4200/interactive-canvas." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-removal-alignment",
       "title": "Right-align connection controls toward removal",
       "beneficiary": "User selecting connections to remove",

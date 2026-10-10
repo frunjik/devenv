@@ -18,9 +18,9 @@
                 (click)="addPart()">Add part</button>
         </div>
         <section class="connection-controls" aria-label="Connections">
-            <details class="connection-picker">
-                <summary>Connections ({{ checkedConnections.size }} selected)</summary>
-                <div class="connection-options">
+            <div class="connection-picker">
+                <p id="connections-heading">Connections ({{ checkedConnections.size }} selected)</p>
+                <div class="connection-options" role="group" aria-labelledby="connections-heading">
                     @for (connection of connections; track connection.id) {
                         <label class="connection-option">
                             <input #check type="checkbox" [checked]="checkedConnections.has(connection)"
@@ -31,7 +31,7 @@
                         <p>No connections yet.</p>
                     }
                 </div>
-            </details>
+            </div>
             <button class="button-wide" type="button" aria-label="Remove selected"
                 [disabled]="!selectedPart && !selectedConnection && checkedConnections.size === 0"
                 (click)="removeSelected()">Remove selected</button>

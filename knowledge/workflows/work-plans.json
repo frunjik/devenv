@@ -10,6 +10,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-connection-list",
+          "title": "Show a scrollable connection selection list",
+          "description": "Completed always-visible checkbox list above Remove selected, capped at 12rem with vertical scrolling. Multiple selection and removal preserved. Verified list dimensions and scrolling at 320, 360, 768 and 1280px, checked last-row removal, 123 editor tests, client build without style-budget warning and clear diagnostics. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-connection-list"]
+        }, {
           "id": "canvas-editor-removal-placement",
           "title": "Place connections beside removal",
           "description": "Completed Connections picker beside Remove selected and right-aligned toward that action, with Connect/Cancel beneath toward the same right edge. Verified actual row/edge alignment at 320, 360, 768 and 1280px without overflow; 123 editor tests passed before CSS-only follow-up and final client build passes without style-budget warning. Existing actions, responsive sizing and canvas preserved. Next step: user review and optional commit approval.",

@@ -173,7 +173,7 @@ describe('CanvasDiagramEditor', () => {
 
     it('presents name and type before adding, followed by grouped connection and picture actions', () => {
         createEditor();
-        const groups = host.querySelectorAll('.canvas-toolbar [role="group"], .canvas-toolbar section');
+        const groups = host.querySelectorAll('.canvas-toolbar > [role="group"], .canvas-toolbar > section');
         expect(Array.from(groups, group => group.getAttribute('aria-label'))).toEqual([
             'Parts', 'Connections', 'Load picture',
         ]);
@@ -594,8 +594,9 @@ describe('CanvasDiagramEditor', () => {
             expect(editor.selectedConnection).toBeUndefined();
         });
 
-        it('starts collapsed with six unchecked lines and one disabled removal button', () => {
-            expect(host.querySelector<HTMLDetailsElement>('.connection-picker')!.open).toBe(false);
+        it('shows six unchecked lines without a disclosure and one disabled removal button', () => {
+            expect(host.querySelector('.connection-picker details, details.connection-picker')).toBeNull();
+            expect(host.querySelector('.connection-options')?.getAttribute('aria-labelledby')).toBe('connections-heading');
             expect(host.querySelectorAll('.connection-picker input')).toHaveLength(6);
             expect(host.querySelectorAll('[aria-label="Remove selected"]')).toHaveLength(1);
             expect(host.querySelector('[aria-label="Delete selected connections"]')).toBeNull();

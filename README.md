@@ -88,7 +88,12 @@ in place of the DevEnv profile and an `agent-phase-guide.manifest.json` pinned t
 The export includes a portable `README.md` explaining installation, the work loop,
 defaults, optional tracking/measurement and limitations. Its narrative source is
 [the export README](./.agents/agent-phase-guide.README.md); edit that source rather
-than maintaining a separate explanation in the destination.
+than maintaining a separate explanation in the destination. It also includes
+a minimal `package.json` with `tsx` plus standalone TypeScript scripts. From the
+exported folder, run `npm install` and `npm run clone -- <new-destination>` to copy
+the current Guide, including adapted profile/glossary and the cloning tooling itself,
+without Git or DevEnv. The clone rejects existing or overlapping destinations and
+does not copy unrelated project files. Its manifest remains inherited origin provenance.
 It also derives a focused `.glossary.json` and its Markdown `.glossary` from entries
 tagged with the `AgentPhaseGuide` domain in the [main glossary](./.glossary.json).
 Edit definitions and examples only in the main source; the export selects and renders

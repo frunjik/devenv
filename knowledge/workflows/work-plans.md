@@ -121,3 +121,13 @@ Separate the generic AgentPhaseGuide rules from DevEnv-specific paths, commands 
 **Evaluations:** `separate-generic-core-from-devenv-profile`
 
 Move DevEnv-specific rules (@shared runtime, TypeScript style, UI grid layout, Jest import, repository quick reference, WorkTask registry paths, SystemConcern commit subjects) from AGENTS.md, the agent and the tdd skill into .github/instructions/project-profile.instructions.md, keep the JSON mirrors in sync, and add a tested export script that copies the generic core plus a profile template with a commit-pinned manifest.
+
+#### WorkTask: Package the exported Guide so it can clone itself
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `self-cloning-agent-guide-package`
+
+Include a minimal package.json with tsx and self-contained TypeScript clone scripts. Preserve the current profile and glossary, copy only Guide files, work without DevEnv or Git, reject existing/overlapping destinations and explain inherited provenance. Verify isolated clone and subsequent clone using public behavior.

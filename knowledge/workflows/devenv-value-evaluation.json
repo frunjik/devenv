@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "self-cloning-agent-guide-package",
+      "title": "Package the exported Guide so it can clone itself",
+      "beneficiary": "Maintainer reusing or adapting the exported Guide in another project",
+      "intendedOutcome": "The exported folder can clone its current Guide files without the source repository or Git.",
+      "successCondition": "A minimal tsx package and portable TypeScript scripts are exported and survive subsequent clones; current profile/glossary are preserved, unrelated project files excluded, existing or overlapping destinations rejected, provenance described honestly, and changed modules fully covered and type checked.",
+      "baseline": "The export currently contains 12 files plus a source-commit manifest, but no package.json or cloning script. User chose to preserve the receiving profile/glossary, use TypeScript with tsx, track the task and measure it.",
+      "startedAt": "2026-10-10T16:56:41.286+02:00",
+      "completedAt": "2026-10-10T17:00:43.9192385+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Preserve current Guide data; tsx dependency approved; tracking and measurement enabled.", "evidence": "User choices in the current conversation." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "4 minutes 2.633 seconds elapsed from recorded baseline to verified completion. Human active effort, waiting and agent execution durations remain unknown.", "evidence": "Recorded baseline and local completion clock after coverage and both type checks." },
+        { "metricId": "outcome-and-quality", "value": "Exporter now includes 15 Guide files plus manifest: minimal tsx package and portable TypeScript module/entry survive clone-of-clone. Actual source texts exported into injected memory filesystem and cloned twice with an adapted profile; all Guide file contents preserved and unrelated data excluded. Entry executes real clone with mocked Node filesystem, without Git or DevEnv. Existing destinations fail through exclusive mkdir; overlapping paths including symlinked parents, invalid manifests and missing inputs fail before writes; write errors propagate. Original manifest retained as provenance, not proof of adapted content. Red observed before clone implementation and package/entry wiring; Green followed by cohesion/duplication review. 48 focused tests pass; all three changed production modules have 100% statement/branch/function/line coverage, server-spec and standalone strict TypeScript checks pass, editor diagnostics and diff whitespace check clean. Tests perform no application-data writes or network I/O. Existing external export not refreshed; no real-disk clone or clean-machine npm installation performed. No commit made; sources must be committed before official provenance-pinned export. Next step: review and optionally authorize commit, then export to a new destination.", "evidence": "projects/server/test/agent-phase-guide-export.spec.ts; clone-agent-guide.spec.ts; clone-guide-entry.spec.ts; export-agent-phase-guide.spec.ts; Jest coverage and TypeScript output in current session; .agents/agent-phase-guide.README.md." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "report-domain-versus-meta-time",
       "title": "Create an evidence-backed Problem/Domain versus Meta/DevEnv time report",
       "beneficiary": "User assessing allocation of work between domain outcomes and development-process upkeep",

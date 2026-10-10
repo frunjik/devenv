@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import type { TextFileSystem } from '../projects/shared/src/lib/text-file-system.types';
+import { guideCoreFiles } from '../.agents/guide-package/clone-guide';
 import { glossaryEntriesToMarkdown, validateGlossaryEntries } from '../projects/shared/src/lib/glossary.types';
 
 export interface AgentPhaseGuideExportFileSystem extends TextFileSystem {
@@ -19,12 +20,7 @@ export interface AgentPhaseGuideExportManifest {
     files: string[];
 }
 
-export const agentPhaseGuideCoreFiles: readonly string[] = [
-    'AGENTS.md',
-    '.github/agents/agent-phase-guide.agent.md',
-    ...['understand', 'explore', 'make', 'evaluate', 'tdd', 'ui-design-review']
-        .map(skill => `.agents/skills/${skill}/SKILL.md`),
-];
+export const agentPhaseGuideCoreFiles = guideCoreFiles;
 export const projectProfileTemplatePath = 'knowledge/practices/project-profile.template.md';
 export const projectProfilePath = '.github/instructions/project-profile.instructions.md';
 const manifestPath = 'agent-phase-guide.manifest.json';
@@ -46,6 +42,9 @@ export function exportAgentPhaseGuide(
         ...agentPhaseGuideCoreFiles.map(path => ({ from: path, to: path })),
         { from: projectProfileTemplatePath, to: projectProfilePath },
         { from: '.agents/agent-phase-guide.README.md', to: 'README.md' },
+        { from: '.agents/guide-package/package.json', to: 'package.json' },
+        { from: '.agents/guide-package/clone-guide.ts', to: 'scripts/clone-guide.ts' },
+        { from: '.agents/guide-package/clone.ts', to: 'scripts/clone.ts' },
     ];
     const uncommitted = [...copies.map(copy => copy.from), '.glossary.json']
         .filter(path => source.uncommittedPaths.includes(path));

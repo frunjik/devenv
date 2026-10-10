@@ -1,0 +1,12 @@
+{
+  "name": "agent-phase-guide",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Portable AgentPhaseGuide instructions and self-cloning tooling.",
+  "scripts": {
+    "clone": "tsx scripts/clone.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  }
+}

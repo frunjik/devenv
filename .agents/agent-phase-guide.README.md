@@ -6,7 +6,8 @@ One coordinator retains ownership of the task and loads applicable skills.
 Four phases do not require four agents or four formal handoffs for every request.
 
 This package contains guidance, not an application or a runtime enforcement system.
-It includes no project application code, dependencies, test runner or tracking database.
+It includes no project application code, test runner or tracking database.
+Its optional self-cloning tooling uses Node.js and the `tsx` development dependency.
 
 ## What is included
 
@@ -18,6 +19,7 @@ It includes no project application code, dependencies, test runner or tracking d
 | [Project profile](./.github/instructions/project-profile.instructions.md) | Template for project-specific safeguards, layout, test conventions, commands and optional tracking storage. |
 | [Glossary JSON](./.glossary.json) and [glossary Markdown](./.glossary) | Focused definitions and examples of the AgentPhaseGuide concepts. |
 | [Export manifest](./agent-phase-guide.manifest.json) | Exported file list and the source commit identifying the package content. |
+| [Package](./package.json) and [clone scripts](./scripts/clone.ts) | Minimal npm command and self-contained TypeScript cloning implementation. |
 
 ## Install and configure
 
@@ -40,6 +42,35 @@ It includes no project application code, dependencies, test runner or tracking d
 
 No npm installation is needed merely to copy these instruction files. The receiving
 project supplies its own tools, test infrastructure and runtime capabilities.
+
+## Clone this Guide
+
+With Node.js and npm available, run these commands from this exported folder:
+
+```sh
+npm install
+npm run clone -- ../my-guide-copy
+```
+
+The destination's parent must already exist. The destination itself must not exist
+or overlap the source, including through a symlinked parent. No Git repository or
+DevEnv checkout is needed. Paths containing spaces should be quoted.
+
+The clone copies only the manifest's fixed Guide file inventory, including its own
+package and scripts, so it can clone again after `npm install` there. It preserves
+the current profile, instructions, README and both glossary files exactly, including
+local adaptations. It does not regenerate the glossary; keep its JSON and Markdown
+consistent when editing. Unrelated project files, `node_modules` and npm lockfiles
+are not copied. Review dependency versions when installing in a new environment.
+
+Missing files or an invalid manifest fail before destination creation. Filesystem
+errors are surfaced; a write failure may leave a partial newly created destination,
+which must be inspected and removed before retrying. Existing folders are never
+overwritten by the clone command.
+
+When adopting just the instructions into an existing project, do not overwrite its
+package or README with this portable package. Keep a separate Guide folder if you
+want to retain standalone cloning.
 
 ## How the work loop operates
 
@@ -116,6 +147,9 @@ remains unknown.
 
 The manifest pins the source commit used for export. It is not a signed integrity
 certificate, an installation record, or proof that the receiving client follows the rules.
+Self-clones retain this original manifest as inherited provenance. After local edits,
+that commit does not identify the current content; cloning neither records a new
+commit nor asserts those edits were present at the origin.
 The glossary is derived from the source project's main glossary by selecting the
 AgentPhaseGuide domain; it is explanatory data, not additional active rules.
 

@@ -2,6 +2,14 @@
     <h1>Canvas Diagram Editor</h1>
     <div class="canvas-toolbar">
         <div class="canvas-controls">
+            <label>Shape
+                <select #shape aria-label="Part shape" [value]="shapeValue"
+                    [disabled]="!!connectionSource || !!selectedConnection" (change)="editShape(shape.value)">
+                    @for (option of shapeOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+            </label>
             <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load DevEnv overview</button>
             <button type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
             <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
@@ -70,7 +78,8 @@
             (pointercancel)="endDrag($event)"
             (lostpointercapture)="endDrag($event)"
             [attr.aria-label]="technicalLoaded ? 'DevEnv technical picture with directed relationships and execution boundaries' : 'Sketch workspace and current time rendered on an HTML canvas'">
-            Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them.
+            Sketch workspace. Choose a shape and label for a new part. Symbol names appear inside angle brackets; actor names appear below the figure.
+            Click empty space to add another part. Select a shape or connection line to edit its label; drag shapes to move them.
             @if (!technicalLoaded) { Current time is also shown. }
         </canvas>
     </div>

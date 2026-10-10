@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Use generic architecture symbols in the canvas editor
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-symbol-editor`
+
+Completed artifact, system software, business role, product and actor choices in the canvas editor. Existing label input edits the name; box symbols keep their fixed heading and show the name inside angle brackets, while actor names appear below a centered figure. Rectangle default, loaded pictures, selection bounds, dragging, connections and deletion preserved. Verified 143 focused tests, 100% coverage of both changed production modules, TypeScript check, shared/client builds and live creation, movement, relabeling, connection and removal. Narrow controls have no document overflow. Baseline and completion evidence are in the linked evaluation. Next step: user review and optional commit approval.
+
 #### WorkTask: Render architecture symbols with a sample canvas preview
 
 **Status:** Completed

@@ -31,8 +31,16 @@ The reusable Canvas 2D functions in
 accept logical-pixel bounds and labels and restore canvas drawing state.
 They use clipped hatch fills and vector corner icons, without image or font
 downloads. The preview uses a single column on narrow screens and preserves the
-existing canvas editor and stored diagram formats. This is a vector interpretation,
+stored diagram formats. This is a vector interpretation,
 not a pixel-identical reproduction of handwriting.
+
+In `/interactive-canvas`, the Shape picker offers Rectangle, Artifact, System
+software, Business role, Product and Actor. Choose a shape and enter a name before
+adding a part, or change the shape of a selected part. The shared label input edits
+only the name: an artifact named `AI Workflow` displays `Artifact:` and
+`<AI Workflow>`. Actor names appear below the figure. Shapes support the existing
+selection, dragging, connection and removal controls. Overview and technical
+pictures continue to load as rectangles; edits remain in-memory sketches.
 
 ## Work time evidence
 

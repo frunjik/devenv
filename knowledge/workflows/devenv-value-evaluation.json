@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-symbol-editor",
+      "title": "Use generic architecture symbols in the canvas editor",
+      "beneficiary": "User creating labeled architecture sketches",
+      "intendedOutcome": "Create and manipulate reusable architecture symbols through the existing canvas editor, with the user label in angle brackets.",
+      "successCondition": "Artifact, system software, business role, product and actor can be added, selected, relabeled, dragged, connected and deleted. Box symbols retain their fixed type heading and show the editable name inside angle brackets. Rectangle default and existing pictures remain unchanged; checks and live interactions verify the result.",
+      "baseline": "Reusable renderers and isolated preview are committed at b16e41b. Editor currently supports generic 180x80 unlabeled-kind rectangle parts and one shared name input. Tracking and measurement approved for this integration; no saved schema changes needed because this editor uses in-memory SketchPart data.",
+      "startedAt": "2026-10-10T18:17:12.268+02:00",
+      "completedAt": "2026-10-10T18:22:13.5632083+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Generic editor shapes with editable names inside angle brackets; actor label below figure. Tracking and measurement approved.", "evidence": "Current conversation." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 1.295 seconds elapsed from recorded start to final verification. Human active effort, waiting and agent execution remain unknown.", "evidence": "Recorded start 2026-10-10T18:17:12.268+02:00 and local verification clock 2026-10-10T18:22:13.5632083+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Shape picker adds artifact, system software, business role, product and actor, retaining rectangle default and legacy picture fallback. Existing label input edits only the name; box symbols retain their heading and angle brackets. All five types are tested through controls for creation, selection, relabeling, dragging, connection and deletion. Selected shape conversion and invalid/blocked changes are covered. Live rendering revealed a squat actor at editor height; observed a failing proportion regression test and corrected height scaling with a centered narrow figure, keeping existing hit and connection bounds. 143 focused tests pass with 100% statement, branch, function and line coverage for both changed production modules. Client test TypeScript check, shared build, client production build and editor diagnostics pass. Live client verification created and moved all five types, relabeled an artifact, connected artifact to actor, edited the connection label and removed the actor with its connection. Screenshot confirms readable bracketed labels and recognizable actor. At 360px, controls wrap with no document overflow or alerts; existing fixed-coordinate sketch contents can lie outside the narrow canvas, unchanged behavior. No saved schema changes; edits remain in memory. Tests reuse plain Canvas boundary fakes without real application-data writes or network I/O. No new abstraction or unrelated refactor needed. Actual user benefit and follow-up defects remain unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts, .html, .scss and .spec.ts; canvas-symbols.ts and .spec.ts; canvas-symbol-preview.component.spec.ts; README.md; running http://localhost:4200/interactive-canvas; current session test, coverage, type-check, build, diagnostics and browser results." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-symbol-preview",
       "title": "Render architecture symbols with a sample canvas preview",
       "beneficiary": "User exploring reusable architecture sketch symbols",

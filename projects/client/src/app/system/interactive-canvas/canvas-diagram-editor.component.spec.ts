@@ -164,6 +164,88 @@ describe('CanvasDiagramEditor', () => {
         clickButton('Confirm replacement');
     }
 
+    function chooseShape(value: string): void {
+        const select = host.querySelector<HTMLSelectElement>('[aria-label="Part shape"]')!;
+        select.value = value;
+        select.dispatchEvent(new Event('change'));
+        fixture.detectChanges();
+    }
+
+    it.each([
+        ['artifact', 'Artifact:'], ['system-software', 'System software:'],
+        ['business-role', 'Business role:'], ['product', 'Product:'], ['actor', ''],
+    ])('creates an editable %s with the user name as its label', (kind, heading) => {
+        createEditor();
+        chooseShape(kind);
+        enterLabel('Name');
+        clickButton('Add part');
+        surface.paint();
+        expect(editor.parts[0].label).toBe('Name');
+        expect(surface.draws.map(draw => draw[0])).toContain(kind === 'actor' ? 'Name' : '<Name>');
+        if (heading) expect(surface.draws.map(draw => draw[0])).toContain(heading);
+        drag(40, 40, 260, 160);
+        expect(editor.parts[0].position).toEqual({ x: 244, y: 144 });
+        enterLabel('Changed');
+        surface.paint();
+        expect(surface.draws.map(draw => draw[0])).toContain(kind === 'actor' ? 'Changed' : '<Changed>');
+        clickCanvas(600, 300);
+        chooseShape('rectangle');
+        clickButton('Add part');
+        connect(260, 160, 60, 60);
+        expect(editor.connections).toHaveLength(1);
+        clickCanvas(260, 160);
+        clickButton('Remove selected part');
+        expect(editor.parts).toHaveLength(1);
+        expect(editor.connections).toHaveLength(0);
+    });
+
+    it('changes a selected part shape without changing its name or rectangle default', () => {
+        createEditor();
+        expect(host.querySelector<HTMLSelectElement>('[aria-label="Part shape"]')!.value).toBe('rectangle');
+        enterLabel('Document');
+        clickButton('Add part');
+        clickCanvas(40, 40);
+        chooseShape('artifact');
+        surface.paint();
+        expect(editor.selectedPart?.label).toBe('Document');
+        expect(surface.draws.map(draw => draw[0])).toContain('<Document>');
+        expect(surface.borders).toContain(3);
+        chooseShape('rectangle');
+        surface.paint();
+        expect(surface.draws.map(draw => draw[0])).toContain('Document');
+    });
+
+    it('keeps loaded picture labels and rectangle fallback while permitting symbol conversion', () => {
+        createEditor();
+        loadOverview();
+        const part = editor.parts[0];
+        clickCanvas(part.position.x + 10, part.position.y + 10);
+        expect(host.querySelector<HTMLSelectElement>('[aria-label="Part shape"]')!.value).toBe('rectangle');
+        chooseShape('product');
+        surface.paint();
+        expect(surface.draws.map(draw => draw[0])).toContain(`<${part.label}>`);
+    });
+
+    it('surfaces unsupported shape choices and prevents shape editing during connection selection', () => {
+        createEditor();
+        editor.editShape('unsupported');
+        expect(editor.connectionMessage).toContain('supported part shape');
+        clickButton('Add part');
+        drag(40, 40, 260, 160);
+        clickButton('Connect selected part');
+        editor.editShape('artifact');
+        expect(editor.connectionMessage).toContain('Finish or cancel');
+        expect(host.querySelector<HTMLSelectElement>('[aria-label="Part shape"]')!.disabled).toBe(true);
+        clickButton('Cancel connection');
+        clickCanvas(600, 300);
+        clickButton('Add part');
+        connect(260, 160, 60, 60);
+        clickCanvas(236, 136);
+        expect(editor.selectedConnection).toBeDefined();
+        editor.editShape('artifact');
+        expect(editor.connectionMessage).toContain('select a part');
+    });
+
     it('places connection controls before the workspace in reading and tab order', () => {
         createEditor();
         const connections = host.querySelector('.connection-controls')!;

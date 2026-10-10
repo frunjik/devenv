@@ -127,15 +127,16 @@ export function drawActor(context: CanvasRenderContext, bounds: SymbolBounds, la
     validateBounds(bounds);
     context.save();
     try {
-        const head = ellipse(bounds.x + bounds.width / 2, bounds.y + 15, 12, 12);
+        const radius = Math.min(bounds.width * .15, bounds.height * .1);
+        const head = ellipse(bounds.x + bounds.width / 2, bounds.y + bounds.height * .13, radius, radius);
         const body = [
-            { x: bounds.x + bounds.width * .15, y: bounds.y + bounds.height - 30 },
-            { x: bounds.x + bounds.width * .25, y: bounds.y + 48 },
-            { x: bounds.x + bounds.width * .4, y: bounds.y + 30 },
-            { x: bounds.x + bounds.width * .6, y: bounds.y + 30 },
-            { x: bounds.x + bounds.width * .75, y: bounds.y + 48 },
-            { x: bounds.x + bounds.width * .85, y: bounds.y + bounds.height - 30 },
-            { x: bounds.x + bounds.width * .15, y: bounds.y + bounds.height - 30 },
+            { x: bounds.x + bounds.width * .15, y: bounds.y + bounds.height * .75 },
+            { x: bounds.x + bounds.width * .25, y: bounds.y + bounds.height * .45 },
+            { x: bounds.x + bounds.width * .4, y: bounds.y + bounds.height * .28 },
+            { x: bounds.x + bounds.width * .6, y: bounds.y + bounds.height * .28 },
+            { x: bounds.x + bounds.width * .75, y: bounds.y + bounds.height * .45 },
+            { x: bounds.x + bounds.width * .85, y: bounds.y + bounds.height * .75 },
+            { x: bounds.x + bounds.width * .15, y: bounds.y + bounds.height * .75 },
         ];
         for (const outline of [head, body]) {
             hatch(context, bounds, outline, '#bac4d3', true);
@@ -144,7 +145,7 @@ export function drawActor(context: CanvasRenderContext, bounds: SymbolBounds, la
             path(context, outline);
             context.stroke();
         }
-        labels(context, { ...bounds, y: bounds.y + bounds.height - 24, height: 18 }, [label], '#202020');
+        labels(context, { ...bounds, y: bounds.y + bounds.height * .8, height: bounds.height * .15 }, [label], '#202020');
     } finally {
         context.restore();
     }

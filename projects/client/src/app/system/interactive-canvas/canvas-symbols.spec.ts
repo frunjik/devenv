@@ -3,6 +3,12 @@ import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftw
 import { recordingCanvasContext } from './testing/recording-canvas-context';
 
 describe('architecture canvas symbols', () => {
+    it('keeps actor proportions recognizable in an 80-pixel-high editor part', () => {
+        const { context, operations } = recordingCanvasContext();
+        drawActor(context, { x: 0, y: 0, width: 60, height: 80 }, 'Dev');
+        const points = operations.filter(op => op.name === 'lineTo').map(op => op.args as number[]);
+        expect(points.some(([x, y]) => x === 9 && y === 60)).toBe(true);
+    });
     it.each([
         { x: NaN, y: 0, width: 80, height: 80 },
         { x: 0, y: 0, width: 59, height: 80 },

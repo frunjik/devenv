@@ -6,8 +6,17 @@ import { SCHEDULER } from '../../scheduler';
 import { validateDiagramDocument } from '@shared';
 import overview from './devenv-overview.json';
 import { createTechnicalPicture } from './technical-picture';
+import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftware } from './canvas-symbols';
 
 type PictureKind = 'overview' | 'technical';
+type PartShape = 'rectangle' | 'artifact' | 'system-software' | 'business-role' | 'product' | 'actor';
+
+const symbolRenderers = {
+    artifact: { draw: drawArtifact, heading: 'Artifact:' },
+    'system-software': { draw: drawSystemSoftware, heading: 'System software:' },
+    'business-role': { draw: drawBusinessRole, heading: 'Business role:' },
+    product: { draw: drawProduct, heading: 'Product:' },
+};
 
 interface SketchPart {
     readonly id: number;
@@ -15,6 +24,7 @@ interface SketchPart {
     position: { x: number; y: number };
     technology?: string;
     description?: string;
+    shape?: PartShape;
 }
 
 interface CanvasDrag {
@@ -60,6 +70,15 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private nextPartId = 1;
     private draftLabel = 'Part 1';
     private customDraft = false;
+    private draftShape: PartShape = 'rectangle';
+    readonly shapeOptions: { value: PartShape; label: string }[] = [
+        { value: 'rectangle', label: 'Rectangle' },
+        { value: 'artifact', label: 'Artifact' },
+        { value: 'system-software', label: 'System software' },
+        { value: 'business-role', label: 'Business role' },
+        { value: 'product', label: 'Product' },
+        { value: 'actor', label: 'Actor' },
+    ];
     private drag: CanvasDrag | undefined;
     private loadedPicture: PictureKind | undefined;
     private pendingPicture: PictureKind | undefined;
@@ -152,6 +171,28 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         return this.selectedItem && 'first' in this.selectedItem ? this.selectedItem : undefined;
     }
 
+    get shapeValue(): PartShape {
+        return this.selectedPart ? this.selectedPart.shape ?? 'rectangle' : this.draftShape;
+    }
+
+    editShape(value: string): void {
+        if (this.connectionSource || this.selectedConnection) {
+            this.connectionMessage = 'Finish or cancel the connection, or select a part before changing its shape.';
+            return;
+        }
+        const option = this.shapeOptions.find(candidate => candidate.value === value);
+        if (!option) {
+            this.connectionMessage = 'Choose a supported part shape.';
+            return;
+        }
+        if (this.selectedPart) {
+            this.selectedPart.shape = option.value;
+            this.surface.requestDraw();
+        } else {
+            this.draftShape = option.value;
+        }
+    }
+
     addPart(): void {
         if (this.selectedItem || this.connectionSource) {
             this.connectionMessage = 'Click empty space before adding a part.';
@@ -159,7 +200,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         }
         const id = this.nextPartId++;
         const offset = 24 + ((id - 1) % 4) * 24;
-        this.parts.push({ id, label: this.draftLabel, position: { x: offset, y: offset } });
+        this.parts.push({ id, label: this.draftLabel, position: { x: offset, y: offset }, shape: this.draftShape });
         if (!this.customDraft) {
             this.draftLabel = `Part ${this.nextPartId}`;
         }
@@ -360,6 +401,20 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         }
         for (const part of this.parts) {
             const { x, y } = part.position;
+            if (part.shape && part.shape !== 'rectangle') {
+                const bounds = { x, y, width: 180, height: 80 };
+                if (part.shape === 'actor') {
+                    drawActor(context, { ...bounds, x: x + 60, width: 60 }, part.label);
+                } else {
+                    const symbol = symbolRenderers[part.shape];
+                    symbol.draw(context, bounds, [symbol.heading, `<${part.label}>`]);
+                }
+                if (part === this.selectedPart) {
+                    context.lineWidth = 3;
+                    context.strokeRect(x, y, 180, 80);
+                }
+                continue;
+            }
             context.lineWidth = part === this.selectedPart ? 3 : 1;
             context.strokeRect(x, y, 180, 80);
             context.font = '16px sans-serif';

@@ -22,6 +22,28 @@
           ]
         }
       ]
+    },
+    {
+      "id": "work-plan-tooling",
+      "title": "WorkPlan Tooling",
+      "description": "Make the repository-backed WorkPlan registry easier to inspect and use.",
+      "topics": [
+        {
+          "id": "work-plan-visibility",
+          "title": "WorkPlan visibility",
+          "description": "Show WorkPlans, WorkTopics and WorkTasks in the client once the generated Markdown view is no longer sufficient.",
+          "tasks": [
+            {
+              "id": "read-only-work-plans-page",
+              "title": "Add a read-only WorkPlans page",
+              "description": "Add a read-only client route beside workflow-todo and workflow-evaluations that shows the WorkPlan hierarchy, task status and measurement decision, validated with validateWorkPlanRegistry and validateWorkPlanEvaluationLinks from @shared, linking Measured tasks to their evaluations. Start when several plans or active tasks make the Markdown view insufficient; editing is out of scope.",
+              "status": "Pending",
+              "measurement": "Undecided",
+              "evaluationIds": []
+            }
+          ]
+        }
+      ]
     }
   ]
 }

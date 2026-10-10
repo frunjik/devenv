@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "repository-coverage-completion",
+      "title": "Complete reported repository coverage",
+      "beneficiary": "Developer maintaining repository tests",
+      "intendedOutcome": "Resolve gaps and failures reported by the full repository coverage command.",
+      "successCondition": "Existing full client/server coverage commands pass with all four reported metrics at 100%, without weakening assertions, excluding uncovered code or changing production behavior for coverage.",
+      "baseline": "Full run passes 869 client and 477 server tests. Client coverage: statements 98.53%, branches 97.21%, functions 99.66%, lines 98.47%; gaps in work-plan.types.ts, recording-canvas-context.ts and memory-text-file-system.ts. Server reported coverage is already 100% in all four metrics.",
+      "startedAt": "2026-10-10T19:13:52.903+02:00",
+      "completedAt": "2026-10-10T19:17:20.6773008+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User chose full repository coverage and fixing reported gaps/failures.", "evidence": "Request and scope clarification." },
+        { "metricId": "decision-latency", "value": null, "evidence": "Clarification response timestamp not captured." },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 27.774 seconds elapsed including scope clarification. Human active effort and waiting unknown.", "evidence": "Request and local completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Moved 35 existing runtime-neutral WorkPlan validation/rendering tests to shared specs run by both Jest configurations; server exporter test retained with measured-task/known-ledger validation and in-memory filesystem. Added two tests covering helper branches. Full test:all:coverage passes 60 client suites/906 tests and 42 server suites/477 tests. Both configured coverage reports show 100% statements, branches, functions and lines. Both Jest TypeScript scopes pass no-emit checks; diagnostics clear and diff check passes. Existing production code and coverage inclusion/exclusion settings unchanged. Intermediate export fixture failed because ledger metrics cannot be empty; restored a valid measured-task ledger before final run. No production behavior changes or TDD Red/Green claim. Tests use existing in-memory boundaries and runner-generated reports only. These figures describe configured coverage scope, not files absent from those configurations. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/shared/src/lib/work-plan.types.spec.ts; projects/client/jest.config.cjs; projects/server/jest.config.cjs; projects/server/test/work-plans.spec.ts; projects/client/src/app/memory-text-file-system.spec.ts; projects/client/src/app/system/interactive-canvas/testing/recording-canvas-context.spec.ts; current session full coverage/type-check output." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-all-items",
       "title": "List and select every canvas item",
       "beneficiary": "User editing canvas parts and connections",

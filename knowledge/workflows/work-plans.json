@@ -2,6 +2,24 @@
   "schemaVersion": 2,
   "workPlans": [
     {
+      "id": "repository-test-coverage",
+      "title": "Repository test coverage",
+      "description": "Close gaps reported by the configured full client and server coverage runs without changing production behavior.",
+      "topics": [{
+        "id": "repository-coverage-gaps",
+        "title": "Shared contracts and test helpers",
+        "description": "Reuse shared domain tests in both runtime environments and exercise omitted test-helper cases.",
+        "tasks": [{
+          "id": "repository-coverage-completion",
+          "title": "Complete reported repository coverage",
+          "description": "Completed full-suite coverage repair: moved existing pure WorkPlan tests into shared specs discovered by both runners, retained server export integration, and added browser memory-filesystem default-seed and canvas text-width cases. Both configured coverage reports reach 100% statements, branches, functions and lines; 906 client and 477 server tests pass. Both Jest TypeScript scopes pass no-emit checks. Production behavior and coverage inclusion/exclusion rules unchanged. Tracking and measurement retained from this session. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["repository-coverage-completion"]
+        }]
+      }]
+    },
+    {
       "id": "canvas-symbol-rendering",
       "title": "Canvas symbol rendering",
       "description": "Reusable vector symbols and an isolated preview inspired by the supplied architecture sketch.",

@@ -9,6 +9,7 @@
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts",
+    "../shared/src/**/*.spec.ts",
     "setup-jest.ts"
   ]
 }

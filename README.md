@@ -302,6 +302,10 @@ The Angular `server` library target has known TypeScript errors and is not part 
 ## Test
 
 The repository uses Jest for client and server tests:
+Runtime-neutral specs in `projects/shared/src` run in both the client
+(jsdom) and server (Node) suites, so shared contracts are checked in both
+environments without duplicating their test cases. Filesystem export tests
+remain in the server suite and use the in-memory filesystem fake.
 
 ```bash
 npm run test:client

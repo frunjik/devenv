@@ -1,9 +1,12 @@
 module.exports = {
     rootDir: '../..',
-    roots: ['<rootDir>/projects/server'],
+    roots: ['<rootDir>/projects/server', '<rootDir>/projects/shared'],
     testEnvironment: 'node',
     silent: true,
-    testMatch: ['<rootDir>/projects/server/test/**/*.spec.ts'],
+    testMatch: [
+        '<rootDir>/projects/server/test/**/*.spec.ts',
+        '<rootDir>/projects/shared/src/**/*.spec.ts',
+    ],
     moduleNameMapper: {
         '^@shared$': '<rootDir>/projects/shared/src/public-api.ts',
     },

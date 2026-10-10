@@ -6,6 +6,24 @@ Hierarchy: WorkPlan > WorkTopic > WorkTask. IDs are unique across the registry.
 WorkTask statuses: Pending, Active, Paused, Blocked, Completed.
 WorkTask measurement: Undecided, Measured, NotMeasured. Decide before a task leaves Pending; Measured tasks link evaluation ledger IDs.
 
+## WorkPlan: Repository test coverage
+
+Close gaps reported by the configured full client and server coverage runs without changing production behavior.
+
+### WorkTopic: Shared contracts and test helpers
+
+Reuse shared domain tests in both runtime environments and exercise omitted test-helper cases.
+
+#### WorkTask: Complete reported repository coverage
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `repository-coverage-completion`
+
+Completed full-suite coverage repair: moved existing pure WorkPlan tests into shared specs discovered by both runners, retained server export integration, and added browser memory-filesystem default-seed and canvas text-width cases. Both configured coverage reports reach 100% statements, branches, functions and lines; 906 client and 477 server tests pass. Both Jest TypeScript scopes pass no-emit checks. Production behavior and coverage inclusion/exclusion rules unchanged. Tracking and measurement retained from this session. Next step: user review and optional commit approval.
+
 ## WorkPlan: Canvas symbol rendering
 
 Reusable vector symbols and an isolated preview inspired by the supplied architecture sketch.

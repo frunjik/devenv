@@ -8,8 +8,12 @@ import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
 import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
 import { WorkPlansComponent } from './system/work-plans/work-plans.component';
+import { TermsComponent } from './system/terms/terms.component';
 
 describe('routes', () => {
+    it('retains direct access to Terms without a menu link', () => {
+        expect(routes.find(route => route.path === 'terms')?.component).toBe(TermsComponent);
+    });
     it('exposes the isolated canvas symbol preview', () => {
         expect(routes.find(route => route.path === 'canvas-symbol-preview')?.component?.name)
             .toBe('CanvasSymbolPreviewComponent');

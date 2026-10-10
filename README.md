@@ -267,12 +267,13 @@ The client opens Problem Inquiry by default: `/` redirects to `/problem-inquiry`
 Problem Inquiry opens on the **Notes** tab (input conversion and accepted notes). The **Tickets** tab contains ticket framing and the ticket list. Switching tabs preserves unsaved form content, ticket filters, and open editors; accepting notes or saving tickets does not switch tabs automatically. The sample-data toggle and storage errors remain visible above both panels. Each panel uses paired columns at widths of at least 70rem and stacks on narrower screens. Use Left/Right arrow keys to switch tabs, Home/End to select the first/last tab, and Tab to enter the active panel's controls.
 
 Feature-specific UI guidance: light Problem Ticket cards define dark body and heading text locally rather than inheriting the global dark theme's light text. Ticket-list controls have a minimum 44px width and height; preserve wrapping and narrow-screen fit when adding controls. These requirements belong to this example feature, not the general meta concept.
-The System Plan link is in the meta toolbar and is hidden when the meta layer is disabled; this does not change the default route.
+System Plan, Terms and Diagram are omitted from the meta menu, but their code and
+direct routes (`/system-plan`, `/terms` and `/diagram`) remain available.
 The System Plan supports case-insensitive search by concern ID, title, or displayed description. Search filters the list only; progress totals still describe the full register.
 
 The meta toolbar's **Workflow TODO** link opens `/workflow-todo`, a read-only workflow table. `GET /workflow-todo` derives its JSON from the authoritative `knowledge/workflows/workflow-todo-list.md` on each request; no duplicate JSON list is maintained. Resume buttons show the complete workflow Markdown document and its checkpoint reference, without editing, changing workflow selection, or jumping to a heading. The existing **TODO** file-browser link remains separate. List and document loading failures are shown explicitly.
 
-The secondary navigation's **Diagram** link opens `/diagram`, currently an empty workspace.
+The direct `/diagram` route opens the Diagram page, currently an empty workspace.
 The shared document contract supports Rectangle, Ellipse, Note, and undirected connections,
 with explicit runtime validation of versioned JSON. Creating items and browser import/export
 are not implemented yet; see the [diagram editor checkpoint](knowledge/workflows/diagram-editor-workflow.md#checkpoint).
@@ -288,7 +289,8 @@ and disappear when empty; newly added boxes have no boundary membership. Larger 
 Expand the technical notes for responsibilities and deployment caveats. This does not change
 the shared undirected document contract or the existing `/diagram` editor.
 
-The **Visual foundations** link beside Canvas in the meta navigation opens `/visual-foundations` to compare trial typography,
+The **Diagrams** meta navigation link opens the canvas editor at `/interactive-canvas`.
+The **Visual foundations** link in **Tools** opens `/visual-foundations` to compare trial typography,
 semantic color roles, control states and an illustrative diagram using the current font and
 palette. It reads the global CSS tokens rather than maintaining a separate palette. Selection
 and input samples stay local to the page; nothing is saved. Trial typography, warning and

@@ -2,6 +2,31 @@
   "schemaVersion": 2,
   "workPlans": [
     {
+      "id": "meta-menu-simplification",
+      "title": "Simplify meta navigation",
+      "description": "Remove selected menu links without deleting their features.",
+      "topics": [{
+        "id": "meta-menu-links",
+        "title": "Menu visibility",
+        "description": "Keep direct routes and implementation intact.",
+        "tasks": [{
+          "id": "relocate-visual-foundations",
+          "title": "Move Visual foundations into Tools and rename Canvas",
+          "description": "Moved Visual foundations beside Agent guide in Tools; main Canvas label is now Diagrams, still routing to interactive-canvas. Existing pending link removals preserved; no route or feature code changes. Two focused Red failures observed, then all 16 toolbar/route tests pass with 100% toolbar coverage, build, Jest TypeScript check and diagnostics pass. Actual browser clicks verify Diagrams opens the canvas editor and Tools/Visual foundations opens its existing page. Tracking and measurement retained. Next step: user review; no commit authorized.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["relocate-visual-foundations"]
+        }, {
+          "id": "remove-three-meta-links",
+          "title": "Remove System plan, Terms and Diagram menu links",
+          "description": "Removed only three toolbar anchors; direct routes and feature code retained. Red observed for unwanted links; 16 toolbar/route tests pass with 100% toolbar coverage, client build, Jest TypeScript check and diagnostics pass. Browser confirms four remaining navigation links plus Tools and direct feature components remain accessible. Terms remains an empty template as before. Tracking and measurement retained. Next step: user review; no commit authorized.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["remove-three-meta-links"]
+        }]
+      }]
+    },
+    {
       "id": "canvas-viewport-zoom",
       "title": "Canvas viewport zoom and pan",
       "description": "Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning without changing diagram coordinates or normal scrolling.",

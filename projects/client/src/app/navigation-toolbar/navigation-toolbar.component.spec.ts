@@ -27,19 +27,15 @@ describe('NavigationToolbarComponent', () => {
         await fixture.whenStable();
     }
 
-    it('shows the host, seven navigation links and Tools as the final navigation item', () => {
+    it('shows WorkPlans, Glossary and Diagrams with Tools as the final navigation item', () => {
         expect(fixture.nativeElement.querySelector('.meta-badge').textContent.trim()).toBe('DevEnv');
         expect(fixture.nativeElement.querySelector('.toolbar-brand').textContent.trim()).toBe('http://host/');
         const nav = fixture.nativeElement.querySelector('nav') as HTMLElement;
         expect(Array.from(nav.querySelectorAll('a')).map(link => [link.textContent?.trim(), link.getAttribute('href')]))
             .toEqual([
-                ['System plan', '/system-plan'],
                 ['WorkPlans', '/work-plans'],
-                ['Terms', '/terms'],
                 ['Glossary', '/glossary'],
-                ['Diagram', '/diagram'],
-                ['Canvas', '/interactive-canvas'],
-                ['Visual foundations', '/visual-foundations'],
+                ['Diagrams', '/interactive-canvas'],
             ]);
         expect(nav.lastElementChild?.textContent?.trim()).toBe('Tools');
         expect(overlay.querySelector('[role="menu"]')).toBeNull();
@@ -57,7 +53,9 @@ describe('NavigationToolbarComponent', () => {
             '/browse?path=%2Fprojects%2Fclient%2Fsrc%2Fapp&file=%2Fprojects%2Fclient%2Fsrc%2Fapp%2Fnavigation-toolbar%2Fnavigation-toolbar.component.html',
             '/git/log',
             '/agent-guide',
+            '/visual-foundations',
         ]);
+        expect(overlay.querySelector('a[href="/visual-foundations"]')?.textContent?.trim()).toBe('Visual foundations');
     });
 
     it('requests a DevEnv clone from the dropdown', async () => {

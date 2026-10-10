@@ -6,6 +6,34 @@ Hierarchy: WorkPlan > WorkTopic > WorkTask. IDs are unique across the registry.
 WorkTask statuses: Pending, Active, Paused, Blocked, Completed.
 WorkTask measurement: Undecided, Measured, NotMeasured. Decide before a task leaves Pending; Measured tasks link evaluation ledger IDs.
 
+## WorkPlan: Simplify meta navigation
+
+Remove selected menu links without deleting their features.
+
+### WorkTopic: Menu visibility
+
+Keep direct routes and implementation intact.
+
+#### WorkTask: Move Visual foundations into Tools and rename Canvas
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `relocate-visual-foundations`
+
+Moved Visual foundations beside Agent guide in Tools; main Canvas label is now Diagrams, still routing to interactive-canvas. Existing pending link removals preserved; no route or feature code changes. Two focused Red failures observed, then all 16 toolbar/route tests pass with 100% toolbar coverage, build, Jest TypeScript check and diagnostics pass. Actual browser clicks verify Diagrams opens the canvas editor and Tools/Visual foundations opens its existing page. Tracking and measurement retained. Next step: user review; no commit authorized.
+
+#### WorkTask: Remove System plan, Terms and Diagram menu links
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `remove-three-meta-links`
+
+Removed only three toolbar anchors; direct routes and feature code retained. Red observed for unwanted links; 16 toolbar/route tests pass with 100% toolbar coverage, client build, Jest TypeScript check and diagnostics pass. Browser confirms four remaining navigation links plus Tools and direct feature components remain accessible. Terms remains an empty template as before. Tracking and measurement retained. Next step: user review; no commit authorized.
+
 ## WorkPlan: Canvas viewport zoom and pan
 
 Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning without changing diagram coordinates or normal scrolling.

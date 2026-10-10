@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "relocate-visual-foundations",
+      "title": "Relocate Visual foundations and rename Canvas",
+      "beneficiary": "User navigating diagram and supporting tools",
+      "intendedOutcome": "Keep Diagrams in primary meta navigation and place Visual foundations under Tools.",
+      "successCondition": "Primary menu shows Diagrams linking to interactive-canvas, without Visual foundations. Tools includes Visual foundations with its existing route. Other menu items, pending link removals and feature code remain intact.",
+      "baseline": "Following pending three-link removal, primary menu contains WorkPlans, Glossary, Canvas and Visual foundations; Tools lacks Visual foundations.",
+      "startedAt": "2026-10-10T20:13:10.108+02:00",
+      "completedAt": "2026-10-10T20:14:17.2672759+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Explicit relocation into Tools and Canvas text rename to Diagrams; routes unchanged.", "evidence": "User request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 7.159 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.", "evidence": "Request and local verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Template-only relocation and label change. Existing router/overlay tests reused; two focused failures observed before production edits. All 16 toolbar/route tests pass with 100% reported toolbar coverage, client build, Jest TypeScript check, diagnostics and diff check pass. No internal spies or application test network/filesystem I/O. Live browser primary menu reads WorkPlans, Glossary, Diagrams; clicking Diagrams opens interactive-canvas and clicking Tools/Visual foundations opens visual-foundations. Pending menu removal and unrelated effort-report edits preserved. README updated. No further refactoring needed. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html and .spec.ts; README.md; session validation evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "remove-three-meta-links",
+      "title": "Remove three meta menu links",
+      "beneficiary": "User navigating the application",
+      "intendedOutcome": "Hide System plan, Terms and Diagram from the menu without removing their code.",
+      "successCondition": "The three links are absent from meta navigation; remaining links and Tools work unchanged. All three feature routes and implementations remain available.",
+      "baseline": "Meta toolbar contains seven links including System plan, Terms and Diagram. Direct routes exist for all three.",
+      "startedAt": "2026-10-10T20:10:08.554+02:00",
+      "completedAt": "2026-10-10T20:12:02.6762031+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Explicit menu-only removal; retain feature code and direct URLs.", "evidence": "User request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 54.122 seconds elapsed to verification checkpoint. Human active effort and waiting unknown.", "evidence": "Request and local verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Removed three anchors only; no production TypeScript or route changes. Red observed for remaining unwanted links, then all 16 targeted toolbar/route tests pass with 100% toolbar coverage. Client build, Jest TypeScript check, diagnostics and diff check pass. Existing Angular router/overlay test setup reused with no internal spies or application test network/filesystem I/O. Browser menu shows WorkPlans, Glossary, Canvas, Visual foundations and Tools. Direct System plan heading observed; Terms and Diagram component attachment verified. Terms heading check initially timed out because its pre-existing template is empty; no unrelated feature change made. README updated. Unrelated effort-report edits preserved. Human active effort, benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html and .spec.ts; app.routes.spec.ts; README.md; session test/build/type/browser evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-part-list-types",
       "title": "Label canvas part rows by type",
       "beneficiary": "User identifying canvas items",

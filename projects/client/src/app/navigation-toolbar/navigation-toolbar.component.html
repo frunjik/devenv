@@ -5,13 +5,9 @@
     </span>
 
     <nav>
-        <a mat-button routerLink="/system-plan">System plan</a>
         <a mat-button routerLink="/work-plans">WorkPlans</a>
-        <a mat-button routerLink="/terms">Terms</a>
         <a mat-button routerLink="/glossary">Glossary</a>
-        <a mat-button routerLink="/diagram">Diagram</a>
-        <a mat-button routerLink="/interactive-canvas">Canvas</a>
-        <a mat-button routerLink="/visual-foundations">Visual foundations</a>
+        <a mat-button routerLink="/interactive-canvas">Diagrams</a>
         <button
             type="button"
             mat-button
@@ -30,6 +26,7 @@
         <a mat-menu-item routerLink="/browse" [queryParams]="{path: '/projects/client/src/app', file: '/projects/client/src/app/navigation-toolbar/navigation-toolbar.component.html'}">Edit menu</a>
         <a mat-menu-item routerLink="/git/log">Git log</a>
         <a mat-menu-item routerLink="/agent-guide">Agent guide</a>
+        <a mat-menu-item routerLink="/visual-foundations">Visual foundations</a>
         <button type="button" mat-menu-item class="clone-button" (click)="cloneRequested.emit()">
             Clone DevEnv
         </button>

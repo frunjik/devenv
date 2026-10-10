@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 
-const { renderMarkdown, writeMarkdown } = require('../../../scripts/practice-set-versions-markdown.cjs');
+import { renderMarkdown, writeMarkdown } from '../../../scripts/practice-set-versions-markdown';
+import { createMemoryTextFileSystem } from '../../shared/src/testing/memory-text-file-system';
 
 // Concise transformed example; values are synthetic and preserve only tested distinctions.
 const registryExample = {
@@ -62,7 +63,7 @@ describe('practice set version Markdown', () => {
         expect(markdown).toContain('# Practice History');
         expect(markdown).toContain('**Versioning policy:** Commit changes, then record the commit\\.');
         expect(markdown).toContain('npm run generate:practice-set-versions:markdown');
-        expect(markdown).toContain('../../scripts/practice-set-versions-markdown.cjs');
+        expect(markdown).toContain('../../scripts/practice-set-versions-markdown.ts');
         expect(markdown).toContain('**Latest recorded version:** **2**');
         expect(markdown).toContain('**Active version:** **2**');
         expect(markdown).toContain('## Version 1');
@@ -98,15 +99,11 @@ describe('practice set version Markdown', () => {
     });
 
     it('writes the derived view through the supplied filesystem boundary', () => {
-        const files = new Map([['input.json', JSON.stringify(registryExample)]]);
-        const io = {
-            readFileSync: (path: string) => files.get(path),
-            writeFileSync: (path: string, content: string) => files.set(path, content),
-        };
+        const io = createMemoryTextFileSystem({ 'input.json': JSON.stringify(registryExample) });
 
         writeMarkdown('input.json', 'history.md', io);
 
-        expect(files.get('history.md')).toContain('# Practice History');
+        expect(io.files.get('history.md')).toContain('# Practice History');
     });
 
     it.each([

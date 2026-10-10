@@ -2,7 +2,8 @@ import { describe, expect, it } from '@jest/globals';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const { renderMarkdown, writeMarkdown } = require('../../../scripts/agent-essentials-markdown.cjs');
+import { renderMarkdown, writeMarkdown } from '../../../scripts/agent-essentials-markdown';
+import { createMemoryTextFileSystem } from '../../shared/src/testing/memory-text-file-system';
 
 const example = {
     title: 'Example candidate',
@@ -25,13 +26,9 @@ describe('Agent Essentials Markdown', () => {
     });
 
     it('reads and writes only through the supplied boundary', () => {
-        const files = new Map([['example.json', JSON.stringify(example)]]);
-        const io = {
-            readFileSync: (path: string) => files.get(path),
-            writeFileSync: (path: string, content: string) => files.set(path, content),
-        };
+        const io = createMemoryTextFileSystem({ 'example.json': JSON.stringify(example) });
         writeMarkdown('example.json', 'example.md', io);
-        expect(files.get('example.md')).toBe(renderMarkdown(example, 'example.json'));
+        expect(io.files.get('example.md')).toBe(renderMarkdown(example, 'example.json'));
     });
 
     it.each([

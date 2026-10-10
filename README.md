@@ -14,6 +14,12 @@ Generate the human-readable `.glossary` Markdown view from the JSON source with 
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `knowledge/knowledge-transfer/meta-export-example.json` and overwrites only `knowledge/knowledge-transfer/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 
+Generate practice-history and Agent Essentials views with
+`npm run generate:practice-set-versions:markdown` and `npm run generate:agent-essentials:markdown`.
+Both use thin TypeScript entry scripts run by `tsx`, with typed renderers and runtime
+validation. They retain the existing JSON inputs and Markdown output paths; edit
+the authoritative JSON, not the generated views.
+
 ## Work time evidence
 
 The [Problem/Domain versus Meta/DevEnv report](./knowledge/workflows/work-effort-report.generated.md)

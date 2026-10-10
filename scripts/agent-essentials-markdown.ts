@@ -1,25 +1,28 @@
-function requireShape(value, fields) {
+import { basename } from 'node:path';
+import type { TextFileSystem } from '../projects/shared/src/lib/text-file-system.types';
+
+function requireShape<Field extends string>(value: unknown, fields: Field[]): asserts value is Record<Field, unknown> {
     if (value === null || typeof value !== 'object' || Array.isArray(value)
         || Object.keys(value).sort().join(',') !== [...fields].sort().join(',')) {
         throw new Error('Invalid Agent Essentials: unexpected document fields');
     }
 }
 
-function requireLine(value, nonEmpty = false) {
+function requireLine(value: unknown, nonEmpty = false): asserts value is string {
     if (typeof value !== 'string' || /[\r\n]/.test(value)
         || (nonEmpty && value.trim().length === 0)) {
         throw new Error('Invalid Agent Essentials: expected a Markdown line');
     }
 }
 
-function requireLines(value) {
+function requireLines(value: unknown): asserts value is string[] {
     if (!Array.isArray(value) || value.length === 0) {
         throw new Error('Invalid Agent Essentials: expected non-empty line array');
     }
     for (const line of value) requireLine(line);
 }
 
-function renderMarkdown(document, sourceName) {
+export function renderMarkdown(document: unknown, sourceName: string): string {
     if (typeof sourceName !== 'string' || !/^[a-z0-9.-]+\.json$/.test(sourceName)) {
         throw new Error('Invalid Agent Essentials: expected a local JSON filename');
     }
@@ -46,10 +49,8 @@ function renderMarkdown(document, sourceName) {
     return `${lines.join('\n')}\n`;
 }
 
-function writeMarkdown(input, output, filesystem) {
-    const sourceName = require('node:path').basename(input);
-    const document = JSON.parse(filesystem.readFileSync(input, 'utf8'));
+export function writeMarkdown(input: string, output: string, filesystem: TextFileSystem): void {
+    const sourceName = basename(input);
+    const document: unknown = JSON.parse(filesystem.readFileSync(input, 'utf8'));
     filesystem.writeFileSync(output, renderMarkdown(document, sourceName), 'utf8');
 }
-
-module.exports = { renderMarkdown, writeMarkdown };

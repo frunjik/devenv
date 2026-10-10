@@ -1,7 +1,7 @@
 # Repository Practice Set History
 
 Generated from [practice-set-versions.json](./practice-set-versions.json). Edit JSON, not this view.
-Regenerate with `npm run generate:practice-set-versions:markdown` using [the registry renderer](../../scripts/practice-set-versions-markdown.cjs).
+Regenerate with `npm run generate:practice-set-versions:markdown` using [the registry renderer](../../scripts/practice-set-versions-markdown.ts).
 
 **Scope:** Repository\-controlled development rules and practices only\. Instructions supplied by the user, organization, platform, or runtime are outside this registry unless explicitly included\.
 

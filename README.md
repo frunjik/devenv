@@ -45,6 +45,11 @@ label, rather than the 180x80 box bounds; connection endpoints use these bounds.
 Shapes support the existing selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
 Controls align to the global grid: name and type come before Add.
+The editor delegates geometry and hit-testing to `sketch-geometry.ts`, drawing
+to `sketch-renderer.ts`, and ordered multi-selection to `SketchSelection` in
+`sketch-selection.ts`. Their shared records are defined in `sketch.types.ts`.
+Angular bindings, pointer lifecycle and picture-loading orchestration stay in
+the component.
 **Default template** loads an editable CompassDevEnv workflow based on the
 reference sketch: four actors, system software, six Tech process symbols,
 artifacts, products and business roles (25 parts and 28 connections).

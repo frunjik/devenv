@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-functional-boundaries",
+      "title": "Extract cohesive editor boundaries",
+      "beneficiary": "Developer maintaining the canvas editor",
+      "intendedOutcome": "Separate coherent responsibilities without changing editor behavior.",
+      "successCondition": "Extract geometry/hit-testing functions, drawing functions and ordered selection class; keep Angular bindings, pointer lifecycle and loading in the component; preserve public behavior with full changed-module coverage.",
+      "baseline": "Canvas editor component has 552 lines combining geometry, drawing, selection, editing and pointer/loading lifecycle. User approved sketch-geometry, sketch-renderer and SketchSelection boundaries. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:31:26.609+02:00",
+      "completedAt": "2026-10-10T19:33:56.7256002+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Three approved responsibility boundaries, behavior-preserving refactor.", "evidence": "Request and scope/naming approval." },
+        { "metricId": "decision-latency", "value": null, "evidence": "Approval response timestamp not captured." },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 30.117 seconds elapsed including scope approval. Human active effort and waiting unknown.", "evidence": "Request and local completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Component reduced from 552 to 379 lines. Shared sketch.types defines domain records without runtime behavior. sketch-geometry owns bounds, edge endpoints and hit tests; sketch-renderer owns sketch drawing with cohesive part/boundary/connection/text functions; SketchSelection owns ordered selection and derived views. Component retains bindings, lifecycle and orchestration. Public APIs, picture formats, geometry and render order preserved. Green baseline observed; all 136 existing editor tests remain unchanged and pass after extraction with 100% statements/branches/functions/lines for component and all three extracted executable modules. Client production build, Jest TypeScript check, diagnostics and diff check pass. Existing injected canvas/scheduler boundary fakes reused; no internal mocks or new test application file/network I/O. This is a behavior-preserving refactor, not a new Red/Green claim. Browser pointer click timed out because shared tab is not visible; runtime DOM-event checks instead verify template loading, selected-item editing/fallback and technical replacement. No new visual/pointer verification claimed. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts; sketch-geometry.ts; sketch-renderer.ts; sketch-selection.ts; sketch.types.ts; README.md; current session baseline/test/coverage/type/build/runtime output." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-synchronized-selection",
       "title": "Synchronize list and canvas selection",
       "beneficiary": "User selecting and editing canvas items",

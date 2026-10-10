@@ -28,6 +28,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-functional-boundaries",
+          "title": "Extract cohesive editor boundaries",
+          "description": "Completed approved geometry/hit-testing functions, sketch renderer and ordered SketchSelection class with shared typed records. Component retains Angular bindings, pointer lifecycle and picture-loading orchestration; reduced from 552 to 379 lines. Existing 136 editor tests pass unchanged with 100% coverage for component and all extracted executable modules. Client build, Jest TypeScript check and diagnostics pass. Live DOM-event checks in nonvisible shared browser tab verify template loading, selection fallback and technical replacement; visual pointer check unavailable because tab is not visible. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-functional-boundaries"]
+        }, {
           "id": "canvas-editor-synchronized-selection",
           "title": "Synchronize list and canvas selection",
           "description": "Completed one ordered selection set for canvas and checkboxes. Clicks/checks toggle membership, last selected item drives editing, deselection falls back to the last remaining item, and empty canvas clears all outside connection mode. Dragging preserves membership and makes the dragged part active; all selected items are highlighted. Shared cleanup/replacement preserved. Red observed before production changes; 136 editor tests pass with 100% module coverage, test TypeScript check and client build pass. Live desktop synchronization, label editing, fallback, dragging and clearing verified; mobile list editing/clearing and no overflow verified. Tracking and measurement retained. Next step: user review and optional commit approval.",

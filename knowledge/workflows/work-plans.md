@@ -32,6 +32,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Extract cohesive editor boundaries
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-functional-boundaries`
+
+Completed approved geometry/hit-testing functions, sketch renderer and ordered SketchSelection class with shared typed records. Component retains Angular bindings, pointer lifecycle and picture-loading orchestration; reduced from 552 to 379 lines. Existing 136 editor tests pass unchanged with 100% coverage for component and all extracted executable modules. Client build, Jest TypeScript check and diagnostics pass. Live DOM-event checks in nonvisible shared browser tab verify template loading, selection fallback and technical replacement; visual pointer check unavailable because tab is not visible. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: Synchronize list and canvas selection
 
 **Status:** Completed

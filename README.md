@@ -35,6 +35,8 @@ Run `npm run generate:work-effort:report` to refresh the typed
 Markdown view from the current ledger, [reviewed classifications](./knowledge/workflows/work-effort-classifications.json),
 workflow/WorkPlan sources, tracked workflow timing statements and all reachable `HEAD`
 commit events. The snapshot records source hashes and the Git inventory commit.
+The command also prints the same duration summary and totals in the terminal,
+with space-padded columns, left-aligned labels and right-aligned numeric values.
 Commit gaps are not durations; older commit outcomes remain unclassified until supported
 by additional evidence. Changing classifications requires reviewing intended outcomes,
 not inferring them from paths or existing Product/Meta labels.

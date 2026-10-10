@@ -1935,6 +1935,13 @@
   ],
   "commits": [
     {
+      "sha": "9348daca5d494678a6ec1ff71f97f2ffdf813968",
+      "authoredAt": "2026-10-10T17:26:13+02:00",
+      "committedAt": "2026-10-10T17:26:13+02:00",
+      "subject": "Show category durations and totals in effort report",
+      "category": "Unclassified"
+    },
+    {
       "sha": "fa30dafb52261868e89a87198fdd0a6f6c189d24",
       "authoredAt": "2026-10-10T17:14:25+02:00",
       "committedAt": "2026-10-10T17:14:25+02:00",
@@ -6884,8 +6891,8 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T15:25:48.444Z",
-  "sourceCommit": "fa30dafb52261868e89a87198fdd0a6f6c189d24",
+  "generatedAt": "2026-10-10T15:29:51.778Z",
+  "sourceCommit": "9348daca5d494678a6ec1ff71f97f2ffdf813968",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",

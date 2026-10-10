@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { createWorkEffortReport, workEffortReportToMarkdown } from '../../../scripts/work-effort-report';
+import { createWorkEffortReport, workEffortReportSummaryToMarkdown, workEffortReportToMarkdown } from '../../../scripts/work-effort-report';
 
 function evaluation(id: string, start: string | null, end: string | null) {
     return {
@@ -30,6 +30,24 @@ const classifications = [
 const gitLog = `${'a'.repeat(40)}\t2025-04-18T00:00:00Z\t2025-04-18T01:00:00Z\tInitial commit\n`;
 
 describe('work effort report', () => {
+    it.each(['2026-10-10T01:00:00Z', '9999-12-31T23:59:59Z'])('aligns summary columns with spaces for an interval ending %s', end => {
+        const report = createWorkEffortReport({
+            ...ledger, evaluations: [evaluation('domain', timestamp(0), end)],
+        }, [classifications[0]], '');
+        const table = workEffortReportSummaryToMarkdown(report).split('\n').filter(line => line.startsWith('|'));
+        expect(table).toHaveLength(9);
+        const columns = table.map(line => line.split('|').slice(1, -1));
+        const widths = columns[0].map(column => column.length - 2);
+        for (const row of columns) {
+            row.forEach((column, index) => {
+                expect(column.length).toBe(widths[index] + 2);
+                expect(column).toBe(` ${index === 0 ? column.trim().padEnd(widths[index]) : column.trim().padStart(widths[index])} `);
+            });
+        }
+        expect(columns[1][0].trim()).toMatch(/^-+$/);
+        for (const separator of columns[1].slice(1)) expect(separator.trim()).toMatch(/^-+:$/);
+    });
+
     it('counts each observed minute once and keeps cross-category overlap separate', () => {
         const report = createWorkEffortReport(ledger, classifications, gitLog);
         expect(report.observedWindowsMs).toEqual({
@@ -51,7 +69,7 @@ describe('work effort report', () => {
             committedAt: '2025-04-18T01:00:00Z', subject: 'Initial commit',
             category: 'Unclassified',
         }]);
-        const markdown = workEffortReportToMarkdown(report);
+        const markdown = workEffortReportToMarkdown(report).replace(/ {2,}/g, ' ');
         expect(markdown).toContain('| Problem/Domain | 0:10:00 | 10.00 | 25.00% |');
         expect(markdown).toContain('| Meta/DevEnv | 0:10:00 | 10.00 | 25.00% |');
         expect(markdown).toContain('| Problem + Meta subtotal | 0:20:00 | 20.00 | 50.00% |');
@@ -65,7 +83,7 @@ describe('work effort report', () => {
     it('handles no usable intervals without reporting zero active effort or invented proportions', () => {
         const report = createWorkEffortReport({ ...ledger, evaluations: [evaluation('unknown', null, null)] }, [], '');
         expect(report.observedTotalMs).toBe(0);
-        const markdown = workEffortReportToMarkdown(report);
+        const markdown = workEffortReportToMarkdown(report).replace(/ {2,}/g, ' ');
         expect(markdown).toContain('| Problem/Domain | 0:00:00 | 0.00 | unknown |');
         expect(markdown).toContain('| Problem + Meta subtotal | 0:00:00 | 0.00 | unknown |');
         expect(markdown).toContain('| Total observed union | 0:00:00 | 0.00 | unknown |');
@@ -76,7 +94,7 @@ describe('work effort report', () => {
             ...ledger,
             evaluations: [evaluation('domain', '2026-10-08T00:00:00Z', '2026-10-09T01:02:59.600Z')],
         }, [classifications[0]], '');
-        const markdown = workEffortReportToMarkdown(report);
+        const markdown = workEffortReportToMarkdown(report).replace(/ {2,}/g, ' ');
         expect(markdown).toContain('| Window category | Duration (h:mm:ss) | Minutes | Share of observed union |');
         expect(markdown).toContain('| Problem/Domain | 25:03:00 | 1502.99 | 100.00% |');
         expect(markdown).toContain('| Problem + Meta subtotal | 25:03:00 | 1502.99 | 100.00% |');

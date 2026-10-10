@@ -12,19 +12,19 @@ Percentages use only the recorded window union as denominator; they are not prop
 
 Durations use hours:minutes:seconds, rounded to the nearest second. The Problem + Meta subtotal excludes Mixed, Unclassified and Cross-category overlap; the total includes all five categories. Subtotal and total rows summarize the categories and must not be added to them.
 
-| Window category | Duration (h:mm:ss) | Minutes | Share of observed union |
-|---|---:|---:|---:|
-| Problem/Domain | 3:05:08 | 185.13 | 50.95% |
-| Meta/DevEnv | 2:33:47 | 153.78 | 42.32% |
-| Mixed | 0:05:30 | 5.50 | 1.51% |
-| Unclassified | 0:04:03 | 4.04 | 1.11% |
-| Cross-category overlap | 0:14:54 | 14.90 | 4.10% |
-| Problem + Meta subtotal | 5:38:55 | 338.92 | 93.27% |
-| Total observed union | 6:03:22 | 363.36 | 100.00% |
+| Window category         | Duration (h:mm:ss) | Minutes | Share of observed union |
+| ----------------------- | -----------------: | ------: | ----------------------: |
+| Problem/Domain          |            3:05:08 |  185.13 |                  50.95% |
+| Meta/DevEnv             |            2:33:47 |  153.78 |                  42.32% |
+| Mixed                   |            0:05:30 |    5.50 |                   1.51% |
+| Unclassified            |            0:04:03 |    4.04 |                   1.11% |
+| Cross-category overlap  |            0:14:54 |   14.90 |                   4.10% |
+| Problem + Meta subtotal |            5:38:55 |  338.92 |                  93.27% |
+| Total observed union    |            6:03:22 |  363.36 |                 100.00% |
 
 Evaluations reviewed: 48. Complete intervals: 40.
 Unfinished or untimed evaluations: 8.
-Reachable commits inventoried: 707; all commit durations and outcome classifications remain unknown.
+Reachable commits inventoried: 708; all commit durations and outcome classifications remain unknown.
 
 ## Evaluation evidence
 
@@ -87,6 +87,7 @@ Individual elapsed values below overlap and must not be summed.
 Author and commit dates are events, not work intervals. No time is inferred from commit gaps. Inspect referenced diffs before assigning older work to outcomes.
 | Commit | Author timestamp | Commit timestamp | Subject |
 |---|---|---|---|
+| 9348daca5d494678a6ec1ff71f97f2ffdf813968 | 2026-10-10T17:26:13+02:00 | 2026-10-10T17:26:13+02:00 | Show category durations and totals in effort report |
 | fa30dafb52261868e89a87198fdd0a6f6c189d24 | 2026-10-10T17:14:25+02:00 | 2026-10-10T17:14:25+02:00 | Add glossary shortcut to AgentPhaseGuide guidance |
 | 1dadc44a81d1d49cfbe47c8c250e180633bee199 | 2026-10-10T17:10:18+02:00 | 2026-10-10T17:10:18+02:00 | Remove development remnants from portable AgentPhaseGuide |
 | 185886cbe64ae26637c0271ea1bad098bb7233de | 2026-10-10T17:05:06+02:00 | 2026-10-10T17:05:06+02:00 | Default AgentPhaseGuide export to devenv-agent-guide |
@@ -797,7 +798,7 @@ Author and commit dates are events, not work intervals. No time is inferred from
 
 ## Scope, sources and limitations
 
-Git inventory pinned to fa30dafb52261868e89a87198fdd0a6f6c189d24. Snapshot generated at 2026-10-10T15:25:48.444Z.
+Git inventory pinned to 9348daca5d494678a6ec1ff71f97f2ffdf813968. Snapshot generated at 2026-10-10T15:29:51.778Z.
 Classification source: [reviewed outcome classifications](./work-effort-classifications.json).
 Exact source hashes, original workflow/WorkPlan records, and extracted checkpoint evidence are retained in [the JSON snapshot](./work-effort-report.json).
 - Scope is all reachable HEAD history and current repository records, not deleted branches, inaccessible chats or all work ever done.

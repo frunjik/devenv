@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
-import { createWorkEffortReport, workEffortReportToMarkdown } from './work-effort-report';
+import { createWorkEffortReport, workEffortReportSummaryToMarkdown, workEffortReportToMarkdown } from './work-effort-report';
 
 const root = process.cwd();
 const sourcePaths = [
@@ -70,3 +70,4 @@ const evidenceMarkdown = [
 writeFileSync(resolve(root, 'knowledge/workflows/work-effort-report.json'), `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
 writeFileSync(resolve(root, 'knowledge/workflows/work-effort-report.generated.md'), `${workEffortReportToMarkdown(report)}\n${evidenceMarkdown}\n`, 'utf8');
 console.log(`Generated report: ${report.rows.length} evaluations, ${report.commits.length} commits, ${workflowTimingEvidence.length} workflow documents.`);
+console.log(`\n${workEffortReportSummaryToMarkdown(report)}`);

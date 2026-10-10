@@ -53,8 +53,9 @@ npm run clone -- ../my-guide-copy
 ```
 
 The destination's parent must already exist. The destination itself must not exist
-or overlap the source, including through a symlinked parent. No Git repository or
-DevEnv checkout is needed. Paths containing spaces should be quoted.
+or overlap the source, including through a symlinked parent. Cloning requires only
+this Guide folder, Node.js and npm; Git is not required.
+Paths containing spaces should be quoted.
 
 The clone copies only the manifest's fixed Guide file inventory, including its own
 package and scripts, so it can clone again after `npm install` there. It preserves

@@ -5,7 +5,7 @@ description: "Only on explicit request or agreement: review the visual design of
 
 # Review UI Design
 
-Invoke only when requested or agreed. Follow the repository Must/Should/Could distinctions; UI changes do not automatically require this review.
+Invoke only when requested or agreed. UI changes do not automatically require this review.
 
 ## Scope and method
 
@@ -18,9 +18,7 @@ Invoke only when requested or agreed. Follow the repository Must/Should/Could di
 - **Medium:** creates avoidable effort, confusion or reduced readability.
 - **Low:** limited-impact refinement.
 
-Do not modify UI, data or behavior without separate implementation scope approval. Report criteria proportionally; no repetitive empty checklists or mandatory old workflow ceremony.
-
-**Concrete instance:** DevEnv's Tools menu can be checked for focus visibility, keyboard navigation and narrow-screen fit.
+Do not modify UI, data or behavior without separate implementation scope approval. Report criteria proportionally; avoid repetitive empty checklists.
 
 ## References
 

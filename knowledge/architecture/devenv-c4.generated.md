@@ -1,6 +1,6 @@
 # DevEnv architecture
 
-Generated from [devenv-c4.json](./devenv-c4.json). Do not edit independently. Regenerate using [devenv-c4.md](./devenv-c4.md).
+Generated from [devenv-c4.json](../../projects/client/src/app/system/interactive-canvas/devenv-c4.json). Do not edit independently. Regenerate using [devenv-c4.md](./devenv-c4.md).
 
 Date: 2026-10-07. Current-architecture draft for review, not a proposed redesign.
 

@@ -1,6 +1,6 @@
 # DevEnv C4 Views
 
-The [JSON model](./devenv-c4.json) is authoritative. The [generated diagrams](./devenv-c4.generated.md) are a derived view; do not edit them independently. Open their Markdown preview in a viewer supporting Mermaid flowcharts.
+The [JSON model](../../projects/client/src/app/system/interactive-canvas/devenv-c4.json) is authoritative. It lives with the canvas feature so curated clones retain the technical picture. The [generated diagrams](./devenv-c4.generated.md) and canvas technical picture are derived views; do not edit their architectural facts independently. Open the Markdown preview in a viewer supporting Mermaid flowcharts.
 
 These are current-architecture drafts, not proposed changes. They cover context, logical containers, and local development deployment. The model records evidence, assumptions, and limits. No new domain Type or Term is adopted by using C4's diagram vocabulary.
 
@@ -13,7 +13,7 @@ Run this PowerShell command from the repository root. It requires Node.js, with 
 ```powershell
 @'
 const fs = require('node:fs');
-const model = JSON.parse(fs.readFileSync('knowledge\\architecture\\devenv-c4.json', 'utf8'));
+const model = JSON.parse(fs.readFileSync('projects\\client\\src\\app\\system\\interactive-canvas\\devenv-c4.json', 'utf8'));
 const escape = text => String(text).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\r?\n/g, ' ');
 const wrap = text => {
   const lines = [''];
@@ -42,7 +42,7 @@ const sections = model.views.map(view => {
   });
   return `## ${view.title}\n\n${view.notes}\n\n\`\`\`mermaid\nflowchart TB\n${nodes.concat(edges).join('\n')}\n\`\`\`\n`;
 });
-const header = `# ${model.title}\n\nGenerated from [devenv-c4.json](./devenv-c4.json). Do not edit independently. Regenerate using [devenv-c4.md](./devenv-c4.md).\n\nDate: ${model.date}. ${model.status}.\n\nLegend: boxes are labelled architectural elements; arrows are directed interactions; labelled groups show view-specific boundaries. Data-store containers do not imply separate processes.\n\n`;
+const header = `# ${model.title}\n\nGenerated from [devenv-c4.json](../../projects/client/src/app/system/interactive-canvas/devenv-c4.json). Do not edit independently. Regenerate using [devenv-c4.md](./devenv-c4.md).\n\nDate: ${model.date}. ${model.status}.\n\nLegend: boxes are labelled architectural elements; arrows are directed interactions; labelled groups show view-specific boundaries. Data-store containers do not imply separate processes.\n\n`;
 fs.writeFileSync('knowledge\\architecture\\devenv-c4.generated.md', header + sections.join('\n') + '\n## Limits\n\n' + model.limitations + '\n', 'utf8');
 '@ | node
 ```

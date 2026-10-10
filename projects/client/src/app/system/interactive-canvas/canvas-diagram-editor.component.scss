@@ -143,6 +143,19 @@
         min-width: 900px;
         min-height: 560px;
     }
+
+    &.technical-workspace canvas {
+        min-width: 1400px;
+        min-height: 880px;
+    }
+}
+
+.technical-notes {
+    flex-shrink: 0;
+
+    summary {
+        cursor: pointer;
+    }
 }
 
 canvas {

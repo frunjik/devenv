@@ -2,7 +2,7 @@
 
 ## Checkpoint
 
-**Status:** Paused for the user-requested Ruleset Reduction workflow on 2026-10-10. Slices 1 through 4 complete, including undirected labelled sketch connections. Resume at slice 5: architectural meaning, after agreeing what the sketch denotes. No canvas scope or modeling decision changed.
+**Status:** Main staged plan paused for the user-requested Ruleset Reduction workflow on 2026-10-10. Slices 1 through 4 complete, including undirected labelled sketch connections. Separately requested canvas refinements and the technical-picture follow-up are recorded below. Resume broader architecture integration at slice 5 after agreeing what edits should denote.
 
 **Purpose:** Explore an HTML Canvas foundation as a possible alternative to the current Diagram Editor. Keep this prototype isolated so the existing `/diagram` experience remains available for comparison.
 
@@ -19,6 +19,17 @@
 **Type review:** No domain Type is justified for this prototype. The actual canvas clock uses built-in `HTMLCanvasElement` and `CanvasRenderingContext2D`; the component's optional timer handle represents whether its view lifecycle installed an interval. Unlike the existing `DiagramDocument`, the clock has no persisted domain state, operations, or alternative selection states to model. Avoid adding a speculative editor model until concrete interactions are agreed.
 
 **Next:** Slice 5: architectural meaning. Current parts and undirected connections are free-form sketches, not validated architectural facts. Agree any meaning/refinement before implementation; keep `/diagram` unchanged.
+
+### Technical picture follow-up (2026-10-10)
+
+- User requested the displayed technical picture in the canvas and explicitly approved directed arrows, Browser/Development host boundaries, and moving the authoritative architecture JSON into the canvas feature for curated-clone compatibility.
+- Baseline: only the purpose overview could be loaded; connections were undirected and no execution boundaries were drawn. The existing editor suite had 97 passing tests. Active effort and user-understanding improvement remain unknown.
+- Added the **Technical picture** load control. Its nine parts and nine relationships derive from the local-development architecture view; only positions and label offsets are separately authored. Architecture source content is unchanged by the move, and Mermaid regeneration references the new location.
+- The technical view is an editable in-memory copy, not an architecture editing or persistence interface. It draws directed target arrowheads, technologies and boundaries derived from original member positions. Boundaries follow dragged members and disappear when empty; new parts have no assigned membership. The purpose overview remains undirected. Both views require confirmation before replacing existing parts.
+- Runtime validation reuses the shared shape boundary but validates directed endpoints and ordered pairs separately; opposite directed links do not inherit the shared document's undirected restriction. `/diagram` and its stored contract are unchanged. Feature-local interfaces describe the consumed architecture projection and picture geometry; no global domain-model adoption is implied.
+- TDD: observed missing-load-control Red, then missing boundary/arrow Red, then a reciprocal-source-relationship Red exposing inappropriate undirected validation. Green: 131 targeted client tests and 28 clone-package tests pass; both changed production modules have 100% statement/branch/function/line coverage. Static JSON module interception is limited to adapter tests for invalid source records; tests write no application data.
+- Browser acceptance: inspected the rendered picture; separated relationship labels from boundary titles; verified nine relationships, minimum 1400 x 880 workspace content and scrolling at desktop/mobile sizes, and cancellation/replacement between views. Production client build and generated-reference checks pass. These checks establish rendering and behavior, not verified architecture or proven comprehension.
+- Next: user review of the technical picture; the broader slice-5 architecture meaning decisions, persistence, generic boundary editing and undo/redo remain deferred.
 
 ### Undo/redo follow-up
 
@@ -206,7 +217,7 @@ Saved at the user's request on 2026-10-09. The user requested this workflow be a
 
 Interactively create a readable picture of DevEnv, its parts, and their relationships. The first useful example is **DevEnv client -> DevEnv API -> Workspace resources**, arranged by the user with labelled directed arrows.
 
-The existing [architecture JSON](../architecture/devenv-c4.json) describes these parts and relationships. It remains a current-architecture draft, not verified architecture. Its authority is unchanged.
+The existing [architecture JSON](../../projects/client/src/app/system/interactive-canvas/devenv-c4.json) describes these parts and relationships. It remains a current-architecture draft, not verified architecture. Its authority is unchanged; its location moved into the canvas feature on 2026-10-10 with user approval so curated clones retain the technical picture.
 
 ### Responsibilities
 

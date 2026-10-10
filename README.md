@@ -75,6 +75,17 @@ The shared document contract supports Rectangle, Ellipse, Note, and undirected c
 with explicit runtime validation of versioned JSON. Creating items and browser import/export
 are not implemented yet; see the [diagram editor checkpoint](knowledge/workflows/diagram-editor-workflow.md#checkpoint).
 
+The separate `/interactive-canvas` editor offers **Load DevEnv overview** for the purpose sketch
+and **Technical picture** for local development architecture. The technical view derives nine
+parts, directed relationships, technologies and Browser/Development host boundaries from the
+authoritative [architecture draft](./projects/client/src/app/system/interactive-canvas/devenv-c4.json).
+Loading either view over existing parts requires confirmation. Edits affect an in-memory copy,
+not the architecture source; new connections in the technical view are directed, while purpose
+sketch connections remain undirected. Boundaries follow their original members during dragging
+and disappear when empty; newly added boxes have no boundary membership. Larger views scroll.
+Expand the technical notes for responsibilities and deployment caveats. This does not change
+the shared undirected document contract or the existing `/diagram` editor.
+
 The meta toolbar's **Clone DevEnv** action opens a folder-export dialog (under **More** on mobile).
 Enter an absolute folder path on the API server's machine; its parent must already exist.
 The dialog requires acknowledgement that existing destination contents will be replaced.

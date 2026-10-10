@@ -170,6 +170,152 @@ describe('CanvasDiagramEditor', () => {
         expect(connections.compareDocumentPosition(workspace) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
     });
 
+    it('loads the technical picture through a public control', () => {
+        createEditor();
+        expect(button('Load DevEnv technical picture')).not.toBeNull();
+        clickButton('Load DevEnv technical picture');
+        expect(editor.parts.map(part => part.label)).toEqual([
+            'DevEnv user', 'DevEnv client', 'Angular development server', 'DevEnv API',
+            'Development subprocesses', 'Workspace resources', 'Ticket store',
+            'Test-run cache', 'Export destination',
+        ]);
+        expect(editor.connections).toHaveLength(9);
+        expect(host.textContent).toContain('Current-architecture draft');
+    });
+
+    describe('technical picture', () => {
+        beforeEach(() => { createEditor(); clickButton('Load DevEnv technical picture'); });
+
+        it('loads directed relationships with the architecture endpoint identities', () => {
+            expect(editor.connections.map(connection => [
+                connection.first.label, connection.second.label, connection.label, connection.directed,
+            ])).toEqual([
+                ['DevEnv user', 'DevEnv client', 'Works through the browser UI', true],
+                ['DevEnv client', 'Angular development server', 'Loads client assets', true],
+                ['DevEnv client', 'DevEnv API', 'Requests data and actions', true],
+                ['DevEnv API', 'Workspace resources', 'Reads resources and edits files', true],
+                ['DevEnv API', 'Ticket store', 'Loads and persists tickets and history', true],
+                ['DevEnv API', 'Test-run cache', 'Stores and retrieves test results', true],
+                ['DevEnv API', 'Development subprocesses', 'Starts Git and test commands', true],
+                ['Development subprocesses', 'Workspace resources', 'Operates on repository and source', true],
+                ['DevEnv API', 'Export destination', 'Stages and installs a curated clone', true],
+            ]);
+        });
+
+        it('draws the two boundaries behind nine parts and labels technologies', () => {
+            surface.paint();
+            expect(surface.boxes.slice(0, 2)).toEqual([[312, 32, 236, 156], [732, 32, 636, 796]]);
+            expect(surface.boxes).toHaveLength(11);
+            expect(surface.draws.map(draw => draw[0])).toContain('Browser execution environment');
+            expect(surface.draws.map(draw => draw[0])).toContain('Development host');
+            expect(surface.draws.map(draw => draw[0])).toContain('Angular / TypeScript');
+            expect(surface.draws.map(draw => draw[0])).toContain('Node.js / Express');
+        });
+
+        it('draws a target arrowhead on each relationship', () => {
+            surface.paint();
+            expect(surface.paths).toHaveLength(18);
+            expect(surface.paths[0]).toEqual([[220, 120], [340, 120]]);
+            expect(surface.paths[1]).toEqual([[330, 115], [340, 120], [330, 125]]);
+        });
+
+        it('keeps the boundary attached to a member dragged outside its original extent', () => {
+            drag(350, 90, 150, 290);
+            surface.paint();
+            expect(surface.boxes[0]).toEqual([112, 232, 236, 156]);
+            expect(editor.parts[1].position).toEqual({ x: 140, y: 280 });
+        });
+
+        it('allows a reverse directed link but still rejects the same direction twice', () => {
+            connect(350, 90, 50, 90);
+            expect(editor.connections).toHaveLength(10);
+            expect(editor.connections[9].directed).toBe(true);
+            connect(350, 90, 50, 90);
+            expect(editor.connections).toHaveLength(10);
+            expect(editor.connectionMessage).toContain('already connected');
+        });
+
+        it('draws an added directed link without imported label offsets or technology', () => {
+            connect(350, 90, 50, 90);
+            clickCanvas(280, 120);
+            enterLabel('Response');
+            surface.paint();
+            expect(editor.selectedConnection?.label).toBe('Response');
+            expect(surface.draws).toContainEqual(['Response', 280, 80]);
+            expect(surface.paths.at(-1)).toEqual([[230, 125], [220, 120], [230, 115]]);
+        });
+
+        it('uses arrow direction and technology in the HTML connection picker', () => {
+            const labels = [...host.querySelectorAll('.connection-option span')].map(span => span.textContent);
+            expect(labels).toContain('DevEnv client -> DevEnv API: Requests data and actions (HTTP / JSON; test responses stream NDJSON)');
+            expect(host.textContent).toContain('compile-time library');
+        });
+
+        it('removes an empty boundary when its last member is deleted', () => {
+            clickCanvas(350, 90);
+            clickButton('Remove selected part');
+            expect(editor.boundaries.map(boundary => boundary.label)).toEqual(['Development host']);
+            expect(editor.connections.some(connection => connection.first.label === 'DevEnv client'
+                || connection.second.label === 'DevEnv client')).toBe(false);
+        });
+
+        it('cancels switching views without losing directed links, checked lines or selection', () => {
+            clickCanvas(350, 90);
+            checkLine(0);
+            loadOverview();
+            clickButton('Cancel replacement');
+            expect(editor.technicalLoaded).toBe(true);
+            expect(editor.selectedPart?.label).toBe('DevEnv client');
+            expect(editor.checkedConnections.size).toBe(1);
+        });
+
+        it('clears technical metadata and restores undirected behavior on overview replacement', () => {
+            checkLine(0);
+            loadOverview();
+            clickButton('Confirm replacement');
+            expect(editor.technicalLoaded).toBe(false);
+            expect(editor.overviewLoaded).toBe(true);
+            expect(editor.boundaries).toEqual([]);
+            expect(editor.technicalNotes).toBe('');
+            expect(editor.checkedConnections.size).toBe(0);
+            expect(editor.connections.every(connection => !connection.directed && !connection.technology)).toBe(true);
+            expect(editor.parts.every(part => !part.technology && !part.description)).toBe(true);
+        });
+
+        it('reloads the source rather than retaining edits or identities', () => {
+            clickCanvas(50, 90);
+            enterLabel('Edited user');
+            const oldParts = editor.parts;
+            clickButton('Load DevEnv technical picture');
+            clickButton('Confirm replacement');
+            expect(editor.parts[0].label).toBe('DevEnv user');
+            expect(editor.parts.every(part => part.id > oldParts[8].id)).toBe(true);
+            expect(editor.selectedPart).toBeUndefined();
+        });
+
+        it('keeps coincident directed links finite without drawing an undefined arrowhead', () => {
+            drag(350, 90, 50, 90);
+            surface.paint();
+            expect(surface.paths[0]).toEqual([[130, 120], [130, 120]]);
+            expect(surface.paths.flat(2).every(Number.isFinite)).toBe(true);
+            expect(surface.paths).toHaveLength(17);
+        });
+    });
+
+    it('confirms loading the technical view over a custom sketch and ends its old drag', () => {
+        createEditor();
+        addParts(1);
+        dispatch('pointerdown', 29, 29);
+        const original = editor.parts[0];
+        clickButton('Load DevEnv technical picture');
+        expect(editor.parts).toEqual([original]);
+        clickButton('Confirm replacement');
+        dispatch('pointermove', 400, 400);
+        expect(original.position).toEqual({ x: 24, y: 24 });
+        expect(editor.technicalLoaded).toBe(true);
+        expect(editor.selectedPart).toBeUndefined();
+    });
+
     describe('DevEnv overview', () => {
         beforeEach(() => { createEditor(); loadOverview(); });
 

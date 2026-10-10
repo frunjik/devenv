@@ -3,6 +3,7 @@
     <div class="canvas-toolbar">
         <div class="canvas-controls">
             <button type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load DevEnv overview</button>
+            <button type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
             <button type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
                 (click)="addPart()">Add part</button>
             <button type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
@@ -24,7 +25,7 @@
                         <label class="connection-option">
                             <input #check type="checkbox" [checked]="checkedConnections.has(connection)"
                                 (change)="checkConnection(connection, check.checked)">
-                            <span>{{ connection.first.label }} - {{ connection.second.label }}: {{ connection.label }}</span>
+                            <span>{{ connection.first.label }} {{ connection.directed ? '->' : '-' }} {{ connection.second.label }}: {{ connection.label }}{{ connection.technology ? ' (' + connection.technology + ')' : '' }}</span>
                         </label>
                     } @empty {
                         <p>No connections yet.</p>
@@ -39,14 +40,26 @@
     @if (replacementPending) {
         <div class="canvas-controls" role="group" aria-label="Replace current sketch">
             <span>Replace the current sketch? Unsaved boxes and connections will be lost.</span>
-            <button type="button" aria-label="Confirm replacement" (click)="confirmOverview()">Confirm replacement</button>
-            <button type="button" aria-label="Cancel replacement" (click)="cancelOverview()">Cancel</button>
+            <button type="button" aria-label="Confirm replacement" (click)="confirmReplacement()">Confirm replacement</button>
+            <button type="button" aria-label="Cancel replacement" (click)="cancelReplacement()">Cancel</button>
         </div>
     }
     @if (overviewLoaded) {
         <p>Explanatory sketch of DevEnv's purpose, not a formal architecture. Boxes and undirected links are editable.</p>
     }
-    <div class="canvas-viewport" [class.overview-workspace]="overviewLoaded">
+    @if (technicalLoaded) {
+        <details class="technical-notes">
+            <summary>Technical picture: local development draft (editable copy)</summary>
+            <p>{{ technicalNotes }}</p>
+            <p>Arrows run from source to target. New links in this view are directed. Boundaries follow their original members when dragged; adding a box does not assign membership. Edits do not change the architecture source. The shared package is a compile-time library, not a running service. Filesystem stores are logical responsibilities, not separate servers.</p>
+            <ul>
+                @for (part of parts; track part.id) {
+                    <li>{{ part.label }}: {{ part.description }}</li>
+                }
+            </ul>
+        </details>
+    }
+    <div class="canvas-viewport" [class.overview-workspace]="overviewLoaded" [class.technical-workspace]="technicalLoaded">
         <canvas
             #canvas
             width="640"
@@ -56,8 +69,9 @@
             (pointerup)="endDrag($event)"
             (pointercancel)="endDrag($event)"
             (lostpointercapture)="endDrag($event)"
-            aria-label="Sketch workspace and current time rendered on an HTML canvas">
-            Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them. Current time is also shown.
+            [attr.aria-label]="technicalLoaded ? 'DevEnv technical picture with directed relationships and execution boundaries' : 'Sketch workspace and current time rendered on an HTML canvas'">
+            Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them.
+            @if (!technicalLoaded) { Current time is also shown. }
         </canvas>
     </div>
 </main>

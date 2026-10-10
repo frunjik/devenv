@@ -13,6 +13,7 @@ import {
 const commit = '0123456789abcdef0123456789abcdef01234567';
 const sourceRoot = resolve('source');
 const destination = resolve('guide-export');
+const readmeSourcePath = '.agents/agent-phase-guide.README.md';
 const guideEntry = {
     term: 'AgentPhaseGuide',
     definitions: ['Coordinates the four-phase work loop.'],
@@ -28,7 +29,7 @@ const projectEntry = {
 
 function sourceFiles(): Record<string, string> {
     return {
-        ...Object.fromEntries([...agentPhaseGuideCoreFiles, projectProfileTemplatePath]
+        ...Object.fromEntries([...agentPhaseGuideCoreFiles, projectProfileTemplatePath, readmeSourcePath]
             .map(path => [join(sourceRoot, path), `content of ${path}\n`])),
         [join(sourceRoot, '.glossary.json')]: JSON.stringify([guideEntry, projectEntry]),
     };
@@ -52,10 +53,25 @@ describe('AgentPhaseGuide export', () => {
         expect(manifest).toEqual({
             name: 'agent-phase-guide',
             commit,
-            files: [...agentPhaseGuideCoreFiles, projectProfilePath, '.glossary.json', '.glossary'],
+            files: [...agentPhaseGuideCoreFiles, projectProfilePath, 'README.md', '.glossary.json', '.glossary'],
         });
         expect(JSON.parse(fileSystem.files.get(join(destination, 'agent-phase-guide.manifest.json')) ?? '')).toEqual(manifest);
         expect(fileSystem.mkdirSync).toHaveBeenCalledWith(join(destination, '.agents', 'skills', 'tdd'), { recursive: true });
+    });
+
+    it('copies the portable README to the export root', () => {
+        const fileSystem = exportFileSystem();
+        exportAgentPhaseGuide(sourceRoot, destination, { commit, uncommittedPaths: [] }, fileSystem);
+        expect(fileSystem.readFileSync(join(destination, 'README.md'), 'utf8'))
+            .toBe(`content of ${readmeSourcePath}\n`);
+    });
+
+    it('rejects an uncommitted README source before writing', () => {
+        const fileSystem = exportFileSystem();
+        expect(() => exportAgentPhaseGuide(sourceRoot, destination, {
+            commit, uncommittedPaths: [readmeSourcePath],
+        }, fileSystem)).toThrow(`Uncommitted AgentPhaseGuide sources: ${readmeSourcePath}`);
+        expect(fileSystem.mkdirSync).not.toHaveBeenCalled();
     });
 
     it('derives a domain-specific JSON glossary and Markdown from the main source', () => {

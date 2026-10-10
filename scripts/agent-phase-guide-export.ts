@@ -45,6 +45,7 @@ export function exportAgentPhaseGuide(
     const copies = [
         ...agentPhaseGuideCoreFiles.map(path => ({ from: path, to: path })),
         { from: projectProfileTemplatePath, to: projectProfilePath },
+        { from: '.agents/agent-phase-guide.README.md', to: 'README.md' },
     ];
     const uncommitted = [...copies.map(copy => copy.from), '.glossary.json']
         .filter(path => source.uncommittedPaths.includes(path));

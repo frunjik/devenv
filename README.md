@@ -85,6 +85,10 @@ DevEnv paths, commands and project-specific conventions live in the
 for all files. Run `npm run export:agent-phase-guide -- <destination>` to copy the generic
 core into another folder, with [a profile template](./knowledge/practices/project-profile.template.md)
 in place of the DevEnv profile and an `agent-phase-guide.manifest.json` pinned to `HEAD`.
+The export includes a portable `README.md` explaining installation, the work loop,
+defaults, optional tracking/measurement and limitations. Its narrative source is
+[the export README](./.agents/agent-phase-guide.README.md); edit that source rather
+than maintaining a separate explanation in the destination.
 It also derives a focused `.glossary.json` and its Markdown `.glossary` from entries
 tagged with the `AgentPhaseGuide` domain in the [main glossary](./.glossary.json).
 Edit definitions and examples only in the main source; the export selects and renders

@@ -32,6 +32,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Load an editable default workflow template
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-default-workflow-template`
+
+Completed Default template button for the reference main diagram: 25 typed symbols and 28 editable straight connections, excluding bottom legend/note. Initial canvas remains empty. Added Tech process renderer and picker option. JSON is authoritative, geometry/shape validation reused at loading boundary, replacement confirmation and fresh copies preserved. All 923 client tests pass with 100% reported coverage; test TypeScript check and client build pass. Runtime verifies template items, cancellation/confirmation and 2040x1080 scrollable workspace at 320/360/768/1280px without document overflow. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: List and select every canvas item
 
 **Status:** Completed

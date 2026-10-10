@@ -198,6 +198,56 @@ describe('CanvasDiagramEditor', () => {
         expect(editor.parts[0].shape).toBe('artifact');
     });
 
+    it('loads the default workflow template as editable symbols only when requested', () => {
+        createEditor();
+        expect(editor.parts).toEqual([]);
+        clickButton('Load default template');
+        expect(editor.parts).toHaveLength(25);
+        expect(editor.parts.filter(part => part.shape === 'actor').map(part => part.label))
+            .toEqual(['Dev', 'Review', 'Test', 'Plan']);
+        expect(editor.parts.filter(part => part.shape === 'tech-process').map(part => part.label))
+            .toEqual(['Explore', 'Develop', 'Refactor', 'Review', 'Test', 'Release']);
+        expect(editor.parts.map(part => part.label)).toContain('CompassDevEnv');
+        expect(editor.connections).toHaveLength(28);
+        expect(host.querySelectorAll('.part-option')).toHaveLength(25);
+        surface.paint();
+        expect(surface.draws.map(draw => draw[0])).toContain('Tech process:');
+        const system = editor.parts.find(part => part.label === 'CompassDevEnv')!;
+        clickCanvas(system.position.x + 10, system.position.y + 10);
+        enterLabel('My workflow');
+        expect(system.label).toBe('My workflow');
+    });
+
+    it('confirms template replacement, preserves checks on cancellation and reloads fresh geometry', () => {
+        createEditor();
+        loadOverview();
+        const original = editor.parts[0];
+        checkPartRow(0);
+        clickButton('Load default template');
+        expect(editor.replacementPending).toBe(true);
+        clickButton('Cancel replacement');
+        expect(editor.parts[0]).toBe(original);
+        expect(editor.checkedParts.has(original)).toBe(true);
+        clickButton('Load default template');
+        clickButton('Confirm replacement');
+        expect(editor.parts).toHaveLength(25);
+        expect(editor.checkedParts.size).toBe(0);
+        const process = editor.parts.find(part => part.shape === 'tech-process')!;
+        drag(process.position.x + 10, process.position.y + 10,
+            process.position.x + 110, process.position.y + 60);
+        expect(process.position).toEqual({ x: 400, y: 430 });
+        enterLabel('My inquiry');
+        expect(process.label).toBe('My inquiry');
+        clickButton('Load default template');
+        clickButton('Confirm replacement');
+        expect(editor.parts.find(part => part.label === 'Explore')?.position).toEqual({ x: 300, y: 380 });
+        expect(editor.selectedPart).toBeUndefined();
+        loadOverview();
+        clickButton('Confirm replacement');
+        expect(editor.overviewLoaded).toBe(true);
+        expect(host.querySelector('canvas')?.style.minWidth).toBe('');
+    });
+
     it('uses tight actor bounds for selection, dragging and connection endpoints', () => {
         createEditor();
         chooseShape('actor');
@@ -226,6 +276,7 @@ describe('CanvasDiagramEditor', () => {
     it.each([
         ['artifact', 'Artifact:'], ['system-software', 'System software:'],
         ['business-role', 'Business role:'], ['product', 'Product:'], ['actor', ''],
+        ['tech-process', 'Tech process:'],
     ])('creates an editable %s with the user name as its label', (kind, heading) => {
         createEditor();
         chooseShape(kind);

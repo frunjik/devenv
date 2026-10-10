@@ -45,6 +45,16 @@ label, rather than the 180x80 box bounds; connection endpoints use these bounds.
 Shapes support the existing selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
 Controls align to the global grid: name and type come before Add.
+**Default template** loads an editable CompassDevEnv workflow based on the
+reference sketch: four actors, system software, six Tech process symbols,
+artifacts, products and business roles (25 parts and 28 connections).
+The initial canvas remains empty. The main diagram is included without the
+bottom legend/note; the reference's curved link uses the editor's straight
+connections. AI Workflow and Locus remain unconnected, as in the reference.
+The authoritative template geometry and symbol assignments live in
+`projects/client/src/app/system/interactive-canvas/default-template.json`.
+Loading it uses the same replacement confirmation as other pictures and creates
+a fresh editable copy. Its 2040x1080 workspace scrolls on smaller screens.
 Above the mobile breakpoint, name and type share the left half side by side,
 matching Load overview's width, with Add beneath them.
 Technical picture is stacked above Load overview on the left, with both

@@ -49,6 +49,7 @@
                 (click)="cancelConnection()">Cancel</button>
         </section>
         <div class="picture-controls" role="group" aria-label="Load picture">
+            <button class="button-wide" type="button" aria-label="Load default template" (click)="loadDefaultTemplate()">Default template</button>
             <button class="button-wide" type="button" aria-label="Load DevEnv technical picture" (click)="loadTechnicalPicture()">Technical picture</button>
             <button class="button-wide" type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load overview</button>
         </div>
@@ -81,12 +82,14 @@
             #canvas
             width="640"
             height="360"
+            [style.min-width.px]="templateLoaded ? 2040 : null"
+            [style.min-height.px]="templateLoaded ? 1080 : null"
             (pointermove)="movePointer($event)"
             (pointerdown)="selectPart($event)"
             (pointerup)="endDrag($event)"
             (pointercancel)="endDrag($event)"
             (lostpointercapture)="endDrag($event)"
-            [attr.aria-label]="technicalLoaded ? 'DevEnv technical picture with directed relationships and execution boundaries' : 'Sketch workspace and current time rendered on an HTML canvas'">
+            [attr.aria-label]="templateLoaded ? 'Editable CompassDevEnv workflow template' : technicalLoaded ? 'DevEnv technical picture with directed relationships and execution boundaries' : 'Sketch workspace and current time rendered on an HTML canvas'">
             Sketch workspace. Choose a shape and label for a new part. Symbol names appear inside angle brackets; actor names appear below the figure.
             Click empty space to add another part. Select a shape or connection line to edit its label; drag shapes to move them.
             @if (!technicalLoaded) { Current time is also shown. }

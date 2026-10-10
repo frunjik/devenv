@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-default-workflow-template",
+      "title": "Load an editable default workflow template",
+      "beneficiary": "User sketching the CompassDevEnv workflow",
+      "intendedOutcome": "Load the supplied main workflow diagram as a reusable editable template.",
+      "successCondition": "Add a template button, keep the initial canvas empty, reproduce the main symbols and links without the bottom legend/note, add Tech process shape, use existing straight links, and preserve replacement confirmation and editing.",
+      "baseline": "Editor supports five architecture symbol renderers but lacks Tech process and the reference workflow template. User chose a loading button rather than automatic loading, main diagram only, and approved Tech process with straight connections. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:18:42.948+02:00",
+      "completedAt": "2026-10-10T19:23:59.4479475+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Button-loaded editable main reference diagram, excluding legend/note, with Tech process and straight connections.", "evidence": "Request image and three clarification answers." },
+        { "metricId": "decision-latency", "value": null, "evidence": "Clarification response timestamps not captured." },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 16.500 seconds elapsed including clarification. Human active effort and waiting unknown.", "evidence": "Request and final validation clock." },
+        { "metricId": "outcome-and-quality", "value": "Authoritative JSON stores 25 symbols (four actors, system software, six Tech processes, ten artifacts, two products and two business roles) and 28 straight undirected links. AI Workflow and Locus are unconnected as shown. Default template loader validates standard geometry plus complete supported shape map and returns fresh copies. Button uses existing picture replacement flow; loaded template remains fully editable, has all-item selection and a 2040x1080 scrolling workspace. Existing technical/overview dimensions preserved. Red observed with missing loader button, then focused Green; 164 focused tests pass with 100% statements/branches/functions/lines for all changed TypeScript modules. Final full client suite: 61 suites/923 tests pass, reported coverage 100% in all four metrics; client production build and Jest TypeScript check pass. Runtime verifies initial empty state, item counts, scrollbar dimensions/no document overflow at 320/360/768/1280px, cancellation preserving checks and confirmation resetting copies. Screenshot checked visible actors/software/process renderings. Existing injected canvas/scheduler and in-memory tests reused; no test application filesystem/network I/O. One live check timed out after hot reload reset the sketch; explicit reload and state waits passed. Existing no-rendered-area pointer console errors during viewport changes remain outside scope. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/default-template.json; default-template.ts; default-template.spec.ts; canvas-diagram-editor.component.ts; canvas-diagram-editor.component.html; canvas-symbols.ts; related specs; README.md; current session test/type/build/runtime evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "repository-coverage-completion",
       "title": "Complete reported repository coverage",
       "beneficiary": "Developer maintaining repository tests",

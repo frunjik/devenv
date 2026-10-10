@@ -6,17 +6,20 @@ import { SCHEDULER } from '../../scheduler';
 import { validateDiagramDocument } from '@shared';
 import overview from './devenv-overview.json';
 import { createTechnicalPicture } from './technical-picture';
-import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftware } from './canvas-symbols';
+import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftware, drawTechProcess } from './canvas-symbols';
 import type { SymbolBounds } from './canvas-symbols';
+import { createDefaultTemplate } from './default-template';
+import type { TemplateShape } from './default-template';
 
-type PictureKind = 'overview' | 'technical';
-type PartShape = 'rectangle' | 'artifact' | 'system-software' | 'business-role' | 'product' | 'actor';
+type PictureKind = 'overview' | 'technical' | 'template';
+type PartShape = 'rectangle' | TemplateShape;
 
 const symbolRenderers = {
     artifact: { draw: drawArtifact, heading: 'Artifact:' },
     'system-software': { draw: drawSystemSoftware, heading: 'System software:' },
     'business-role': { draw: drawBusinessRole, heading: 'Business role:' },
     product: { draw: drawProduct, heading: 'Product:' },
+    'tech-process': { draw: drawTechProcess, heading: 'Tech process:' },
 };
 
 interface SketchPart {
@@ -79,6 +82,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         { value: 'business-role', label: 'Business role' },
         { value: 'product', label: 'Product' },
         { value: 'actor', label: 'Actor' },
+        { value: 'tech-process', label: 'Tech process' },
     ];
     private drag: CanvasDrag | undefined;
     private loadedPicture: PictureKind | undefined;
@@ -87,6 +91,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     technicalNotes = '';
     get overviewLoaded(): boolean { return this.loadedPicture === 'overview'; }
     get technicalLoaded(): boolean { return this.loadedPicture === 'technical'; }
+    get templateLoaded(): boolean { return this.loadedPicture === 'template'; }
     get replacementPending(): boolean { return this.pendingPicture !== undefined; }
     readonly checkedParts = new Set<SketchPart>();
     readonly checkedConnections = new Set<SketchConnection>();
@@ -130,6 +135,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         this.loadPicture('technical');
     }
 
+    loadDefaultTemplate(): void {
+        this.loadPicture('template');
+    }
+
     private loadPicture(kind: PictureKind): void {
         if (this.parts.length) {
             this.pendingPicture = kind;
@@ -150,7 +159,8 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     private replacePicture(kind: PictureKind): void {
         const technical = kind === 'technical' ? createTechnicalPicture() : undefined;
-        const document = technical ? technical.geometry : validateDiagramDocument(overview);
+        const template = kind === 'template' ? createDefaultTemplate() : undefined;
+        const document = technical ? technical.geometry : template ? template.geometry : validateDiagramDocument(overview);
         this.checkedParts.clear();
         this.checkedConnections.clear();
         this.parts = document.elements.map(element => ({
@@ -159,6 +169,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             position: { ...element.position },
             technology: technical?.elements[element.id].technology,
             description: technical?.elements[element.id].description,
+            shape: template?.shapes[element.id],
         }));
         this.connections = document.connections.map(connection => ({
             id: this.nextConnectionId++,

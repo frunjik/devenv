@@ -28,6 +28,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-default-workflow-template",
+          "title": "Load an editable default workflow template",
+          "description": "Completed Default template button for the reference main diagram: 25 typed symbols and 28 editable straight connections, excluding bottom legend/note. Initial canvas remains empty. Added Tech process renderer and picker option. JSON is authoritative, geometry/shape validation reused at loading boundary, replacement confirmation and fresh copies preserved. All 923 client tests pass with 100% reported coverage; test TypeScript check and client build pass. Runtime verifies template items, cancellation/confirmation and 2040x1080 scrollable workspace at 320/360/768/1280px without document overflow. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-default-workflow-template"]
+        }, {
           "id": "canvas-editor-all-items",
           "title": "List and select every canvas item",
           "description": "Completed combined list of all parts and connections, with independent checkboxes and total/selected counts. Remove selected deletes checked parts, incident links, checked connections and canvas selection through shared cleanup. Replacement clears checks; cancellation preserves them. Red observed before implementation. 129 tests, 100% editor-module coverage, TypeScript check and client build pass. Runtime validates all twelve overview items, scrolling/no overflow at 320/360/768/1280px and mixed removal. Existing no-rendered-area pointer console errors observed during viewport resizing, also present before this change; not changed in scope. Tracking and measurement retained. Next step: user review and optional commit approval.",

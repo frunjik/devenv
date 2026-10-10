@@ -123,6 +123,17 @@ export function drawProduct(context: CanvasRenderContext, bounds: SymbolBounds, 
     });
 }
 
+export function drawTechProcess(context: CanvasRenderContext, bounds: SymbolBounds, lines: readonly string[]): void {
+    box(context, bounds, lines, green, (ctx, x, y) => {
+        path(ctx, [
+            { x, y: y + 5 }, { x: x + 12, y: y + 5 }, { x: x + 12, y },
+            { x: x + 22, y: y + 10 }, { x: x + 12, y: y + 20 },
+            { x: x + 12, y: y + 15 }, { x, y: y + 15 }, { x, y: y + 5 },
+        ]);
+        ctx.stroke();
+    });
+}
+
 export function drawActor(context: CanvasRenderContext, bounds: SymbolBounds, label: string): void {
     validateBounds(bounds);
     context.save();

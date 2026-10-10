@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftware, drawSymbolConnection, drawSymbolPreview } from './canvas-symbols';
+import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftware, drawTechProcess, drawSymbolConnection, drawSymbolPreview } from './canvas-symbols';
 import { recordingCanvasContext } from './testing/recording-canvas-context';
 
 describe('architecture canvas symbols', () => {
@@ -42,6 +42,7 @@ describe('architecture canvas symbols', () => {
         ['system software', drawSystemSoftware, '#269b45'],
         ['business role', drawBusinessRole, '#d98200'],
         ['product', drawProduct, '#d98200'],
+        ['tech process', drawTechProcess, '#269b45'],
     ])('renders %s with colored hatching, an icon, and centered labels', (_name, draw, color) => {
         const { context, operations } = recordingCanvasContext();
         draw(context, { x: 10, y: 20, width: 220, height: 100 }, ['Type:', '<Name>']);

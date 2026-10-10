@@ -16,15 +16,8 @@
             </label>
             <button class="button-wide" type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
                 (click)="addPart()">Add part</button>
-            <button class="button-wide" type="button" aria-label="Remove selected"
-                [disabled]="!selectedPart && !selectedConnection && checkedConnections.size === 0"
-                (click)="removeSelected()">Remove selected</button>
         </div>
         <section class="connection-controls" aria-label="Connections">
-            <button class="button-small" type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
-                (click)="startConnection()">Connect</button>
-            <button class="button-small" type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
-                (click)="cancelConnection()">Cancel</button>
             <details class="connection-picker">
                 <summary>Connections ({{ checkedConnections.size }} selected)</summary>
                 <div class="connection-options">
@@ -39,6 +32,13 @@
                     }
                 </div>
             </details>
+            <button class="button-wide" type="button" aria-label="Remove selected"
+                [disabled]="!selectedPart && !selectedConnection && checkedConnections.size === 0"
+                (click)="removeSelected()">Remove selected</button>
+            <button class="button-small connect-action" type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
+                (click)="startConnection()">Connect</button>
+            <button class="button-small" type="button" aria-label="Cancel connection" [disabled]="!connectionSource"
+                (click)="cancelConnection()">Cancel</button>
         </section>
         <div class="picture-controls" role="group" aria-label="Load picture">
             <button class="button-wide" type="button" aria-label="Load DevEnv overview" (click)="loadOverview()">Load overview</button>

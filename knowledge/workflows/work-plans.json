@@ -10,6 +10,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-removal-placement",
+          "title": "Place connections beside removal",
+          "description": "Completed Connections picker beside Remove selected and right-aligned toward that action, with Connect/Cancel beneath toward the same right edge. Verified actual row/edge alignment at 320, 360, 768 and 1280px without overflow; 123 editor tests passed before CSS-only follow-up and final client build passes without style-budget warning. Existing actions, responsive sizing and canvas preserved. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-removal-placement", "canvas-editor-removal-alignment"]
+        }, {
           "id": "canvas-editor-actor-bounds",
           "title": "Tighten Actor interaction bounds",
           "description": "Completed tight Actor bounds, including follow-up top clearance: 60x100 interaction box with 10px extra room above and below the unchanged 60x80 drawing area. Shared geometry drives hit-testing, selection outlines, connections and picture boundaries; other shapes remain 180x80. Follow-up Red/Green verified 123 editor tests, 100% coverage, TypeScript check, client build and live screenshot with top/label clearance. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.",

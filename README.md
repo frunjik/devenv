@@ -44,8 +44,9 @@ room above and below the original rendering area, around the figure and
 label, rather than the 180x80 box bounds; connection endpoints use these bounds.
 Shapes support the existing selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
-Controls align to the global grid: name and type come before Add and Remove,
-followed by connection actions and picture loading. Narrow screens use two
+Controls align to the global grid: name and type come before Add.
+The Connections picker is right-aligned beside Remove selected, with Connect
+and Cancel beneath them toward the same right edge, followed by picture loading. Narrow screens use two
 control columns without splitting the canvas. Wide buttons (Add, Remove selected
 and picture loading) fill their assigned grid space. Small toolbar buttons
 (Connect and Cancel) use content-sized widths on mobile and fill their grid

@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-removal-alignment",
+      "title": "Right-align connection controls toward removal",
+      "beneficiary": "User selecting connections to remove",
+      "intendedOutcome": "Align the picker and connection actions toward Remove selected on the right.",
+      "successCondition": "Picker sits one grid gutter left of Remove selected, Cancel aligns with its right edge and Connect/Cancel remain on the following row without overflow.",
+      "baseline": "Uncommitted placement has picker spanning left-side grid tracks and Connect/Cancel starting at the left. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:51:52.446+02:00",
+      "completedAt": "2026-10-10T18:52:58.0310159+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Right-align picker and connection buttons toward removal.", "evidence": "Current follow-up request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 5.585 seconds elapsed. Human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Picker now right-aligns in its cell, directly beside removal. Desktop Connect/Cancel use the rightmost six tracks, with Cancel beneath Remove selected; mobile content-sized buttons align to their cells' right edges. Runtime assertions at 320, 360, 768 and 1280px confirm picker/removal gutter separation and shared Cancel/removal right edge within 1px, actions on following row and no overflow. Simplified duplicate CSS selectors after initial style-budget warning; final client build passes without warning. CSS-only follow-up; prior 123 editor tests cover unchanged action bindings. No canvas change or new TDD claim. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.scss; README.md; current session runtime geometry and production build." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-removal-placement",
+      "title": "Place connections beside removal",
+      "beneficiary": "User selecting connections to remove",
+      "intendedOutcome": "Bring the Connections picker next to the unified Remove selected action.",
+      "successCondition": "Connections and Remove selected share a row on desktop and mobile; Connect/Cancel follow on the next row. Existing functionality, compact sizing and unsplit canvas remain unchanged.",
+      "baseline": "At 3f62970 Remove selected is in the part controls, separate from the Connections picker. User approved putting them beside each other and moving Connect/Cancel below. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T18:50:00.584+02:00",
+      "completedAt": "2026-10-10T18:51:30.6362343+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Connections beside Remove selected, Connect/Cancel below.", "evidence": "Current request and approved clarification." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 30.052 seconds elapsed from request to final verification. Active human effort and waiting unknown.", "evidence": "Request and local verification clock." },
+        { "metricId": "outcome-and-quality", "value": "Connections picker and unified Remove selected share a row, followed by Connect and Cancel. Grid allocation is nine/three columns on desktop and equal halves on intermediate/mobile widths. DOM-order assertions updated for the agreed layout; all 123 editor tests pass. Runtime assertions at 320, 360, 768 and 1280px verify picker/removal share the same bottom edge, removal sits to its right, Connect/Cancel share the next row and no document overflow occurs. No production TypeScript or canvas changes. Initial build reported style budget exceeded by 36 bytes; replaced lengthy attribute selectors with a local layout class and final client build passes without that warning. Diagnostics clear. Presentation-only work, no new TDD claim. Existing action bindings and plain test boundary fakes retained; no test application-data writes/network. Tracking and measurement retained. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.html, .scss and .spec.ts; README.md; current session tests, build, diagnostics and browser geometry at http://localhost:4200/interactive-canvas." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-actor-top-margin",
       "title": "Add top clearance to Actor bounds",
       "beneficiary": "User editing actor symbols",

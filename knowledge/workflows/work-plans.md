@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Place connections beside removal
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-removal-placement`, `canvas-editor-removal-alignment`
+
+Completed Connections picker beside Remove selected and right-aligned toward that action, with Connect/Cancel beneath toward the same right edge. Verified actual row/edge alignment at 320, 360, 768 and 1280px without overflow; 123 editor tests passed before CSS-only follow-up and final client build passes without style-budget warning. Existing actions, responsive sizing and canvas preserved. Next step: user review and optional commit approval.
+
 #### WorkTask: Tighten Actor interaction bounds
 
 **Status:** Completed

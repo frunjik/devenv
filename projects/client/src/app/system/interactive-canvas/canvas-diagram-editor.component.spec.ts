@@ -179,11 +179,13 @@ describe('CanvasDiagramEditor', () => {
         ]);
         const controls = groups[0].querySelectorAll('input, select, button');
         expect(Array.from(controls, control => control.getAttribute('aria-label'))).toEqual([
-            'Label for next part', 'Part shape', 'Add part', 'Remove selected',
+            'Label for next part', 'Part shape', 'Add part',
         ]);
         expect(Array.from(groups[1].querySelectorAll('button'), control => control.getAttribute('aria-label'))).toEqual([
-            'Connect selected part', 'Cancel connection',
+            'Remove selected', 'Connect selected part', 'Cancel connection',
         ]);
+        expect(groups[1].firstElementChild?.classList.contains('connection-picker')).toBe(true);
+        expect(groups[1].firstElementChild?.nextElementSibling).toBe(button('Remove selected'));
         enterLabel('Workflow');
         chooseShape('artifact');
         clickButton('Add part');

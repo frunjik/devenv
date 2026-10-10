@@ -68,19 +68,25 @@
         box-sizing: border-box;
     }
 
-    .part-controls button,
-    .connection-controls button {
+    .part-controls button {
         grid-column: span 2;
     }
 
-    .part-controls button {
-        &:last-child {
-            grid-column: span 3;
-        }
+    .connection-controls button {
+        grid-column: span 3;
+    }
+
+    .connection-controls .button-small {
+        justify-self: end;
+    }
+
+    .connection-controls .connect-action {
+        grid-column: 7 / span 3;
     }
 
     .connection-picker {
-        grid-column: span 8;
+        grid-column: span 9;
+        justify-self: end;
     }
 
     .picture-controls button {
@@ -223,11 +229,13 @@ canvas {
         .form-field,
         .shape-field,
         .part-controls button,
-        .part-controls button:last-child,
         .connection-controls button,
-        .connection-controls button:last-child,
         .connection-picker {
             grid-column: span 6;
+        }
+
+        .connection-controls .connect-action {
+            grid-column: 1 / span 6;
         }
     }
 }
@@ -240,16 +248,14 @@ canvas {
         .form-field,
         .shape-field,
         .part-controls button,
-        .part-controls button:last-child,
         .connection-controls button,
-        .connection-controls button:last-child,
         .connection-picker,
         .picture-controls button {
             grid-column: span 1;
         }
 
-        .connection-picker {
-            grid-column: 1 / -1;
+        .connection-controls .connect-action {
+            grid-column: 1 / span 1;
         }
     }
 }

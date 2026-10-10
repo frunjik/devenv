@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "workPlans": [
+    {
+      "id": "test-boundary-mocks",
+      "title": "Test Boundary Mocks",
+      "description": "Provide reusable test doubles for external boundaries shared by client and server tests.",
+      "topics": [
+        {
+          "id": "cross-runtime-test-boundaries",
+          "title": "Cross-runtime test boundaries",
+          "description": "Inventory existing test doubles and reuse or add suitable fakes/mocks for filesystem and HTTP boundaries that work in both client and server test suites.",
+          "tasks": [
+            {
+              "id": "reusable-filesystem-http-test-doubles",
+              "title": "Create or reuse filesystem and HTTP test doubles",
+              "description": "Inspect existing filesystem and HTTP test mocks/fakes. Reuse or create reusable test doubles that can be used in both client and server tests, without introducing real filesystem writes or network I/O in tests.",
+              "status": "Pending"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

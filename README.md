@@ -14,6 +14,23 @@ Generate the human-readable `.glossary` Markdown view from the JSON source with 
 
 Generate a derived Markdown view of the experimental MetaExport JSON with `npm run export:meta:markdown`. It reads `knowledge/knowledge-transfer/meta-export-example.json` and overwrites only `knowledge/knowledge-transfer/meta-export-example.generated.md`, leaving the hand-written example untouched. It preserves all revisions and escapes Markdown syntax in recorded text. Invalid shapes, duplicate identities/revisions, empty text, and unknown fields are rejected before writing; read/write errors fail the command. The generator does not select current instructions or establish recipient adoption.
 
+## Work time evidence
+
+The [Problem/Domain versus Meta/DevEnv report](./knowledge/workflows/work-effort-report.generated.md)
+compares the union of recorded evaluation delivery windows, not human hours worked.
+Human active effort, waiting and agent/tool execution remain unknown where no direct
+observations exist. Same-category overlap counts once; cross-category overlaps stay
+separate, and missing intervals are not converted to zero effort.
+
+Run `npm run generate:work-effort:report` to refresh the typed
+[JSON evidence snapshot](./knowledge/workflows/work-effort-report.json) and its generated
+Markdown view from the current ledger, [reviewed classifications](./knowledge/workflows/work-effort-classifications.json),
+workflow/WorkPlan sources, tracked workflow timing statements and all reachable `HEAD`
+commit events. The snapshot records source hashes and the Git inventory commit.
+Commit gaps are not durations; older commit outcomes remain unclassified until supported
+by additional evidence. Changing classifications requires reviewing intended outcomes,
+not inferring them from paths or existing Product/Meta labels.
+
 ## Agent skills
 
 The **Tools -> Agent guide** link opens `/agent-guide`, a read-only preview of

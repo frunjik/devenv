@@ -21,7 +21,8 @@
     "generate:agent-essentials:markdown": "node -e \"const fs=require('node:fs'); const renderer=require('./scripts/agent-essentials-markdown.cjs'); for (const name of ['agent-essentials','agent-essentials-testing']) renderer.writeMarkdown('knowledge/practices/'+name+'.json','knowledge/practices/'+name+'.candidate.md',fs)\"",
     "generate:workflow-todo:markdown": "tsx scripts/generate-workflow-todo-markdown.ts",
     "generate:work-plans:markdown": "tsx scripts/generate-work-plans-markdown.ts",
-    "export:agent-phase-guide": "tsx scripts/export-agent-phase-guide.ts"
+    "export:agent-phase-guide": "tsx scripts/export-agent-phase-guide.ts",
+    "generate:work-effort:report": "tsx scripts/generate-work-effort-report.ts"
   },
   "private": true,
   "dependencies": {

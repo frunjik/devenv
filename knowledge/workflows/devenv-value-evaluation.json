@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "report-domain-versus-meta-time",
+      "title": "Create an evidence-backed Problem/Domain versus Meta/DevEnv time report",
+      "beneficiary": "User assessing allocation of work between domain outcomes and development-process upkeep",
+      "intendedOutcome": "Compare available Problem/Domain and Meta/DevEnv time evidence without presenting elapsed windows as human active effort.",
+      "successCondition": "A reproducible, source-linked report covers all available history, retains unclassified evidence, computes observed interval unions without double counting and reports active effort, waiting and agent execution as unknown where unavailable.",
+      "baseline": "At activation, tracking and measurement were explicitly approved. Scope: all available history; classify by intended outcome (supported scheduling/canvas/domain behavior versus tooling/rules/workflows/developer UI/test infrastructure). Repository has 699 reachable commits beginning 2025-04-18. Existing ledger has 46 evaluations, 38 with start/end timestamps and 34 with non-null delivery-flow-and-effort text; all such text must be inspected rather than parsed as active effort. No comparison report exists. Cloud/local session-history queries returned no rows over 7 and 365 days.",
+      "startedAt": "2026-10-10T16:25:13+02:00",
+      "completedAt": "2026-10-10T16:31:10+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User selected Measured, all available history, and outcome-based classification. Mixed work and gaps remain explicit.", "evidence": "Conversation decisions following commit 1e3c9ce." },
+        { "metricId": "decision-latency", "value": "Measurement, all-history scope and outcome-based classification were each resolved in separate user prompts before implementation; no observed unresolved decision block.", "evidence": "Timestamped conversation following commit 1e3c9ce; prompt latencies not independently measured." },
+        { "metricId": "delivery-flow-and-effort", "value": "5 minutes 57 seconds elapsed from recorded task activation/plan commit to independent union verification, type check and related test completion. Includes scope decisions, generation and checks; human active effort, waiting and agent execution durations remain unknown.", "evidence": "startedAt 2026-10-10T16:25:13+02:00; verification clock 2026-10-10T16:31:10+02:00. Do not treat this window as human effort." },
+        { "metricId": "outcome-and-quality", "value": "Evidence report generated with all 47 evaluations, 699 reachable commit events and 82 timing statements from 23 tracked workflow documents. Outcome classifications reviewed explicitly; existing Product work labels not blindly reused. Interval segmentation separates cross-category overlap and counts same-category overlap once. Original measures, workflow and WorkPlan snapshots, exact source hashes and history limitations retained. Human active effort, waits and agent execution remain unknown. Older commits are not assigned durations or outcome categories from subjects alone. Initial recorded-window union independently verified at 353.37 minutes; final regeneration additionally includes this report's own 5.95-minute Meta/DevEnv window.", "evidence": "knowledge/workflows/work-effort-report.json and work-effort-report.generated.md; 53 related tests pass; both changed production scripts at 100% statement/branch/function/line coverage; server spec type check passes; editor diagnostics clear; source hashes and independent interval union verified; git diff --check clean." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "agent-guide-preview",
       "title": "Preview AgentPhaseGuide and generated Copilot files",
       "beneficiary": "The user reviewing Agent Essentials",

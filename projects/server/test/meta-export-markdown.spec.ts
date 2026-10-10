@@ -1,6 +1,6 @@
 import { describe, expect, it, jest } from '@jest/globals';
 
-const { writeMarkdown } = require('../../../scripts/meta-export-markdown.cjs');
+import { writeMarkdown } from '../../../scripts/meta-export-markdown';
 
 describe('MetaExport Markdown generation', () => {
     const revision = { revision: 1, assertion: 'Assert', context: 'Context', source: 'Source', applicability: 'Current' };

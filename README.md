@@ -16,7 +16,7 @@ Generate a derived Markdown view of the experimental MetaExport JSON with `npm r
 
 Generate practice-history and Agent Essentials views with
 `npm run generate:practice-set-versions:markdown` and `npm run generate:agent-essentials:markdown`.
-Both use thin TypeScript entry scripts run by `tsx`, with typed renderers and runtime
+These commands and `export:meta:markdown` use thin TypeScript entry scripts run by `tsx`, with typed renderers and runtime
 validation. They retain the existing JSON inputs and Markdown output paths; edit
 the authoritative JSON, not the generated views.
 

@@ -15,7 +15,7 @@
     "test:all": "npm run test:client && npm run test:server",
     "test:all:coverage": "node scripts/run-all-tests-coverage.cjs",
     "test": "node scripts/run-all-tests-coverage.cjs",
-    "export:meta:markdown": "node -e \"require('./scripts/meta-export-markdown.cjs').writeMarkdown('knowledge/knowledge-transfer/meta-export-example.json', 'knowledge/knowledge-transfer/meta-export-example.generated.md', require('node:fs'))\"",
+    "export:meta:markdown": "tsx scripts/export-meta-markdown.ts",
     "generate:glossary:markdown": "tsx scripts/generate-glossary-markdown.ts",
     "generate:practice-set-versions:markdown": "tsx scripts/generate-practice-set-versions-markdown.ts",
     "generate:agent-essentials:markdown": "tsx scripts/generate-agent-essentials-markdown.ts",

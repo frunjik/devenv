@@ -19,6 +19,8 @@ Develop Agent Essentials as a new ruleset spawned from the current one, guided b
 
 ## Checkpoint
 
+- Shared-generation follow-up: user requested server reuse. Moved the pure generator and authoritative contracts into `@shared`; JSON-checking modules re-export those contracts, and the client wrapper only supplies saved sources. Shared has no repository JSON, Angular or Node dependency. Server public-API tests observed Red before implementation; final six client and 51 server generation/view/clone tests pass, generator coverage is 100% across all four metrics, shared/client builds and full server Jest-source type-check pass. Initial build exposed incorrect type-module paths, corrected to `@shared`. No new server endpoint, file writes or activation. Next: review/commit the extraction when requested; tracking design and version-history tasks remain open.
+
 - Work continuity and measurement intent added to AgentPhaseGuide as a typed proposal record and projected into its agent Markdown. Reuses the selected exploration-intent sections rather than copying them. Captures resumability, decisions, progress, baseline/completion evidence and five measurement questions across the four phases. No current tracking schema, records or new mandatory procedure adopted.
 
 - Latest refinement: Preview precedes Source in every file's display controls; initial Source selection is unchanged. Control-order test observed Red before the template reorder.

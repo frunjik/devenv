@@ -25,8 +25,12 @@ string input and renders through a pure `markdown-it` function and Angular HTML
 sanitization. YAML frontmatter is a labelled code block; raw HTML and external
 images are not rendered. The preview does not fetch Markdown or execute embedded
 content. Code and tables scroll within the preview on narrow screens.
-Pure functions generate
-the preview in memory; the page does not export, write or activate customizations.
+The runtime-neutral `generateAgentGuidePreview` function exported by `@shared`
+accepts guide, phase-skill, essentials and testing records and generates the
+preview in memory. Browser and server consumers can use the same function; the
+client wrapper only supplies saved JSON. Shared generation imports no repository
+JSON, Angular or Node integrations. The page does not export, write or activate
+customizations.
 Phase definitions are authoritative in `knowledge/workflows/agent-phase-skills.json`;
 the guide and selected testing requirements remain in their existing JSON sources.
 Folder exports include only the six JSON/type dependencies needed by this preview,

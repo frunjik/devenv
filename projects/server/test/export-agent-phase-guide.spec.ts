@@ -47,7 +47,16 @@ describe('AgentPhaseGuide export entry point', () => {
         expect(log).toHaveBeenCalledWith(`Exported 1 AgentPhaseGuide files at abc to ${resolve(process.cwd(), '../guide')}`);
     });
 
-    it('requires a destination argument', () => {
-        expect(() => runEntry([], {})).toThrow('Usage: npm run export:agent-phase-guide -- <destination>');
+    it('defaults to the sibling devenv-agent-guide folder when no destination is supplied', () => {
+        const { exportAgentPhaseGuide, log } = runEntry([], {
+            'rev-parse HEAD': 'abc\n',
+            'diff --name-only HEAD': '',
+            'ls-files --others --exclude-standard': '',
+        });
+        const destination = resolve(process.cwd(), '..', 'devenv-agent-guide');
+        expect(exportAgentPhaseGuide).toHaveBeenCalledWith(
+            process.cwd(), destination, { commit: 'abc', uncommittedPaths: [] }, {},
+        );
+        expect(log).toHaveBeenCalledWith(`Exported 1 AgentPhaseGuide files at abc to ${destination}`);
     });
 });

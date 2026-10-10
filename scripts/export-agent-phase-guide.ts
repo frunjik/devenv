@@ -2,10 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
 import { agentPhaseGuideExportFileSystem, exportAgentPhaseGuide } from './agent-phase-guide-export';
 
-const destinationArgument = process.argv[2];
-if (!destinationArgument) {
-    throw new Error('Usage: npm run export:agent-phase-guide -- <destination>');
-}
+const destinationArgument = process.argv[2] ?? resolve('..', 'devenv-agent-guide');
 const git = (...args: string[]) => execFileSync('git', args, { encoding: 'utf8' });
 const lines = (output: string) => output.split('\n').map(line => line.trim()).filter(Boolean);
 const root = process.cwd();

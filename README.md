@@ -82,7 +82,9 @@ contains no DevEnv-specific rules. Its applicable defaults include TypeScript co
 use `interface` for grouped records and `type` for values, choices and named union alternatives.
 DevEnv paths, commands and project-specific conventions live in the
 [project profile](./.github/instructions/project-profile.instructions.md), which VS Code loads
-for all files. Run `npm run export:agent-phase-guide -- <destination>` to copy the generic
+for all files. Run `npm run export:agent-phase-guide` to export to the sibling folder
+`devenv-agent-guide`, or `npm run export:agent-phase-guide -- <destination>` to choose
+another destination. The command copies the generic
 core into another folder, with [a profile template](./knowledge/practices/project-profile.template.md)
 in place of the DevEnv profile and an `agent-phase-guide.manifest.json` pinned to `HEAD`.
 The export includes a portable `README.md` explaining installation, the work loop,

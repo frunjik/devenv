@@ -15,6 +15,8 @@ If none fits, propose a small boundary based on the consumer's actual operations
 
 ## Red
 
+Announce **Red** and its current goal before writing the focused failing test.
+
 1. Identify one new or changed production behavior.
 2. Write only the smallest focused test sufficient to fail for that behavior. Compilation failures count as Red.
 3. Run the test and observe the failure before changing production code. Report the Red phase.
@@ -23,11 +25,15 @@ Do not claim TDD for documentation-only or design-only work.
 
 ## Green
 
+Announce **Green** and its current goal before implementing the minimal production change.
+
 1. Write only enough production code to satisfy the failing test.
 2. Run the focused test and verify it passes. Report the Green phase.
 3. Do not implement unrelated behavior or speculative future requirements.
 
 ## Refactor
+
+Announce **Refactor** and its current goal before making any behavior-preserving cleanup.
 
 1. Once tests are green, improve clarity and remove duplication without changing behavior.
 2. Keep tests green throughout refactoring; rerun relevant checks after changes.

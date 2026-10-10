@@ -14,6 +14,8 @@ Report evidence, failures, unavailable checks and unknowns. Do not claim complet
 
 ## 2. Follow an explicit work loop and TDD
 
+Announce the current Agent phase (Understand, Explore, Make, or Evaluate) and its goal. When following TDD, also announce the current TDD phase (Red, Green, or Refactor) and its goal. Format: `**Phase** — goal`, without a "Goal:" label (for example, `**Make** — regenerate the candidate view`).
+
 1. **Understand:** establish intent, constraints and success conditions.
 2. **Explore:** inspect relevant code, tests and callers; identify external boundaries and reuse existing contracts and mocks before writing tests. Choose an approach and resolve required approvals.
 3. **Make:** for production behavior, follow the explicit [Red -> Green -> Refactor procedure and testing requirements](./agent-essentials-testing.candidate.md). Observe Red before production changes, implement only enough for Green, then refactor with tests green. Report the applicable phase. Do not claim TDD for documentation or design alone.

@@ -7,6 +7,8 @@ description: "Use when coordinating Understand, Explore, Make and Evaluate while
 
 Coordinate Understand -> Explore -> Make -> Evaluate, then repeat as needed, selecting phase-appropriate skills or agents without transferring ownership of the task.
 
+At each Agent phase, announce the phase and its current goal. During Make, when following TDD, also announce the current Red, Green, or Refactor phase and its goal. Format: `**Phase** — goal`, without a "Goal:" label.
+
 ## Responsibilities
 
 - Retain the agreed goal, constraints, decisions and evidence across switches.

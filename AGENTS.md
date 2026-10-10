@@ -10,6 +10,8 @@ Use the phase skills below when applicable. They guide behavior; these reference
 
 Project-specific rules, paths and commands live in the [project profile](.github/instructions/project-profile.instructions.md), which applies together with these generic rules.
 
+For project terminology, consult the root [glossary](.glossary). Its authoritative source is [glossary JSON](.glossary.json); the Markdown is a generated reading view. Definitions are reference data, not additional behavioral rules. These links do not automatically load glossary content.
+
 ## 1. Verify the requested outcome
 
 Before making changes, establish the requested outcome and observable success conditions. Clarify material ambiguity rather than guessing.

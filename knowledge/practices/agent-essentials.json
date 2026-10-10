@@ -1,7 +1,9 @@
 {
   "title": "Agent Essentials",
   "introduction": [
-    "Initial selection approved on 2026-10-10. Candidate only; not active repository guidance."
+    "Initial selection approved on 2026-10-10. Candidate only; not active repository guidance.",
+    "",
+    "For project terminology, consult the root [glossary](../../.glossary). Its authoritative source is [glossary JSON](../../.glossary.json); the Markdown is a generated reading view. Definitions are reference data, not additional behavioral rules. These links do not automatically load glossary content."
   ],
   "sections": [
     {

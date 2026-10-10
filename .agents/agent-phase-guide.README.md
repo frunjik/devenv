@@ -43,6 +43,10 @@ Its optional self-cloning tooling uses Node.js and the `tsx` development depende
 No npm installation is needed merely to copy these instruction files. The receiving
 project supplies its own tools, test infrastructure and runtime capabilities.
 
+AGENTS.md links to the root glossary and directs agents to consult it for project
+terminology. The glossary remains reference data, not additional rules. The shortcut
+does not automatically load its contents; verify consultation in the receiving client.
+
 ## Clone this Guide
 
 With Node.js and npm available, run these commands from this exported folder:

@@ -4,6 +4,8 @@ Generated from [agent-essentials.json](./agent-essentials.json). Edit JSON, not 
 
 Initial selection approved on 2026-10-10. Candidate only; not active repository guidance.
 
+For project terminology, consult the root [glossary](../../.glossary). Its authoritative source is [glossary JSON](../../.glossary.json); the Markdown is a generated reading view. Definitions are reference data, not additional behavioral rules. These links do not automatically load glossary content.
+
 ## 1. Verify the requested outcome
 
 Before making changes, establish the requested outcome and observable success conditions. Clarify material ambiguity rather than guessing.

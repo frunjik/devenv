@@ -1,5 +1,6 @@
 import { describe, expect, it, jest } from '@jest/globals';
 import { writeGlossaryMarkdown } from '../../../scripts/glossary-export';
+import { createMemoryTextFileSystem } from '../../shared/src/testing/memory-text-file-system';
 
 describe('Glossary Markdown generation', () => {
     it('generates the human-readable view from structured JSON', () => {
@@ -7,16 +8,11 @@ describe('Glossary Markdown generation', () => {
             { term: 'Term', definitions: ['A definition.'], examples: ['An example.'], domains: ['DevEnv', 'Meta'] },
             { term: 'Unknown usage', definitions: [], examples: [], domains: [] },
         ];
-        const filesystem = {
-            readFileSync: jest.fn(() => JSON.stringify(entries)),
-            writeFileSync: jest.fn(),
-        };
+        const filesystem = createMemoryTextFileSystem({ '.glossary.json': JSON.stringify(entries) });
 
         writeGlossaryMarkdown('.glossary.json', '.glossary', filesystem);
 
-        expect(filesystem.readFileSync).toHaveBeenCalledWith('.glossary.json', 'utf8');
-        expect(filesystem.writeFileSync).toHaveBeenCalledWith(
-            '.glossary',
+        expect(filesystem.readFileSync('.glossary', 'utf8')).toBe(
             [
                 '# Glossary', '',
                 '## Term', '',
@@ -36,7 +32,6 @@ describe('Glossary Markdown generation', () => {
                 '### Domain usage', '',
                 '_Unknown or unrecorded._', '',
             ].join('\n'),
-            'utf8',
         );
     });
 
@@ -47,13 +42,10 @@ describe('Glossary Markdown generation', () => {
         [{ term: 'Term', definitions: [''], examples: [], domains: [] }],
         [{ term: 'Term', definitions: [], examples: [], domains: ['DevEnv\nMeta'] }],
     ])('rejects invalid JSON records before writing', value => {
-        const filesystem = {
-            readFileSync: jest.fn(() => JSON.stringify(value)),
-            writeFileSync: jest.fn(),
-        };
+        const filesystem = createMemoryTextFileSystem({ '.glossary.json': JSON.stringify(value) });
 
         expect(() => writeGlossaryMarkdown('.glossary.json', '.glossary', filesystem)).toThrow();
-        expect(filesystem.writeFileSync).not.toHaveBeenCalled();
+        expect(filesystem.files.has('.glossary')).toBe(false);
     });
 
     it('propagates JSON parse and filesystem failures', () => {

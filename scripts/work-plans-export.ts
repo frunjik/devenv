@@ -1,16 +1,12 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { validateWorkPlanEvaluationLinks, workPlanRegistryToMarkdown } from '../projects/shared/src/lib/work-plan.types';
-
-interface WorkPlanExportFileSystem {
-    readFileSync(path: string, encoding: 'utf8'): string;
-    writeFileSync(path: string, data: string, encoding: 'utf8'): void;
-}
+import type { TextFileSystem } from '../projects/shared/src/lib/text-file-system.types';
 
 export function writeWorkPlanMarkdown(
     inputPath: string,
     evaluationLedgerPath: string,
     outputPath: string,
-    filesystem: WorkPlanExportFileSystem,
+    filesystem: TextFileSystem,
 ): void {
     const data: unknown = JSON.parse(filesystem.readFileSync(inputPath, 'utf8'));
     const ledger: unknown = JSON.parse(filesystem.readFileSync(evaluationLedgerPath, 'utf8'));
@@ -19,7 +15,7 @@ export function writeWorkPlanMarkdown(
     filesystem.writeFileSync(outputPath, markdown, 'utf8');
 }
 
-export const workPlanExportFileSystem: WorkPlanExportFileSystem = {
+export const workPlanExportFileSystem: TextFileSystem = {
     readFileSync,
     writeFileSync,
 };

@@ -1,6 +1,7 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import { validateWorkflowTodoList, workflowTodoListToMarkdown } from '@shared';
 import { writeWorkflowTodoMarkdown } from '../../../scripts/workflow-todo-export';
+import { createMemoryTextFileSystem } from '../../shared/src/testing/memory-text-file-system';
 
 const workflowTodo = {
     schemaVersion: 2,
@@ -42,19 +43,12 @@ describe('Workflow TODO JSON authority', () => {
     it('validates workflow data and renders the complete readable view', () => {
         const validated = validateWorkflowTodoList(workflowTodo);
         expect(validated.workflows[0].evaluationIds).toEqual([]);
-        const filesystem = {
-            readFileSync: jest.fn(() => JSON.stringify(validated)),
-            writeFileSync: jest.fn(),
-        };
+        const filesystem = createMemoryTextFileSystem({ 'workflow-todo-list.json': JSON.stringify(validated) });
 
         writeWorkflowTodoMarkdown('workflow-todo-list.json', 'workflow-todo-list.md', filesystem);
 
-        expect(filesystem.writeFileSync).toHaveBeenCalledWith(
-            'workflow-todo-list.md',
-            expect.stringContaining('Generated from [workflow-todo-list.json]'),
-            'utf8',
-        );
-        const markdown = filesystem.writeFileSync.mock.calls[0][1] as string;
+        const markdown = filesystem.readFileSync('workflow-todo-list.md', 'utf8');
+        expect(markdown).toContain('Generated from [workflow-todo-list.json]');
         expect(markdown).toContain('**Active workflow:** Diagram Editor.');
         expect(markdown).toContain('| Diagram Editor | Product work | Active | [Checkpoint](./diagram-editor-workflow.md#checkpoint) | Not assigned |');
         expect(markdown).toContain('## Classifying Work Purpose');
@@ -63,20 +57,19 @@ describe('Workflow TODO JSON authority', () => {
     });
 
     it('rejects invalid authority data without writing a Markdown view', () => {
-        const filesystem = {
-            readFileSync: jest.fn(() => JSON.stringify({
+        const filesystem = createMemoryTextFileSystem({
+            'workflow-todo-list.json': JSON.stringify({
                 ...workflowTodo,
                 activeWorkflow: 'Missing workflow',
-            })),
-            writeFileSync: jest.fn(),
-        };
+            }),
+        });
 
         expect(() => writeWorkflowTodoMarkdown(
             'workflow-todo-list.json',
             'workflow-todo-list.md',
             filesystem,
         )).toThrow('Invalid WorkflowTodoList');
-        expect(filesystem.writeFileSync).not.toHaveBeenCalled();
+        expect(filesystem.files.has('workflow-todo-list.md')).toBe(false);
     });
 
     it('rejects unknown primary work-purpose labels', () => {
@@ -169,19 +162,18 @@ describe('Workflow TODO JSON authority', () => {
             title: ' ',
         })).toThrow('Invalid WorkflowTodoList: expected non-empty text');
 
-        const filesystem = {
-            readFileSync: jest.fn(() => JSON.stringify({
+        const filesystem = createMemoryTextFileSystem({
+            'workflow-todo-list.json': JSON.stringify({
                 ...workflowTodo,
                 activeWorkflow: 'Diagram | Editor\nPreview',
                 workflows: workflowTodo.workflows.map(workflow => ({
                     ...workflow,
                     name: 'Diagram | Editor\nPreview',
                 })),
-            })),
-            writeFileSync: jest.fn(),
-        };
+            }),
+        });
         writeWorkflowTodoMarkdown('workflow-todo-list.json', 'workflow-todo-list.md', filesystem);
-        expect(filesystem.writeFileSync.mock.calls[0][1]).toContain(
+        expect(filesystem.readFileSync('workflow-todo-list.md', 'utf8')).toContain(
             '| Diagram \\| Editor Preview | Product work | Active |',
         );
     });

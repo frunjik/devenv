@@ -16,9 +16,11 @@ Inventory existing test doubles and reuse or add suitable fakes/mocks for filesy
 
 #### WorkTask: Create or reuse filesystem and HTTP test doubles
 
-**Status:** Pending
+**Status:** Active
 
-**Measurement:** Undecided
+**Measurement:** Measured
+
+**Evaluations:** `reusable-filesystem-http-test-doubles`
 
 Inspect existing filesystem and HTTP test mocks/fakes. Reuse or create reusable test doubles that can be used in both client and server tests, without introducing real filesystem writes or network I/O in tests.
 

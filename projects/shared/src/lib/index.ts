@@ -7,3 +7,4 @@ export * from './problem-inquiry.types';
 export * from './glossary.types';
 export * from './agent-guide.types';
 export * from './agent-guide-generation';
+export * from './text-file-system.types';

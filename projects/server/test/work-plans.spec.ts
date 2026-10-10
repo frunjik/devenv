@@ -1,10 +1,11 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { describe, expect, it } from '@jest/globals';
 import {
     validateWorkPlanEvaluationLinks,
     validateWorkPlanRegistry,
     workPlanRegistryToMarkdown,
 } from '@shared';
 import { writeWorkPlanMarkdown } from '../../../scripts/work-plans-export';
+import { createMemoryTextFileSystem } from '../../shared/src/testing/memory-text-file-system';
 
 const task = {
     id: 'persist-plan',
@@ -166,28 +167,21 @@ describe('WorkPlan persistence model', () => {
     });
 
     it('writes a generated view only after validating the registry and its ledger links', () => {
-        const files: Record<string, string> = {
+        const filesystem = createMemoryTextFileSystem({
             'work-plans.json': JSON.stringify(registry),
             'evaluations.json': JSON.stringify(ledger),
-        };
-        const filesystem = {
-            readFileSync: jest.fn((path: string) => files[path]),
-            writeFileSync: jest.fn(),
-        };
+        });
         writeWorkPlanMarkdown('work-plans.json', 'evaluations.json', 'work-plans.md', filesystem);
-        expect(filesystem.writeFileSync).toHaveBeenCalledWith(
-            'work-plans.md',
-            expect.stringContaining('Generated from [work-plans.json]'),
-            'utf8',
-        );
+        const view = filesystem.readFileSync('work-plans.md', 'utf8');
+        expect(view).toContain('Generated from [work-plans.json]');
 
-        files['work-plans.json'] = JSON.stringify(withTask({ evaluationIds: ['missing-evaluation'] }));
+        filesystem.writeFileSync('work-plans.json', JSON.stringify(withTask({ evaluationIds: ['missing-evaluation'] })), 'utf8');
         expect(() => writeWorkPlanMarkdown('work-plans.json', 'evaluations.json', 'work-plans.md', filesystem))
             .toThrow('unknown evaluation "missing-evaluation"');
 
-        files['work-plans.json'] = JSON.stringify({ ...emptyRegistry, schemaVersion: 1 });
+        filesystem.writeFileSync('work-plans.json', JSON.stringify({ ...emptyRegistry, schemaVersion: 1 }), 'utf8');
         expect(() => writeWorkPlanMarkdown('work-plans.json', 'evaluations.json', 'work-plans.md', filesystem))
             .toThrow('Invalid WorkPlanRegistry');
-        expect(filesystem.writeFileSync).toHaveBeenCalledTimes(1);
+        expect(filesystem.readFileSync('work-plans.md', 'utf8')).toBe(view);
     });
 });

@@ -49,7 +49,10 @@ The canvas shows only the diagram, without a clock or periodic clock refresh.
 Use **Ctrl+wheel** over the canvas to zoom between 25% and 400%, anchored at
 the pointer. Ordinary wheel scrolling remains unchanged. **Ctrl+left-drag**
 starting outside parts and connection lines pans freely without moving diagram
-elements or clearing selection. Normal part dragging still moves the part.
+elements or clearing selection. Dragging a part moves all selected parts by
+the same delta, preserving their relative positions. An unselected part joins
+the selection when its drag starts. Connections follow their endpoint parts;
+selecting a connection does not add its endpoints to the moving group.
 Ordinary left-drag starting outside parts and connection lines draws a dashed
 selection rectangle. On release, fully enclosed parts and connection segments
 are added to the current selection; partly enclosed items are excluded.

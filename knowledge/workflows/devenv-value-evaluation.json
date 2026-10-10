@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-selected-group-drag",
+      "title": "Move selected canvas parts together",
+      "beneficiary": "User rearranging multiple canvas parts",
+      "intendedOutcome": "Drag a selected part to translate all selected parts together.",
+      "successCondition": "All parts selected at drag start move by one shared delta, preserving relative positions. Unselected parts remain fixed; selected connections follow their endpoints without automatically including them. Existing additive selection, stationary-click toggling, cancellation, pointer matching, zoom/pan input, loading and removal remain intact.",
+      "baseline": "CanvasDrag tracks one part and pointer offset; movePointer updates only that part. The selection already supports multiple parts/connections through clicks, checkboxes and rectangle selection. User approved selected parts only, with connections following endpoints.",
+      "startedAt": "2026-10-10T19:59:57.201+02:00",
+      "completedAt": "2026-10-10T20:03:55.4110058+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Group movement requested; user approved moving selected parts without including endpoint parts merely because their connections are selected. Existing additive pointer selection preserved.", "evidence": "Request, connection-scope clarification and approach announcement." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 58.210 seconds elapsed to verification checkpoint, including clarification and stale-fixture adjustments. Human active effort and waiting unknown.", "evidence": "Request and local verification timestamps." },
+        { "metricId": "outcome-and-quality", "value": "Extended existing transient CanvasDrag with pointer start and selected-part position snapshots; apply one delta from the start on each matching move. No persistent grouping or diagram-format change needed. Component stays 400 physical lines. Red observed for second selected part not moving; focused Green verified. Reused existing injected canvas/scheduler fakes with no internal spies or application test network/filesystem I/O. Added shared movement, selected-connection exclusion, repeated moves, inverse zoom/pan, pointerup/cancel/lost-capture, rectangle selection and stationary-click tests. Existing geometry tests previously repositioned a part with another endpoint still selected; fixtures now explicitly clear selection before positioning, preserving original geometry assertions. Final 61 client suites/951 tests pass with 100% statements, branches, functions and lines reported, including changed production module. Client build, final Jest TypeScript check, diagnostics and diff check pass. First browser attempt hit previously observed no-rendered-area errors in a hidden page; opened a new visible page. Real desktop drag moves selected parts from [40,40]/[340,40] to [140,90]/[440,90], all other positions unchanged and checks [0,1,7] retained. At 360px with zoom about 0.3687 both parts move by the same approximately [50.11135,20.04451] logical delta, preserving 300px separation and checks. Browser rounding explains deviation from nominal [50,20]. README and canvas help updated. Unrelated effort-report edits preserved. User benefit and follow-up defects unknown. Next step: user review; no commit authorized.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts, .html and .spec.ts; README.md; session test/coverage/build/type/diagnostic/browser evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-remove-clock",
       "title": "Remove the canvas editor clock",
       "beneficiary": "User editing canvas diagrams",

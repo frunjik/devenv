@@ -173,6 +173,79 @@ describe('CanvasDiagramEditor', () => {
 
     function loadOverview(): void { clickButton('Load DevEnv overview'); }
 
+    it('moves all selected parts by the same delta while connections follow their endpoints', () => {
+        createEditor();
+        loadOverview();
+        checkPartRow(0);
+        checkPartRow(1);
+        checkLine(1);
+        const original = editor.parts.map(part => ({ ...part.position }));
+        drag(60, 60, 160, 110);
+        expect(editor.parts.map(part => part.position)).toEqual([
+            { x: original[0].x + 100, y: original[0].y + 50 },
+            { x: original[1].x + 100, y: original[1].y + 50 },
+            ...original.slice(2),
+        ]);
+        expect([...editor.checkedParts]).toEqual([editor.parts[1], editor.parts[0]]);
+        expect([...editor.checkedConnections]).toEqual([editor.connections[1]]);
+        expect(editor.selectedPart).toBe(editor.parts[0]);
+        surface.paint();
+        expect(surface.paths).toContainEqual([[320, 130], [440, 130]]);
+    });
+
+    it.each(['pointerup', 'pointercancel', 'lostpointercapture'])('ends a transformed group drag on %s without drifting or clearing checks', type => {
+        createEditor();
+        loadOverview();
+        checkPartRow(0);
+        checkPartRow(1);
+        surface.viewport.zoom = 2;
+        surface.viewport.x = 100;
+        surface.viewport.y = 50;
+        dispatch('pointerdown', 220, 170, 7);
+        dispatch('pointermove', 420, 270, 8);
+        expect(editor.parts[0].position).toEqual({ x: 40, y: 40 });
+        dispatch('pointermove', 420, 270, 7);
+        dispatch('pointermove', 260, 130, 7);
+        dispatch('pointermove', 260, 130, 7);
+        expect(editor.parts.slice(0, 2).map(part => part.position)).toEqual([
+            { x: 60, y: 20 }, { x: 360, y: 20 },
+        ]);
+        dispatch(type, 260, 130, 7);
+        dispatch('pointermove', 500, 500, 7);
+        expect(editor.parts.slice(0, 2).map(part => part.position)).toEqual([
+            { x: 60, y: 20 }, { x: 360, y: 20 },
+        ]);
+        expect(editor.checkedParts.size).toBe(2);
+    });
+
+    it('moves rectangle-selected parts together and preserves stationary-click toggling', () => {
+        createEditor();
+        loadOverview();
+        drag(20, 20, 550, 130);
+        drag(360, 60, 310, 30);
+        expect(editor.parts.slice(0, 2).map(part => part.position)).toEqual([
+            { x: -10, y: 10 }, { x: 290, y: 10 },
+        ]);
+        expect(editor.checkedParts.size).toBe(2);
+        expect(editor.checkedConnections.size).toBe(1);
+        clickCanvas(310, 30);
+        expect([...editor.checkedParts]).toEqual([editor.parts[0]]);
+        expect(editor.parts[0].position).toEqual({ x: -10, y: 10 });
+    });
+
+    it('adds a newly dragged part to the moving selection without moving selected-connection endpoints', () => {
+        createEditor();
+        loadOverview();
+        checkPartRow(0);
+        checkLine(1);
+        drag(360, 60, 410, 80);
+        expect(editor.parts.slice(0, 3).map(part => part.position)).toEqual([
+            { x: 90, y: 60 }, { x: 390, y: 60 }, { x: 640, y: 40 },
+        ]);
+        expect(editor.checkedParts.size).toBe(2);
+        expect(editor.checkedConnections.size).toBe(1);
+    });
+
     it('adds fully enclosed parts and connections after background rectangle release', () => {
         createEditor();
         loadOverview();
@@ -1080,6 +1153,7 @@ describe('CanvasDiagramEditor', () => {
             addParts(2);
             enterLabel('Next component');
             connect(29, 29, 59, 59);
+            clickCanvas(10, 10);
             drag(59, 59, 359, 35);
             clickCanvas(10, 10);
         });
@@ -1164,6 +1238,7 @@ describe('CanvasDiagramEditor', () => {
             createEditor();
             addParts(2);
             connect(29, 29, 59, 59);
+            clickCanvas(10, 10);
             drag(59, 59, 359, 35);
             clickCanvas(10, 10);
         });
@@ -1207,8 +1282,9 @@ describe('CanvasDiagramEditor', () => {
 
             it('follows changed diagonal geometry rather than the previous segment', () => {
                 editor.removeConnection(editor.connections[0]);
+                clickCanvas(10, 10);
                 drag(359, 35, 359, 235);
-                checkLine(0);
+                clickCanvas(10, 10);
                 clickCanvas(276, 164);
                 expect(editor.selectedConnection).toBe(editor.connections[0]);
                 clickCanvas(276, 64);
@@ -1322,7 +1398,7 @@ describe('CanvasDiagramEditor', () => {
     });
 
     describe('connection rendering', () => {
-        beforeEach(() => { createEditor(); addParts(2); connect(29, 29, 59, 59); });
+        beforeEach(() => { createEditor(); addParts(2); connect(29, 29, 59, 59); clickCanvas(10, 10); });
 
         describe('with a labelled diagonal connection', () => {
             beforeEach(() => { editor.renameConnection(editor.connections[0], 'uses'); drag(59, 59, 359, 59); surface.paint(); });

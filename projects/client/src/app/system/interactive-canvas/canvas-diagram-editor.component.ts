@@ -17,7 +17,8 @@ type PictureKind = 'overview' | 'technical' | 'template';
 interface CanvasDrag {
     part: SketchPart;
     pointerId: number;
-    offset: { x: number; y: number };
+    start: { x: number; y: number };
+    parts: { part: SketchPart; position: { x: number; y: number } }[];
     deselectOnClick: boolean;
     moved: boolean;
 }
@@ -238,11 +239,14 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             return;
         }
         if (this.drag && this.drag.pointerId === event.pointerId) {
-            if (point.x !== this.drag.part.position.x + this.drag.offset.x
-                || point.y !== this.drag.part.position.y + this.drag.offset.y) {
+            const dx = point.x - this.drag.start.x;
+            const dy = point.y - this.drag.start.y;
+            if (dx !== 0 || dy !== 0) {
                 this.drag.moved = true;
             }
-            this.drag.part.position = { x: point.x - this.drag.offset.x, y: point.y - this.drag.offset.y };
+            for (const { part, position } of this.drag.parts) {
+                part.position = { x: position.x + dx, y: position.y + dy };
+            }
             this.surface.requestDraw();
         }
     }
@@ -295,7 +299,8 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             this.drag = {
                 part,
                 pointerId: event.pointerId,
-                offset: { x: point.x - part.position.x, y: point.y - part.position.y },
+                start: point,
+                parts: [...this.checkedParts].map(part => ({ part, position: { ...part.position } })),
                 deselectOnClick: wasSelected,
                 moved: false,
             };

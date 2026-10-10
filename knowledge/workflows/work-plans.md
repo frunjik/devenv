@@ -14,6 +14,16 @@ Plan pointer-anchored Ctrl+wheel zoom and free Ctrl+drag background panning with
 
 Zoom from 25% to 400%, preserving the point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas pans freely beyond diagram edges while preserving selection. Ordinary empty clicks still clear selection. Confirmed picture loading resets both zoom and pan; editing and cancelled replacement preserve the view.
 
+#### WorkTask: Move selected canvas parts together
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-selected-group-drag`
+
+Completed dragging all selected parts by the same model-coordinate delta, using drag-start snapshots to preserve relative positions and avoid accumulated drift. Unselected dragged parts join existing additive selection. User approved selected parts only: connections follow endpoint geometry but selecting a connection does not include its endpoints. No persistent group or stored-format change needed. Red observed when second selected part remained stationary. Existing endpoint-positioning test fixtures explicitly clear selection before single-part drags, preserving geometry/hit assertions. All 951 client tests pass with 100% reported coverage; client build, Jest TypeScript check, diagnostics and diff check pass. Real desktop drag moves selected parts by 100x50 with other parts fixed and checks preserved. At 360px under zoom both parts move by the same approximately 50.111x20.045 logical delta, retaining 300px separation and checks. Component remains 400 lines. Tracking and measurement retained. Next step: user review; no commit authorized.
+
 #### WorkTask: Remove the canvas editor clock
 
 **Status:** Completed

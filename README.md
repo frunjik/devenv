@@ -54,6 +54,15 @@ discovery location. Each skill has its own named folder containing `SKILL.md` an
 supporting resources. DevEnv folder exports already include this directory through
 the `.agents` package entry.
 
+The generic AgentPhaseGuide setup (`AGENTS.md`, the Agent Phase Guide and the six skills)
+contains no DevEnv-specific rules. DevEnv paths, commands and stack conventions live in the
+[project profile](./.github/instructions/project-profile.instructions.md), which VS Code loads
+for all files. Run `npm run export:agent-phase-guide -- <destination>` to copy the generic
+core into another folder, with [a profile template](./knowledge/practices/project-profile.template.md)
+in place of the DevEnv profile and an `agent-phase-guide.manifest.json` pinned to `HEAD`.
+The export refuses to run while any exported source has uncommitted changes, and the
+destination must be outside this repository.
+
 To reuse selected skills in another project, copy their complete folders into that
 project's `.agents/skills` directory. For personal use across projects, copy them into
 `%USERPROFILE%\.copilot\skills` on Windows (or `~/.copilot/skills` on other systems).

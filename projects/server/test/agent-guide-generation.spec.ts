@@ -20,19 +20,23 @@ describe('shared agent guide generation', () => {
             'never weaken them to hide regressions',
             'Validate external input at appropriate runtime boundaries',
             'Keep one authoritative source',
-            'valid in browser and server runtimes',
             'Ruleset changes require approval',
             'Commit only on explicit request',
             'exact short contribution-specific subject',
             'No Copilot co-author trailer',
             'Save decisions, open questions and next step',
             'UI design review remains opt-in',
-            'npm run test:client',
-            'npm run build -- --project shared',
         ]) {
             expect(entry).toContain(safeguard);
         }
         expect(entry.indexOf('## Repository safeguards')).toBeLessThan(entry.indexOf('## Intents to explore'));
+    });
+    it('links the project profile for project-specific rules instead of embedding them', () => {
+        const entry = generateAgentGuidePreview(sources).files[0].content;
+        expect(entry).toContain('[project profile](.github/instructions/project-profile.instructions.md)');
+        for (const projectRule of ['valid in browser and server runtimes', 'npm run', '@jest/globals', 'knowledge/workflows']) {
+            expect(entry).not.toContain(projectRule);
+        }
     });
     it('does not claim repository instructions remain unchanged after installation', () => {
         const agent = generateAgentGuidePreview(sources).files.find(file => file.path.endsWith('.agent.md'))!;

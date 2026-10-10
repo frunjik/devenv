@@ -41,6 +41,9 @@ describe('agent guide preview', () => {
 
     it('keeps exploration intents distinct and resolves all generated local Markdown links', () => {
         const { files } = createAgentGuidePreview();
+        // The project profile is supplied by each importing project, so it is the only link target outside the generated set.
+        const projectProfile = '.github/instructions/project-profile.instructions.md';
+        expect(files[0].content).toContain(`](${projectProfile})`);
         expect(files[0].content).toContain('Intents to explore');
         expect(files[0].content).toContain('not an active rule');
         for (const file of files) {
@@ -55,7 +58,7 @@ describe('agent guide preview', () => {
                     }
                     else if (segment !== '.') segments.push(segment);
                 }
-                expect(files.map(item => item.path)).toContain(segments.join('/'));
+                expect([...files.map(item => item.path), projectProfile]).toContain(segments.join('/'));
             }
         }
     });

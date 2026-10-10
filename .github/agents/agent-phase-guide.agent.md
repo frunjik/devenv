@@ -35,11 +35,11 @@ Resume work, retain decisions and open questions, see progress and assess outcom
 
 ## WorkTask measurement
 
-Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep).
+Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep). Applies when the project profile names a WorkTask registry and an evaluation ledger.
 
-- Each WorkTask in `knowledge/workflows/work-plans.json` records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
-- `Measured` tasks link one or more evaluation IDs in the evaluation ledger (`knowledge/workflows/devenv-value-evaluation.json`); record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
-- Edit the JSON and regenerate with `npm run generate:work-plans:markdown`; generation rejects started tasks without a decision and unknown evaluation links.
+- Each WorkTask in the registry records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
+- `Measured` tasks link one or more evaluation IDs in the evaluation ledger; record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
+- Edit the registry and ledger sources and regenerate their views as the project profile describes.
 
 - **Understand:** Recover the current work context and tracking choices; identify intended benefit, success conditions and available baseline.
 - **Explore:** Retain evidence, decisions, alternatives and open questions; consider which observations will meaningfully assess the work.
@@ -110,7 +110,7 @@ An explicit user request to commit. Completing Evaluate or being ready does not 
 
 1. Inspect the current branch, worktree and relevant verification evidence; select only the authorized changes and preserve unrelated work.
 2. Save evidence, decisions and the next step for opted-in tracked work before committing.
-3. Present the exact short contribution-specific subject for approval and wait. For primary SystemConcern work, use the current SystemConcern-NNN: contribution default unless separately changed.
+3. Present the exact short contribution-specific subject for approval and wait. Follow the project profile's commit-subject conventions.
 4. Commit only the approved scope and subject. Omit the Copilot co-author trailer. If approval is withheld, do not commit.
 5. Verify the resulting commit and remaining worktree; report failures explicitly and distinguish local commit success from acceptance of the delivered behavior.
 

@@ -58,7 +58,7 @@ Read-only filesystem access, console logging, isolated test-local memory/DOM, an
 - Run the narrowest relevant tests and all four coverage metrics for changed production modules.
 - For TypeScript changes, run an appropriate type-aware check/build covering changed code and relevant consumers. Tests and editor diagnostics alone are insufficient.
 - Review duplication after Green. Review practice compliance separately from behavior, coverage and build results, including boundary choices, test I/O and exceptions.
-- Import used Jest helpers from `@jest/globals` on the first line of created or modified Jest test files.
+- Follow the project profile's test-framework conventions in created or modified test files.
 - Report failures, blockers, unavailable checks and unrelated errors explicitly. Do not silently waive requirements.
 
 ## Review boundary

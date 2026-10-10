@@ -85,3 +85,21 @@ Show WorkPlans, WorkTopics and WorkTasks in the client once the generated Markdo
 **Measurement:** NotMeasured
 
 Add a read-only client route beside workflow-todo and workflow-evaluations that shows the WorkPlan hierarchy, task status and measurement decision, validated with validateWorkPlanRegistry and validateWorkPlanEvaluationLinks from @shared, linking Measured tasks to their evaluations. Start when several plans or active tasks make the Markdown view insufficient; editing is out of scope.
+
+## WorkPlan: AgentPhaseGuide export
+
+Make the AgentPhaseGuide setup importable into another system without DevEnv-specific rules.
+
+### WorkTopic: Generic core and project profile
+
+Separate the generic AgentPhaseGuide rules from DevEnv-specific paths, commands and stack rules.
+
+#### WorkTask: Separate the generic core from the DevEnv project profile
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `separate-generic-core-from-devenv-profile`
+
+Move DevEnv-specific rules (@shared runtime, TypeScript style, UI grid layout, Jest import, repository quick reference, WorkTask registry paths, SystemConcern commit subjects) from AGENTS.md, the agent and the tdd skill into .github/instructions/project-profile.instructions.md, keep the JSON mirrors in sync, and add a tested export script that copies the generic core plus a profile template with a commit-pinned manifest.

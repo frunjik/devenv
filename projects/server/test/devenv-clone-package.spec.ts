@@ -34,6 +34,7 @@ describe('DevEnv clone package', () => {
         expect(copiedPaths).toContain(join(root, 'projects', 'shared'));
         expect(copiedPaths).toContain(join(root, '.agents'));
         expect(copiedPaths).toContain(join(root, '.github', 'agents'));
+        expect(copiedPaths).toContain(join(root, '.github', 'instructions'));
         expect(copiedPaths).not.toContain(join(root, 'skills'));
         expect(copiedPaths).not.toContain(join(root, 'design'));
         expect(copiedPaths).not.toContain(join(root, 'knowledge'));
@@ -55,6 +56,7 @@ describe('DevEnv clone package', () => {
             'agent-practices.md',
             join('knowledge', 'practices', 'practice-set-versions.json'),
             join('knowledge', 'practices', 'example-led-knowledge-modeling.md'),
+            join('knowledge', 'practices', 'project-profile.template.md'),
             join('reviews', 'rice-prioritization.md'),
         ]) {
             expect(fileSystem.cp).toHaveBeenCalledWith(

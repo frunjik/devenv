@@ -1057,6 +1057,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "separate-generic-core-from-devenv-profile",
+      "title": "Separate the generic AgentPhaseGuide core from the DevEnv project profile",
+      "beneficiary": "Maintainer importing the AgentPhaseGuide setup into another system",
+      "intendedOutcome": "The AgentPhaseGuide rules, agent and skills can be copied into another repository without DevEnv-specific paths, commands or stack rules, while DevEnv keeps the same effective rules through an auto-loaded project profile.",
+      "successCondition": "AGENTS.md, the agent and the phase/tdd skills contain no DevEnv-specific paths, commands or conventions; those rules live in .github/instructions/project-profile.instructions.md; JSON mirrors and generated candidates stay in sync; a tested export script writes the generic core, a profile template and a commit-pinned manifest; relevant tests pass with 100% coverage on changed production modules.",
+      "baseline": "On 2026-10-10 AGENTS.md mixes generic rules with DevEnv specifics: the @shared runtime safeguard, TypeScript style, UI grid layout with projects/client/src/styles.scss, the Jest @jest/globals import, the repository quick reference and the WorkTask measurement section naming knowledge/workflows paths and npm run generate:work-plans:markdown. The agent hard-codes the same WorkTask paths and SystemConcern-NNN commit subjects; the tdd skill requires @jest/globals imports. No export script or profile template exists; the only packaging is the full DevEnv clone (cloneDevEnv).",
+      "startedAt": "2026-10-10T15:57:04+02:00",
+      "completedAt": "2026-10-10T16:04:26+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Outcome and success condition recorded at start after four user decisions: core + project profile in place, profile at .github/instructions/project-profile.instructions.md with applyTo \"**\", tracked and measured, concrete split approved as proposed.",
+          "evidence": "Session ask_user exchanges on 2026-10-10 before startedAt."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": "Four user decisions (separation approach, profile location, tracking, concrete split), each answered at the prompt; no work blocked after the split was approved.",
+          "evidence": "Session ask_user exchanges on 2026-10-10."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Met for the agreed scope. DevEnv rules (@shared runtime, TypeScript interface/type style, UI grid layout, Jest import, WorkTask registry paths and command, SystemConcern commit subjects, repository quick reference) moved to .github/instructions/project-profile.instructions.md; AGENTS.md, the agent and the tdd skill now refer to the project profile, with JSON mirrors and candidates in sync. Added scripts/agent-phase-guide-export.ts with a thin export-agent-phase-guide.ts entry (npm run export:agent-phase-guide) that copies the core and a profile template and writes a commit-pinned manifest, rejecting uncommitted sources and destinations inside the repository. Found and fixed during the work: the DevEnv clone omitted .github/instructions and the profile template. The preview generator now emits the profile link. A real successful CLI export has not been run because the sources are not yet committed; the real CLI rejection of uncommitted sources was observed, writing nothing.",
+          "evidence": "Client Jest 826/826; server Jest 409/409; agent-phase-guide-export.ts, export-agent-phase-guide.ts, agent-guide-generation.ts and devenv-clone.ts at 100% coverage; a source-consistency test checks the core files for DevEnv markers; tsc -p projects/server/tsconfig.spec.json passes; shared build passes; git diff --check clean."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

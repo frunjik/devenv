@@ -37,6 +37,8 @@ export function generateAgentGuidePreview(sources: AgentGuideSources): AgentGuid
         '',
         ...phases.map(phase => `- [${phase}](.agents/skills/${agentPhaseSkills[phase].name}/SKILL.md)`),
         '- [Agent Phase Guide](.github/agents/agent-phase-guide.agent.md)', '',
+        'Project-specific rules, paths and commands live in the [project profile](.github/instructions/project-profile.instructions.md), which applies together with these generic rules.',
+        '',
         renderSections(agentEssentials.sections.filter(section => section.heading !== 'Basis and limits'), tddPath, 'AGENTS.md'),
     ].join('\n');
     const coordinator = [

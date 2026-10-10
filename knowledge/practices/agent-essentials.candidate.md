@@ -45,16 +45,9 @@ Briefly justify meaningful deviations from these applicable defaults.
   - Report only meaningful findings.
   - Discuss consequential names, and keep unapproved names provisional.
 - **Data format:** prefer typed JSON with explicit interfaces, with Markdown generated from it. Narrative and native customization Markdown are exceptions.
-- **TypeScript style:**
-  - Use `interface` for grouped records.
-  - Use `type` for values, choices and named union alternatives.
-  - Follow nearby UI conventions, and don't automatically rewrite correct code.
+- **Code style:**
+  - Follow nearby conventions, and don't automatically rewrite correct code.
   - When you use a non-obvious construct or deviate from the usual approach, add a short comment explaining why.
-- **UI layout:** lay out new client views with the global grid in `projects/client/src/styles.scss`:
-  - Use `.layout-page` for page padding.
-  - Use `--layout-columns`, `--layout-gutter` and `--layout-space-*` for columns, gutters and spacing instead of local offsets.
-  - Keep the single-column layout on narrow screens.
-- **Jest:** import used Jest helpers from `@jest/globals` on the first line.
 
 ## Repository safeguards
 
@@ -62,26 +55,18 @@ Retained repository safeguards for the isolated trial, separate from the four se
 
 - Fully satisfy agreed scope; preserve unrelated work, intended behavior and stored formats. Ask before consequential expansion/destruction. Update stale tests for agreed changes; never weaken them to hide regressions.
 - Keep one authoritative source, not independently maintained derived views. Prefer typed JSON with explicit interfaces and generated Markdown for structured data; retain narrative/native customization Markdown exceptions. Validate external input at appropriate runtime boundaries and reuse validated boundaries; interfaces are not runtime validation.
-- Keep `@shared`, including dependencies and public exports, valid in browser and server runtimes; keep runtime-specific integrations outside shared.
 - Ruleset changes require approval; do not change rules automatically. Preserve history and unknown activation dates; pin ruleset versions to committed content.
 - For opted-in tracking/metrics, carry choices through follow-ups; record baseline and completion/follow-up evidence, leaving unknowns unknown. Save decisions, open questions and next step before pausing or switching tracked work.
 - Commit only on explicit request and within authorized scope. Obtain approval of the exact short contribution-specific subject before committing; verify the resulting commit and worktree. No Copilot co-author trailer. Commit approval does not authorize push, merge, branch deletion or history rewriting.
 - UI design review remains opt-in: use only on explicit request or agreement. Historical/customization archives are not active guidance.
 
-Repository quick reference (informational):
-
-- Angular client: `projects/client`; shared contracts: `projects/shared` (`@shared`); Express API: `projects/server`.
-- Use the smallest relevant checks: `npm run test:client`, `npm run test:server` or `npm run test:all`; coverage scripts also exist.
-- Production build: shared first (`npm run build -- --project shared`), then client (`npm run build -- --project client`). Server Angular build is unsupported with known errors.
-- Dev: `npm run dev:client` / `npm run dev:server`; client consumes shared source. Windows: use `npm.cmd`/`npx.cmd` if wrappers are blocked.
-
 ## WorkTask measurement
 
-Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep).
+Activated from intents 5 (trace work to its evaluations) and 6 (capture baseline and completion evidence with little upkeep). Applies when the project profile names a WorkTask registry and an evaluation ledger.
 
-- Each WorkTask in `knowledge/workflows/work-plans.json` records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
-- `Measured` tasks link one or more evaluation IDs in the evaluation ledger (`knowledge/workflows/devenv-value-evaluation.json`); record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
-- Edit the JSON and regenerate with `npm run generate:work-plans:markdown`; generation rejects started tasks without a decision and unknown evaluation links.
+- Each WorkTask in the registry records `measurement`: `Undecided`, `Measured` or `NotMeasured`. When a task becomes Active while `Undecided`, ask the user whether to measure it and record the answer; do not ask again for that task.
+- `Measured` tasks link one or more evaluation IDs in the evaluation ledger; record baseline and completion evidence in those evaluations, not in the WorkPlan. Unmeasured effort and benefit remain unknown.
+- Edit the registry and ledger sources and regenerate their views as the project profile describes.
 
 ## Intents to explore
 

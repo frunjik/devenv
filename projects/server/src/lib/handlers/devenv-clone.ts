@@ -28,6 +28,7 @@ export class DevEnvCloneError extends Error {
 const PACKAGE_DIRECTORIES = [
     '.agents',
     '.github/agents',
+    '.github/instructions',
     'projects/client',
     'projects/server',
     'projects/shared',
@@ -43,6 +44,7 @@ const PACKAGE_FILES = [
     'agent-practices.md',
     'knowledge/practices/practice-set-versions.json',
     'knowledge/practices/example-led-knowledge-modeling.md',
+    'knowledge/practices/project-profile.template.md',
     'knowledge/practices/agent-essentials.json',
     'knowledge/practices/agent-essentials-testing.json',
     'knowledge/practices/agent-essentials.types.ts',

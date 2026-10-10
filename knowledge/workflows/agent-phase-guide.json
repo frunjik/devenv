@@ -49,7 +49,7 @@
     "steps": [
       "Inspect the current branch, worktree and relevant verification evidence; select only the authorized changes and preserve unrelated work.",
       "Save evidence, decisions and the next step for opted-in tracked work before committing.",
-      "Present the exact short contribution-specific subject for approval and wait. For primary SystemConcern work, use the current SystemConcern-NNN: contribution default unless separately changed.",
+      "Present the exact short contribution-specific subject for approval and wait. Follow the project profile's commit-subject conventions.",
       "Commit only the approved scope and subject. Omit the Copilot co-author trailer. If approval is withheld, do not commit.",
       "Verify the resulting commit and remaining worktree; report failures explicitly and distinguish local commit success from acceptance of the delivered behavior."
     ],

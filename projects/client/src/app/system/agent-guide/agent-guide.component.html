@@ -13,10 +13,11 @@
         <pre tabindex="0" aria-label="Guide and phase skill source JSON" data-guide-source>{{ preview.sourceJson }}</pre>
     </details>
     <h2>Proposed generated files ({{ preview.files.length }})</h2>
-    @for (file of preview.files; track file.path) {
-        <details class="accent-card" data-generated-file>
-            <summary>{{ file.path }}</summary>
-            <pre tabindex="0" [attr.aria-label]="file.path + ' proposed content'">{{ file.content }}</pre>
-        </details>
-    }
+    <mat-tab-group animationDuration="0ms" aria-label="Generated Markdown files">
+        @for (file of preview.files; track file.path) {
+            <mat-tab [label]="file.path">
+                <pre tabindex="0" [attr.aria-label]="file.path + ' proposed Markdown'" data-generated-file>{{ file.content }}</pre>
+            </mat-tab>
+        }
+    </mat-tab-group>
 </section>

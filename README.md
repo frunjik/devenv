@@ -18,7 +18,9 @@ Generate a derived Markdown view of the experimental MetaExport JSON with `npm r
 
 The **Tools -> Agent guide** link opens `/agent-guide`, a read-only preview of
 AgentPhaseGuide, its phase-skill JSON and seven proposed Copilot files: `AGENTS.md`,
-one custom agent, four phase skills and a separate TDD skill. Pure functions generate
+one custom agent, four phase skills and a separate TDD skill. Each generated file has
+its own tab showing raw Markdown; source JSON remains available above the tabs.
+Pure functions generate
 the preview in memory; the page does not export, write or activate customizations.
 Phase definitions are authoritative in `knowledge/workflows/agent-phase-skills.json`;
 the guide and selected testing requirements remain in their existing JSON sources.

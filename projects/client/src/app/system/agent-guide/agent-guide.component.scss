@@ -41,3 +41,21 @@ summary:focus-visible, pre:focus-visible {
     outline: 2px solid var(--state-focus);
     outline-offset: 2px;
 }
+
+.view-controls {
+    display: flex;
+    gap: var(--layout-space-small);
+    padding-top: var(--layout-space-small);
+
+    button {
+        min-height: 44px;
+        padding: var(--layout-space-small) var(--layout-gutter);
+        background: var(--surface-card);
+        color: var(--text-body);
+        border: 1px solid var(--border-default);
+        cursor: pointer;
+    }
+
+    button[aria-pressed="true"] { border-color: var(--state-selected); }
+    button:focus-visible { outline: 2px solid var(--state-focus); }
+}

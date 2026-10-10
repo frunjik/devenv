@@ -1,0 +1,38 @@
+:host {
+    display: block;
+    min-width: 0;
+}
+
+.markdown-content {
+    max-height: 40rem;
+    overflow: auto;
+    overflow-wrap: anywhere;
+    padding: var(--layout-gutter);
+    color: var(--text-body);
+    background: var(--surface-page);
+    border: 1px solid var(--border-default);
+    line-height: 1.5;
+}
+
+.markdown-content:focus-visible {
+    outline: 2px solid var(--state-focus);
+    outline-offset: 2px;
+}
+
+/* Rendered HTML has no Angular encapsulation attributes. */
+:host ::ng-deep .markdown-content {
+    h1, h2, h3, h4, h5, h6 { color: var(--text-heading); }
+    a { color: var(--action-primary); }
+    pre {
+        overflow: auto;
+        padding: var(--layout-space-small);
+        border: 1px solid var(--border-default);
+        white-space: pre;
+        overflow-wrap: normal;
+    }
+    table { border-collapse: collapse; }
+    th, td {
+        padding: var(--layout-space-small);
+        border: 1px solid var(--border-default);
+    }
+}

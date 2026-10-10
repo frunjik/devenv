@@ -16,7 +16,17 @@
     <mat-tab-group animationDuration="0ms" aria-label="Generated Markdown files">
         @for (file of preview.files; track file.path) {
             <mat-tab [label]="file.path">
-                <pre tabindex="0" [attr.aria-label]="file.path + ' proposed Markdown'" data-generated-file>{{ file.content }}</pre>
+                <div class="view-controls" role="group" [attr.aria-label]="file.path + ' display mode'">
+                    <button type="button" data-source-toggle [attr.aria-pressed]="!previewPaths.has(file.path)"
+                        (click)="previewPaths.delete(file.path)">Source</button>
+                    <button type="button" data-preview-toggle [attr.aria-pressed]="previewPaths.has(file.path)"
+                        (click)="previewPaths.add(file.path)">Preview</button>
+                </div>
+                @if (previewPaths.has(file.path)) {
+                    <app-markdown-preview [markdown]="file.content" />
+                } @else {
+                    <pre tabindex="0" [attr.aria-label]="file.path + ' proposed Markdown'" data-generated-file>{{ file.content }}</pre>
+                }
             </mat-tab>
         }
     </mat-tab-group>

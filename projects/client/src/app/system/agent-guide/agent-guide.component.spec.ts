@@ -35,6 +35,15 @@ describe('AgentGuideComponent', () => {
                 fixture.componentInstance.preview.files[index].content,
             );
             expect(panel?.querySelector('pre')?.getAttribute('tabindex')).toBe('0');
+            panel?.querySelector<HTMLButtonElement>('[data-preview-toggle]')?.click();
+            fixture.detectChanges();
+            expect(panel?.querySelector('app-markdown-preview')).not.toBeNull();
+            expect(panel?.querySelector('[data-generated-file]')).toBeNull();
+            panel?.querySelector<HTMLButtonElement>('[data-source-toggle]')?.click();
+            fixture.detectChanges();
+            expect(panel?.querySelector('[data-generated-file]')?.textContent).toBe(
+                fixture.componentInstance.preview.files[index].content,
+            );
         }
         expect(host.querySelector('[data-guide-source]')?.textContent).toContain('"commitProcedure"');
         expect([...host.querySelectorAll('button')].some(button => /export|activate/i.test(button.textContent ?? ''))).toBe(false);

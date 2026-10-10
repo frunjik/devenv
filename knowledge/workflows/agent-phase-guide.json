@@ -41,7 +41,44 @@
     "TDD Red -> Green -> Refactor occurs inside Make; final Evaluate does not postpone those checks.",
     "Scale the loop to the task rather than imposing four handoffs on every small request."
   ],
-  "verification": "Design agreed for preservation, not implemented or trialled. Routing reliability, handoff losses, overhead and benefits remain unmeasured.",
+  "commitProcedure": {
+    "status": "Selected for the proposal; not active configuration",
+    "source": "../../AGENTS.md",
+    "trigger": "An explicit user request to commit. Completing Evaluate or being ready does not trigger a commit.",
+    "steps": [
+      "Inspect the current branch, worktree and relevant verification evidence; select only the authorized changes and preserve unrelated work.",
+      "Save evidence, decisions and the next step for opted-in tracked work before committing.",
+      "Present the exact short contribution-specific subject for approval and wait. For primary SystemConcern work, use the current SystemConcern-NNN: contribution default unless separately changed.",
+      "Commit only the approved scope and subject. Omit the Copilot co-author trailer. If approval is withheld, do not commit.",
+      "Verify the resulting commit and remaining worktree; report failures explicitly and distinguish local commit success from acceptance of the delivered behavior."
+    ],
+    "boundaries": [
+      "The guide owns authorization and handoff; coding skills do not initiate commits.",
+      "This is a request-triggered workflow procedure, not a mandatory fifth phase.",
+      "Commit approval does not authorize pushing, merging, branch deletion or history rewriting.",
+      "The portable topic commit proposal is not adopted by this procedure.",
+      "Active AGENTS.md remains unchanged; no runtime enforcement is implemented."
+    ]
+  },
+  "practices": {
+    "tdd": {
+      "name": "Test-Driven Development",
+      "source": "../practices/agent-essentials-testing.json",
+      "trigger": "Implementing or changing production behavior. Do not claim TDD for documentation-only or design-only work.",
+      "phases": {
+        "Explore": "Identify external boundaries and reuse contracts and mocks before writing tests.",
+        "Make": "Follow the source's explicit Red -> Green -> Refactor procedure and testing requirements.",
+        "Evaluate": "Assess requested outcomes and practice compliance separately from passing tests."
+      },
+      "handoff": [
+        "Boundary and mock choices established before writing tests.",
+        "Observed Red, verified Green and Refactor evidence.",
+        "Public-behavior tests, all four changed-module coverage metrics and relevant type-check/build results.",
+        "Requested-outcome and separate practice-compliance assessment, including blockers and unknowns."
+      ]
+    }
+  },
+  "verification": "Design agreed for preservation, not implemented or trialled. Commit procedure and TDD practice selected for the proposal only. Routing reliability, handoff losses, overhead and benefits remain unmeasured.",
   "openQuestions": [
     "Which runtime will host the coordinator and what switching controls does it support?",
     "Which optional capabilities should be configurable?",

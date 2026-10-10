@@ -12,5 +12,5 @@ import { MarkdownPreviewComponent } from '../markdown-preview/markdown-preview.c
 })
 export class AgentGuideComponent {
     readonly preview = createAgentGuidePreview();
-    readonly previewPaths = new Set<string>();
+    readonly previewPaths = new Set(this.preview.files.map(file => file.path));
 }

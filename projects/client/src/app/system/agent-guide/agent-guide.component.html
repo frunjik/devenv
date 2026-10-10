@@ -17,10 +17,10 @@
         @for (file of preview.files; track file.path) {
             <mat-tab [label]="file.path">
                 <div class="view-controls" role="group" [attr.aria-label]="file.path + ' display mode'">
-                    <button type="button" data-source-toggle [attr.aria-pressed]="!previewPaths.has(file.path)"
-                        (click)="previewPaths.delete(file.path)">Source</button>
                     <button type="button" data-preview-toggle [attr.aria-pressed]="previewPaths.has(file.path)"
                         (click)="previewPaths.add(file.path)">Preview</button>
+                    <button type="button" data-source-toggle [attr.aria-pressed]="!previewPaths.has(file.path)"
+                        (click)="previewPaths.delete(file.path)">Source</button>
                 </div>
                 @if (previewPaths.has(file.path)) {
                     <app-markdown-preview [markdown]="file.content" />

@@ -20,7 +20,7 @@ The **Tools -> Agent guide** link opens `/agent-guide`, a read-only preview of
 AgentPhaseGuide, its phase-skill JSON and seven proposed Copilot files: `AGENTS.md`,
 one custom agent, four phase skills and a separate TDD skill. Each generated file has
 its own tab showing raw Markdown; source JSON remains available above the tabs.
-Each file tab offers **Source / Preview**. The reusable Markdown preview accepts a
+Each file tab offers **Preview / Source**, with Preview initially selected. The reusable Markdown preview accepts a
 string input and renders through a pure `markdown-it` function and Angular HTML
 sanitization. YAML frontmatter is a labelled code block; raw HTML and external
 images are not rendered. The preview does not fetch Markdown or execute embedded

@@ -31,12 +31,9 @@ describe('AgentGuideComponent', () => {
             fixture.detectChanges();
             expect(tab.getAttribute('aria-selected')).toBe('true');
             const panel = host.querySelector<HTMLElement>('[role="tabpanel"]:not([inert])');
-            expect(panel?.querySelector('pre')?.textContent).toBe(
-                fixture.componentInstance.preview.files[index].content,
-            );
-            expect(panel?.querySelector('pre')?.getAttribute('tabindex')).toBe('0');
-            panel?.querySelector<HTMLButtonElement>('[data-preview-toggle]')?.click();
-            fixture.detectChanges();
+            expect([...panel!.querySelectorAll('.view-controls button')].map(button => button.textContent?.trim()))
+                .toEqual(['Preview', 'Source']);
+            expect(panel?.querySelector('[data-preview-toggle]')?.getAttribute('aria-pressed')).toBe('true');
             expect(panel?.querySelector('app-markdown-preview')).not.toBeNull();
             expect(panel?.querySelector('[data-generated-file]')).toBeNull();
             panel?.querySelector<HTMLButtonElement>('[data-source-toggle]')?.click();
@@ -44,6 +41,10 @@ describe('AgentGuideComponent', () => {
             expect(panel?.querySelector('[data-generated-file]')?.textContent).toBe(
                 fixture.componentInstance.preview.files[index].content,
             );
+            expect(panel?.querySelector('[data-generated-file]')?.getAttribute('tabindex')).toBe('0');
+            panel?.querySelector<HTMLButtonElement>('[data-preview-toggle]')?.click();
+            fixture.detectChanges();
+            expect(panel?.querySelector('app-markdown-preview')).not.toBeNull();
         }
         expect(host.querySelector('[data-guide-source]')?.textContent).toContain('"commitProcedure"');
         expect([...host.querySelectorAll('button')].some(button => /export|activate/i.test(button.textContent ?? ''))).toBe(false);

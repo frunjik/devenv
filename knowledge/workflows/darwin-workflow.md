@@ -19,6 +19,9 @@ Develop Agent Essentials as a new ruleset spawned from the current one, guided b
 
 ## Checkpoint
 
+- Latest refinement: Preview precedes Source in every file's display controls; initial Source selection is unchanged. Control-order test observed Red before the template reorder.
+- Subsequent refinement: Preview is now the default for all generated files; Source remains selectable. Default-mode test observed Red before initialization changed.
+
 - Plan and names agreed: Darwin is the process; Agent Essentials is its output.
 - History format agreed: a readable document, not a new UI.
 - Baseline: five registered ruleset versions with descriptions and source commits; no per-version names; activation dates unknown. An existing Markdown generator can be extended instead of creating another history authority.

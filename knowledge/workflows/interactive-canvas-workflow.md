@@ -31,6 +31,14 @@
 - Browser acceptance: inspected the rendered picture; separated relationship labels from boundary titles; verified nine relationships, minimum 1400 x 880 workspace content and scrolling at desktop/mobile sizes, and cancellation/replacement between views. Production client build and generated-reference checks pass. These checks establish rendering and behavior, not verified architecture or proven comprehension.
 - Next: user review of the technical picture; the broader slice-5 architecture meaning decisions, persistence, generic boundary editing and undo/redo remain deferred.
 
+### Design-system inspiration reference (2026-10-10)
+
+- User supplied [Design System on Figma Community](https://www.figma.com/community/file/1108126447116535154/design-system?fuid=1450607675338783718) and requested retaining the information gathered.
+- Observed: the public page title is "Design System | Figma". Direct retrieval returned HTTP 403; the browser loaded the Community shell but not the file preview. Components, tokens, author and license have not been verified.
+- Candidate ideas for DevEnv, not findings from this file: compact action groups; consistent selected/disabled/hover/focus states; typography distinguishing boundaries, part names, technologies and relationship labels; mapping useful spacing/color/border ideas to existing tokens; progressive disclosure for secondary controls.
+- Preserve DevEnv's global grid, dark palette, accessible interaction and existing behavior. This reference does not adopt a new design system, change repository guidance or authorize implementation.
+- Next: inspect user-provided screenshots/exported frames or an accessible preview before making file-specific recommendations. Verify the applicable license before reusing assets; no Figma assets have been copied into the repository.
+
 ### Undo/redo follow-up
 
 - Requested on 2026-10-10: add an undo/redo system to the canvas editor (slice 8). Recorded for future implementation; no behavior change in this note.

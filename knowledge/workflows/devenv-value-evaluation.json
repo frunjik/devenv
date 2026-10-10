@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-ctrl-wheel-plan",
+      "title": "Canvas Ctrl+wheel zoom and Ctrl+drag pan",
+      "beneficiary": "User navigating larger canvas diagrams",
+      "intendedOutcome": "Pointer-anchored canvas-only Ctrl+wheel zoom from 25% to 400%, with free Ctrl+drag background panning.",
+      "successCondition": "Ctrl+wheel zooms only the diagram and keeps the logical point under the pointer. Ctrl+left-drag starting outside parts and connection hit areas translates the view freely beyond diagram edges without moving model elements or clearing selection. Normal wheel scrolling, normal part dragging and empty-click deselection remain unchanged. Editing/hit-testing work with the combined transform, confirmed picture loads reset zoom to 100% and cancelled replacement preserves the view. Pan reset on confirmed picture load is an open decision.",
+      "baseline": "InteractiveCanvas currently derives logical drawing size from displayed size/device pixel ratio, and pointer coordinates are CSS canvas coordinates. Workspace uses overflow scrolling and picture-specific minimum canvas sizes. No zoom state exists. Plan only; implementation has not started.",
+      "startedAt": null,
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved pointer anchoring, 25%-400%, unchanged normal scrolling and 100% zoom reset on picture load. Follow-up specifies Ctrl+background-drag (not ordinary background drag), with free panning beyond edges and preserved selection. Pan reset on load remains undecided.", "evidence": "Planning request, follow-up correction and clarification answers." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": "Implementation not started." },
+        { "metricId": "outcome-and-quality", "value": null, "evidence": "Plan updated from scroll-bound anchoring to an explicit zoom/translation viewport transform. No implementation yet. Next step: resolve pan reset and obtain implementation approval." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-functional-boundaries",
       "title": "Extract cohesive editor boundaries",
       "beneficiary": "Developer maintaining the canvas editor",

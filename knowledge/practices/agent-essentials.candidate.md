@@ -33,6 +33,25 @@ Follow the [coverage requirements](./agent-essentials-testing.candidate.md#cover
 
 Do not expand coverage scope to unchanged dependencies or distort production code to raise coverage. Report uncovered code and blockers honestly. Full coverage does not replace requested-outcome verification.
 
+## Repository safeguards
+
+Retained repository safeguards for the isolated trial, separate from the four selected Agent Essentials practices and the exploration intents. These apply whether or not the coordinator is selected.
+
+- Fully satisfy agreed scope; preserve unrelated work, intended behavior and stored formats. Ask before consequential expansion/destruction. Update stale tests for agreed changes; never weaken them to hide regressions.
+- Keep one authoritative source, not independently maintained derived views. Prefer typed JSON with explicit interfaces and generated Markdown for structured data; retain narrative/native customization Markdown exceptions. Validate external input at appropriate runtime boundaries and reuse validated boundaries; interfaces are not runtime validation.
+- Keep `@shared`, including dependencies and public exports, valid in browser and server runtimes; keep runtime-specific integrations outside shared.
+- Ruleset changes require approval; do not change rules automatically. Preserve history and unknown activation dates; pin ruleset versions to committed content.
+- For opted-in tracking/metrics, carry choices through follow-ups; record baseline and completion/follow-up evidence, leaving unknowns unknown. Save decisions, open questions and next step before pausing or switching tracked work.
+- Commit only on explicit request and within authorized scope. Obtain approval of the exact short contribution-specific subject before committing; verify the resulting commit and worktree. No Copilot co-author trailer. Commit approval does not authorize push, merge, branch deletion or history rewriting.
+- UI design review remains opt-in: use only on explicit request or agreement. Historical/customization archives are not active guidance.
+
+Repository quick reference (informational):
+
+- Angular client: `projects/client`; shared contracts: `projects/shared` (`@shared`); Express API: `projects/server`.
+- Use the smallest relevant checks: `npm run test:client`, `npm run test:server` or `npm run test:all`; coverage scripts also exist.
+- Production build: shared first (`npm run build -- --project shared`), then client (`npm run build -- --project client`). Server Angular build is unsupported with known errors.
+- Dev: `npm run dev:client` / `npm run dev:server`; client consumes shared source. Windows: use `npm.cmd`/`npx.cmd` if wrappers are blocked.
+
 ## Intents to explore
 
 The following preserve desired outcomes, not selected rules or the current implementation. Names, mechanisms and adoption remain open.

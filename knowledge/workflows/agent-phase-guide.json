@@ -57,7 +57,7 @@
       "This is a request-triggered workflow procedure, not a mandatory fifth phase.",
       "Commit approval does not authorize pushing, merging, branch deletion or history rewriting.",
       "The portable topic commit proposal is not adopted by this procedure.",
-      "Active AGENTS.md remains unchanged; no runtime enforcement is implemented."
+      "Generating these files does not install or activate them; installation requires explicit approval and runtime enforcement is not implemented."
     ]
   },
   "workIntent": {

@@ -1935,6 +1935,13 @@
   ],
   "commits": [
     {
+      "sha": "2d70183dea21a2d848af73661136a0b44e40b4cb",
+      "authoredAt": "2026-10-10T17:40:56+02:00",
+      "committedAt": "2026-10-10T17:40:56+02:00",
+      "subject": "Group effort slices by category and topic with totals",
+      "category": "Unclassified"
+    },
+    {
       "sha": "e343ecbcc0a3c97b6797ebc6242cfb43f222effa",
       "authoredAt": "2026-10-10T17:36:08+02:00",
       "committedAt": "2026-10-10T17:36:08+02:00",
@@ -6905,8 +6912,8 @@
       "category": "Unclassified"
     }
   ],
-  "generatedAt": "2026-10-10T15:40:47.001Z",
-  "sourceCommit": "e343ecbcc0a3c97b6797ebc6242cfb43f222effa",
+  "generatedAt": "2026-10-10T15:44:10.050Z",
+  "sourceCommit": "2d70183dea21a2d848af73661136a0b44e40b4cb",
   "sourceHashes": [
     {
       "path": "knowledge/workflows/devenv-value-evaluation.json",

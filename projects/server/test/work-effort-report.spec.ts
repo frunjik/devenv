@@ -47,6 +47,22 @@ const registry = {
 const emptyRegistry = { schemaVersion: 2, workPlans: [] };
 
 describe('work effort report', () => {
+    it.each([63, 64, 65])('caps a %i-character slice description at 64 characters including ellipsis', length => {
+        const title = 'x'.repeat(length - 'short: '.length);
+        const report = createWorkEffortReport({
+            ...ledger, evaluations: [{ ...evaluation('short', timestamp(0), timestamp(1)), title }],
+        }, [], '');
+        const before = JSON.stringify(report);
+        const table = workEffortReportSlicesToMarkdown(report, emptyRegistry).split('\n');
+        const line = table.find(row => row.startsWith('| short:'))!;
+        const description = line.split('|')[1].trim();
+        const fullDescription = `short: ${title}`;
+        expect(description).toBe(length > 64 ? `${fullDescription.slice(0, 61)}...` : fullDescription);
+        expect(description.length).toBeLessThanOrEqual(64);
+        expect(workEffortReportToMarkdown(report)).toContain(fullDescription);
+        expect(JSON.stringify(report)).toBe(before);
+    });
+
     it('separates same-category cross-topic overlap so topic totals reconcile to category totals', () => {
         const splitRegistry = {
             ...registry,

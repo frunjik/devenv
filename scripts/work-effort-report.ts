@@ -190,7 +190,9 @@ export function workEffortReportSlicesToMarkdown(report: WorkEffortReport, regis
             const topic = topics.get(group[0])!;
             group.sort((a, b) => a.title.localeCompare(b.title) || a.id.localeCompare(b.id));
             for (const row of group) {
-                append(`${row.id}: ${row.title}`, category, topic.label, row.elapsedMs, Number(row.elapsedMs === null));
+                const description = `${row.id}: ${row.title}`;
+                append(description.length > 64 ? `${description.slice(0, 61)}...` : description,
+                    category, topic.label, row.elapsedMs, Number(row.elapsedMs === null));
             }
             append('Topic total', category, topic.label,
                 group.some(row => row.elapsedMs !== null) ? allocated.get(topic.key)! : null,

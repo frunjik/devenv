@@ -42,6 +42,8 @@ print only the aligned per-slice table instead of the category summary.
 It lists every recorded evaluation as a slice, with its ID/title, category,
 elapsed duration and minutes. Untimed or unfinished slices show `unknown`.
 Slices are ordered by category, linked WorkPlan topic, then title and ID.
+Displayed slice descriptions (ID and title) are capped at 64 characters,
+including a trailing `...` when truncated; full descriptions remain in the evidence files.
 Topic and category totals count recorded windows once. Topic totals exclude
 cross-topic overlaps; category totals include those overlaps but exclude
 cross-category overlaps. Both kinds of overlap have explicit rows.

@@ -49,6 +49,20 @@ Retained repository safeguards for the isolated trial, separate from the four se
 - Commit only on explicit request and within authorized scope. Obtain approval of the exact short contribution-specific subject before committing; verify the resulting commit and worktree. No Copilot co-author trailer. Commit approval does not authorize push, merge, branch deletion or history rewriting.
 - UI design review remains opt-in: use only on explicit request or agreement. Historical/customization archives are not active guidance.
 
+Applicable defaults, not completion gates; briefly justify meaningful deviations.
+
+- **Refactor:** after Green, review duplication and function cohesion. Extract only real responsibilities, and don't distort code for coverage.
+- **Types and complexity:**
+  - Review missing or refinable types and evidence-backed complexity when concepts change.
+  - Report only meaningful findings.
+  - Discuss consequential names, and keep unapproved names provisional.
+- **Data format:** prefer typed JSON with explicit interfaces, with Markdown generated from it. Narrative and native customization Markdown are exceptions.
+- **TypeScript style:**
+  - Use `interface` for grouped records.
+  - Use `type` for values, choices and named union alternatives.
+  - Follow nearby UI conventions, and don't automatically rewrite correct code.
+- **Jest:** import used Jest helpers from `@jest/globals` on the first line.
+
 Repository quick reference (informational):
 
 - Angular client: `projects/client`; shared contracts: `projects/shared` (`@shared`); Express API: `projects/server`.

@@ -47,6 +47,25 @@
     },
     {
       "level": 2,
+      "heading": "Applicable defaults (not completion gates)",
+      "body": [
+        "Briefly justify meaningful deviations from these applicable defaults.",
+        "",
+        "- **Refactor:** after Green, review duplication and function cohesion. Extract only real responsibilities, and don't distort code for coverage.",
+        "- **Types and complexity:**",
+        "  - Review missing or refinable types and evidence-backed complexity when concepts change.",
+        "  - Report only meaningful findings.",
+        "  - Discuss consequential names, and keep unapproved names provisional.",
+        "- **Data format:** prefer typed JSON with explicit interfaces, with Markdown generated from it. Narrative and native customization Markdown are exceptions.",
+        "- **TypeScript style:**",
+        "  - Use `interface` for grouped records.",
+        "  - Use `type` for values, choices and named union alternatives.",
+        "  - Follow nearby UI conventions, and don't automatically rewrite correct code.",
+        "- **Jest:** import used Jest helpers from `@jest/globals` on the first line."
+      ]
+    },
+    {
+      "level": 2,
       "heading": "Repository safeguards",
       "body": [
         "Retained repository safeguards for the isolated trial, separate from the four selected Agent Essentials practices and the exploration intents. These apply whether or not the coordinator is selected.",

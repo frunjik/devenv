@@ -6,6 +6,7 @@ import type { ErrorRequestHandler } from 'express';
 import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 
+// Interception: file and folder handlers import fs directly and have no injected filesystem boundary.
 jest.mock('fs', () => {
     const actual = jest.requireActual<typeof import('fs')>('fs');
     return {
@@ -31,6 +32,9 @@ const fileWriter = jest.mocked(fs.promises.writeFile);
 const folderReader = jest.mocked(fs.promises.readdir);
 const statReader = jest.mocked(fs.promises.stat);
 
+// Folder listing only calls isDirectory(); the cast avoids building a full fs.Stats.
+const entryStats = (directory: boolean) => ({ isDirectory: () => directory }) as fs.Stats;
+
 describe('files folders public API', () => {
     const root = process.cwd();
     let app: ReturnType<typeof createApp>;
@@ -44,8 +48,8 @@ describe('files folders public API', () => {
         fileWriter.mockReset().mockResolvedValue(undefined);
         folderReader.mockClear();
         statReader.mockReset()
-            .mockResolvedValueOnce(fs.statSync(root))
-            .mockResolvedValue(fs.statSync(__filename));
+            .mockResolvedValueOnce(entryStats(true))
+            .mockResolvedValue(entryStats(false));
         app = createApp(root);
         app.set('env', 'production');
         app.use(handleError);

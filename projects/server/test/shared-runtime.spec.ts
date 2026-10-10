@@ -1,5 +1,6 @@
 import { describe, expect, it } from '@jest/globals';
 import * as shared from '@shared';
+// Source-consistency check: the shared package manifest must not require Angular runtime peers.
 import sharedPackage from '../../shared/package.json';
 
 describe('Shared runtime compatibility', () => {

@@ -4,17 +4,18 @@ import { join } from 'node:path';
 import { requestApp } from './support/request-app';
 import { createApp } from '../src/public-api';
 
+// Interception: the system-plan handler imports readFile directly and has no injected filesystem boundary.
 jest.mock('node:fs/promises', () => {
     const actual = jest.requireActual<typeof import('node:fs/promises')>('node:fs/promises');
-    return { ...actual, readFile: jest.fn(actual.readFile) };
+    return { ...actual, readFile: jest.fn() };
 });
 
 const fileReader = jest.mocked(readFile);
-const realFileReader = jest.requireActual<typeof import('node:fs/promises')>('node:fs/promises').readFile;
 
 beforeEach(() => {
     fileReader.mockReset();
-    fileReader.mockImplementation(realFileReader);
+    // Fail unconfigured reads instead of falling back to real repository files.
+    fileReader.mockRejectedValue(Object.assign(new Error('Unexpected file read in test'), { code: 'ENOENT' }));
 });
 
 describe('system plan route', () => {
@@ -139,16 +140,28 @@ describe('system plan route', () => {
         expect(response.status).toBe(500);
     });
 
-    it('loads the repository concern register without a duplicated dashboard snapshot', async () => {
+    it('skips the register template and accepts priorities and annotated dependencies', async () => {
+        fileReader.mockResolvedValue([
+            '### SC-000 — Short title',
+            'Kind: ...',
+            '',
+            '### SC-021 — Define ticket lifecycle',
+            '',
+            '**Kind:** Domain · **Status:** In progress · **Priority:** High · **Depends on:** SC-016 (lifecycle states)',
+            '',
+            'Define how a ticket moves between states.',
+        ].join('\n'));
+
         const response = await requestApp(createApp(process.cwd())).get('/system-plan');
 
         expect(response.status).toBe(200);
-        expect(response.body.data.find((concern: { id: string }) => concern.id === 'SC-021'))
-            .toMatchObject({ dependsOn: ['SC-016'] });
-        expect(response.body.data.map((concern: { id: string }) => concern.id)).toContain('SC-052');
-        const validated = response.body.data.filter((concern: { status: string }) => concern.status === 'Validated');
-        expect(validated.length).toBeGreaterThan(0);
-        expect(validated.every((concern: { userAcceptance: string }) =>
-            ['Pending', 'Accepted', 'Rejected'].includes(concern.userAcceptance))).toBe(true);
+        expect(response.body.data).toEqual([{
+            id: 'SC-021',
+            title: 'Define ticket lifecycle',
+            kind: 'Domain',
+            status: 'In progress',
+            dependsOn: ['SC-016'],
+            summary: 'Define how a ticket moves between states.',
+        }]);
     });
 });

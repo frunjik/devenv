@@ -1,4 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
+// Source-consistency check: validates the committed sample problem set itself.
 import problemSetData from '../../../../../problem-domain/problem-sets/wms-problem-set.sample.json';
 
 describe('ProblemTicket framing', () => {

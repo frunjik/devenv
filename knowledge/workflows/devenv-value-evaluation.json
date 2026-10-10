@@ -1020,6 +1020,43 @@
           "evidence": null
         }
       ]
+    },
+    {
+      "id": "replace-real-fs-reads-in-tests",
+      "title": "Replace real filesystem reads in tests with mocks",
+      "beneficiary": "DevEnv developer running client and server tests",
+      "intendedOutcome": "Tests no longer depend on the contents of real repository or system files, except explicit, intentional source-consistency checks.",
+      "successCondition": "Each real filesystem read in specs outside temp-directory tests is either replaced by a concise fixture served through an injected boundary or in-memory fake, or kept as an explicitly named source-consistency check; affected tests pass with 100% coverage on changed production modules.",
+      "baseline": "On 2026-10-10 real reads in specs (excluding temp-directory specs tracked by server-specs-without-temp-directories): agent-essentials-markdown.spec.ts reads knowledge/practices/agent-essentials(.json, -testing.json, .candidate.md, -testing.candidate.md) for sync and structure checks; system-plan.spec.ts defaults its readFile mock to the real implementation and one test reads the live concerns.md register; files-folders.spec.ts uses fs.statSync on the repository root and the spec file to build Stats fixtures; client specs problem-ticket-framing, technical-picture and shared-runtime import real JSON files (problem-set sample, devenv-c4.json, shared package.json) at module load. The current test-isolation rule permits read-only filesystem access.",
+      "startedAt": "2026-10-10T15:39:12+02:00",
+      "completedAt": "2026-10-10T15:43:08+02:00",
+      "measures": [
+        {
+          "metricId": "goal-success-clarity",
+          "value": "Outcome and success condition recorded at start. Scope settled with one question: replace runtime reads in system-plan and files-folders; keep the agent-essentials sync checks and module-load JSON imports as explicit source-consistency checks. The test-isolation rule was left unchanged.",
+          "evidence": "User chose Measured when starting WorkTask replace-real-fs-reads-in-tests; scoping answer recorded in the session."
+        },
+        {
+          "metricId": "decision-latency",
+          "value": "Two user decisions (measure the task, scope of replaced reads), each answered at the prompt without blocking work.",
+          "evidence": "Session ask_user exchanges between startedAt and completedAt."
+        },
+        {
+          "metricId": "delivery-flow-and-effort",
+          "value": null,
+          "evidence": null
+        },
+        {
+          "metricId": "outcome-and-quality",
+          "value": "Met for the agreed scope. system-plan.spec.ts no longer falls back to the real readFile (unconfigured reads now fail) and its live concerns.md test was replaced by a fixture covering the template entry, Priority field and annotated dependencies; files-folders.spec.ts builds stats fixtures instead of calling fs.statSync. Kept and commented as source-consistency checks: agent-essentials-markdown sync tests and the JSON imports in problem-ticket-framing, technical-picture and shared-runtime specs. Affected handlers remain at 100% coverage. Observed one intermittent git-diff.spec.ts failure in a full run (real temp directories and git), which passed on rerun; tracked by server-specs-without-temp-directories.",
+          "evidence": "Client Jest 826/826; server Jest 390/390 on rerun; system-plan.ts and filesystem.ts at 100% coverage; tsc -p projects/server/tsconfig.spec.json passes; git diff --check clean."
+        },
+        {
+          "metricId": "devenv-process-overhead",
+          "value": null,
+          "evidence": null
+        }
+      ]
     }
   ]
 }

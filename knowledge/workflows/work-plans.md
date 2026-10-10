@@ -34,7 +34,7 @@ Follow-ups from reusable-filesystem-http-test-doubles: remove the remaining real
 
 **Measurement:** Undecided
 
-server-startup.spec.ts still calls startServer(root, 0) and startServer(root, -1), which bind or attempt to bind a real port. Cover the default HTTP listener through an injected or faked listener boundary instead, keeping startup error propagation covered.
+server-startup.spec.ts still calls startServer(root, 0) and startServer(root, -1), which bind or attempt to bind a real port. Cover the default HTTP listener through an injected or faked listener boundary instead, keeping startup error propagation covered. Note: server-startup.spec.ts and file-ticket-store.spec.ts share an identical ~20-line in-memory node:fs/promises mock (mkdir/readFile/rename/writeFile); extract it to test/support only when a third spec needs it.
 
 #### WorkTask: Remove real temp-directory writes from server specs
 
@@ -43,14 +43,6 @@ server-startup.spec.ts still calls startServer(root, 0) and startServer(root, -1
 **Measurement:** Undecided
 
 Some server specs (for example test-runner.spec.ts) create, write and remove real directories with mkdtemp/writeFile/rm. Replace them with injected filesystem boundaries or in-memory fakes so tests do not mutate real files.
-
-#### WorkTask: Replace ad hoc jest.mock(fs) setups with a shared fake
-
-**Status:** Pending
-
-**Measurement:** Undecided
-
-13 server specs define their own jest.mock('fs') or jest.mock('node:fs/promises') doubles. Inventory the operations they need and replace the duplicates with a reusable fake behind an injected boundary where handlers allow it.
 
 #### WorkTask: Provide a reusable double for DevEnvCloneFileSystem
 
@@ -70,9 +62,11 @@ No spec imports supertest after the requestApp migration. Uninstall supertest an
 
 #### WorkTask: Replace real filesystem reads in tests with mocks
 
-**Status:** Pending
+**Status:** Completed
 
-**Measurement:** Undecided
+**Measurement:** Measured
+
+**Evaluations:** `replace-real-fs-reads-in-tests`
 
 Some specs still read real repository files (for example agent-essentials-markdown.spec.ts reading knowledge/practices JSON) or real temp files. Inventory these reads and replace them with concise fixtures served through injected boundaries or in-memory fakes such as createMemoryTextFileSystem. This goes beyond the current test-isolation rule, which permits read-only filesystem access; decide whether that rule should change and keep any intentional source-consistency checks explicit.
 

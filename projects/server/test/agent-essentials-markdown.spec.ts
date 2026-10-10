@@ -57,6 +57,7 @@ describe('Agent Essentials Markdown', () => {
         expect(() => renderMarkdown(example, '../example.json')).toThrow('Invalid Agent Essentials');
     });
 
+    // Source-consistency checks: these read the committed practice sources to catch drift between JSON and generated views.
     it.each(['agent-essentials', 'agent-essentials-testing'])('keeps the %s view in sync with its JSON', (name) => {
         const base = resolve(__dirname, '../../../knowledge/practices', name);
         const source = JSON.parse(readFileSync(`${base}.json`, 'utf8'));

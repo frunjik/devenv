@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
+// Source-consistency check: the bundled architecture source must stay valid for the picture.
 import architecture from './devenv-c4.json';
 import type { TechnicalPicture } from './technical-picture';
 

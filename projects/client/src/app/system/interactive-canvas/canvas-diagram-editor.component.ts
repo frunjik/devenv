@@ -88,7 +88,16 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     get overviewLoaded(): boolean { return this.loadedPicture === 'overview'; }
     get technicalLoaded(): boolean { return this.loadedPicture === 'technical'; }
     get replacementPending(): boolean { return this.pendingPicture !== undefined; }
+    readonly checkedParts = new Set<SketchPart>();
     readonly checkedConnections = new Set<SketchConnection>();
+
+    checkPart(part: SketchPart, checked: boolean): void {
+        if (checked) {
+            this.checkedParts.add(part);
+        } else {
+            this.checkedParts.delete(part);
+        }
+    }
 
     checkConnection(connection: SketchConnection, checked: boolean): void {
         if (checked) {
@@ -101,6 +110,9 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     removeSelected(): void {
         const connection = this.selectedConnection;
         this.removeSelectedPart();
+        for (const part of this.checkedParts) {
+            this.removePart(part);
+        }
         if (connection) {
             this.removeConnection(connection);
         }
@@ -139,6 +151,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private replacePicture(kind: PictureKind): void {
         const technical = kind === 'technical' ? createTechnicalPicture() : undefined;
         const document = technical ? technical.geometry : validateDiagramDocument(overview);
+        this.checkedParts.clear();
         this.checkedConnections.clear();
         this.parts = document.elements.map(element => ({
             id: this.nextPartId++,
@@ -344,20 +357,24 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     removeSelectedPart(): void {
         if (this.selectedPart) {
-            const removed = this.selectedPart;
-            for (const connection of this.connections.filter(connection =>
-                connection.first === removed || connection.second === removed)) {
-                this.removeConnection(connection);
-            }
-            this.cancelConnection();
-            this.parts = this.parts.filter(part => part !== this.selectedPart);
-            this.boundaries = this.boundaries
-                .map(boundary => ({ ...boundary, parts: boundary.parts.filter(part => part !== removed) }))
-                .filter(boundary => boundary.parts.length > 0);
-            this.selectedItem = undefined;
-            this.drag = undefined;
-            this.surface.requestDraw();
+            this.removePart(this.selectedPart);
         }
+    }
+
+    private removePart(removed: SketchPart): void {
+        this.checkedParts.delete(removed);
+        for (const connection of this.connections.filter(connection =>
+            connection.first === removed || connection.second === removed)) {
+            this.removeConnection(connection);
+        }
+        this.cancelConnection();
+        this.parts = this.parts.filter(part => part !== removed);
+        this.boundaries = this.boundaries
+            .map(boundary => ({ ...boundary, parts: boundary.parts.filter(part => part !== removed) }))
+            .filter(boundary => boundary.parts.length > 0);
+        this.selectedItem = undefined;
+        this.drag = undefined;
+        this.surface.requestDraw();
     }
 
     ngAfterViewInit(): void {

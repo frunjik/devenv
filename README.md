@@ -49,14 +49,17 @@ Above the mobile breakpoint, name and type share the left half side by side,
 matching Load overview's width, with Add beneath them.
 Technical picture is stacked above Load overview on the left, with both
 buttons anchored to the bottom of the toolbar above the canvas.
-Above the mobile breakpoint, the Connections panel starts at the same height
+Above the mobile breakpoint, the canvas Items panel starts at the same height
 as Label and Type on the right. Its list fills the right half (six global grid
 columns), with removal and connection actions below. On mobile the list spans
 both control columns.
 The right-side actions anchor to the bottom of the toolbar above the canvas,
-while the Connections list stays aligned with the top of the left fields.
-Connections are an always-visible checkbox list above Remove selected, with
-a scrollbar when the list exceeds its 12rem maximum height. Connection rows
+while the Items list stays aligned with the top of the left fields.
+All canvas parts and connections appear in an always-visible checkbox list above
+Remove selected, with parts first and connections second. The heading shows total
+parts, total connections and the number checked. Checking an item does not change
+the canvas selection used for label editing. The list has
+a scrollbar when it exceeds its 12rem maximum height. Item rows
 use compact text and a 28px minimum height, expanding when labels wrap. Connect and Cancel
 sit below toward the same right edge, followed by picture loading. Narrow screens use two
 control columns without splitting the canvas. Wide buttons (Add, Remove selected
@@ -66,7 +69,9 @@ cells above the 42rem mobile breakpoint. Replacement confirmation stays
 content-sized. Both variants
 retain a compact 36px minimum height.
 One **Remove selected** action removes the selected part, its incident
-connections, any connection selected on the canvas and all checked connections.
+connections, any connection selected on the canvas, all checked parts and their
+incident connections, and all checked connections. Confirming picture replacement
+clears both kinds of checkbox selection; cancelling preserves them.
 
 ## Work time evidence
 

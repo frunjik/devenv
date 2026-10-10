@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: List and select every canvas item
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-all-items`
+
+Completed combined list of all parts and connections, with independent checkboxes and total/selected counts. Remove selected deletes checked parts, incident links, checked connections and canvas selection through shared cleanup. Replacement clears checks; cancellation preserves them. Red observed before implementation. 129 tests, 100% editor-module coverage, TypeScript check and client build pass. Runtime validates all twelve overview items, scrolling/no overflow at 320/360/768/1280px and mixed removal. Existing no-rendered-area pointer console errors observed during viewport resizing, also present before this change; not changed in scope. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: Anchor left picture actions above canvas
 
 **Status:** Completed

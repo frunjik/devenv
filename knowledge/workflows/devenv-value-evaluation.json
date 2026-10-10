@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-all-items",
+      "title": "List and select every canvas item",
+      "beneficiary": "User editing canvas parts and connections",
+      "intendedOutcome": "All canvas items are listed and can be checked for combined removal.",
+      "successCondition": "List every part and connection independently of canvas selection, allow multiple checked parts and links, remove incident links with deleted parts and preserve replacement/cancellation semantics and compact scrolling layout.",
+      "baseline": "List contains all connections but no parts. User clarified all parts and connections, then approved checkboxes for both and removal of multiple parts with incident links. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:09:27.403+02:00",
+      "completedAt": "2026-10-10T19:12:02.2242053+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "All parts and connections with independent checks and combined removal.", "evidence": "Request and two clarification answers." },
+        { "metricId": "decision-latency", "value": null, "evidence": "Clarification response timestamps not captured." },
+        { "metricId": "delivery-flow-and-effort", "value": "2 minutes 34.821 seconds elapsed including clarification. Human active effort and waiting unknown.", "evidence": "Request and local completion clock." },
+        { "metricId": "outcome-and-quality", "value": "Parts precede connections, with type prefixes and total/checked counts. Existing deletion cleanup extracted for selected and checked parts; checked membership, incident links and technical boundaries cleaned. Red observed with zero part checkboxes. 129 editor tests pass, 100% statements/branches/functions/lines for changed TypeScript module, TypeScript no-emit check and client build pass without warnings. Existing injected canvas/scheduler fakes reused; no test application filesystem/network I/O. Live UI shows six parts plus six links at 320/360/768/1280px, 192px cap and no horizontal overflow. Checking two parts and one nonincident connection then removing leaves four parts and two links, zero checks. Initial runtime attempt encountered hot-reload empty state; reloaded overview and verified. Pointer no-rendered-area console errors observed during viewport resizing, also logged before this change; left outside scope. Actual user benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts; canvas-diagram-editor.component.html; canvas-diagram-editor.component.spec.ts; README.md; current session test/coverage/build/type/runtime output." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-bottom-picture-actions",
       "title": "Anchor left picture actions above canvas",
       "beneficiary": "User editing canvas pictures",

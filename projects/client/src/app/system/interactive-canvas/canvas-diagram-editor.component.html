@@ -17,23 +17,31 @@
             <button class="button-wide" type="button" aria-label="Add part" [disabled]="!!selectedPart || !!selectedConnection || !!connectionSource"
                 (click)="addPart()">Add part</button>
         </div>
-        <section class="connection-controls" aria-label="Connections">
+        <section class="connection-controls" aria-label="Canvas items">
             <div class="connection-picker">
-                <p id="connections-heading">Connections ({{ checkedConnections.size }} selected)</p>
+                <p id="connections-heading">Items ({{ parts.length }} parts, {{ connections.length }} connections; {{ checkedParts.size + checkedConnections.size }} selected)</p>
                 <div class="connection-options" role="group" aria-labelledby="connections-heading">
+                    @for (part of parts; track part.id) {
+                        <label class="item-option part-option">
+                            <input #partCheck type="checkbox" [checked]="checkedParts.has(part)"
+                                (change)="checkPart(part, partCheck.checked)">
+                            <span>Part: {{ part.label }}{{ part.technology ? ' (' + part.technology + ')' : '' }}</span>
+                        </label>
+                    }
                     @for (connection of connections; track connection.id) {
-                        <label class="connection-option">
+                        <label class="item-option connection-option">
                             <input #check type="checkbox" [checked]="checkedConnections.has(connection)"
                                 (change)="checkConnection(connection, check.checked)">
-                            <span>{{ connection.first.label }} {{ connection.directed ? '->' : '-' }} {{ connection.second.label }}: {{ connection.label }}{{ connection.technology ? ' (' + connection.technology + ')' : '' }}</span>
+                            <span>Connection: {{ connection.first.label }} {{ connection.directed ? '->' : '-' }} {{ connection.second.label }}: {{ connection.label }}{{ connection.technology ? ' (' + connection.technology + ')' : '' }}</span>
                         </label>
-                    } @empty {
-                        <p>No connections yet.</p>
+                    }
+                    @if (parts.length === 0 && connections.length === 0) {
+                        <p>No items yet.</p>
                     }
                 </div>
             </div>
             <button class="button-wide" type="button" aria-label="Remove selected"
-                [disabled]="!selectedPart && !selectedConnection && checkedConnections.size === 0"
+                [disabled]="!selectedPart && !selectedConnection && checkedParts.size === 0 && checkedConnections.size === 0"
                 (click)="removeSelected()">Remove selected</button>
             <button class="button-small connect-action" type="button" aria-label="Connect selected part" [disabled]="!selectedPart"
                 (click)="startConnection()">Connect</button>

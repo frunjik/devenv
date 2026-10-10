@@ -153,7 +153,12 @@ describe('CanvasDiagramEditor', () => {
     }
 
     function checkLine(index: number): void {
-        host.querySelectorAll<HTMLInputElement>('.connection-picker input')[index].click();
+        host.querySelectorAll<HTMLInputElement>('.connection-option input')[index].click();
+        fixture.detectChanges();
+    }
+
+    function checkPartRow(index: number): void {
+        host.querySelectorAll<HTMLInputElement>('.part-option input')[index].click();
         fixture.detectChanges();
     }
 
@@ -175,7 +180,7 @@ describe('CanvasDiagramEditor', () => {
         createEditor();
         const groups = host.querySelectorAll('.canvas-toolbar > [role="group"], .canvas-toolbar > section');
         expect(Array.from(groups, group => group.getAttribute('aria-label'))).toEqual([
-            'Parts', 'Connections', 'Load picture',
+            'Parts', 'Canvas items', 'Load picture',
         ]);
         const controls = groups[0].querySelectorAll('input, select, button');
         expect(Array.from(controls, control => control.getAttribute('aria-label'))).toEqual([
@@ -378,7 +383,7 @@ describe('CanvasDiagramEditor', () => {
 
         it('uses arrow direction and technology in the HTML connection picker', () => {
             const labels = [...host.querySelectorAll('.connection-option span')].map(span => span.textContent);
-            expect(labels).toContain('DevEnv client -> DevEnv API: Requests data and actions (HTTP / JSON; test responses stream NDJSON)');
+            expect(labels).toContain('Connection: DevEnv client -> DevEnv API: Requests data and actions (HTTP / JSON; test responses stream NDJSON)');
             expect(host.textContent).toContain('compile-time library');
         });
 
@@ -568,8 +573,104 @@ describe('CanvasDiagramEditor', () => {
         });
     });
 
-    describe('connection picker', () => {
+    describe('canvas item picker', () => {
         beforeEach(() => { createEditor(); loadOverview(); });
+
+        it('lists all parts and connections and removes checked parts with their incident links', () => {
+            const partChecks = host.querySelectorAll<HTMLInputElement>('.part-option input');
+            expect(partChecks).toHaveLength(editor.parts.length);
+            expect(host.querySelectorAll('.connection-option input')).toHaveLength(editor.connections.length);
+            const removed = editor.parts.slice(0, 2);
+            const retainedConnections = editor.connections.filter(connection =>
+                !removed.includes(connection.first) && !removed.includes(connection.second));
+            partChecks[0].click();
+            partChecks[1].click();
+            fixture.detectChanges();
+            expect(button('Remove selected').disabled).toBe(false);
+            expect(editor.selectedPart).toBeUndefined();
+            clickButton('Remove selected');
+            expect(editor.parts).toHaveLength(4);
+            expect(editor.parts).not.toContain(removed[0]);
+            expect(editor.parts).not.toContain(removed[1]);
+            expect(editor.connections).toEqual(retainedConnections);
+            expect(button('Remove selected').disabled).toBe(true);
+        });
+
+        it('unchecks a part without removing it or changing canvas selection', () => {
+            clickCanvas(289, 80);
+            const selected = editor.selectedConnection;
+            checkPartRow(0);
+            expect(editor.checkedParts.size).toBe(1);
+            expect(editor.selectedConnection).toBe(selected);
+            expect(editor.labelPurpose).toBe('Connection label');
+            checkPartRow(0);
+            expect(editor.checkedParts.size).toBe(0);
+            expect(editor.parts).toHaveLength(6);
+            expect(editor.selectedConnection).toBe(selected);
+        });
+
+        it('removes checked parts, checked connections and the canvas selection together', () => {
+            const retainedParts = editor.parts.slice(1);
+            const retainedConnections = editor.connections.filter(connection =>
+                connection.first !== editor.parts[0] && connection.second !== editor.parts[0] &&
+                connection !== editor.connections[2]);
+            checkPartRow(0);
+            checkLine(2);
+            clickCanvas(59, 59);
+            clickButton('Connect selected part');
+            clickButton('Remove selected');
+            expect(editor.parts).toEqual(retainedParts);
+            expect(editor.connections).toEqual(retainedConnections);
+            expect(editor.checkedParts.size).toBe(0);
+            expect(editor.checkedConnections.size).toBe(0);
+            expect(editor.connectionSource).toBeUndefined();
+            expect(editor.selectedPart).toBeUndefined();
+            expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(0);
+            expect(button('Remove selected').disabled).toBe(true);
+        });
+
+        it('cleans part checks on individual removal and preserves other checked parts', () => {
+            checkPartRow(0);
+            checkPartRow(1);
+            const retained = editor.parts[1];
+            clickCanvas(59, 59);
+            editor.removeSelectedPart();
+            fixture.detectChanges();
+            expect([...editor.checkedParts]).toEqual([retained]);
+            clickButton('Remove selected');
+            expect(editor.parts).not.toContain(retained);
+            expect(editor.checkedParts.size).toBe(0);
+        });
+
+        it('preserves part checks on cancelled replacement and clears them on confirmed replacement', () => {
+            checkPartRow(0);
+            const original = editor.parts[0];
+            loadOverview();
+            clickButton('Cancel replacement');
+            expect([...editor.checkedParts]).toEqual([original]);
+            expect(host.querySelector('.part-option input:checked')).not.toBeNull();
+            replaceOverview();
+            expect(editor.checkedParts.size).toBe(0);
+            expect(host.querySelector('.part-option input:checked')).toBeNull();
+            expect(button('Remove selected').disabled).toBe(true);
+        });
+
+        it('removes every checked technical part, incident link and emptied boundary', () => {
+            clickButton('Load DevEnv technical picture');
+            clickButton('Confirm replacement');
+            const rows = host.querySelectorAll<HTMLInputElement>('.part-option input');
+            expect(rows).toHaveLength(editor.parts.length);
+            expect(host.querySelectorAll('.connection-option input')).toHaveLength(editor.connections.length);
+            rows.forEach(row => row.click());
+            fixture.detectChanges();
+            clickButton('Remove selected');
+            expect(editor.parts).toEqual([]);
+            expect(editor.connections).toEqual([]);
+            expect(editor.boundaries).toEqual([]);
+            expect(editor.checkedParts.size).toBe(0);
+            expect(host.querySelector('.connection-options')?.textContent).toContain('No items yet.');
+            expect(button('Remove selected').disabled).toBe(true);
+        });
 
         it('removes a selected part and checked connections through one action', () => {
             const removedPart = editor.parts[1];
@@ -594,10 +695,10 @@ describe('CanvasDiagramEditor', () => {
             expect(editor.selectedConnection).toBeUndefined();
         });
 
-        it('shows six unchecked lines without a disclosure and one disabled removal button', () => {
+        it('shows all twelve unchecked items without a disclosure and one disabled removal button', () => {
             expect(host.querySelector('.connection-picker details, details.connection-picker')).toBeNull();
             expect(host.querySelector('.connection-options')?.getAttribute('aria-labelledby')).toBe('connections-heading');
-            expect(host.querySelectorAll('.connection-picker input')).toHaveLength(6);
+            expect(host.querySelectorAll('.connection-picker input')).toHaveLength(12);
             expect(host.querySelectorAll('[aria-label="Remove selected"]')).toHaveLength(1);
             expect(host.querySelector('[aria-label="Delete selected connections"]')).toBeNull();
             expect(button('Remove selected').disabled).toBe(true);

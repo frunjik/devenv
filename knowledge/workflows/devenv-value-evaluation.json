@@ -34,6 +34,40 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-actor-top-margin",
+      "title": "Add top clearance to Actor bounds",
+      "beneficiary": "User editing actor symbols",
+      "intendedOutcome": "Give the Actor selection box extra top clearance without moving the figure.",
+      "successCondition": "Add 10px above the existing drawing area, retain bottom clearance, and keep interaction and connection geometry consistent without changing other shapes.",
+      "baseline": "Uncommitted Actor bounds are 60x90 with bottom clearance only. Tracking and measurement retained for this follow-up.",
+      "startedAt": "2026-10-10T18:46:10.737+02:00",
+      "completedAt": "2026-10-10T18:47:25.8970593+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Add matching extra room above the Actor while keeping its drawing in place.", "evidence": "Current request." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "1 minute 15.160 seconds elapsed from request to final verification. Active human effort and waiting unknown.", "evidence": "Request and local verification clock." },
+        { "metricId": "outcome-and-quality", "value": "Actor bounds now 60x100 with y shifted upward 10px; drawing stays at its original y and 80px rendering height. Shared bounds update hit area, selection outline, connection center/edges and picture boundaries consistently. Red observed before implementation. All 123 editor tests pass with 100% statement, branch, function and line coverage; TypeScript check, client production build and diagnostics pass. Live screenshot confirms top clearance and unchanged readable figure/label. Existing boundary fakes reused, no test application-data writes or network. No further refactor needed. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts and .spec.ts; README.md; current session test/build/coverage output and live canvas screenshot." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-editor-actor-bounds",
+      "title": "Tighten Actor interaction bounds",
+      "beneficiary": "User editing actor symbols in canvas sketches",
+      "intendedOutcome": "Actor bounding box fits the narrow figure and label rather than a generic rectangle.",
+      "successCondition": "Actor selection outline and hit bounds fit the narrow figure and label at the existing drawing location; dragging, connection endpoints and loaded-picture boundaries consistently use that geometry. Rectangle and other symbol behavior preserved.",
+      "baseline": "At b3a2379 Actor is drawn in a centered 60x80 area but uses generic 180x80 selection/hit/connection geometry. Tracking and measurement retained from editor follow-ups.",
+      "startedAt": "2026-10-10T18:42:08.950+02:00",
+      "completedAt": "2026-10-10T18:45:34.7742104+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Tight Actor interaction bounds while preserving visual position and other symbols.", "evidence": "Current request and inspected editor geometry." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 25.824 seconds elapsed from request to final verification. Active human effort and waiting remain unknown.", "evidence": "Request 2026-10-10T18:42:08.950+02:00 and local clock 2026-10-10T18:45:34.7742104+02:00." },
+        { "metricId": "outcome-and-quality", "value": "Actor interaction bounds reduced from 180x80 to 60x90 at the existing centered drawing position. The figure still renders at 60x80; 10px extra vertical room contains the label. Shared typed bounds drive selection, hit-testing, independent source/target connection edge clipping and loaded-picture boundary extents. Other shapes retain 180x80 behavior. Red observed for oversized outline, followed by Green; live screenshot revealed label touching the bottom border, so another failing assertion preceded label-safe bounds correction. Final 123 editor tests pass with 100% statement, branch, function and line coverage. TypeScript check, client production build and relevant diagnostics pass. Tests cover outside hit rejection, dragging, exact horizontal connection endpoints and conversion back to rectangle; existing technical/boundary/connection behavior preserved. Live creation, outside click, drag and rectangle-to-actor connection verified; final screenshot confirms narrow frame around figure and readable label with clearance. Plain Canvas/Scheduler boundary fakes reused, no test application-data writes/network. No unrelated refactor; shared geometry avoids inconsistent duplicated bounds. User benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts and .spec.ts; README.md; current session tests, coverage, type-check, build, diagnostics and live http://localhost:4200/interactive-canvas screenshots/interactions." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-editor-button-growth",
       "title": "Grow small toolbar buttons when space permits",
       "beneficiary": "User editing canvas sketches",

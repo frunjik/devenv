@@ -191,6 +191,31 @@ describe('CanvasDiagramEditor', () => {
         expect(editor.parts[0].shape).toBe('artifact');
     });
 
+    it('uses tight actor bounds for selection, dragging and connection endpoints', () => {
+        createEditor();
+        chooseShape('actor');
+        enterLabel('Dev');
+        clickButton('Add part');
+        clickCanvas(100, 40);
+        surface.paint();
+        expect(surface.boxes).toContainEqual([84, 14, 60, 100]);
+        clickCanvas(40, 40);
+        expect(editor.selectedPart).toBeUndefined();
+        drag(100, 40, 320, 160);
+        expect(editor.parts[0].position).toEqual({ x: 244, y: 144 });
+        clickCanvas(600, 300);
+        chooseShape('rectangle');
+        clickButton('Add part');
+        drag(60, 60, 540, 156);
+        connect(320, 160, 540, 160);
+        surface.paint();
+        expect(surface.paths).toContainEqual([[364, 184], [528, 184]]);
+        clickCanvas(320, 160);
+        chooseShape('rectangle');
+        clickCanvas(260, 160);
+        expect(editor.selectedPart).toBe(editor.parts[0]);
+    });
+
     it.each([
         ['artifact', 'Artifact:'], ['system-software', 'System software:'],
         ['business-role', 'Business role:'], ['product', 'Product:'], ['actor', ''],
@@ -203,7 +228,8 @@ describe('CanvasDiagramEditor', () => {
         expect(editor.parts[0].label).toBe('Name');
         expect(surface.draws.map(draw => draw[0])).toContain(kind === 'actor' ? 'Name' : '<Name>');
         if (heading) expect(surface.draws.map(draw => draw[0])).toContain(heading);
-        drag(40, 40, 260, 160);
+        const actorOffset = kind === 'actor' ? 60 : 0;
+        drag(40 + actorOffset, 40, 260 + actorOffset, 160);
         expect(editor.parts[0].position).toEqual({ x: 244, y: 144 });
         enterLabel('Changed');
         surface.paint();
@@ -211,9 +237,9 @@ describe('CanvasDiagramEditor', () => {
         clickCanvas(600, 300);
         chooseShape('rectangle');
         clickButton('Add part');
-        connect(260, 160, 60, 60);
+        connect(260 + actorOffset, 160, 60, 60);
         expect(editor.connections).toHaveLength(1);
-        clickCanvas(260, 160);
+        clickCanvas(260 + actorOffset, 160);
         clickButton('Remove selected');
         expect(editor.parts).toHaveLength(1);
         expect(editor.connections).toHaveLength(0);

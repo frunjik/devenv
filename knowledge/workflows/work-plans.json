@@ -10,6 +10,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-actor-bounds",
+          "title": "Tighten Actor interaction bounds",
+          "description": "Completed tight Actor bounds, including follow-up top clearance: 60x100 interaction box with 10px extra room above and below the unchanged 60x80 drawing area. Shared geometry drives hit-testing, selection outlines, connections and picture boundaries; other shapes remain 180x80. Follow-up Red/Green verified 123 editor tests, 100% coverage, TypeScript check, client build and live screenshot with top/label clearance. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-actor-bounds", "canvas-editor-actor-top-margin"]
+        }, {
           "id": "canvas-editor-button-variants",
           "title": "Use small and grid-filling wide editor buttons",
           "description": "Completed wide Add/Remove/picture actions and responsive small Connect/Cancel: fill grid cells above 42rem, content-sized on mobile. Replacement controls, 36px minimum height and canvas unchanged. Initial variants passed 122 editor tests. Follow-up runtime assertions pass at 320, 360, 672, 673, 768 and 1280px; client build passes and no overflow. Next step: user review and optional commit approval.",

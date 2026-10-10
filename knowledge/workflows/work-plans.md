@@ -14,6 +14,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Tighten Actor interaction bounds
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-actor-bounds`, `canvas-editor-actor-top-margin`
+
+Completed tight Actor bounds, including follow-up top clearance: 60x100 interaction box with 10px extra room above and below the unchanged 60x80 drawing area. Shared geometry drives hit-testing, selection outlines, connections and picture boundaries; other shapes remain 180x80. Follow-up Red/Green verified 123 editor tests, 100% coverage, TypeScript check, client build and live screenshot with top/label clearance. Initial and follow-up evidence retained in linked evaluations. Next step: user review and optional commit approval.
+
 #### WorkTask: Use small and grid-filling wide editor buttons
 
 **Status:** Completed

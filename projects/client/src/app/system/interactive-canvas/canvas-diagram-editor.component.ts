@@ -7,6 +7,7 @@ import { validateDiagramDocument } from '@shared';
 import overview from './devenv-overview.json';
 import { createTechnicalPicture } from './technical-picture';
 import { drawActor, drawArtifact, drawBusinessRole, drawProduct, drawSystemSoftware } from './canvas-symbols';
+import type { SymbolBounds } from './canvas-symbols';
 
 type PictureKind = 'overview' | 'technical';
 type PartShape = 'rectangle' | 'artifact' | 'system-software' | 'business-role' | 'product' | 'actor';
@@ -249,9 +250,11 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             return;
         }
         const point = this.surface.point(event);
-        const part = [...this.parts].reverse().find(candidate =>
-            point.x >= candidate.position.x && point.x <= candidate.position.x + 180
-            && point.y >= candidate.position.y && point.y <= candidate.position.y + 80);
+        const part = [...this.parts].reverse().find(candidate => {
+            const bounds = this.partBounds(candidate);
+            return point.x >= bounds.x && point.x <= bounds.x + bounds.width
+                && point.y >= bounds.y && point.y <= bounds.y + bounds.height;
+        });
         if (this.connectionSource) {
             if (!part) {
                 return;
@@ -367,15 +370,28 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         this.surface.destroy();
     }
 
+    private partBounds(part: SketchPart): SymbolBounds {
+        const { x, y } = part.position;
+        // Preserve the actor's existing center while tightening its interaction bounds.
+        return part.shape === 'actor'
+            ? { x: x + 60, y: y - 10, width: 60, height: 100 }
+            : { x, y, width: 180, height: 80 };
+    }
+
     private connectionLine(connection: SketchConnection) {
-        const first = { x: connection.first.position.x + 90, y: connection.first.position.y + 40 };
-        const second = { x: connection.second.position.x + 90, y: connection.second.position.y + 40 };
+        const firstBounds = this.partBounds(connection.first);
+        const secondBounds = this.partBounds(connection.second);
+        const first = { x: firstBounds.x + firstBounds.width / 2, y: firstBounds.y + firstBounds.height / 2 };
+        const second = { x: secondBounds.x + secondBounds.width / 2, y: secondBounds.y + secondBounds.height / 2 };
         const dx = second.x - first.x;
         const dy = second.y - first.y;
-        const scale = dx === 0 && dy === 0 ? 0 : Math.min(0.5, 90 / Math.abs(dx), 40 / Math.abs(dy));
+        const firstScale = dx === 0 && dy === 0 ? 0
+            : Math.min(0.5, firstBounds.width / 2 / Math.abs(dx), firstBounds.height / 2 / Math.abs(dy));
+        const secondScale = dx === 0 && dy === 0 ? 0
+            : Math.min(0.5, secondBounds.width / 2 / Math.abs(dx), secondBounds.height / 2 / Math.abs(dy));
         return {
-            first: { x: first.x + dx * scale, y: first.y + dy * scale },
-            second: { x: second.x - dx * scale, y: second.y - dy * scale },
+            first: { x: first.x + dx * firstScale, y: first.y + dy * firstScale },
+            second: { x: second.x - dx * secondScale, y: second.y - dy * secondScale },
         };
     }
 
@@ -395,10 +411,11 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             );
         }
         for (const boundary of this.boundaries) {
-            const left = Math.min(...boundary.parts.map(part => part.position.x)) - 28;
-            const top = Math.min(...boundary.parts.map(part => part.position.y)) - 48;
-            const right = Math.max(...boundary.parts.map(part => part.position.x + 180)) + 28;
-            const bottom = Math.max(...boundary.parts.map(part => part.position.y + 80)) + 28;
+            const bounds = boundary.parts.map(part => this.partBounds(part));
+            const left = Math.min(...bounds.map(part => part.x)) - 28;
+            const top = Math.min(...bounds.map(part => part.y)) - 48;
+            const right = Math.max(...bounds.map(part => part.x + part.width)) + 28;
+            const bottom = Math.max(...bounds.map(part => part.y + part.height)) + 28;
             context.lineWidth = 1;
             context.strokeRect(left, top, right - left, bottom - top);
             context.font = '16px sans-serif';
@@ -407,16 +424,17 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         for (const part of this.parts) {
             const { x, y } = part.position;
             if (part.shape && part.shape !== 'rectangle') {
-                const bounds = { x, y, width: 180, height: 80 };
+                const bounds = this.partBounds(part);
                 if (part.shape === 'actor') {
-                    drawActor(context, { ...bounds, x: x + 60, width: 60 }, part.label);
+                    // Keep the drawing in place inside the padded interaction bounds.
+                    drawActor(context, { ...bounds, y, height: 80 }, part.label);
                 } else {
                     const symbol = symbolRenderers[part.shape];
                     symbol.draw(context, bounds, [symbol.heading, `<${part.label}>`]);
                 }
                 if (part === this.selectedPart) {
                     context.lineWidth = 3;
-                    context.strokeRect(x, y, 180, 80);
+                    context.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
                 }
                 continue;
             }

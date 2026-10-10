@@ -38,8 +38,11 @@ In `/interactive-canvas`, the Type picker offers Rectangle, Artifact, System
 software, Business role, Product and Actor. Choose a shape and enter a name before
 adding a part, or change the shape of a selected part. The shared label input edits
 only the name: an artifact named `AI Workflow` displays `Artifact:` and
-`<AI Workflow>`. Actor names appear below the figure. Shapes support the existing
-selection, dragging, connection and removal controls. Overview and technical
+`<AI Workflow>`. Actor names appear below the figure.
+Actor selection and hit bounds are 60x100 logical pixels, with 10px of extra
+room above and below the original rendering area, around the figure and
+label, rather than the 180x80 box bounds; connection endpoints use these bounds.
+Shapes support the existing selection, dragging, connection and removal controls. Overview and technical
 pictures continue to load as rectangles; edits remain in-memory sketches.
 Controls align to the global grid: name and type come before Add and Remove,
 followed by connection actions and picture loading. Narrow screens use two

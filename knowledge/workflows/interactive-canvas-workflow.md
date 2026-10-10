@@ -282,6 +282,14 @@ Assess whether this approach feels better than the existing editor; tests alone 
 
 ### Measurement and verification
 
+### Metrics tracking repair
+
+On 2026-10-10 the user identified that recent follow-ups had narrative verification but no structured evaluations. With approval, four retrospective entries were added to [the authoritative evaluation ledger](./devenv-value-evaluation.json): `canvas-page-height-and-controls`, `canvas-compact-grid-toolbar`, `canvas-technical-picture` and `visual-foundations-preview`. They are associated with this workflow in [the registry](./workflow-todo-list.json). Historical narrative checkpoints remain context, not independently maintained metric records.
+
+The entries preserve supported baseline/results and linked commits, explicitly disclose retrospective registration and leave unrecorded start/completion timestamps, decision latency, active effort, overhead and user benefit unknown. Verified delivery is recorded in outcome evidence without inventing an exact completion time. This repair does not retroactively establish pre-work tracking.
+
+Execution for the existing metrics opt-in: create and associate each eligible evaluation before implementation; update the same record after verification; verify registration and evidence before pausing or committing. This applies the already-agreed tracking choice, not a new ruleset. Next: obtain user feedback on the technical picture and visual preview and append that evidence to these evaluations; do not infer benefit from passing tests.
+
 The completed clock evaluation is preserved. The `interactive-canvas-editor-milestone` record in [devenv-value-evaluation.json](./devenv-value-evaluation.json) tracks the new first milestone with all five existing metrics. Its ID is a bookkeeping identifier, not an adopted domain Term. Keep unknown measures unknown and do not record completion until acceptance is verified. Track subsequent eligible slices separately as they begin, retaining their links in the workflow registry.
 
 For each production slice: Red-Green-Refactor, public-interface tests, 100% statement/branch/function/line coverage for changed modules, Type review, an appropriate client build, and real browser/pointer checks. Tests mock external boundaries and do not mutate the real filesystem. Record acceptance evidence, elapsed time, observed decision points, and unresolved user outcomes without inferring active effort or AI credits.

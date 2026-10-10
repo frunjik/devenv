@@ -34,6 +34,74 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-page-height-and-controls",
+      "title": "Fill the canvas page and move connection controls above the workspace",
+      "beneficiary": "DevEnv canvas editor users",
+      "intendedOutcome": "Use the available page height for the sketch without placing connection controls below it.",
+      "successCondition": "Canvas fills the remaining editor height; Connections controls precede the workspace; narrow screens retain usable scrolling.",
+      "baseline": "Browser measurement before the successful repair: canvas height 362 px at a 734 x 1294 viewport; Connections controls were below the canvas and the page overflowed the viewport.",
+      "startedAt": null,
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Retrospective entry recorded on 2026-10-10 after implementation. User requested page-height canvas and controls above it; a previous purported fix did not achieve those outcomes. This is not evidence of a pre-work structured evaluation.", "evidence": "Session conversation: user correction and browser verification; commit 2b7e869." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "At the same 734 x 1294 viewport, repaired canvas height measured 705.4375 px and page scroll height 1294 px. Browser checks passed at 1440 x 900, 375 x 812 and 734 x 1294; mobile editor scrolls internally. Overview remained scrollable. A controls-order test and browser layout checks failed before the successful repair. 135 canvas/app-shell tests and shared/client builds passed. Earlier edit-first attempts and premature completion claims required rework; the final repair used fail-first checks. User acceptance and subsequent defects remain unknown.", "evidence": "Session browser dimension/check outputs and Jest/build outputs; commit 2b7e869; interactive-canvas-workflow.md#metrics-tracking-repair." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-compact-grid-toolbar",
+      "title": "Compact canvas controls using the global layout grid",
+      "beneficiary": "DevEnv canvas editor users",
+      "intendedOutcome": "Reduce space occupied by controls so more of the page is available for the canvas.",
+      "successCondition": "Use the shared grid and spacing, combine controls on wide screens, remove empty status space and preserve wrapping, messages and 44 px targets.",
+      "baseline": "Empty-editor header measured 260.375 px at a 1873 x 1000 viewport before the compact layout.",
+      "startedAt": null,
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Retrospective entry recorded on 2026-10-10 after implementation. User explicitly requested global-grid layout and a less tall top row. The <=150 px desktop check was an implementation acceptance threshold, not a user-specified number.", "evidence": "Session request, baseline measurement and fail-first browser check; commit fa36c2c." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "Header measured 124.375 px at the same viewport: reduction 136 px, approximately 52.23%. Verified 12-column layout on wider screens and one column at 375 px, no horizontal overflow, 44 px targets, hidden empty status and visible connection messages. Browser checks covered widths 1873, 1440, 1024, 734 and 375 px. Responsive verification exposed incorrectly nested media rules, which were corrected before final verification. 97 canvas tests and production client build passed. User-perceived improvement and follow-up defects remain unknown.", "evidence": "Session baseline/completion browser outputs, responsive-grid checks and tests/build; commit fa36c2c; interactive-canvas-workflow.md#metrics-tracking-repair." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "canvas-technical-picture",
+      "title": "Show DevEnv local-development architecture in the canvas",
+      "beneficiary": "People learning how DevEnv's technical parts relate",
+      "intendedOutcome": "Provide an editable technical picture with clear direction and execution boundaries, derived from the architecture source.",
+      "successCondition": "Load nine parts and nine directed relationships, technologies and Browser/Development host boundaries; preserve existing sketch behavior and require confirmation before replacement.",
+      "baseline": "Only the six-part purpose overview could be loaded; connections were undirected and no execution boundaries were drawn. Existing editor suite had 97 passing tests.",
+      "startedAt": null,
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Retrospective entry recorded on 2026-10-10 after implementation. User approved directed arrows, execution boundaries and relocation of the unchanged authoritative architecture JSON into the canvas feature for curated clones. The view is an editable copy, not architecture-source editing.", "evidence": "interactive-canvas-workflow.md#technical-picture-follow-up-2026-10-10; session approvals; commit 72d52bb." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "Observed fail-first cycles for load control, boundary/arrow rendering and directed-source validation. 131 targeted client tests plus 28 clone-package tests passed; editor and technical adapter reached 100% statement/branch/function/line coverage. Client production build passed. Browser verified desktop/mobile content, nine relationships, minimum 1400 x 880 diagram extent, scrolling, moving boundary rendering and cancellation/replacement. Relationship labels were repositioned after visual inspection. Source content was preserved by relocation and derived Markdown regenerated. Architecture accuracy and improved user comprehension are not established; follow-up defects remain unknown.", "evidence": "interactive-canvas-workflow.md#technical-picture-follow-up-2026-10-10; session browser/tests/build outputs; commit 72d52bb." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
+      "id": "visual-foundations-preview",
+      "title": "Try an isolated DevEnv visual-foundations preview",
+      "beneficiary": "DevEnv users and contributors evaluating visual clarity",
+      "intendedOutcome": "Compare typography hierarchy and semantic states before deciding whether to apply them to existing screens.",
+      "successCondition": "Provide an isolated preview using current font/palette and global tokens, with typography, color roles, local control states and an illustrative diagram; preserve accessible targets and responsive layout.",
+      "baseline": "DevEnv had palette/layout styling but no comparison page. No user readability or preference baseline was measured.",
+      "startedAt": null,
+      "completedAt": null,
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Retrospective entry recorded on 2026-10-10 after implementation. User agreed to a small preview following the typography/color screenshot. It does not adopt the Figma design system, copy its assets or restyle existing screens.", "evidence": "interactive-canvas-workflow.md#visual-foundations-preview-trial-2026-10-10; session agreement; commit 9bcc4e9." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "Route and Tools-link tests failed before wiring. 53 targeted tests passed; preview component has 100% statement/branch/function/line coverage; production client build passed. Browser checked widths 1440, 734 and 375 px, shared grid, contained diagram scrolling, no page horizontal overflow, 44 px control heights, selection toggle and 2 px keyboard focus outline. Sample secondary/feedback text exceeded 4.5:1 contrast; primary-action text measured 4.95:1. A later screenshot scroll attempt timed out after successful browser checks; no full accessibility audit is claimed. Readability improvement, user preference and follow-up defects remain unknown.", "evidence": "interactive-canvas-workflow.md#visual-foundations-preview-trial-2026-10-10; session browser contrast/layout/test outputs; commit 9bcc4e9." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "ruleset-reduction",
       "title": "Create a substantially smaller repository ruleset",
       "beneficiary": "DevEnv user and contributors working with the assistant",

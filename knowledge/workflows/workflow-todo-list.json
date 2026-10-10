@@ -218,7 +218,11 @@
         "canvas-diagram-connections",
         "canvas-shared-label-input",
         "canvas-devenv-overview",
-        "canvas-connection-picker"
+        "canvas-connection-picker",
+        "canvas-page-height-and-controls",
+        "canvas-compact-grid-toolbar",
+        "canvas-technical-picture",
+        "visual-foundations-preview"
       ],
       "primaryWorkPurpose": "Product work",
       "status": "Paused",

@@ -32,6 +32,16 @@ Reusable vector symbols and an isolated preview inspired by the supplied archite
 
 Artifact, system software, business role, product and actor symbols with hatching and labels.
 
+#### WorkTask: Synchronize list and canvas selection
+
+**Status:** Completed
+
+**Measurement:** Measured
+
+**Evaluations:** `canvas-editor-synchronized-selection`
+
+Completed one ordered selection set for canvas and checkboxes. Clicks/checks toggle membership, last selected item drives editing, deselection falls back to the last remaining item, and empty canvas clears all outside connection mode. Dragging preserves membership and makes the dragged part active; all selected items are highlighted. Shared cleanup/replacement preserved. Red observed before production changes; 136 editor tests pass with 100% module coverage, test TypeScript check and client build pass. Live desktop synchronization, label editing, fallback, dragging and clearing verified; mobile list editing/clearing and no overflow verified. Tracking and measurement retained. Next step: user review and optional commit approval.
+
 #### WorkTask: Load an editable default workflow template
 
 **Status:** Completed

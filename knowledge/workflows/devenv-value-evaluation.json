@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "canvas-editor-synchronized-selection",
+      "title": "Synchronize list and canvas selection",
+      "beneficiary": "User selecting and editing canvas items",
+      "intendedOutcome": "Checkbox selection and canvas selection represent the same items.",
+      "successCondition": "Bidirectional multi-selection toggles membership, last selected item is active, deselecting active falls back to the last remaining item, empty canvas clears all, and dragging keeps a selected part selected.",
+      "baseline": "Canvas holds one active item independently of checked part/connection sets. User approved unified multi-selection, last-selected editing with fallback, clearing on empty clicks and dragging without deselecting. Tracking and measurement retained.",
+      "startedAt": "2026-10-10T19:26:29.268+02:00",
+      "completedAt": "2026-10-10T19:30:16.0200293+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "Unified canvas/list multi-selection with active editor fallback and drag preservation.", "evidence": "Request and three clarification answers." },
+        { "metricId": "decision-latency", "value": null, "evidence": "Clarification response timestamps not captured." },
+        { "metricId": "delivery-flow-and-effort", "value": "3 minutes 46.752 seconds elapsed including clarification. Human active effort and waiting unknown.", "evidence": "Request and local completion timestamps." },
+        { "metricId": "outcome-and-quality", "value": "One authoritative insertion-ordered selectedItems set; checkedParts/checkedConnections are read-only derived views and active editor item is its last entry. Canvas/list selection and all selected-item outlines use the same state. Stationary clicks deselect on pointer release; movement preserves membership, cancellation preserves checks. Removal snapshots selection to avoid mutation/fallback issues and cleans incident links/boundaries. Confirmed replacement clears selection; cancellation preserves it. Destination picking retains existing connection-mode behavior. Red observed with unchecked row after canvas selection; Green followed by updating stale independent-selection tests and explicit drag, line toggle, highlighting and removal fallback regressions. 136 editor tests pass with 100% statements/branches/functions/lines for changed module; client build and Jest TypeScript no-emit check pass, diagnostics clear. Reused injected canvas/scheduler fakes without internal interception or test application file/network I/O. Live desktop checks verify canvas-to-row synchronization, checkbox label editing, part/connection fallback, click toggling, dragging and empty clear; 360px mobile list editing/clear and no horizontal overflow verified. Human benefit and follow-up defects unknown. Next step: user review and optional commit approval.", "evidence": "projects/client/src/app/system/interactive-canvas/canvas-diagram-editor.component.ts; canvas-diagram-editor.component.spec.ts; README.md; current session test/coverage/type/build/runtime evidence." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "canvas-default-workflow-template",
       "title": "Load an editable default workflow template",
       "beneficiary": "User sketching the CompassDevEnv workflow",

@@ -147,6 +147,7 @@ describe('CanvasDiagramEditor', () => {
     }
 
     function connect(x1: number, y1: number, x2: number, y2: number): void {
+        clickCanvas(10, 10);
         clickCanvas(x1, y1);
         clickButton('Connect selected part');
         clickCanvas(x2, y2);
@@ -267,8 +268,10 @@ describe('CanvasDiagramEditor', () => {
         connect(320, 160, 540, 160);
         surface.paint();
         expect(surface.paths).toContainEqual([[364, 184], [528, 184]]);
+        clickCanvas(600, 300);
         clickCanvas(320, 160);
         chooseShape('rectangle');
+        clickCanvas(600, 300);
         clickCanvas(260, 160);
         expect(editor.selectedPart).toBe(editor.parts[0]);
     });
@@ -297,6 +300,7 @@ describe('CanvasDiagramEditor', () => {
         clickButton('Add part');
         connect(260 + actorOffset, 160, 60, 60);
         expect(editor.connections).toHaveLength(1);
+        clickCanvas(600, 300);
         clickCanvas(260 + actorOffset, 160);
         clickButton('Remove selected');
         expect(editor.parts).toHaveLength(1);
@@ -452,7 +456,8 @@ describe('CanvasDiagramEditor', () => {
             loadOverview();
             clickButton('Cancel replacement');
             expect(editor.technicalLoaded).toBe(true);
-            expect(editor.selectedPart?.label).toBe('DevEnv client');
+            expect(editor.selectedConnection).toBe(editor.connections[0]);
+            expect(editor.checkedParts.has(editor.parts[1])).toBe(true);
             expect(editor.checkedConnections.size).toBe(1);
         });
 
@@ -627,6 +632,72 @@ describe('CanvasDiagramEditor', () => {
     describe('canvas item picker', () => {
         beforeEach(() => { createEditor(); loadOverview(); });
 
+        it('synchronizes canvas and checkbox selection with last-selected editing and fallback', () => {
+            clickCanvas(59, 59);
+            expect(host.querySelector<HTMLInputElement>('.part-option input')?.checked).toBe(true);
+            checkPartRow(1);
+            expect(editor.selectedPart).toBe(editor.parts[1]);
+            expect(editor.checkedParts.size).toBe(2);
+            enterLabel('Edited from list');
+            expect(editor.parts[1].label).toBe('Edited from list');
+            checkLine(2);
+            expect(editor.selectedConnection).toBe(editor.connections[2]);
+            checkLine(2);
+            expect(editor.selectedPart).toBe(editor.parts[1]);
+            clickCanvas(359, 59);
+            expect(editor.checkedParts.has(editor.parts[1])).toBe(false);
+            expect(editor.selectedPart).toBe(editor.parts[0]);
+            clickCanvas(899, 549);
+            expect(editor.checkedParts.size).toBe(0);
+            expect(editor.checkedConnections.size).toBe(0);
+            expect(editor.selectedPart).toBeUndefined();
+            expect(host.querySelectorAll('.connection-picker input:checked')).toHaveLength(0);
+        });
+
+        it('keeps a selected part checked while dragging and toggles it only on a stationary click', () => {
+            checkPartRow(0);
+            checkPartRow(1);
+            drag(59, 59, 159, 159);
+            expect(editor.parts[0].position).toEqual({ x: 140, y: 140 });
+            expect(editor.checkedParts.size).toBe(2);
+            expect(editor.selectedPart).toBe(editor.parts[0]);
+            expect(host.querySelectorAll('.part-option input:checked')).toHaveLength(2);
+            clickCanvas(159, 159);
+            expect(editor.checkedParts.has(editor.parts[0])).toBe(false);
+            expect(editor.selectedPart).toBe(editor.parts[1]);
+        });
+
+        it('preserves selection on pointer cancellation and toggles canvas-selected lines', () => {
+            checkPartRow(0);
+            dispatch('pointerdown', 59, 59);
+            dispatch('pointercancel', 59, 59);
+            expect(editor.checkedParts.has(editor.parts[0])).toBe(true);
+            clickCanvas(289, 80);
+            expect(editor.selectedConnection).toBe(editor.connections[0]);
+            expect(host.querySelector<HTMLInputElement>('.connection-option input')?.checked).toBe(true);
+            clickCanvas(289, 80);
+            expect(editor.checkedConnections.size).toBe(0);
+            expect(editor.selectedPart).toBe(editor.parts[0]);
+        });
+
+        it('highlights every selected item and falls back after deleting the active item', () => {
+            checkPartRow(0);
+            checkPartRow(1);
+            checkLine(2);
+            surface.paint();
+            expect(surface.borders.slice(-6)).toEqual([3, 3, 1, 1, 1, 1]);
+            expect(surface.lineWidths.slice(-6)).toEqual([1, 1, 3, 1, 1, 1]);
+            editor.removeConnection(editor.connections[2]);
+            fixture.detectChanges();
+            expect(editor.selectedPart).toBe(editor.parts[1]);
+            const first = editor.parts[0];
+            editor.removeSelectedPart();
+            fixture.detectChanges();
+            expect(editor.selectedPart).toBe(first);
+            expect(editor.checkedParts.size).toBe(1);
+            expect(host.querySelectorAll('.part-option input:checked')).toHaveLength(1);
+        });
+
         it('lists all parts and connections and removes checked parts with their incident links', () => {
             const partChecks = host.querySelectorAll<HTMLInputElement>('.part-option input');
             expect(partChecks).toHaveLength(editor.parts.length);
@@ -638,7 +709,7 @@ describe('CanvasDiagramEditor', () => {
             partChecks[1].click();
             fixture.detectChanges();
             expect(button('Remove selected').disabled).toBe(false);
-            expect(editor.selectedPart).toBeUndefined();
+            expect(editor.selectedPart).toBe(removed[1]);
             clickButton('Remove selected');
             expect(editor.parts).toHaveLength(4);
             expect(editor.parts).not.toContain(removed[0]);
@@ -647,13 +718,13 @@ describe('CanvasDiagramEditor', () => {
             expect(button('Remove selected').disabled).toBe(true);
         });
 
-        it('unchecks a part without removing it or changing canvas selection', () => {
+        it('unchecks a part without removing it and falls back to the selected connection', () => {
             clickCanvas(289, 80);
             const selected = editor.selectedConnection;
             checkPartRow(0);
             expect(editor.checkedParts.size).toBe(1);
-            expect(editor.selectedConnection).toBe(selected);
-            expect(editor.labelPurpose).toBe('Connection label');
+            expect(editor.selectedPart).toBe(editor.parts[0]);
+            expect(editor.labelPurpose).toBe('Part label');
             checkPartRow(0);
             expect(editor.checkedParts.size).toBe(0);
             expect(editor.parts).toHaveLength(6);
@@ -665,7 +736,6 @@ describe('CanvasDiagramEditor', () => {
             const retainedConnections = editor.connections.filter(connection =>
                 connection.first !== editor.parts[0] && connection.second !== editor.parts[0] &&
                 connection !== editor.connections[2]);
-            checkPartRow(0);
             checkLine(2);
             clickCanvas(59, 59);
             clickButton('Connect selected part');
@@ -681,10 +751,9 @@ describe('CanvasDiagramEditor', () => {
         });
 
         it('cleans part checks on individual removal and preserves other checked parts', () => {
-            checkPartRow(0);
             checkPartRow(1);
+            checkPartRow(0);
             const retained = editor.parts[1];
-            clickCanvas(59, 59);
             editor.removeSelectedPart();
             fixture.detectChanges();
             expect([...editor.checkedParts]).toEqual([retained]);
@@ -737,7 +806,7 @@ describe('CanvasDiagramEditor', () => {
             expect(button('Remove selected').disabled).toBe(true);
         });
 
-        it('removes a directly selected connection even when it is unchecked', () => {
+        it('removes a canvas-selected connection together with another checked connection', () => {
             const retained = editor.connections.slice(2);
             clickCanvas(289, 80);
             checkLine(1);
@@ -778,10 +847,10 @@ describe('CanvasDiagramEditor', () => {
         });
 
         describe('with a canvas-selected line and two checked lines', () => {
-            beforeEach(() => { clickCanvas(289, 80); checkLine(0); checkLine(1); });
+            beforeEach(() => { clickCanvas(289, 80); checkLine(1); });
 
-            it('does not change label-edit selection and enables deletion', () => {
-                expect(editor.selectedConnection).toBe(editor.connections[0]);
+            it('activates the last checked line for editing and enables deletion', () => {
+                expect(editor.selectedConnection).toBe(editor.connections[1]);
                 expect(editor.labelPurpose).toBe('Connection label');
                 expect(button('Remove selected').disabled).toBe(false);
             });
@@ -851,6 +920,7 @@ describe('CanvasDiagramEditor', () => {
             enterLabel('Next component');
             connect(29, 29, 59, 59);
             drag(59, 59, 359, 35);
+            clickCanvas(10, 10);
         });
 
         it('edits the selected part and disables Add', () => {
@@ -929,7 +999,13 @@ describe('CanvasDiagramEditor', () => {
     });
 
     describe('line hit testing', () => {
-        beforeEach(() => { createEditor(); addParts(2); connect(29, 29, 59, 59); drag(59, 59, 359, 35); });
+        beforeEach(() => {
+            createEditor();
+            addParts(2);
+            connect(29, 29, 59, 59);
+            drag(59, 59, 359, 35);
+            clickCanvas(10, 10);
+        });
 
         it.each([58, 70])('selects within the six-pixel tolerance at y=%s', y => {
             clickCanvas(276, y);
@@ -971,6 +1047,7 @@ describe('CanvasDiagramEditor', () => {
             it('follows changed diagonal geometry rather than the previous segment', () => {
                 editor.removeConnection(editor.connections[0]);
                 drag(359, 35, 359, 235);
+                checkLine(0);
                 clickCanvas(276, 164);
                 expect(editor.selectedConnection).toBe(editor.connections[0]);
                 clickCanvas(276, 64);

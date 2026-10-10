@@ -35,6 +35,8 @@ interface CanvasDrag {
     part: SketchPart;
     pointerId: number;
     offset: { x: number; y: number };
+    deselectOnClick: boolean;
+    moved: boolean;
 }
 
 interface SketchConnection {
@@ -66,7 +68,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     private readonly scheduler = inject(SCHEDULER);
     private readonly surface = inject(CANVAS);
     parts: SketchPart[] = [];
-    private selectedItem: SketchPart | SketchConnection | undefined;
+    private readonly selectedItems = new Set<SketchPart | SketchConnection>();
+    private get selectedItem(): SketchPart | SketchConnection | undefined {
+        return [...this.selectedItems].at(-1);
+    }
     connections: SketchConnection[] = [];
     connectionSource: SketchPart | undefined;
     connectionMessage = '';
@@ -93,38 +98,38 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     get technicalLoaded(): boolean { return this.loadedPicture === 'technical'; }
     get templateLoaded(): boolean { return this.loadedPicture === 'template'; }
     get replacementPending(): boolean { return this.pendingPicture !== undefined; }
-    readonly checkedParts = new Set<SketchPart>();
-    readonly checkedConnections = new Set<SketchConnection>();
+    get checkedParts(): ReadonlySet<SketchPart> {
+        return new Set([...this.selectedItems].filter((item): item is SketchPart => 'position' in item));
+    }
+    get checkedConnections(): ReadonlySet<SketchConnection> {
+        return new Set([...this.selectedItems].filter((item): item is SketchConnection => 'first' in item));
+    }
 
     checkPart(part: SketchPart, checked: boolean): void {
-        if (checked) {
-            this.checkedParts.add(part);
-        } else {
-            this.checkedParts.delete(part);
-        }
+        this.checkItem(part, checked);
     }
 
     checkConnection(connection: SketchConnection, checked: boolean): void {
+        this.checkItem(connection, checked);
+    }
+
+    private checkItem(item: SketchPart | SketchConnection, checked: boolean): void {
+        this.selectedItems.delete(item);
         if (checked) {
-            this.checkedConnections.add(connection);
-        } else {
-            this.checkedConnections.delete(connection);
+            this.selectedItems.add(item);
         }
+        this.surface.requestDraw();
     }
 
     removeSelected(): void {
-        const connection = this.selectedConnection;
-        this.removeSelectedPart();
-        for (const part of this.checkedParts) {
+        const parts = [...this.checkedParts];
+        const connections = [...this.checkedConnections];
+        for (const part of parts) {
             this.removePart(part);
         }
-        if (connection) {
+        for (const connection of connections) {
             this.removeConnection(connection);
         }
-        for (const connection of this.checkedConnections) {
-            this.removeConnection(connection);
-        }
-        this.checkedConnections.clear();
     }
 
     loadOverview(): void {
@@ -161,8 +166,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         const technical = kind === 'technical' ? createTechnicalPicture() : undefined;
         const template = kind === 'template' ? createDefaultTemplate() : undefined;
         const document = technical ? technical.geometry : template ? template.geometry : validateDiagramDocument(overview);
-        this.checkedParts.clear();
-        this.checkedConnections.clear();
+        this.selectedItems.clear();
         this.parts = document.elements.map(element => ({
             id: this.nextPartId++,
             label: element.label,
@@ -185,7 +189,6 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             parts: group.elements.map(id => this.parts[document.elements.findIndex(element => element.id === id)]),
         })) : [];
         this.technicalNotes = technical?.notes ?? '';
-        this.selectedItem = undefined;
         this.drag = undefined;
         this.cancelConnection();
         this.loadedPicture = kind;
@@ -264,6 +267,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         const point = this.surface.point(event);
         this.pointerMoved.emit(point);
         if (this.drag && this.drag.pointerId === event.pointerId) {
+            if (point.x !== this.drag.part.position.x + this.drag.offset.x
+                || point.y !== this.drag.part.position.y + this.drag.offset.y) {
+                this.drag.moved = true;
+            }
             this.drag.part.position = { x: point.x - this.drag.offset.x, y: point.y - this.drag.offset.y };
             this.surface.requestDraw();
         }
@@ -304,7 +311,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             this.surface.requestDraw();
             return;
         }
-        this.selectedItem = part ?? [...this.connections].reverse().find(connection => {
+        const item = part ?? [...this.connections].reverse().find(connection => {
             const { first, second } = this.connectionLine(connection);
             const dx = second.x - first.x;
             const dy = second.y - first.y;
@@ -313,12 +320,20 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
                 ((point.x - first.x) * dx + (point.y - first.y) * dy) / lengthSquared));
             return Math.hypot(point.x - first.x - projection * dx, point.y - first.y - projection * dy) <= 6;
         });
+        const wasSelected = item !== undefined && this.selectedItems.has(item);
+        if (!item) {
+            this.selectedItems.clear();
+        } else {
+            this.checkItem(item, part ? true : !wasSelected);
+        }
         if (part) {
             this.surface.capturePointer(event.pointerId);
             this.drag = {
                 part,
                 pointerId: event.pointerId,
                 offset: { x: point.x - part.position.x, y: point.y - part.position.y },
+                deselectOnClick: wasSelected,
+                moved: false,
             };
         }
         this.surface.requestDraw();
@@ -326,6 +341,10 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
 
     endDrag(event: PointerEvent): void {
         if (this.drag?.pointerId === event.pointerId) {
+            // Defer deselection until release so dragging never unchecks the part.
+            if (event.type === 'pointerup' && this.drag.deselectOnClick && !this.drag.moved) {
+                this.checkItem(this.drag.part, false);
+            }
             this.drag = undefined;
         }
     }
@@ -351,11 +370,8 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     removeConnection(connection: SketchConnection): void {
-        this.checkedConnections.delete(connection);
+        this.selectedItems.delete(connection);
         this.connections = this.connections.filter(candidate => candidate !== connection);
-        if (this.selectedItem === connection) {
-            this.selectedItem = undefined;
-        }
         this.surface.requestDraw();
     }
 
@@ -373,7 +389,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
     }
 
     private removePart(removed: SketchPart): void {
-        this.checkedParts.delete(removed);
+        this.selectedItems.delete(removed);
         for (const connection of this.connections.filter(connection =>
             connection.first === removed || connection.second === removed)) {
             this.removeConnection(connection);
@@ -383,7 +399,6 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         this.boundaries = this.boundaries
             .map(boundary => ({ ...boundary, parts: boundary.parts.filter(part => part !== removed) }))
             .filter(boundary => boundary.parts.length > 0);
-        this.selectedItem = undefined;
         this.drag = undefined;
         this.surface.requestDraw();
     }
@@ -460,13 +475,13 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
                     const symbol = symbolRenderers[part.shape];
                     symbol.draw(context, bounds, [symbol.heading, `<${part.label}>`]);
                 }
-                if (part === this.selectedPart) {
+                if (this.selectedItems.has(part)) {
                     context.lineWidth = 3;
                     context.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
                 }
                 continue;
             }
-            context.lineWidth = part === this.selectedPart ? 3 : 1;
+            context.lineWidth = this.selectedItems.has(part) ? 3 : 1;
             context.strokeRect(x, y, 180, 80);
             context.font = '16px sans-serif';
             if (this.technicalLoaded) {
@@ -483,7 +498,7 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
         }
         for (const connection of this.connections) {
             const { first, second } = this.connectionLine(connection);
-            context.lineWidth = connection === this.selectedConnection ? 3 : 1;
+            context.lineWidth = this.selectedItems.has(connection) ? 3 : 1;
             context.beginPath();
             context.moveTo(first.x, first.y);
             context.lineTo(second.x, second.y);

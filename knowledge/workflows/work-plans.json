@@ -28,6 +28,13 @@
         "title": "Reusable symbol renderers",
         "description": "Artifact, system software, business role, product and actor symbols with hatching and labels.",
         "tasks": [{
+          "id": "canvas-editor-synchronized-selection",
+          "title": "Synchronize list and canvas selection",
+          "description": "Completed one ordered selection set for canvas and checkboxes. Clicks/checks toggle membership, last selected item drives editing, deselection falls back to the last remaining item, and empty canvas clears all outside connection mode. Dragging preserves membership and makes the dragged part active; all selected items are highlighted. Shared cleanup/replacement preserved. Red observed before production changes; 136 editor tests pass with 100% module coverage, test TypeScript check and client build pass. Live desktop synchronization, label editing, fallback, dragging and clearing verified; mobile list editing/clearing and no overflow verified. Tracking and measurement retained. Next step: user review and optional commit approval.",
+          "status": "Completed",
+          "measurement": "Measured",
+          "evaluationIds": ["canvas-editor-synchronized-selection"]
+        }, {
           "id": "canvas-default-workflow-template",
           "title": "Load an editable default workflow template",
           "description": "Completed Default template button for the reference main diagram: 25 typed symbols and 28 editable straight connections, excluding bottom legend/note. Initial canvas remains empty. Added Tech process renderer and picker option. JSON is authoritative, geometry/shape validation reused at loading boundary, replacement confirmation and fresh copies preserved. All 923 client tests pass with 100% reported coverage; test TypeScript check and client build pass. Runtime verifies template items, cancellation/confirmation and 2040x1080 scrollable workspace at 320/360/768/1280px without document overflow. Tracking and measurement retained. Next step: user review and optional commit approval.",

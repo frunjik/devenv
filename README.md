@@ -67,8 +67,14 @@ The right-side actions anchor to the bottom of the toolbar above the canvas,
 while the Items list stays aligned with the top of the left fields.
 All canvas parts and connections appear in an always-visible checkbox list above
 Remove selected, with parts first and connections second. The heading shows total
-parts, total connections and the number checked. Checking an item does not change
-the canvas selection used for label editing. The list has
+parts, total connections and the number selected. The list and canvas share one
+multi-selection: checking a row or clicking an unselected item selects it and
+makes it active for label/type editing. Clicking a selected item without dragging,
+or unchecking its row, deselects it; editing falls back to the most recently
+selected remaining item. Dragging keeps the part selected and makes it active.
+All selected items are highlighted on the canvas. Clicking empty canvas clears
+the selection outside connection-creation mode, which retains its existing
+destination-picking behavior. The list has
 a scrollbar when it exceeds its 12rem maximum height. Item rows
 use compact text and a 28px minimum height, expanding when labels wrap. Connect and Cancel
 sit below toward the same right edge, followed by picture loading. Narrow screens use two
@@ -78,9 +84,8 @@ and picture loading) fill their assigned grid space. Small toolbar buttons
 cells above the 42rem mobile breakpoint. Replacement confirmation stays
 content-sized. Both variants
 retain a compact 36px minimum height.
-One **Remove selected** action removes the selected part, its incident
-connections, any connection selected on the canvas, all checked parts and their
-incident connections, and all checked connections. Confirming picture replacement
+One **Remove selected** action removes all selected parts and their incident
+connections, and all selected connections. Confirming picture replacement
 clears both kinds of checkbox selection; cancelling preserves them.
 
 ## Work time evidence

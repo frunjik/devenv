@@ -6,7 +6,7 @@
   "workflows": [
     {
       "name": "Darwin",
-      "evaluationIds": ["darwin-agent-essentials"],
+      "evaluationIds": ["darwin-agent-essentials", "agent-guide-preview"],
       "primaryWorkPurpose": "Meta work",
       "status": "Active",
       "resumeLabel": "Agent Essentials plan and checkpoint",

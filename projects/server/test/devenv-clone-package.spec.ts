@@ -69,6 +69,21 @@ describe('DevEnv clone package', () => {
         expect(copiedPaths).not.toContain(join(root, 'reviews'));
     });
 
+    it('includes only the knowledge dependencies needed by the read-only agent preview', async () => {
+        await cloneDevEnv(root, { destination, replaceExisting: true }, fileSystem);
+        const copiedPaths = fileSystem.cp.mock.calls.map(([source]) => source);
+        for (const resource of [
+            join('knowledge', 'workflows', 'agent-phase-guide.json'),
+            join('knowledge', 'workflows', 'agent-phase-guide.types.ts'),
+            join('knowledge', 'workflows', 'agent-phase-skills.json'),
+            join('knowledge', 'practices', 'agent-essentials.json'),
+            join('knowledge', 'practices', 'agent-essentials-testing.json'),
+            join('knowledge', 'practices', 'agent-essentials.types.ts'),
+        ]) expect(copiedPaths).toContain(join(root, resource));
+        expect(copiedPaths).not.toContain(join(root, 'knowledge'));
+        expect(copiedPaths).not.toContain(join(root, 'knowledge', 'workflows', 'devenv-value-evaluation.json'));
+    });
+
     it.each([root, join(root, 'clone'), dirname(root)])('rejects source-overlapping destination %s', async destination => {
         await expect(cloneDevEnv(root, {
             destination,

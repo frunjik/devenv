@@ -9,6 +9,9 @@ import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-
 import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
 
 describe('routes', () => {
+    it('exposes the read-only agent guide preview', () => {
+        expect(routes.find(route => route.path === 'agent-guide')?.component?.name).toBe('AgentGuideComponent');
+    });
     it('exposes an isolated visual foundations preview', () => {
         expect(routes.find(route => route.path === 'visual-foundations')?.component).toBe(VisualFoundationsComponent);
     });

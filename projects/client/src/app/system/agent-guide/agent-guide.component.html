@@ -1,0 +1,22 @@
+<section class="layout-page">
+    <header>
+        <h1>Agent guide</h1>
+        <p>Read-only preview of {{ preview.guide.name }} and the Copilot files proposed from it.</p>
+        <ul>
+            @for (limitation of preview.limitations; track limitation) {
+                <li>{{ limitation }}</li>
+            }
+        </ul>
+    </header>
+    <details class="accent-card" open>
+        <summary>Source JSON: guide and phase skills</summary>
+        <pre tabindex="0" aria-label="Guide and phase skill source JSON" data-guide-source>{{ preview.sourceJson }}</pre>
+    </details>
+    <h2>Proposed generated files ({{ preview.files.length }})</h2>
+    @for (file of preview.files; track file.path) {
+        <details class="accent-card" data-generated-file>
+            <summary>{{ file.path }}</summary>
+            <pre tabindex="0" [attr.aria-label]="file.path + ' proposed content'">{{ file.content }}</pre>
+        </details>
+    }
+</section>

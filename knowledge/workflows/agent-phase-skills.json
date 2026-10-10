@@ -1,0 +1,46 @@
+{
+  "Understand": {
+    "name": "understand",
+    "description": "Use when clarifying a request, resuming work, or identifying intent, constraints and observable success conditions.",
+    "steps": [
+      "Read available request context and saved decisions before asking for information.",
+      "Establish the intended outcome, constraints and observable success conditions.",
+      "Ask about material ambiguity rather than guessing; scale clarification to the request.",
+      "Hand off the agreed outcome, constraints and success conditions without authorizing unrequested work."
+    ]
+  },
+  "Explore": {
+    "name": "explore",
+    "description": "Use when investigating evidence, existing code and options before choosing an implementation approach.",
+    "steps": [
+      "Inspect relevant sources, tests and callers; distinguish observed facts from assumptions.",
+      "Identify external dependencies and reuse existing boundary contracts and mocks before writing tests.",
+      "Compare relevant options, challenge weak assumptions and choose the simplest complete approach.",
+      "Resolve consequential scope and naming decisions with the user before acting.",
+      "Hand off evidence, the approach and required approvals; separate investigation does not transfer task ownership."
+    ]
+  },
+  "Make": {
+    "name": "make",
+    "description": "Use when producing an agreed change or artifact, including production coding, documentation or design.",
+    "steps": [
+      "Produce the agreed artifact while preserving unrelated work and intended behavior.",
+      "For production behavior changes, load and follow [the TDD skill](../tdd/SKILL.md) before changing production code.",
+      "For documentation or design work, do not claim TDD execution.",
+      "Keep generation and business logic in functions where practical; keep UI components focused on presentation.",
+      "Hand off the change, verification evidence, blockers and limitations. Do not initiate commits."
+    ]
+  },
+  "Evaluate": {
+    "name": "evaluate",
+    "description": "Use when assessing a result against success conditions, reviewing compliance or deciding the next step.",
+    "steps": [
+      "Compare the result directly with agreed success conditions; tests and coverage are not substitutes for the requested outcome.",
+      "Use relevant runtime and UI evidence when necessary, including interactions and viewport sizes.",
+      "Review practice compliance separately from passing tests, coverage and builds.",
+      "For opted-in tracking, retain observed metrics and unknowns without inventing effort or user benefits.",
+      "Report failures and unavailable checks explicitly; decide whether to finish, revise or continue.",
+      "Being ready does not authorize a commit; the guide handles commits only on explicit request."
+    ]
+  }
+}

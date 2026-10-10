@@ -34,6 +34,23 @@
   ],
   "evaluations": [
     {
+      "id": "agent-guide-preview",
+      "title": "Preview AgentPhaseGuide and generated Copilot files",
+      "beneficiary": "The user reviewing Agent Essentials",
+      "intendedOutcome": "Inspect the saved guide and proposed runtime files before export or activation.",
+      "successCondition": "A read-only page shows source JSON and generated AGENTS.md, coordinator agent, four phase skills and separate TDD skill; pure functions own generation; no file export or activation occurs.",
+      "baseline": "Guide and testing definitions are saved as JSON; no preview page or phase skill definitions exist.",
+      "startedAt": "2026-10-10T13:44:56.298+02:00",
+      "completedAt": "2026-10-10T13:49:46.515+02:00",
+      "measures": [
+        { "metricId": "goal-success-clarity", "value": "User approved a read-only VS Code/Copilot preview, four phase skills and a separate TDD skill. Functions preferred over classes, with thin UI components.", "evidence": "Session scope decisions; darwin-workflow.md." },
+        { "metricId": "decision-latency", "value": null, "evidence": null },
+        { "metricId": "delivery-flow-and-effort", "value": null, "evidence": null },
+        { "metricId": "outcome-and-quality", "value": "Observed failing preview/generator, route and menu checks before implementation. Final 18 client tests and 54 server clone/tracking tests pass. Pure generator and thin component have 100% statement/branch/function/line coverage; shared/client production builds and source JSON type-check pass. Clone handler coverage remains 85.36% statements/lines, 76% branches and 75% functions: existing HTTP adapter lines 234-261 are unexercised; no live-service tests run. Hidden-browser DOM/layout checks at 1440 and 375 px show seven files, source JSON, minimum 44 px summaries and contained code scrolling with no page overflow. Real clicks timed out in the hidden browser; visible acceptance and pointer interaction remain unverified. No preview file export or activation occurs; user approved six specific source dependencies in folder exports.", "evidence": "darwin-workflow.md; session Jest coverage, build and browser outputs; agent-phase-skills.json." },
+        { "metricId": "devenv-process-overhead", "value": null, "evidence": null }
+      ]
+    },
+    {
       "id": "darwin-agent-essentials",
       "title": "Evolve Agent Essentials through Darwin",
       "beneficiary": "The user and agents reviewing and transferring working practices",

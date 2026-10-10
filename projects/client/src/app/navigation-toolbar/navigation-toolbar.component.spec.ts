@@ -57,6 +57,7 @@ describe('NavigationToolbarComponent', () => {
             '/browse?path=&file=TODO.md',
             '/browse?path=%2Fprojects%2Fclient%2Fsrc%2Fapp&file=%2Fprojects%2Fclient%2Fsrc%2Fapp%2Fnavigation-toolbar%2Fnavigation-toolbar.component.html',
             '/git/log',
+            '/agent-guide',
         ]);
     });
 

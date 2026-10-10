@@ -1,6 +1,15 @@
 import guide from './agent-phase-guide.json';
+import skills from './agent-phase-skills.json';
 
 export type CoordinatorPhase = 'Understand' | 'Explore' | 'Make' | 'Evaluate';
+
+export interface AgentPhaseSkill {
+    name: string;
+    description: string;
+    steps: string[];
+}
+
+export const agentPhaseSkills = skills satisfies Record<CoordinatorPhase, AgentPhaseSkill>;
 
 export interface CoordinatorPhaseDesign {
     purpose: string;

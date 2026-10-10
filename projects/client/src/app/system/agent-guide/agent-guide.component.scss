@@ -1,0 +1,43 @@
+:host {
+    display: block;
+}
+
+.layout-page {
+    display: grid;
+    gap: var(--layout-space-section);
+    padding-bottom: var(--layout-margin);
+}
+
+header, details {
+    min-width: 0;
+}
+
+h1, h2 {
+    color: var(--text-heading);
+}
+
+details {
+    padding: var(--layout-gutter);
+}
+
+summary {
+    min-height: 44px;
+    align-content: center;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+
+pre {
+    max-width: 100%;
+    max-height: 32rem;
+    overflow: auto;
+    padding: var(--layout-gutter);
+    background: var(--surface-page);
+    color: var(--text-body);
+    border: 1px solid var(--border-default);
+}
+
+summary:focus-visible, pre:focus-visible {
+    outline: 2px solid var(--state-focus);
+    outline-offset: 2px;
+}

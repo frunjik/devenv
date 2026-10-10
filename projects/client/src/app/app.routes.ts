@@ -11,8 +11,13 @@ import { WorkflowEvaluationsComponent } from './system/workflow-todo/workflow-ev
 import { DiagramPageComponent } from './system/diagram/diagram-page.component';
 import { CanvasDiagramEditor } from './system/interactive-canvas/canvas-diagram-editor.component';
 import { VisualFoundationsComponent } from './system/visual-foundations/visual-foundations.component';
+import { AgentGuideComponent } from './system/agent-guide/agent-guide.component';
 
 export const routes: Routes = [
+    {
+        path: 'agent-guide',
+        component: AgentGuideComponent,
+    },
     {
         path: 'visual-foundations',
         component: VisualFoundationsComponent,

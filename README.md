@@ -16,6 +16,16 @@ Generate a derived Markdown view of the experimental MetaExport JSON with `npm r
 
 ## Agent skills
 
+The **Tools -> Agent guide** link opens `/agent-guide`, a read-only preview of
+AgentPhaseGuide, its phase-skill JSON and seven proposed Copilot files: `AGENTS.md`,
+one custom agent, four phase skills and a separate TDD skill. Pure functions generate
+the preview in memory; the page does not export, write or activate customizations.
+Phase definitions are authoritative in `knowledge/workflows/agent-phase-skills.json`;
+the guide and selected testing requirements remain in their existing JSON sources.
+Folder exports include only the six JSON/type dependencies needed by this preview,
+not the full knowledge folder or its archives. Runtime invocation and toggle
+enforcement remain unimplemented; generated file contents are proposals.
+
 Custom agents live in [`.github/agents`](./.github/agents), the standard project-level
 Copilot agent discovery location. Their YAML metadata declares names, descriptions,
 and tool permissions. The Diligent Coder coordinates implementation using the

@@ -29,7 +29,7 @@ describe('agent guide preview', () => {
             '.agents/skills/tdd/SKILL.md',
         ]);
         expect(preview.guide.name).toBe('Agent Phase Guide');
-        expect(preview.files.every(file => file.content.includes('Preview only'))).toBe(true);
+        expect(preview.files.every(file => !file.content.includes('Preview only; not installed or activated.'))).toBe(true);
         expect(preview.files[1].content).toContain('An explicit user request to commit');
         expect(preview.files[4].content).toContain('../tdd/SKILL.md');
         expect(preview.files[6].content).toContain('100% statement, branch, function and line coverage');

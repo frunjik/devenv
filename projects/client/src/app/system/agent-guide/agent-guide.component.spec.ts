@@ -23,6 +23,7 @@ describe('AgentGuideComponent', () => {
             fixture.componentInstance.preview.files.map(file => file.path),
         );
         expect(host.textContent).toContain('Read-only preview');
+        expect(host.querySelector('[data-preview-notice]')?.textContent).toContain('Preview only; not installed or activated.');
         expect(tabs[0].getAttribute('aria-selected')).toBe('true');
         for (const [index, tab] of tabs.entries()) {
             tab.click();

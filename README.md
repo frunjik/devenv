@@ -40,6 +40,7 @@ The guide also previews work continuity and measurement intent across its phases
 resuming work, retaining decisions, comparing outcomes with baselines and assessing
 tracking overhead. These are exploration intents, not an adopted replacement for
 the current workflow TODO and evaluation system.
+The preview-only notice is a static page label, not part of any generated file.
 
 Custom agents live in [`.github/agents`](./.github/agents), the standard project-level
 Copilot agent discovery location. Their YAML metadata declares names, descriptions,

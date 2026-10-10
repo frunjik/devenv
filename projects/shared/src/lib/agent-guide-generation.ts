@@ -4,7 +4,6 @@ import type {
 } from './agent-guide.types';
 
 const phases: CoordinatorPhase[] = ['Understand', 'Explore', 'Make', 'Evaluate'];
-const notice = 'Preview only; not installed or activated. Generated from saved JSON; edit the source, not this output.';
 
 function projectLinks(line: string, tddPath: string, entryPath: string): string {
     return line
@@ -33,7 +32,7 @@ export function generateAgentGuidePreview(sources: AgentGuideSources): AgentGuid
     const guide = structuredClone(sources.guide);
     const tddPath = '.agents/skills/tdd/SKILL.md';
     const entry = [
-        '# Agent Essentials', '', notice, '',
+        '# Agent Essentials', '',
         'Use the phase skills below when applicable. They guide behavior; these references do not enforce runtime invocation.',
         '',
         ...phases.map(phase => `- [${phase}](.agents/skills/${agentPhaseSkills[phase].name}/SKILL.md)`),
@@ -42,7 +41,7 @@ export function generateAgentGuidePreview(sources: AgentGuideSources): AgentGuid
     ].join('\n');
     const coordinator = [
         frontmatter(guide.name, 'Use when coordinating Understand, Explore, Make and Evaluate while retaining task ownership.'),
-        `# ${guide.name}`, '', notice, '', guide.purpose, '',
+        `# ${guide.name}`, '', guide.purpose, '',
         '## Responsibilities', '', bullets(guide.coordinatorResponsibilities), '',
         '## Switching policy', '', bullets(guide.switchingPolicy), '',
         '## Work continuity and measurement intent', '',
@@ -74,7 +73,7 @@ export function generateAgentGuidePreview(sources: AgentGuideSources): AgentGuid
                 path: `.agents/skills/${skill.name}/SKILL.md`,
                 content: [
                     frontmatter(skill.name, skill.description),
-                    `# ${phase}`, '', notice, '',
+                    `# ${phase}`, '',
                     ...skill.steps.map((step, index) => `${index + 1}. ${step}`),
                     '',
                 ].join('\n'),
@@ -84,7 +83,7 @@ export function generateAgentGuidePreview(sources: AgentGuideSources): AgentGuid
             path: tddPath,
             content: [
                 frontmatter('tdd', `Use when ${guide.practices.tdd.trigger.charAt(0).toLowerCase()}${guide.practices.tdd.trigger.slice(1)}`),
-                '# Test-Driven Development', '', notice, '',
+                '# Test-Driven Development', '',
                 'Use for production behavior changes; do not claim TDD for documentation or design alone.', '',
                 renderSections(agentEssentialsTesting.sections.filter(section => section.heading !== 'Review boundary'), 'SKILL.md', '../../../AGENTS.md'),
                 '',

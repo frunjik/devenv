@@ -33,6 +33,22 @@ Follow the [coverage requirements](./agent-essentials-testing.candidate.md#cover
 
 Do not expand coverage scope to unchanged dependencies or distort production code to raise coverage. Report uncovered code and blockers honestly. Full coverage does not replace requested-outcome verification.
 
+## Applicable defaults (not completion gates)
+
+Briefly justify meaningful deviations from these applicable defaults.
+
+- **Refactor:** after Green, review duplication and function cohesion. Extract only real responsibilities, and don't distort code for coverage.
+- **Types and complexity:**
+  - Review missing or refinable types and evidence-backed complexity when concepts change.
+  - Report only meaningful findings.
+  - Discuss consequential names, and keep unapproved names provisional.
+- **Data format:** prefer typed JSON with explicit interfaces, with Markdown generated from it. Narrative and native customization Markdown are exceptions.
+- **TypeScript style:**
+  - Use `interface` for grouped records.
+  - Use `type` for values, choices and named union alternatives.
+  - Follow nearby UI conventions, and don't automatically rewrite correct code.
+- **Jest:** import used Jest helpers from `@jest/globals` on the first line.
+
 ## Repository safeguards
 
 Retained repository safeguards for the isolated trial, separate from the four selected Agent Essentials practices and the exploration intents. These apply whether or not the coordinator is selected.
@@ -54,7 +70,7 @@ Repository quick reference (informational):
 
 ## Intents to explore
 
-The following preserve desired outcomes, not selected rules or the current implementation. Names, mechanisms and adoption remain open.
+The following are proposed practices, not active rules. Before activating any of them, ask the user to define its intended behavior and scope; keep it inactive until the user approves activation. Names and mechanisms remain open.
 
 ### 5. Trace work to its evaluations
 

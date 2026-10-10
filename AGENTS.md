@@ -72,7 +72,7 @@ Repository quick reference (informational):
 
 ## Intents to explore
 
-The following preserve desired outcomes, not selected rules or the current implementation. Names, mechanisms and adoption remain open.
+The following are proposed practices, not active rules. Before activating any of them, ask the user to define its intended behavior and scope; keep it inactive until the user approves activation. Names and mechanisms remain open.
 
 ### 5. Trace work to its evaluations
 

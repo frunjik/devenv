@@ -299,16 +299,6 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             width / 2,
             height / 2,
         );
-        for (const connection of this.connections) {
-            const { first, second } = this.connectionLine(connection);
-            context.lineWidth = connection === this.selectedConnection ? 3 : 1;
-            context.beginPath();
-            context.moveTo(first.x, first.y);
-            context.lineTo(second.x, second.y);
-            context.stroke();
-            context.font = '14px sans-serif';
-            context.fillText(connection.label, (first.x + second.x) / 2, (first.y + second.y) / 2 - 10);
-        }
         for (const part of this.parts) {
             const { x, y } = part.position;
             context.lineWidth = part === this.selectedPart ? 3 : 1;
@@ -319,6 +309,16 @@ export class CanvasDiagramEditor implements AfterViewInit, OnDestroy {
             } else {
                 context.fillText(part.label, x + 90, y + 40);
             }
+        }
+        for (const connection of this.connections) {
+            const { first, second } = this.connectionLine(connection);
+            context.lineWidth = connection === this.selectedConnection ? 3 : 1;
+            context.beginPath();
+            context.moveTo(first.x, first.y);
+            context.lineTo(second.x, second.y);
+            context.stroke();
+            context.font = '14px sans-serif';
+            context.fillText(connection.label, (first.x + second.x) / 2, (first.y + second.y) / 2 - 10);
         }
     }
 }

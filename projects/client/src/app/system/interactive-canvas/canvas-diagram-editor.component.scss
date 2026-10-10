@@ -1,16 +1,20 @@
 :host {
     display: flex;
     flex: 1;
+    width: 100%;
     min-height: 0;
 }
 
 .interactive-canvas-page {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
     min-height: 0;
+    width: 100%;
     padding: 1.5rem;
+    box-sizing: border-box;
+    overflow: auto;
 }
 
 .canvas-controls {
@@ -44,7 +48,7 @@
     align-items: flex-start;
     gap: 0.5rem 1rem;
     flex-shrink: 0;
-    padding-top: 0.5rem;
+    margin-bottom: 0.5rem;
 
     button {
         min-width: 44px;
@@ -88,25 +92,27 @@
 }
 
 .canvas-viewport {
-    display: flex;
-    flex: 1 1 0px;
+    position: relative;
+    flex: 1 1 0;
+    width: 100%;
     min-width: 0;
     min-height: 180px;
     overflow: auto;
 
     &.overview-workspace canvas {
-        flex: none;
         min-width: 900px;
         min-height: 560px;
     }
 }
 
 canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: block;
-    flex: 1 1 0px;
     min-height: 180px;
     width: 100%;
-    height: 0;
+    height: 100%;
     box-sizing: border-box;
     border: 1px solid #777;
     background: #fff;

@@ -163,6 +163,13 @@ describe('CanvasDiagramEditor', () => {
         clickButton('Confirm replacement');
     }
 
+    it('places connection controls before the workspace in reading and tab order', () => {
+        createEditor();
+        const connections = host.querySelector('.connection-controls')!;
+        const workspace = host.querySelector('.canvas-viewport')!;
+        expect(connections.compareDocumentPosition(workspace) & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0);
+    });
+
     describe('DevEnv overview', () => {
         beforeEach(() => { createEditor(); loadOverview(); });
 
@@ -198,7 +205,7 @@ describe('CanvasDiagramEditor', () => {
                 [40, 40, 180, 80], [340, 40, 180, 80], [640, 40, 180, 80],
                 [640, 320, 180, 80], [340, 320, 180, 80], [40, 320, 180, 80],
             ]);
-            expect(surface.textWidths.slice(-6)).toEqual([164, 164, 164, 164, 164, 164]);
+            expect(surface.textWidths.filter(width => width !== undefined).slice(-6)).toEqual([164, 164, 164, 164, 164, 164]);
         });
 
         it('allocates fresh part and connection identities on reload', () => {
@@ -627,8 +634,8 @@ describe('CanvasDiagramEditor', () => {
         describe('with a labelled diagonal connection', () => {
             beforeEach(() => { editor.renameConnection(editor.connections[0], 'uses'); drag(59, 59, 359, 59); surface.paint(); });
 
-            it('draws lines before boxes', () => {
-                expect(surface.operations.slice(-3)).toEqual(['line', 'box', 'box']);
+            it('draws boxes before connection lines', () => {
+                expect(surface.operations.slice(-3)).toEqual(['box', 'box', 'line']);
             });
 
             it('clips the line to the moved endpoints and centers its label', () => {

@@ -26,20 +26,6 @@
     @if (overviewLoaded) {
         <p>Explanatory sketch of DevEnv's purpose, not a formal architecture. Boxes and undirected links are editable.</p>
     }
-    <div class="canvas-viewport" [class.overview-workspace]="overviewLoaded">
-        <canvas
-            #canvas
-            width="640"
-            height="360"
-            (pointermove)="movePointer($event)"
-            (pointerdown)="selectPart($event)"
-            (pointerup)="endDrag($event)"
-            (pointercancel)="endDrag($event)"
-            (lostpointercapture)="endDrag($event)"
-            aria-label="Sketch workspace and current time rendered on an HTML canvas">
-            Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them. Current time is also shown.
-        </canvas>
-    </div>
     <section class="connection-controls" aria-label="Connections">
         <details class="connection-picker">
             <summary>Connections ({{ checkedConnections.size }} selected)</summary>
@@ -58,4 +44,18 @@
         <button type="button" aria-label="Delete selected connections" [disabled]="checkedConnections.size === 0"
             (click)="deleteCheckedConnections()">Delete selected</button>
     </section>
+    <div class="canvas-viewport" [class.overview-workspace]="overviewLoaded">
+        <canvas
+            #canvas
+            width="640"
+            height="360"
+            (pointermove)="movePointer($event)"
+            (pointerdown)="selectPart($event)"
+            (pointerup)="endDrag($event)"
+            (pointercancel)="endDrag($event)"
+            (lostpointercapture)="endDrag($event)"
+            aria-label="Sketch workspace and current time rendered on an HTML canvas">
+            Sketch workspace. Click empty space to label a new part. Select a box or connection line to edit its label; drag boxes to move them. Current time is also shown.
+        </canvas>
+    </div>
 </main>
